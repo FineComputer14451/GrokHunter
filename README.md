@@ -1,10 +1,10 @@
 # GrokHunter Rootless
 
-**Kali NetHunter Rootless × Grok Build — AI-agent mobile lab for unrooted Android**
+**Kali NetHunter Rootless × Grok Build — AI coding & building lab for unrooted Android**
 
-GrokHunter turns **rootless** Kali NetHunter (Termux + proot) into an AI-agent-first mobile penetration testing and builder environment, powered by [Grok Build](https://x.ai/cli).
+GrokHunter turns **rootless** Kali NetHunter (Termux + proot) into a capable Linux development environment on your phone, powered by [Grok Build](https://x.ai/cli).
 
-No root. No custom kernel. No warranty void.
+Write code, build projects, run tools, and use Grok as your on-device agent — **no root required**.
 
 > Not affiliated with xAI or Offensive Security.
 
@@ -29,26 +29,29 @@ bash install.sh --full --de xfce --browser chromium --with-grok --with-x11
 ```
 
 Installs:
-- Latest **rootless** Kali NetHunter rootfs (`/current/`)
-- XFCE desktop
+- Latest **rootless** Kali NetHunter rootfs
+- XFCE desktop (comfortable for coding)
 - Chromium
 - Native Grok Build CLI
 - Termux:X11 low-latency desktop + `nh-x11` helper
 
 ---
 
-## Why Rootless?
+## Why this stack for coding?
 
-| | Rootless (GrokHunter) | Rooted NetHunter |
-|--|----------------------|------------------|
-| Root required | **No** | Yes |
-| Warranty | Intact | Often voided |
-| Install | Termux + proot | Custom recovery / Magisk |
-| Grok Build | Native static binary | Same |
-| HID / Mana / firmware | Limited | Full |
-| Target users | Most Android devices | Advanced / unlocked devices |
+| Need | What you get |
+|------|----------------|
+| Real Linux toolchain | apt, gcc, python, node, rust, go, etc. inside Kali |
+| No root | Stock Android, warranty intact |
+| AI pair-programmer | Grok Build TUI + headless mode on-device |
+| Desktop IDE feel | XFCE + Termux:X11 (low latency) |
+| Portability | Entire lab lives in Termux |
 
-GrokHunter is designed exclusively for the **rootless** path. It does not install or depend on Magisk, custom kernels, or HID modules.
+Perfect for:
+- Learning and practicing languages
+- Building small tools and scripts
+- Mobile-first development sessions
+- Using Grok as a coding agent while offline-capable packages stay local
 
 ---
 
@@ -68,7 +71,7 @@ bin/
   └── grokhunter-doctor Health report
 
 config/                 Grok Build profile + shell integration
-skills/                 Agent skills (orchestrator + recon)
+skills/                 Agent skills for coding workflows
 docs/                   Architecture & install notes
 ```
 
@@ -96,11 +99,11 @@ docs/                   Architecture & install notes
 
 ```bash
 nethunter          # Enter Kali shell (rootless proot)
-nh-x11             # Low-latency desktop (requires Termux:X11 APK)
+nh-x11             # Low-latency desktop for coding
 grok               # Grok Build interactive TUI
-grokhunter         # Primary GrokHunter CLI
-grokhunter status  # Quick status (includes x11=yes/no)
-grokhunter doctor  # Full health report
+grokhunter         # Primary CLI
+grokhunter status  # Quick status
+grokhunter doctor  # Health report
 ```
 
 **Termux:X11 note**  
@@ -116,7 +119,7 @@ grokhunter status           # Short status line
 grokhunter doctor           # Full health report
 grokhunter ensure           # Install/upgrade Grok Build binary
 grokhunter install [args]   # Run / re-run the rootless installer
-grokhunter plan "…"         # Plan mode
+grokhunter plan "…"         # Plan a coding task
 grokhunter -p "…"           # Headless one-shot
 ```
 
