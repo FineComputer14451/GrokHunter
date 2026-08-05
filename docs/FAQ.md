@@ -43,8 +43,8 @@ Re-run the installer (idempotent) or:
 
 ```bash
 cd ~/GrokHunter && git pull
-bash install.sh --with-grok   # refresh Grok / helpers as needed
-grokhunter ensure             # Grok binary only
+GROKHUNTER_REFRESH=1 bash install.sh --with-grok   # refresh modules + Grok
+grokhunter ensure             # Grok binary only (shared ensure_grok.sh)
 ```
 
 ## Where are secrets stored?
