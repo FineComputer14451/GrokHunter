@@ -1,33 +1,121 @@
 #!/data/data/com.termux/files/usr/bin/bash
 # GrokHunter — native Grok Build CLI + optional Aider
+#
+# Install path is shared with scripts/ensure_grok.sh:
+#   GROKHUNTER_GROK_INSTALLER=auto|official|termux-native
+
+_gh_find_ensure_script() {
+  local candidates=(
+    "${SCRIPT_DIR:-}/scripts/ensure_grok.sh"
+    "${GROKHUNTER_HOME:-${HOME}/GrokHunter}/scripts/ensure_grok.sh"
+    "${HOME}/GrokHunter/scripts/ensure_grok.sh"
+    "${HOME}/.cache/grokhunter/scripts/ensure_grok.sh"
+  )
+  local c
+  for c in "${candidates[@]}"; do
+    [[ -n "$c" && -f "$c" ]] && { printf '%s\n' "$c"; return 0; }
+  done
+  return 1
+}
+
+_gh_fetch_ensure_script() {
+  local dest="${HOME}/.cache/grokhunter/scripts"
+  local url="${REPO_RAW:-https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main}/scripts/ensure_grok.sh"
+  mkdir -p "${dest}" || return 1
+  if curl -fsSL --connect-timeout 12 --max-time 60 --retry 2 "${url}" -o "${dest}/ensure_grok.sh"; then
+    if grep -qE 'GROKHUNTER_GROK_INSTALLER|_resolve_mode' "${dest}/ensure_grok.sh" 2>/dev/null; then
+      chmod 755 "${dest}/ensure_grok.sh" 2>/dev/null || true
+      printf '%s\n' "${dest}/ensure_grok.sh"
+      return 0
+    fi
+  fi
+  return 1
+}
 
 install_grok_build() {
-  msg -t "Installing native Grok Build CLI (Termux)"
+  msg -t "Installing Grok Build CLI"
 
-  if command -v grok &>/dev/null; then
+  if command -v grok &>/dev/null && [[ "${GROKHUNTER_FORCE_GROK:-0}" != "1" ]]; then
     msg -ts "Grok Build already present — skipping"
     return 0
   fi
 
-  local installer_url="https://raw.githubusercontent.com/Thr45hx/grok-cli-termux-native/main/install.sh"
+  local ensure
+  if ! ensure="$(_gh_find_ensure_script)"; then
+    msg -tn "Fetching shared ensure_grok.sh…"
+    if ensure="$(_gh_fetch_ensure_script)"; then
+      cursor -u1
+      msg -ts "ensure_grok.sh cached"
+    else
+      cursor -u1
+      msg -tw "Could not locate ensure_grok.sh — using inline fallback"
+      ensure=""
+    fi
+  fi
 
-  msg -tn "Downloading & running Grok Build Termux-native installer..."
-  if curl -fsSL "${installer_url}" | bash; then
+  export PATH="${HOME}/.grok/bin:${HOME}/.local/bin:${PATH}"
+
+  if [[ -n "${ensure}" ]]; then
+    msg -tn "Running shared Grok installer (see scripts/ensure_grok.sh)…"
+    if bash "${ensure}"; then
+      cursor -u1
+      if command -v grok &>/dev/null; then
+        msg -ts "Grok Build installed successfully"
+        msg -a "  Run ${P}grok${S} or ${P}grok -p \"hello from coding lab\"${S}"
+        msg -a "  Auth: export XAI_API_KEY=xai-...   or browser sign-in on first launch"
+        msg -a "  Installer mode: ${P}\${GROKHUNTER_GROK_INSTALLER:-auto}${S} (auto|official|termux-native)"
+        return 0
+      fi
+    fi
+    cursor -u1
+  fi
+
+  # Inline fallback (same policy as ensure_grok.sh) if shared script unavailable
+  local mode="${GROKHUNTER_GROK_INSTALLER:-auto}"
+  local official="${GROKHUNTER_GROK_OFFICIAL_URL:-https://x.ai/cli/install.sh}"
+  local termux_native="${GROKHUNTER_GROK_TERMUX_URL:-https://raw.githubusercontent.com/Thr45hx/grok-cli-termux-native/main/install.sh}"
+  local primary secondary
+
+  if [[ "${mode}" == "auto" ]]; then
+    if [[ -n "${PREFIX:-}" && "${PREFIX}" == *com.termux* ]] || [[ -d /data/data/com.termux/files/usr ]]; then
+      mode="termux-native"
+    else
+      mode="official"
+    fi
+  fi
+
+  if [[ "${mode}" == "termux-native" ]]; then
+    primary="${termux_native}"; secondary="${official}"
+  else
+    primary="${official}"; secondary="${termux_native}"
+  fi
+
+  msg -tn "Downloading & running Grok installer (${mode})…"
+  if curl -fsSL --connect-timeout 15 --max-time 180 --retry 2 "${primary}" | bash; then
+    export PATH="${HOME}/.grok/bin:${HOME}/.local/bin:${PATH}"
     cursor -u1
     if command -v grok &>/dev/null; then
       msg -ts "Grok Build installed successfully"
       msg -a "  Run ${P}grok${S} or ${P}grok -p \"hello from coding lab\"${S}"
       msg -a "  Auth: export XAI_API_KEY=xai-...   or browser sign-in on first launch"
-    else
-      msg -tw "Installer finished but 'grok' not found in PATH — check ~/agents/grok or restart Termux"
+      return 0
     fi
-  else
-    cursor -u1
-    msg -te "Failed to install Grok Build via Termux-native script"
-    msg -a "  Manual: curl -fsSL ${installer_url} | bash"
-    msg -a "  Or official: curl -fsSL https://x.ai/cli/install.sh | bash"
-    return 1
   fi
+  cursor -u1
+  msg -tw "Primary installer failed — trying fallback…"
+  if curl -fsSL --connect-timeout 15 --max-time 180 --retry 2 "${secondary}" | bash; then
+    export PATH="${HOME}/.grok/bin:${HOME}/.local/bin:${PATH}"
+    if command -v grok &>/dev/null; then
+      msg -ts "Grok Build installed via fallback"
+      return 0
+    fi
+  fi
+
+  msg -te "Failed to install Grok Build"
+  msg -a "  Manual official: curl -fsSL ${official} | bash"
+  msg -a "  Manual Termux:   curl -fsSL ${termux_native} | bash"
+  msg -a "  Or: bash scripts/ensure_grok.sh"
+  return 1
 }
 
 install_aider() {
@@ -89,32 +177,4 @@ WRAP
   msg -ts "Helper: aider-grok (uses XAI_API_KEY)"
   msg -a "  ${P}source ~/venv-aider/bin/activate && aider${S}"
   msg -a "  or: ${P}aider-grok${S}"
-}
-
-install_v9_models() {
-  msg -t "Installing Grok V9 / 4.5 model pickers"
-
-  local script=""
-  if [[ -n "${SCRIPT_DIR:-}" && -f "${SCRIPT_DIR}/scripts/install_v9_grok_models.sh" ]]; then
-    script="${SCRIPT_DIR}/scripts/install_v9_grok_models.sh"
-  elif [[ -f "${GROKHUNTER_HOME:-}/scripts/install_v9_grok_models.sh" ]]; then
-    script="${GROKHUNTER_HOME}/scripts/install_v9_grok_models.sh"
-  elif [[ -f "${HOME}/GrokHunter/scripts/install_v9_grok_models.sh" ]]; then
-    script="${HOME}/GrokHunter/scripts/install_v9_grok_models.sh"
-  fi
-
-  if [[ -z "$script" || ! -f "$script" ]]; then
-    msg -tw "install_v9_grok_models.sh not found — clone GrokHunter or run scripts from the repo"
-    msg -a "  git clone https://github.com/FineComputer14451/GrokHunter.git"
-    msg -a "  bash GrokHunter/scripts/install_v9_grok_models.sh"
-    return 1
-  fi
-
-  if bash "$script"; then
-    msg -ts "V9 model pickers installed into ~/.grok/config.toml"
-    msg -a "  Switch: /model chat-expert · /model multi · /model auto · /model grok-v9"
-  else
-    msg -te "V9 model installer failed"
-    return 1
-  fi
 }
