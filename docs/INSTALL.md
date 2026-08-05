@@ -48,12 +48,28 @@ bash install.sh --full --de xfce --with-grok --with-x11
 --de <desktop>          e17 | gnome | i3 | kde | lxde | mate | xfce
 --browser <browser>     chromium | firefox | both
 --no-de                 Skip desktop environment
---with-grok             Install native Grok Build CLI
+--with-grok             Install Grok Build CLI (shared ensure script)
 --no-grok               Skip Grok Build
 --with-x11              Install Termux:X11 + nh-x11
 --no-x11                Skip Termux:X11
+--with-aider            Install Aider (venv + xAI helper)
+--no-aider              Skip Aider
 -h, --help              Show help
 ```
+
+## Environment overrides
+
+| Variable | Purpose |
+|----------|---------|
+| `GROKHUNTER_REFRESH=1` | Bypass module + engine cache |
+| `GROKHUNTER_DISTRO_ENGINE_URL` | Pin/fork of `termux-distro.sh` |
+| `GROKHUNTER_GROK_INSTALLER` | `auto` \| `official` \| `termux-native` |
+| `GROKHUNTER_FORCE_GROK=1` | Reinstall Grok even if present |
+| `NH_X11_SESSION` | Desktop start command for `nh-x11` (e.g. `startlxde`) |
+
+## Chromium under proot
+
+If you install Chromium, the desktop entry is patched with **`--no-sandbox`**. User namespaces are unavailable in proot, so Chromium will not start without it. Treat this as a **security tradeoff**: fine for casual browsing in a lab; do not use for banking or high-sensitivity sessions. Prefer Firefox ESR when possible.
 
 ## After install
 
