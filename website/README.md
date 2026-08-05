@@ -5,18 +5,29 @@ Static product landing page for [GrokHunter](https://github.com/FineComputer1445
 ## Open locally
 
 ```bash
-# any static server, e.g.
 python3 -m http.server 8080 -d website
 # then open http://localhost:8080
 ```
 
 Or open `index.html` directly in a browser.
 
-## GitHub Pages
+## Deploy with GitHub Actions (recommended)
 
-1. Repo **Settings → Pages**
-2. Source: **Deploy from a branch**
-3. Branch: `main` / folder: `/website`  
-   (or set Pages root to `/` and copy these files to `docs/` if you prefer)
+Workflow: [`.github/workflows/deploy-website.yml`](../.github/workflows/deploy-website.yml)
 
-Brand tokens (carbon ink + phosphor green + ice CTAs) live in `styles.css`.
+1. **Settings → Pages**
+2. **Build and deployment → Source:** GitHub Actions  
+   (not “Deploy from a branch”)
+3. Push to `main` (changes under `website/`) **or** run the workflow manually:  
+   **Actions → Deploy website → Run workflow**
+4. Site URL (after first success):  
+   `https://finecomputer14451.github.io/GrokHunter/`
+
+The workflow copies `website/` into a Pages artifact (no Node/npm build). Brand tokens live in `styles.css`.
+
+### Manual / branch deploy (optional)
+
+If you prefer branch deploy instead of Actions:
+
+1. Settings → Pages → Source: **Deploy from a branch**
+2. Branch: `main` · folder: `/website`
