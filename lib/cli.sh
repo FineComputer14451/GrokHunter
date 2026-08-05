@@ -14,7 +14,7 @@ SKIP_X11=0
 
 show_help() {
   cat <<EOF
-${PROGRAM_NAME:-install.sh} — GrokHunter (NetHunter + Grok Build + Termux:X11)
+${PROGRAM_NAME:-install.sh} — Grok Build Powered Kali NetHunter Rootless Installer for Termux
 
 Usage: ${PROGRAM_NAME:-install.sh} [OPTIONS]
 
@@ -22,23 +22,33 @@ Options:
   -f, --full              Full installation (includes desktop environment)
   -m, --mini              Mini installation (essential packages only)
   -n, --nano              Nano installation (minimal footprint)
-  --de <desktop>          Desktop (e17|gnome|i3|kde|lxde|mate|xfce)  [default: xfce]
+  --de <desktop>          Desktop environment (e17|gnome|i3|kde|lxde|mate|xfce)
+                          Default: Xfce (recommended for Android)
   --browser <browser>     Browser: chromium | firefox | both
-  --no-de                 Skip desktop environment
-  --with-grok             Install native Grok Build CLI
-  --no-grok               Skip Grok Build
-  --with-x11              Install & configure Termux:X11 + nh-x11 helper
+  --no-de                 Skip desktop environment installation completely
+  --with-grok             Also install native Grok Build CLI (Termux aarch64)
+  --no-grok               Skip Grok Build installation
+  --with-x11              Install & configure Termux:X11 (low-latency desktop)
   --no-x11                Skip Termux:X11 setup
-  -h, --help              Show this help
+  -h, --help              Show this help and exit
 
 Examples:
-  # Recommended full stack
-  bash install.sh --full --de xfce --browser chromium --with-grok --with-x11
+  # Fully automated full install + XFCE + Chromium + Grok Build + Termux:X11
+  ${PROGRAM_NAME:-install.sh} --full --de xfce --browser chromium --with-grok --with-x11
 
-  # Minimal + Grok only
-  bash install.sh -n --with-grok
+  # Quick mini install (no prompts)
+  ${PROGRAM_NAME:-install.sh} -m
 
-Repo: https://github.com/FineComputer14451/GrokHunter
+  # Nano + no desktop + Grok Build + X11
+  ${PROGRAM_NAME:-install.sh} --nano --no-de --with-grok --with-x11
+
+Non-interactive mode activates automatically when any option is provided.
+All prompts are skipped where possible; invalid values fall back to safe defaults.
+
+Grok Build docs: https://x.ai/cli
+Termux:X11:      https://github.com/termux/termux-x11
+NetHunter issues: https://github.com/jorexdeveloper/termux-nethunter/issues
+Repo:            https://github.com/FineComputer14451/GrokHunter
 EOF
   exit 0
 }
