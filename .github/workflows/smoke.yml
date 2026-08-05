@@ -1,0 +1,67 @@
+name: Smoke
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  bash-syntax:
+    name: bash -n (install / lib / scripts / bin)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Syntax-check shell scripts
+        run: |
+          set -euo pipefail
+          mapfile -t files < <(
+            find . -type f \(
+              -name '*.sh' -o -path './bin/*' -o -path './scripts/*'
+            \) \
+              ! -path './.git/*' \
+              ! -name '*.md' \
+              | sort -u
+          )
+          # Always include known entrypoints even if find misses
+          extra=(
+            install.sh
+            lib/cli.sh
+            lib/actions.sh
+            lib/grok.sh
+            lib/x11.sh
+            scripts/install_v9_grok_models.sh
+            bin/grokhunter
+            bin/grokhunter-doctor
+          )
+          declare -A seen=()
+          for f in "${files[@]}" "${extra[@]}"; do
+            [[ -f "$f" ]] || continue
+            [[ -n "${seen[$f]:-}" ]] && continue
+            seen[$f]=1
+            # Skip non-shell (e.g. accidental binary)
+            if head -1 "$f" | grep -qE '^#!.*(bash|sh)'; then
+              echo "==> bash -n $f"
+              bash -n "$f"
+            elif [[ "$f" == *.sh ]]; then
+              echo "==> bash -n $f (no shebang)"
+              bash -n "$f"
+            else
+              echo "-- skip $f (not shell)"
+            fi
+          done
+          echo "Smoke syntax: OK (${#seen[@]} files)"
+
+      - name: Reject PLACEHOLDER commits
+        run: |
+          set -euo pipefail
+          if grep -R --line-number -E '^PLACEHOLDER$|^WILL_REPLACE$' \
+              --include='*.sh' --include='install.sh' \
+              lib scripts bin install.sh 2>/dev/null; then
+            echo "ERROR: PLACEHOLDER/WILL_REPLACE content found" >&2
+            exit 1
+          fi
+          echo "No placeholder markers"
