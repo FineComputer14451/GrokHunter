@@ -1,6 +1,5 @@
-# GrokHunter — NetHunter-optimized Grok Build snippet
-# Merged carefully by install.sh (does not wipe custom [model.*] blocks).
-# Full reference: https://x.ai / grok --help
+# GrokHunter Rootless — pair-programming optimized Grok Build profile
+# Merged carefully by install (does not wipe custom [model.*] blocks).
 
 [hints]
 worktree_tip_dismissed = true
@@ -21,7 +20,7 @@ show_tips = true
 channel = "alpha"
 
 [ui]
-# NetHunter / small screens: compact + fullscreen TUI
+# Mobile + coding: compact fullscreen, fast approval, pair-friendly
 screen_mode = "fullscreen"
 max_thoughts_width = 100
 fork_secondary_model = "grok-build"
@@ -35,5 +34,9 @@ combine_queued_prompts = true
 auto_cadence_enabled = true
 
 [models]
+# Prefer strong reasoning for code quality on device
 default = "grok-4.5"
 default_reasoning_effort = "high"
+
+# Pair-programming defaults (when supported by the client)
+# Keep edits small, explain intent, prefer reversible changes
