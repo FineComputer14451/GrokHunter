@@ -8,6 +8,8 @@ Write code, build projects, run tools, and use Grok as your on-device agent — 
 
 > Not affiliated with xAI or Offensive Security.
 
+**Product site:** open [`website/index.html`](website/index.html) or browse the [`website/`](website/) folder.
+
 ---
 
 ## Quick Install (Rootless)
@@ -73,6 +75,7 @@ bin/
 config/                 Grok Build profile + shell integration
 skills/                 Agent skills for coding workflows
 docs/                   Architecture & install notes
+website/                Product landing page (static)
 ```
 
 ---
@@ -142,6 +145,7 @@ grokhunter -p "…"           # Headless one-shot
 - [Troubleshooting](docs/TROUBLESHOOTING.md)
 - [Editors & pair tools](docs/EDITORS.md)
 - [Architecture](docs/ARCHITECTURE.md)
+- [Website](website/README.md)
 
 ## License
 
