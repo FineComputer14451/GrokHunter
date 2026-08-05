@@ -8,8 +8,6 @@ Write code, build projects, run tools, and use Grok as your on-device agent — 
 
 > Not affiliated with xAI or Offensive Security.
 
-**Product site:** open [`website/index.html`](website/index.html) or browse the [`website/`](website/) folder.
-
 ---
 
 ## Quick Install (Rootless)
@@ -75,7 +73,6 @@ bin/
 config/                 Grok Build profile + shell integration
 skills/                 Agent skills for coding workflows
 docs/                   Architecture & install notes
-website/                Product landing page (static)
 ```
 
 ---
@@ -120,11 +117,14 @@ Install the Termux:X11 APK from the [official nightly releases](https://github.c
 grokhunter                  # Interactive TUI
 grokhunter status           # Short status line
 grokhunter doctor           # Full health report
-grokhunter ensure           # Install/upgrade Grok Build binary
+grokhunter ensure           # Install/upgrade Grok (scripts/ensure_grok.sh)
 grokhunter install [args]   # Run / re-run the rootless installer
 grokhunter plan "…"         # Plan a coding task
 grokhunter -p "…"           # Headless one-shot
 ```
+
+Desktop: `nh-x11` auto-detects DE, or `NH_X11_SESSION=startlxde nh-x11`.  
+Refresh install cache: `GROKHUNTER_REFRESH=1 bash install.sh …`
 
 ---
 
@@ -145,7 +145,6 @@ grokhunter -p "…"           # Headless one-shot
 - [Troubleshooting](docs/TROUBLESHOOTING.md)
 - [Editors & pair tools](docs/EDITORS.md)
 - [Architecture](docs/ARCHITECTURE.md)
-- [Website](website/README.md)
 
 ## License
 
