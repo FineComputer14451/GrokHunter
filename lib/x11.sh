@@ -44,26 +44,32 @@ setup_termux_x11() {
   local helper="${TERMUX_FILES_DIR}/usr/bin/nh-x11"
   cat > "${helper}" << 'X11HELPER'
 #!/data/data/com.termux/files/usr/bin/bash
-# nh-x11 — Kali desktop via Termux:X11 (GrokHunter Rootless)
+# nh-x11 — performance-tuned Kali desktop via Termux:X11 (GrokHunter Rootless)
 
 pkill -f "termux.x11" 2>/dev/null || true
-sleep 0.5
+am force-stop com.termux.x11 2>/dev/null || true
+sleep 0.4
 
 pulseaudio --start \
   --load="module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" \
   --exit-idle-time=-1 2>/dev/null || true
 
 export XDG_RUNTIME_DIR="${TMPDIR:-/data/data/com.termux/files/usr/tmp}"
-termux-x11 :0 >/dev/null 2>&1 &
+mkdir -p "${XDG_RUNTIME_DIR}"
+
+X11_EXTRA=()
+[[ "${NH_X11_LEGACY:-0}" == "1" ]] && X11_EXTRA+=(-legacy-drawing)
+[[ -n "${NH_X11_DPI:-}" ]] && X11_EXTRA+=(-dpi "${NH_X11_DPI}")
+
+termux-x11 :0 "${X11_EXTRA[@]}" >/dev/null 2>&1 &
 sleep 2
 
 am start --user 0 -n com.termux.x11/com.termux.x11.MainActivity >/dev/null 2>&1 || true
-sleep 1
+sleep 0.8
 
-echo "[nh-x11] Termux:X11 on :0 — starting desktop inside NetHunter..."
+echo "[nh-x11] Termux:X11 on :0 — starting XFCE (compositor off)..."
 
-# Shared /tmp (launcher patched) + coding-friendly env
-nethunter -r 'export DISPLAY=:0 PULSE_SERVER=127.0.0.1 XDG_RUNTIME_DIR=/tmp LANG=${LANG:-en_US.UTF-8} && su - kali -c "startxfce4"'
+nethunter -r 'export DISPLAY=:0 PULSE_SERVER=127.0.0.1 XDG_RUNTIME_DIR=/tmp LANG=${LANG:-en_US.UTF-8}; xfconf-query -c xfwm4 -p /general/use_compositing -s false 2>/dev/null || true; su - kali -c "startxfce4"'
 X11HELPER
 
   chmod 755 "${helper}"
@@ -72,12 +78,12 @@ X11HELPER
 
   echo
   msg -a "  ${T}Usage:${S}"
-  msg -a "    1. Install Termux:X11 APK (GitHub nightlies)"
+  msg -a "    1. Install Termux:X11 APK (prefer sharedUid if Termux is from GitHub)"
   msg -a "    2. Run:  ${P}nh-x11${S}"
-  msg -a "  ${T}Tips:${S} keep rootfs on internal storage — see docs/PROOT.md"
+  msg -a "    Black screen?  ${P}NH_X11_LEGACY=1 nh-x11${S}"
+  msg -a "  ${T}Tips:${S} docs/X11-PERFORMANCE.md  docs/PROOT.md"
 }
 
-# Idempotent /tmp bind check (shared-tmp equivalent)
 optimize_proot_binds() {
   msg -t "Optimizing proot binds on nethunter launcher"
   local launcher="${TERMUX_FILES_DIR}/usr/bin/nethunter"
