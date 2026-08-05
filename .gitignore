@@ -1,0 +1,6 @@
+*.bak
+*.log
+.DS_Store
+secrets.env
+*.swp
+__pycache__/
