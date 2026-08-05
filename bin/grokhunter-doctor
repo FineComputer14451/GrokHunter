@@ -2,7 +2,17 @@
 # GrokHunter Rootless — health report (coding lab)
 set -euo pipefail
 
-export PATH="${HOME}/.grok/bin:${HOME}/.local/bin:${PATH}"
+# Resolve overlay (same rules as bin/grokhunter)
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ -f "${HERE}/../install.sh" ]]; then
+  _GH_ROOT="$(cd "${HERE}/.." && pwd)"
+elif [[ -d "${HOME}/GrokHunter" ]]; then
+  _GH_ROOT="${HOME}/GrokHunter"
+else
+  _GH_ROOT="${HERE}"
+fi
+export GROKHUNTER_HOME="${GROKHUNTER_HOME:-${_GH_ROOT}}"
+export PATH="${HOME}/.grok/bin:${HOME}/.local/bin:${GROKHUNTER_HOME}/bin:${PATH}"
 
 RED=$'\033[0;31m'
 GREEN=$'\033[0;32m'
@@ -15,106 +25,264 @@ warn() { printf "  ${YELLOW}!${NC} %s\n" "$*"; }
 bad()  { printf "  ${RED}✗${NC} %s\n" "$*"; }
 hdr()  { printf "\n${CYAN}%s${NC}\n" "$*"; }
 
+# Resolve a command on PATH or under GROKHUNTER_HOME/bin
+resolve_bin() {
+  local name="$1"
+  if command -v "$name" >/dev/null 2>&1; then
+    command -v "$name"
+    return 0
+  fi
+  if [[ -x "${GROKHUNTER_HOME}/bin/${name}" ]]; then
+    printf '%s\n' "${GROKHUNTER_HOME}/bin/${name}"
+    return 0
+  fi
+  return 1
+}
+
 FAIL=0
 WARN=0
 
 hdr "GrokHunter Doctor (Rootless · coding lab)"
 printf "  Host: %s | Arch: %s | Kernel: %s\n" \
   "$(hostname 2>/dev/null || echo '?')" "$(uname -m)" "$(uname -r)"
+printf "  GROKHUNTER_HOME=%s\n" "${GROKHUNTER_HOME}"
 
+# ---------- Environment ----------
 hdr "Environment"
+
 ROOTLESS="unknown"
 if [[ -n "${PREFIX:-}" && "$PREFIX" == *"com.termux"* ]]; then
-  ok "Termux PREFIX detected"; ROOTLESS="termux-host"
+  ok "Termux PREFIX detected"
+  ROOTLESS="termux-host"
 elif [[ -d /data/data/com.termux ]]; then
-  ok "Termux host paths present"; ROOTLESS="termux-host"
+  ok "Termux host paths present"
+  ROOTLESS="termux-host"
 fi
+
 if [[ -r /etc/os-release ]]; then
   # shellcheck disable=SC1091
   . /etc/os-release
   if [[ "${ID:-}" == "kali" ]]; then
     ok "Kali ${VERSION:-?} (${VERSION_CODENAME:-rolling})"
     if [[ "$ROOTLESS" == "termux-host" ]] || [[ -d /data/data/com.termux ]]; then
-      ok "Rootless NetHunter-style layout (Kali + Termux)"; ROOTLESS="rootless-nethunter"
+      ok "Rootless NetHunter-style layout (Kali + Termux)"
+      ROOTLESS="rootless-nethunter"
     fi
   else
-    warn "Not Kali (ID=${ID:-unknown}) — lab still usable"; WARN=1
+    warn "Not Kali (ID=${ID:-unknown}) — lab still usable"
+    WARN=1
   fi
 else
-  bad "No /etc/os-release"; FAIL=1
+  bad "No /etc/os-release"
+  FAIL=1
 fi
-if command -v proot >/dev/null 2>&1 || [[ -n "${PROOT_TMPDIR:-}" ]]; then
+
+if command -v proot >/dev/null 2>&1 || [[ -n "${PROOT_TMPDIR:-}" ]] || grep -q proot /proc/1/cmdline 2>/dev/null; then
   ok "proot signals present (rootless)"
 fi
+
 if command -v nethunter >/dev/null 2>&1 || command -v nh >/dev/null 2>&1; then
   ok "nethunter/nh launcher on PATH"
 else
-  warn "nethunter launcher not on PATH"; WARN=1
+  warn "nethunter launcher not on PATH (run install.sh if missing)"
+  WARN=1
 fi
 
+# ---------- Grok Build ----------
 hdr "Grok Build (pair programmer)"
 MIN_VER="${GROKHUNTER_MIN_GROK:-0.2.93}"
 if command -v grok >/dev/null 2>&1; then
   GVER_LINE=$(grok --version 2>/dev/null | head -1 || true)
   ok "Found: ${GVER_LINE:-grok} @ $(command -v grok)"
+  GVER=$(echo "$GVER_LINE" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1 || true)
+  if [[ -n "$GVER" ]]; then
+    if printf '%s\n%s\n' "$MIN_VER" "$GVER" | sort -V | head -1 | grep -qx "$MIN_VER"; then
+      ok "Version ≥ ${MIN_VER}"
+    else
+      bad "Version ${GVER} < min ${MIN_VER} — run: grokhunter ensure"
+      FAIL=1
+    fi
+  fi
 else
-  bad "grok not on PATH — run: grokhunter ensure or install.sh --with-grok"; FAIL=1
+  bad "grok not on PATH — run: grokhunter ensure  or  install.sh --with-grok"
+  FAIL=1
 fi
 
+# ---------- Launchers ----------
 hdr "GrokHunter CLI"
 for b in grokhunter grokhunter-doctor; do
-  if command -v "$b" >/dev/null 2>&1; then ok "$b → $(command -v "$b")"
-  else bad "$b missing from PATH"; FAIL=1; fi
+  if path="$(resolve_bin "$b")"; then
+    ok "$b → ${path}"
+  else
+    bad "$b missing from PATH and ${GROKHUNTER_HOME}/bin"
+    FAIL=1
+  fi
 done
+if path="$(resolve_bin grok-nethunter)"; then
+  ok "grok-nethunter → ${path}"
+else
+  warn "grok-nethunter not found (optional TUI launcher)"
+  WARN=1
+fi
+if [[ -f "${GROKHUNTER_HOME}/scripts/ensure_grok.sh" ]]; then
+  ok "shared ensure_grok.sh present"
+else
+  warn "scripts/ensure_grok.sh missing (ensure will use official URL only)"
+  WARN=1
+fi
 
+# ---------- Desktop / X11 ----------
 hdr "Desktop (Termux:X11)"
-if command -v nh-x11 >/dev/null 2>&1; then ok "nh-x11 helper present"
-else warn "nh-x11 missing — optional: install.sh --with-x11"; WARN=1; fi
+if command -v nh-x11 >/dev/null 2>&1; then
+  ok "nh-x11 helper present"
+else
+  warn "nh-x11 missing — optional: install.sh --with-x11"
+  WARN=1
+fi
+if [[ -r "${HOME}/.config/grokhunter/x11-session" ]]; then
+  ok "X11 session preference: $(tr -d '[:space:]' < "${HOME}/.config/grokhunter/x11-session")"
+else
+  warn "No ~/.config/grokhunter/x11-session (nh-x11 will auto-detect DE)"
+fi
+if command -v termux-x11 >/dev/null 2>&1; then
+  ok "termux-x11 binary available"
+elif command -v Xvnc >/dev/null 2>&1 || command -v vncserver >/dev/null 2>&1; then
+  ok "VNC server available (fallback desktop)"
+else
+  warn "No termux-x11 / VNC detected (shell-only is fine)"
+  WARN=1
+fi
 
+# ---------- Auth ----------
 hdr "Authentication"
-if [[ -n "${XAI_API_KEY:-}" ]]; then ok "XAI_API_KEY set in environment"
+if [[ -n "${XAI_API_KEY:-}" ]]; then
+  ok "XAI_API_KEY set in environment"
 elif [[ -r "${HOME}/.grok/secrets.env" ]] && grep -q 'XAI_API_KEY=' "${HOME}/.grok/secrets.env" 2>/dev/null; then
   ok "XAI_API_KEY in ~/.grok/secrets.env"
 else
-  warn "No API key — export XAI_API_KEY or run grok once to login"; WARN=1
+  if [[ -r "${HOME}/.grok/auth.json" ]]; then
+    ok "auth.json present (browser login may work)"
+  else
+    warn "No API key — export XAI_API_KEY or run grok once to login"
+    WARN=1
+  fi
+fi
+if [[ -r "${HOME}/.grok/secrets.env" ]]; then
+  MODE=$(stat -c '%a' "${HOME}/.grok/secrets.env" 2>/dev/null || echo '?')
+  if [[ "$MODE" == "600" || "$MODE" == "400" ]]; then
+    ok "secrets.env mode ${MODE}"
+  else
+    warn "secrets.env mode ${MODE} (recommend 600)"
+    WARN=1
+  fi
 fi
 
-hdr "V9 model pickers (optional)"
-CFG="${HOME}/.grok/config.toml"
-V9_MARK="# --- Grok Imagine Cinematic Studio: v9-4p5 specialist models"
-if [[ -f "$CFG" ]] && grep -qF "$V9_MARK" "$CFG" 2>/dev/null; then
-  ok "V9 specialist marker present in config.toml"
-  ok "Install/refresh: grokhunter models install  (or --force)"
-elif [[ -f "$CFG" ]]; then
-  warn "No V9 model pickers — run: grokhunter models install"
-  WARN=1
-else
-  warn "No config.toml — install V9 pickers after first grok launch"
-  WARN=1
-fi
-
+# ---------- Coding toolchain ----------
 hdr "Coding toolchain"
 for cmd in git python3; do
-  if command -v "$cmd" >/dev/null 2>&1; then ok "$cmd → $(command -v "$cmd")"
-  else warn "$cmd missing"; WARN=1; fi
+  if command -v "$cmd" >/dev/null 2>&1; then
+    ok "$cmd → $(command -v "$cmd")"
+  else
+    warn "$cmd missing — sudo apt install -y $cmd"
+    WARN=1
+  fi
 done
+if command -v gcc >/dev/null 2>&1 || command -v cc >/dev/null 2>&1; then
+  ok "C compiler present"
+else
+  warn "No gcc/cc — optional: sudo apt install -y build-essential"
+  WARN=1
+fi
+if command -v node >/dev/null 2>&1 || command -v nodejs >/dev/null 2>&1; then
+  ok "Node.js present"
+else
+  warn "Node.js optional — sudo apt install -y nodejs npm"
+fi
 
+# ---------- Optional Aider ----------
 hdr "Optional pair tools"
-if command -v aider >/dev/null 2>&1 || [[ -x "${HOME}/venv-aider/bin/aider" ]]; then
-  ok "aider available"
+if command -v aider >/dev/null 2>&1; then
+  ok "aider on PATH"
+elif [[ -x "${HOME}/venv-aider/bin/aider" ]]; then
+  ok "aider in ~/venv-aider (activate before use)"
 else
   warn "Aider not installed — see docs/EDITORS.md"
 fi
 
-hdr "Config"
-if [[ -f "${HOME}/.grok/config.toml" ]]; then ok "~/.grok/config.toml exists"
-else warn "No config.toml yet"; WARN=1; fi
+# ---------- Skills ----------
+hdr "Skills"
+for s in pair-programming grokhunter aider-grok; do
+  if [[ -f "${HOME}/.grok/skills/${s}/SKILL.md" ]]; then
+    ok "skill: ${s}"
+  elif [[ -f "${GROKHUNTER_HOME}/skills/${s}/SKILL.md" ]]; then
+    ok "skill (repo): ${s}"
+  else
+    warn "skill missing: ${s}"
+    WARN=1
+  fi
+done
+# legacy
+if [[ -f "${HOME}/.grok/skills/nethunter-recon/SKILL.md" ]] \
+   || [[ -f "${GROKHUNTER_HOME}/skills/nethunter-recon/SKILL.md" ]]; then
+  ok "skill: nethunter-recon (legacy; authorized use only)"
+fi
 
+# ---------- Config ----------
+hdr "Config"
+if [[ -f "${HOME}/.grok/config.toml" ]]; then
+  ok "~/.grok/config.toml exists"
+  if grep -qE 'compact_mode\s*=\s*true' "${HOME}/.grok/config.toml" 2>/dev/null; then
+    ok "compact_mode=true (mobile-friendly)"
+  else
+    warn "compact_mode not true (optional UX)"
+  fi
+else
+  warn "No config.toml yet — first grok launch will create one"
+  WARN=1
+fi
+
+# ---------- Cache / modules ----------
+hdr "Installer cache"
+if [[ -d "${HOME}/.cache/grokhunter" ]]; then
+  ok "~/.cache/grokhunter present"
+  if [[ -f "${HOME}/.cache/grokhunter/MODULES_VERSION" ]]; then
+    ok "MODULES_VERSION=$(tr -d '[:space:]' < "${HOME}/.cache/grokhunter/MODULES_VERSION")"
+  fi
+  if [[ -f "${HOME}/.cache/grokhunter/termux-distro.sh" ]]; then
+    ok "termux-distro engine cached (not in CWD)"
+  fi
+else
+  warn "No module cache yet (normal for clone-only installs)"
+fi
+
+# ---------- Network ----------
+hdr "Network"
+if [[ -r /etc/resolv.conf ]] && grep -qE 'nameserver\s+' /etc/resolv.conf 2>/dev/null; then
+  ok "/etc/resolv.conf has nameservers"
+else
+  warn "DNS may be incomplete (check resolv.conf)"
+  WARN=1
+fi
+if curl -fsS --max-time 5 -o /dev/null -w '' https://x.ai 2>/dev/null \
+  || curl -fsS --max-time 5 -o /dev/null https://api.x.ai 2>/dev/null; then
+  ok "HTTPS to x.ai reachable"
+else
+  warn "Could not verify reachability to x.ai"
+  WARN=1
+fi
+
+# ---------- Summary ----------
 printf "\n"
 if [[ "$FAIL" -eq 0 && "$WARN" -eq 0 ]]; then
-  printf "${GREEN}Doctor: PASS${NC} — coding lab ready\n"; exit 0
+  printf "${GREEN}Doctor: PASS${NC} — coding lab ready\n"
+  printf "  Start pair session:  ${CYAN}grok${NC}\n"
+  printf "  Desktop (if set up): ${CYAN}nh-x11${NC}\n"
+  exit 0
 elif [[ "$FAIL" -eq 0 ]]; then
-  printf "${YELLOW}Doctor: PASS with warnings${NC}\n"; exit 0
+  printf "${YELLOW}Doctor: PASS with warnings${NC} — core OK; optional items above\n"
+  printf "  Start pair session:  ${CYAN}grok${NC}\n"
+  exit 0
 else
-  printf "${RED}Doctor: ISSUES FOUND${NC}\n"; exit 1
+  printf "${RED}Doctor: ISSUES FOUND${NC} — fix ✗ items, then: grokhunter doctor\n"
+  exit 1
 fi
