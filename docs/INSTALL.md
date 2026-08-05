@@ -1,63 +1,107 @@
-# GrokHunter install guide
+# Install — GrokHunter Rootless
 
-## On this NetHunter chroot
+AI coding & building lab for **unrooted Android** (Termux + proot + Grok Build).
+
+## Requirements
+
+- Termux from **F-Droid or GitHub** (not Play Store)
+- Android 8+ (aarch64 recommended)
+- **No root required**
+- Stable internet
+- SuperGrok / X Premium+ **or** `XAI_API_KEY` for Grok Build
+
+## One-liner
 
 ```bash
-cd ~/GrokHunter
-bash install.sh
-source ~/.zshrc   # or open a new session
-grokhunter doctor
+bash <(curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/install.sh)
 ```
 
-## Auth
+### Recommended full stack
 
 ```bash
-# API key (best for mobile / no browser)
-printf 'export XAI_API_KEY=%q\n' "xai-YOUR_KEY" > ~/.grok/secrets.env
-chmod 600 ~/.grok/secrets.env
+bash <(curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/install.sh) \
+  --full --de xfce --browser chromium --with-grok --with-x11
+```
 
-# or interactive
+Installs:
+
+- Latest Kali NetHunter rootfs (rootless)
+- XFCE desktop
+- Chromium
+- Grok Build CLI
+- Termux:X11 helper (`nh-x11`)
+
+## Clone install
+
+```bash
+git clone https://github.com/FineComputer14451/GrokHunter.git
+cd GrokHunter
+bash install.sh --full --de xfce --with-grok --with-x11
+```
+
+## CLI flags
+
+```
+-f, --full              Full installation (desktop-oriented)
+-m, --mini              Mini (essential packages)
+-n, --nano              Nano (minimal)
+--de <desktop>          e17 | gnome | i3 | kde | lxde | mate | xfce
+--browser <browser>     chromium | firefox | both
+--no-de                 Skip desktop environment
+--with-grok             Install native Grok Build CLI
+--no-grok               Skip Grok Build
+--with-x11              Install Termux:X11 + nh-x11
+--no-x11                Skip Termux:X11
+-h, --help              Show help
+```
+
+## After install
+
+```bash
+# Enter Kali (rootless)
+nethunter
+
+# Pair programming
 grok
-```
+# or headless
+grokhunter -p "your task"
 
-## Verify
+# Desktop (install Termux:X11 APK first)
+nh-x11
 
-```bash
-grokhunter status
+# Health check
 grokhunter doctor
-grok --version    # expect ≥ 0.2.93
 ```
 
-## Update overlay
+### Termux:X11 APK
+
+Download from: https://github.com/termux/termux-x11/releases
+
+### Auth
 
 ```bash
-cd ~/GrokHunter
-git pull   # if tracked
-bash install.sh
+# API key (recommended on mobile)
+printf 'export XAI_API_KEY=%q\n' "xai-..." > ~/.grok/secrets.env
+chmod 600 ~/.grok/secrets.env
 ```
 
-## Update Grok binary only
+Or run `grok` once and complete browser login if available.
 
-```bash
-grokhunter ensure
-# or
-grokhunter ensure --force
-```
+## Optional: Aider
+
+See [EDITORS.md](EDITORS.md) for Aider + Grok setup.
 
 ## Uninstall
 
 ```bash
-bash ~/GrokHunter/uninstall.sh
-# destructive:
-# bash ~/GrokHunter/uninstall.sh --purge-grok
+bash uninstall.sh
+# or destructive Grok purge:
+bash uninstall.sh --purge-grok
 ```
 
-## Troubleshooting
+## Next
 
-| Symptom | Fix |
-|---------|-----|
-| `grokhunter: command not found` | `export PATH="$HOME/.local/bin:$HOME/.grok/bin:$PATH"` then re-open shell |
-| Auth errors | Check `secrets.env` mode 600 and key validity |
-| DNS failures | NetHunter should have `/etc/resolv.conf`; if bare Termux, use GrokTerm instead |
-| Old grok | `grokhunter ensure --force` |
-| TUI broken colors | Use Termux / NetHunter terminal with truecolor; `export COLORTERM=truecolor` |
+- [FAQ](FAQ.md)
+- [Troubleshooting](TROUBLESHOOTING.md)
+- [Architecture](ARCHITECTURE.md)
+- [Editors & pair tools](EDITORS.md)
