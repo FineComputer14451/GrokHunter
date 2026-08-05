@@ -30,7 +30,7 @@ Inside the Kali session (or add to startup):
 xfconf-query -c xfwm4 -p /general/use_compositing -s false 2>/dev/null || true
 ```
 
-`nh-x11` (updated) tries this automatically.
+`nh-x11` tries this automatically when the session is `startxfce4`.
 
 ## 3. Preferential launch flags
 
