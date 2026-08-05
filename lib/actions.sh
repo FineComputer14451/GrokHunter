@@ -115,6 +115,18 @@ pre_complete_actions() {
       fi
     fi
   fi
+
+  if [[ ${SKIP_COMPLETIONS:-0} -eq 0 ]]; then
+    if [[ ${NON_INTERACTIVE} -eq 1 ]]; then
+      if [[ ${INSTALL_COMPLETIONS:-0} -eq 1 || ${INSTALL_GROK:-0} -eq 1 || ${INSTALL_V9:-0} -eq 1 || ${INSTALL_AIDER:-0} -eq 1 ]]; then
+        install_shell_completions || true
+      fi
+    else
+      if ask -y -- -t "Install zsh/bash completions for grokhunter (recommended)?"; then
+        install_shell_completions || true
+      fi
+    fi
+  fi
 }
 
 post_complete_actions() {
@@ -125,14 +137,11 @@ post_complete_actions() {
   msg -a "  grok / grokhunter  # pair programming"
   msg -a "  grokhunter models  # V9 / 4.5 pickers"
   msg -a "  grokhunter doctor  # health report"
+  msg -a "  source ~/.grok/profile.sh  # zsh/bash completions"
 }
 
 set_up_de() {
   local available_desktops=(E17 GNOME i3 KDE LXDE MATE Xfce)
-  local -A xstartups=(
-    [e17]=enlightenment_start [gnome]=gnome-session [i3]=i3
-    [kde]=startplasma-x11 [lxde]=startlxde [mate]=mate-session [xfce]=startxfce4
-  )
   local selected_desktop
   if [[ ${NON_INTERACTIVE} -eq 1 && -n ${SELECTED_DE} ]]; then
     case "${SELECTED_DE,,}" in
