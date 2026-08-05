@@ -20,6 +20,16 @@ else
   VERSION="${GROKHUNTER_VERSION:-1.0.0}"
 fi
 
+_resolve_launcher() {
+  local launcher="${HOME}/.local/bin/grok-nethunter"
+  [[ -x "$launcher" ]] || launcher="${GROKHUNTER_HOME}/bin/grok-nethunter"
+  if [[ ! -x "$launcher" ]]; then
+    echo "grok-nethunter not found (set GROKHUNTER_HOME or install bin/)" >&2
+    exit 1
+  fi
+  printf '%s\n' "$launcher"
+}
+
 usage() {
   cat <<EOF
 GrokHunter v${VERSION} — Kali NetHunter powered by Grok Build
@@ -59,8 +69,12 @@ cmd_status() {
   fi
   local x11="no"
   command -v nh-x11 >/dev/null 2>&1 && x11="yes"
-  printf "GrokHunter %s | %s | auth=%s | x11=%s | home=%s\n" \
-    "$VERSION" "$gver" "$auth" "$x11" "$GROKHUNTER_HOME"
+  local v9="no"
+  if [[ -f "${HOME}/.grok/config.toml" ]] && grep -q "v9-4p5 specialist models" "${HOME}/.grok/config.toml" 2>/dev/null; then
+    v9="yes"
+  fi
+  printf "GrokHunter %s | %s | auth=%s | x11=%s | v9=%s | home=%s\n" \
+    "$VERSION" "$gver" "$auth" "$x11" "$v9" "$GROKHUNTER_HOME"
 }
 
 cmd_ensure() {
@@ -76,9 +90,9 @@ cmd_ensure() {
     fi
   fi
   echo "Ensuring Grok Build via official installer…"
-  curl -fsSL https://x.ai/cli/install.sh | bash
+  curl -fsSL --connect-timeout 20 --max-time 180 --retry 2 https://x.ai/cli/install.sh | bash
   export PATH="${HOME}/.grok/bin:${HOME}/.local/bin:${PATH}"
-  grok --version || true
+  command -v grok >/dev/null 2>&1 && grok --version || echo "grok still not on PATH — restart shell" >&2
 }
 
 cmd_install() {
@@ -122,8 +136,8 @@ cmd_plan() {
     echo "Usage: grokhunter plan <prompt>" >&2
     exit 2
   fi
-  local launcher="${HOME}/.local/bin/grok-nethunter"
-  [[ -x "$launcher" ]] || launcher="${GROKHUNTER_HOME}/bin/grok-nethunter"
+  local launcher
+  launcher="$(_resolve_launcher)"
   exec "$launcher" -p "Enter plan mode first. Task: ${prompt}"
 }
 
@@ -131,8 +145,8 @@ main() {
   local sub="${1:-}"
   case "$sub" in
     "")
-      local launcher="${HOME}/.local/bin/grok-nethunter"
-      [[ -x "$launcher" ]] || launcher="${GROKHUNTER_HOME}/bin/grok-nethunter"
+      local launcher
+      launcher="$(_resolve_launcher)"
       exec "$launcher" "$@"
       ;;
     help|-h|--help) usage ;;
@@ -141,6 +155,10 @@ main() {
     doctor)
       local doc="${HOME}/.local/bin/grokhunter-doctor"
       [[ -x "$doc" ]] || doc="${GROKHUNTER_HOME}/bin/grokhunter-doctor"
+      if [[ ! -x "$doc" ]]; then
+        echo "grokhunter-doctor not found" >&2
+        exit 1
+      fi
       exec "$doc"
       ;;
     ensure)
@@ -161,19 +179,19 @@ main() {
       ;;
     -p|--prompt)
       shift
-      local launcher="${HOME}/.local/bin/grok-nethunter"
-      [[ -x "$launcher" ]] || launcher="${GROKHUNTER_HOME}/bin/grok-nethunter"
+      local launcher
+      launcher="$(_resolve_launcher)"
       exec "$launcher" -p "$@"
       ;;
     --)
       shift
-      local launcher="${HOME}/.local/bin/grok-nethunter"
-      [[ -x "$launcher" ]] || launcher="${GROKHUNTER_HOME}/bin/grok-nethunter"
+      local launcher
+      launcher="$(_resolve_launcher)"
       exec "$launcher" "$@"
       ;;
     *)
-      local launcher="${HOME}/.local/bin/grok-nethunter"
-      [[ -x "$launcher" ]] || launcher="${GROKHUNTER_HOME}/bin/grok-nethunter"
+      local launcher
+      launcher="$(_resolve_launcher)"
       exec "$launcher" "$@"
       ;;
   esac
