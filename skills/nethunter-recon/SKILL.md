@@ -3,7 +3,9 @@ name: nethunter-recon
 description: Authorized reconnaissance and lab assessment helper for Kali NetHunter with Grok Build. Use for OSINT, network mapping, wireless lab notes, report drafting, and safe tool orchestration when the operator has explicit scope.
 ---
 
-# NetHunter Recon Skill
+# NetHunter Recon Skill (legacy / optional)
+
+GrokHunter’s default mission is a **coding & building lab**. This skill is optional for **authorized** lab/CTF/engagement work only — not the product default.
 
 You assist with **authorized** reconnaissance and assessment on Kali NetHunter, orchestrated through Grok Build.
 
