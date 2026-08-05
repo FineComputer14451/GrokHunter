@@ -3,7 +3,7 @@
 # These functions are called by the upstream termux-distro engine.
 
 pre_check_actions() {
-  P=${W}; S=${B}; T=${M}
+  P=${W-}; S=${B-}; T=${M-}
 }
 
 distro_banner() {
