@@ -1,0 +1,111 @@
+# GrokHunter / Cinematic Studio — V9 Model Layer v4.5 picker surface
+# All aliases route to base model grok-4.5 (cli-chat-proxy / SuperGrok).
+# Native product slugs may differ; these are picker IDs for /model …
+
+[model.grok-v9-4p5-chat-expert]
+name = "Grok V9 4.5 Chat Expert"
+model = "grok-4.5"
+temperature = 0.7
+description = "Chat-expert profile on grok-4.5"
+
+[model.grok-v9]
+name = "Grok V9"
+model = "grok-4.5"
+temperature = 0.7
+description = "V9 family alias → grok-4.5"
+
+[model.grok-v9-4p5]
+name = "Grok V9 4.5"
+model = "grok-4.5"
+temperature = 0.7
+description = "V9 family alias → grok-4.5"
+
+[model.v9]
+name = "V9 short"
+model = "grok-4.5"
+temperature = 0.7
+description = "V9 family alias → grok-4.5"
+
+[model.v9-4p5]
+name = "V9 4.5 short"
+model = "grok-4.5"
+temperature = 0.7
+description = "V9 family alias → grok-4.5"
+
+[model.chat-expert]
+name = "Chat Expert"
+model = "grok-4.5"
+temperature = 0.7
+description = "Chat-expert profile on grok-4.5"
+
+[model.v9-4p5-chat-expert]
+name = "V9 4.5 Chat Expert"
+model = "grok-4.5"
+temperature = 0.7
+description = "Chat-expert profile on grok-4.5"
+
+[model.4p5-expert]
+name = "4.5 Expert"
+model = "grok-4.5"
+temperature = 0.7
+description = "Chat-expert profile on grok-4.5"
+
+[model."grok-4.5-expert"]
+name = "Grok 4.5 Expert"
+model = "grok-4.5"
+temperature = 0.7
+description = "Chat-expert profile on grok-4.5"
+
+[model.grok-v9-4p5-multi]
+name = "Grok V9 4.5 Multi"
+model = "grok-4.5"
+temperature = 0.7
+description = "Multi/agent-oriented profile on grok-4.5"
+
+[model.multi]
+name = "Multi"
+model = "grok-4.5"
+temperature = 0.7
+description = "Multi/agent-oriented profile on grok-4.5"
+
+[model.v9-4p5-multi]
+name = "V9 4.5 Multi"
+model = "grok-4.5"
+temperature = 0.7
+description = "Multi/agent-oriented profile on grok-4.5"
+
+[model.4p5-multi]
+name = "4.5 Multi"
+model = "grok-4.5"
+temperature = 0.7
+description = "Multi/agent-oriented profile on grok-4.5"
+
+[model."grok-4.5-multi"]
+name = "Grok 4.5 Multi"
+model = "grok-4.5"
+temperature = 0.7
+description = "Multi/agent-oriented profile on grok-4.5"
+
+[model.grok-4-auto]
+name = "Grok 4 Auto"
+model = "grok-4.5"
+temperature = 0.7
+description = "Auto router profile on grok-4.5"
+
+[model.auto]
+name = "Auto"
+model = "grok-4.5"
+temperature = 0.7
+description = "Auto router profile on grok-4.5"
+
+[model.4-auto]
+name = "4 Auto"
+model = "grok-4.5"
+temperature = 0.7
+description = "Auto router profile on grok-4.5"
+
+[model.grok-auto]
+name = "Grok Auto"
+model = "grok-4.5"
+temperature = 0.7
+description = "Auto router profile on grok-4.5"
