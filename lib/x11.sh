@@ -2,11 +2,12 @@
 # GrokHunter — Termux:X11 low-latency desktop + proot bind optimizers
 
 GROKHUNTER_TMP_MARK="# grokhunter-shared-tmp"
+TERMUX_FILES_DIR="${TERMUX_FILES_DIR:-/data/data/com.termux/files}"
 
 _patch_launcher_tmp_bind() {
   local f="$1"
   local tmp_bind="-b /data/data/com.termux/files/usr/tmp:/tmp"
-  [[ -f ${f} ]] || return 0
+  [[ -f "${f}" ]] || return 0
 
   if grep -q "${GROKHUNTER_TMP_MARK}" "${f}" 2>/dev/null \
      || grep -q "/data/data/com.termux/files/usr/tmp:/tmp" "${f}" 2>/dev/null; then
@@ -60,6 +61,7 @@ setup_termux_x11() {
   cat > "${helper}" << 'X11HELPER'
 #!/data/data/com.termux/files/usr/bin/bash
 # nh-x11 — performance-tuned Kali desktop via Termux:X11 (GrokHunter Rootless)
+set -euo pipefail
 
 am force-stop com.termux.x11 2>/dev/null || true
 pkill -f '[t]ermux-x11' 2>/dev/null || true
@@ -75,6 +77,15 @@ mkdir -p "${XDG_RUNTIME_DIR}"
 X11_EXTRA=()
 [[ "${NH_X11_LEGACY:-0}" == "1" ]] && X11_EXTRA+=(-legacy-drawing)
 [[ -n "${NH_X11_DPI:-}" ]] && X11_EXTRA+=(-dpi "${NH_X11_DPI}")
+
+if ! command -v termux-x11 >/dev/null 2>&1; then
+  echo "[nh-x11] termux-x11 not found — pkg install termux-x11-nightly" >&2
+  exit 1
+fi
+if ! command -v nethunter >/dev/null 2>&1; then
+  echo "[nh-x11] nethunter launcher missing — re-run install.sh" >&2
+  exit 1
+fi
 
 termux-x11 :0 "${X11_EXTRA[@]}" >/dev/null 2>&1 &
 sleep 2
