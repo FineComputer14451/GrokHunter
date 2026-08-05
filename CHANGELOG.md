@@ -6,6 +6,8 @@ Code-review follow-ups for supply-chain hygiene, install reliability, and DE-awa
 
 ### Fixes
 
+- **Website deploy** — GitHub Actions workflow deploys `website/` to GitHub Pages
+
 - **termux-distro engine** — download to `~/.cache/grokhunter/termux-distro.sh` (never pollute CWD); basic HTML/empty validation; `GROKHUNTER_DISTRO_ENGINE_URL` override
 - **Grok install path unified** — `scripts/ensure_grok.sh` shared by `install --with-grok` and `grokhunter ensure` (`auto|official|termux-native`, primary + fallback)
 - **nh-x11 DE-aware** — uses `NH_X11_SESSION`, `~/.config/grokhunter/x11-session`, or auto-detect (not XFCE-only)

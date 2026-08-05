@@ -1,0 +1,55 @@
+# Deploy the static product site (website/) to GitHub Pages via Actions.
+# One-time: Settings → Pages → Source = "GitHub Actions"
+name: Deploy website
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "website/**"
+      - ".github/workflows/deploy-website.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare Pages artifact
+        run: |
+          set -euo pipefail
+          mkdir -p _site
+          # Static site root = website/ (no build step)
+          cp -a website/. _site/
+          # Avoid Jekyll processing on Pages
+          touch _site/.nojekyll
+          # Drop internal docs from public site
+          rm -f _site/README.md
+          ls -la _site
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

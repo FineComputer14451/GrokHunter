@@ -6,6 +6,13 @@ Turn Termux + proot Kali into a Linux development environment on your phone, wit
 
 > Not affiliated with xAI or Offensive Security.
 
+**Product site:** [`website/`](website/) · live (after Pages + Actions):
+[finecomputer14451.github.io/GrokHunter](https://finecomputer14451.github.io/GrokHunter/)
+
+Deploy: **Settings → Pages → Source = GitHub Actions**, then push to `main` or run
+**Actions → Deploy website**. Workflow: [`.github/workflows/deploy-website.yml`](.github/workflows/deploy-website.yml).
+
+
 ---
 
 ## Quick install
