@@ -18,6 +18,12 @@ cd GrokHunter
 bash install.sh --full --with-grok --with-x11
 ```
 
+Force cache refresh after an upgrade:
+
+```bash
+GROKHUNTER_REFRESH=1 bash install.sh --with-grok
+```
+
 ### Low storage
 
 Full + desktop needs several GB free. Use `--mini` or `--nano` if space is tight:
@@ -39,8 +45,12 @@ https://kali.download/nethunter-images/current/rootfs/
 ```bash
 export PATH="$HOME/.grok/bin:$HOME/.local/bin:$PATH"
 grokhunter ensure
+# force reinstall / switch installer mode:
+GROKHUNTER_FORCE_GROK=1 GROKHUNTER_GROK_INSTALLER=official grokhunter ensure --force
 # or
 bash install.sh --with-grok
+# shared script:
+bash ~/GrokHunter/scripts/ensure_grok.sh
 ```
 
 ### API / login failures
@@ -74,7 +84,18 @@ bash install.sh --with-x11
 1. Install the **Termux:X11** APK from official nightlies.  
 2. Open Termux:X11 once.  
 3. Run `nh-x11` from Termux.  
-4. Fallback: VNC inside NetHunter (`vncserver :1`).
+4. Wrong DE? Override: `NH_X11_SESSION=startlxde nh-x11` (or `i3`, `mate-session`, …).  
+5. Fallback: VNC inside NetHunter (`vncserver :1`).
+
+### Wrong desktop after install
+
+`nh-x11` reads `~/.config/grokhunter/x11-session` (written when you pick a DE). Reset:
+
+```bash
+echo startxfce4 > ~/.config/grokhunter/x11-session
+# or one-shot:
+NH_X11_SESSION=startxfce4 nh-x11
+```
 
 ### `/tmp` or display errors inside proot
 
