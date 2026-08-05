@@ -30,7 +30,8 @@ You are working inside a **rootless Kali NetHunter** environment enhanced with *
 - Use Kali packages when present (`git`, `python3`, `gcc`, `tmux`, …)
 - Prefer headless Grok for automation: `grokhunter -p "…"`
 - For larger work: plan first (`grokhunter plan "…"`)
-- Keep PATH: `$HOME/.grok/bin:$HOME/.local/bin:$PATH`
+- Keep PATH: `$HOME/.grok/bin:$HOME/.local/bin:$GROKHUNTER_HOME/bin:$PATH`
+- Reinstall Grok via shared script: `grokhunter ensure` → `scripts/ensure_grok.sh`
 
 ## Output style
 
