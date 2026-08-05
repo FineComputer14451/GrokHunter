@@ -135,6 +135,14 @@ grokhunter -p "…"           # Headless one-shot
 
 ---
 
+## Docs
+
+- [Install](docs/INSTALL.md)
+- [FAQ](docs/FAQ.md)
+- [Troubleshooting](docs/TROUBLESHOOTING.md)
+- [Editors & pair tools](docs/EDITORS.md)
+- [Architecture](docs/ARCHITECTURE.md)
+
 ## License
 
 GPL-3.0 (inherits from the original termux-nethunter / termux-distro work)  
