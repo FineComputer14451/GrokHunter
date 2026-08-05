@@ -1,5 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
-# GrokHunter install/config/complete action hooks
+# GrokHunter Rootless install/config/complete action hooks
 # These functions are called by the upstream termux-distro engine.
 
 pre_check_actions() {
@@ -30,7 +30,7 @@ distro_banner() {
   msg -a "${spaces}${S}                                            c  ."
   msg -a "${spaces}${S}                                            .'"
   msg -a "${spaces}${S}                                             ."
-  msg -a "${spaces}${T}GrokHunter • Grok Build • Termux:X11 • Dynamic rootfs${S}"
+  msg -a "${spaces}${T}GrokHunter Rootless • Grok Build • Termux:X11 • proot${S}"
 }
 
 post_check_actions() { return; }
@@ -145,11 +145,11 @@ pre_complete_actions() {
 post_complete_actions() {
   echo
   msg -a "${P}════════════════════════════════════════════════════════════${S}"
-  msg -a "${P}  GrokHunter is ready!  (NetHunter + Grok Build)${S}"
+  msg -a "${P}  GrokHunter Rootless is ready!  (NetHunter + Grok Build)${S}"
   msg -a "${P}════════════════════════════════════════════════════════════${S}"
   echo
   msg -a "  ${T}Quick Start:${S}"
-  msg -a "    nethunter          ${S}# Login to Kali shell${S}"
+  msg -a "    nethunter          ${S}# Login to Kali shell (rootless)${S}"
   msg -a "    nethunter -l       ${S}# List available commands${S}"
   echo
   if [[ ${DE_INSTALLED} -eq 1 ]]; then
@@ -175,7 +175,7 @@ post_complete_actions() {
     msg -a "    grok -p \"task\"     ${S}# Headless mode${S}"
   fi
   echo
-  msg -a "${P}Enjoy your AI-powered mobile lab!${S}"
+  msg -a "${P}Enjoy your AI-powered rootless mobile lab!${S}"
   msg -a "${P}════════════════════════════════════════════════════════════${S}"
 }
 
