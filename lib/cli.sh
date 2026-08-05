@@ -15,6 +15,8 @@ INSTALL_AIDER=0
 SKIP_AIDER=0
 INSTALL_V9=0
 SKIP_V9=0
+INSTALL_COMPLETIONS=0
+SKIP_COMPLETIONS=0
 
 show_help() {
   local ec="${1:-0}"
@@ -38,16 +40,19 @@ Options:
   --no-aider              Skip Aider installation
   --with-v9-models        Install Grok V9 / 4.5 model pickers into config.toml
   --no-v9-models          Skip V9 model pickers
+  --with-completions      Install zsh/bash completions + profile snippet
+  --no-completions        Skip shell completions
   -h, --help              Show this help and exit
 
 Examples:
-  install.sh --full --de xfce --with-grok --with-x11 --with-aider
+  install.sh --full --de xfce --with-grok --with-x11 --with-aider --with-completions
   install.sh -m
   install.sh --nano --no-de --with-grok
 
 Grok Build:  https://x.ai/cli
 Termux:X11:  https://github.com/termux/termux-x11
 Aider:       https://aider.chat
+Shell:       docs/SHELL.md
 Repo:        https://github.com/FineComputer14451/GrokHunter
 HELP
   exit "${ec}"
@@ -88,6 +93,8 @@ parse_cli() {
       --no-aider)    SKIP_AIDER=1; NON_INTERACTIVE=1; shift ;;
       --with-v9-models) INSTALL_V9=1; NON_INTERACTIVE=1; shift ;;
       --no-v9-models)   SKIP_V9=1; NON_INTERACTIVE=1; shift ;;
+      --with-completions) INSTALL_COMPLETIONS=1; NON_INTERACTIVE=1; shift ;;
+      --no-completions)   SKIP_COMPLETIONS=1; NON_INTERACTIVE=1; shift ;;
       -h|--help)     show_help 0 ;;
       *)
         echo "Error: Unknown option '$1'" >&2
