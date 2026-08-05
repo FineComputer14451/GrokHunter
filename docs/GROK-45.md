@@ -62,6 +62,21 @@ grokhunter doctor
 
 Confirms Grok binary, auth, and lab readiness before long sessions.
 
+## V9 / specialist model pickers (optional)
+
+Register `/model chat-expert`, `/model multi`, `/model auto`, etc. in Grok Build:
+
+```bash
+git clone https://github.com/FineComputer14451/GrokHunter.git
+cd GrokHunter
+bash scripts/install_v9_grok_models.sh
+# force refresh:
+bash scripts/install_v9_grok_models.sh --force
+```
+
+Template: `config/grok-build-v9-models.example.toml`  
+All aliases wrap **grok-4.5**. Imagine stills/video stay on `grok-imagine-*`.
+
 ## Related
 
 - [pair-programming skill](../skills/pair-programming/SKILL.md)
