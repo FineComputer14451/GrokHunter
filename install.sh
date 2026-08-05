@@ -1,7 +1,13 @@
 #!/data/data/com.termux/files/usr/bin/bash
 ################################################################################
-# GrokHunter Rootless — One-command installer
-# Kali NetHunter Rootless powered by Grok Build + optional Termux:X11
+# GrokHunter Rootless — Termux one-line installer
+# Coding lab: Kali NetHunter (proot) + Grok Build + optional Termux:X11 / Aider
+#
+# One-liner:
+#   bash <(curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/install.sh)
+#
+# Full stack:
+#   bash <(curl -fsSL .../install.sh) --full --de xfce --with-grok --with-x11 --with-aider
 #
 # https://github.com/FineComputer14451/GrokHunter
 ################################################################################
@@ -11,82 +17,111 @@ REPO_RAW="https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main"
 REPO_TAR="https://github.com/FineComputer14451/GrokHunter/archive/refs/heads/main.tar.gz"
 MODULES=(cli.sh actions.sh grok.sh x11.sh)
 
-# Resolve where we are
+# ---------- Termux guards ---------------------------------------------------
+if [[ -z "${PREFIX:-}" || "${PREFIX}" != *com.termux* ]]; then
+  if [[ ! -d /data/data/com.termux/files/usr ]]; then
+    echo "[GrokHunter] ERROR: This installer is for Termux on Android." >&2
+    echo "  Install Termux from F-Droid or GitHub (not Play Store), then retry." >&2
+    exit 1
+  fi
+  export PREFIX="${PREFIX:-/data/data/com.termux/files/usr}"
+fi
+
+export PATH="${PREFIX}/bin:${PATH}"
+export HOME="${HOME:-/data/data/com.termux/files/home}"
+export TMPDIR="${TMPDIR:-${PREFIX}/tmp}"
+mkdir -p "${TMPDIR}" 2>/dev/null || true
+
+# ---------- Fast prerequisites (Termux pkg) ---------------------------------
+need_pkg=0
+for c in curl tar bash; do
+  command -v "$c" >/dev/null 2>&1 || need_pkg=1
+done
+if [[ "$need_pkg" -eq 1 ]]; then
+  echo "[GrokHunter] Installing Termux prerequisites (curl tar)..."
+  pkg update -y >/dev/null 2>&1 || true
+  pkg install -y curl tar >/dev/null 2>&1 || {
+    echo "[GrokHunter] ERROR: need curl and tar. Run: pkg install curl tar" >&2
+    exit 1
+  }
+fi
+
+if command -v termux-wake-lock >/dev/null 2>&1; then
+  termux-wake-lock 2>/dev/null || true
+  trap 'termux-wake-unlock 2>/dev/null || true' EXIT
+fi
+
+# ---------- Resolve script location -----------------------------------------
 if [[ -n "${BASH_SOURCE[0]:-}" && -f "${BASH_SOURCE[0]}" ]]; then
   SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 else
-  # Running under curl | bash (no real script path)
   SCRIPT_DIR=""
 fi
 
 LIB_DIR=""
 CLEANUP_TMP=""
+CACHE_DIR="${HOME}/.cache/grokhunter"
+REFRESH="${GROKHUNTER_REFRESH:-0}"
 
 fetch_modules() {
   local dest="$1"
   mkdir -p "${dest}/lib"
-  local ok=0
-  local m
+  local m fail=0
   for m in "${MODULES[@]}"; do
-    if curl -fsSL --connect-timeout 15 --retry 2 \
+    if ! curl -fsSL --connect-timeout 12 --max-time 60 --retry 3 --retry-delay 1 \
          "${REPO_RAW}/lib/${m}" -o "${dest}/lib/${m}"; then
-      ok=$((ok + 1))
-    else
       echo "[GrokHunter] Failed to fetch lib/${m}" >&2
-      return 1
+      fail=1
+      break
     fi
   done
-  [[ $ok -eq ${#MODULES[@]} ]]
+  [[ $fail -eq 0 ]]
 }
 
-# ---------- Bootstrap -------------------------------------------------------
-if [[ -n "${SCRIPT_DIR}" && -d "${SCRIPT_DIR}/lib" ]]; then
-  # Normal case: running from a local clone / extracted tree
+# ---------- Bootstrap modules -----------------------------------------------
+if [[ -n "${SCRIPT_DIR}" && -d "${SCRIPT_DIR}/lib" && "${REFRESH}" != "1" ]]; then
   LIB_DIR="${SCRIPT_DIR}/lib"
+  echo "[GrokHunter] Using local modules: ${LIB_DIR}"
 else
-  echo "[GrokHunter] Bootstrapping modules (one-liner mode)..."
-
-  # Prefer a persistent cache so repeated one-liners are fast
-  CACHE_DIR="${HOME}/.cache/grokhunter"
+  echo "[GrokHunter] Termux one-liner bootstrap..."
   mkdir -p "${CACHE_DIR}"
 
-  if [[ -f "${CACHE_DIR}/lib/cli.sh" && -f "${CACHE_DIR}/lib/actions.sh" \
-     && -f "${CACHE_DIR}/lib/grok.sh" && -f "${CACHE_DIR}/lib/x11.sh" ]]; then
-    echo "[GrokHunter] Using cached modules in ${CACHE_DIR}"
+  if [[ "${REFRESH}" != "1" \
+     && -f "${CACHE_DIR}/lib/cli.sh" \
+     && -f "${CACHE_DIR}/lib/actions.sh" \
+     && -f "${CACHE_DIR}/lib/grok.sh" \
+     && -f "${CACHE_DIR}/lib/x11.sh" ]]; then
+    echo "[GrokHunter] Cache hit → ${CACHE_DIR}/lib"
     LIB_DIR="${CACHE_DIR}/lib"
   else
-    # Try lightweight individual downloads first
+    [[ "${REFRESH}" == "1" ]] && echo "[GrokHunter] Refreshing module cache..."
     if fetch_modules "${CACHE_DIR}"; then
-      echo "[GrokHunter] Modules downloaded to ${CACHE_DIR}"
+      echo "[GrokHunter] Modules ready in ${CACHE_DIR}"
       LIB_DIR="${CACHE_DIR}/lib"
     else
-      echo "[GrokHunter] Individual download failed — falling back to tarball..."
+      echo "[GrokHunter] Falling back to full tarball..."
       TMP=$(mktemp -d)
       CLEANUP_TMP="$TMP"
-      if curl -fsSL --connect-timeout 20 --retry 2 "${REPO_TAR}" \
-           | tar -xz -C "$TMP" --strip-components=1 2>/dev/null; then
-        if [[ -d "${TMP}/lib" ]]; then
-          cp -a "${TMP}/lib" "${CACHE_DIR}/"
-          LIB_DIR="${CACHE_DIR}/lib"
-          echo "[GrokHunter] Modules extracted from tarball"
-        else
-          echo "[GrokHunter] ERROR: tarball did not contain lib/" >&2
-          exit 1
-        fi
+      if curl -fsSL --connect-timeout 20 --max-time 180 --retry 2 \
+           "${REPO_TAR}" | tar -xz -C "$TMP" --strip-components=1 2>/dev/null \
+         && [[ -d "${TMP}/lib" ]]; then
+        rm -rf "${CACHE_DIR}/lib"
+        cp -a "${TMP}/lib" "${CACHE_DIR}/"
+        LIB_DIR="${CACHE_DIR}/lib"
+        echo "[GrokHunter] Modules from tarball"
       else
-        echo "[GrokHunter] ERROR: could not download modules from GitHub" >&2
-        echo "  Check your network or try:" >&2
-        echo "  git clone https://github.com/FineComputer14451/GrokHunter.git" >&2
+        echo "[GrokHunter] ERROR: cannot download modules from GitHub." >&2
+        echo "  Try: pkg install git && git clone https://github.com/FineComputer14451/GrokHunter.git" >&2
+        echo "       cd GrokHunter && bash install.sh" >&2
         exit 1
       fi
     fi
   fi
 fi
 
-# Safety check
 for m in "${MODULES[@]}"; do
   if [[ ! -f "${LIB_DIR}/${m}" ]]; then
-    echo "[GrokHunter] ERROR: missing module ${LIB_DIR}/${m}" >&2
+    echo "[GrokHunter] ERROR: missing ${LIB_DIR}/${m}" >&2
     exit 1
   fi
 done
@@ -100,10 +135,8 @@ source "${LIB_DIR}/grok.sh"
 # shellcheck source=/dev/null
 source "${LIB_DIR}/x11.sh"
 
-# Clean temp dir if we created one
 [[ -n "${CLEANUP_TMP}" && -d "${CLEANUP_TMP}" ]] && rm -rf "${CLEANUP_TMP}"
 
-# --- Core identity (used by termux-distro template) ---------------------------
 DISTRO_NAME="Kali NetHunter"
 PROGRAM_NAME="install.sh"
 DISTRO_REPOSITORY=termux-nethunter
@@ -127,10 +160,8 @@ DISTRO_LAUNCHER=${TERMUX_FILES_DIR}/usr/bin/nethunter
 DEFAULT_ROOTFS_DIR=${TERMUX_FILES_DIR}/kali
 DEFAULT_LOGIN=kali
 
-# Parse CLI early
 parse_cli "$@"
 
-# Load the upstream termux-distro engine
 distro_template=""
 if [[ -n "${SCRIPT_DIR}" && -f "${SCRIPT_DIR}/termux-distro.sh" ]]; then
   distro_template="${SCRIPT_DIR}/termux-distro.sh"
@@ -139,10 +170,12 @@ fi
 if [[ -n "${distro_template}" ]]; then
   # shellcheck disable=SC1090
   source "${distro_template}" "${@}" || exit 1
-elif curl -fsSLO https://raw.githubusercontent.com/jorexdeveloper/termux-distro/main/termux-distro.sh; then
+elif curl -fsSL --connect-timeout 15 --retry 2 \
+       -o ./termux-distro.sh \
+       https://raw.githubusercontent.com/jorexdeveloper/termux-distro/main/termux-distro.sh; then
   # shellcheck disable=SC1090
   source ./termux-distro.sh "${@}" || exit 1
 else
-  echo "You need an active internet connection to run this program."
+  echo "[GrokHunter] ERROR: need network to fetch termux-distro engine." >&2
   exit 1
 fi
