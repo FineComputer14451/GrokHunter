@@ -1,103 +1,77 @@
 # Editors & Pair Programmers on GrokHunter Rootless
 
-Grok Build (`grok` / `grokhunter`) is the default on-device pair programmer.  
+**Default intelligence: Grok 4.5** via Grok Build (`grok` / `grokhunter`).  
 This doc covers optional tools that complement it.
 
-## Default path (already installed with `--with-grok`)
+## Default path (`--with-grok`)
 
 ```bash
-grok                       # interactive pair session
+grok                       # interactive pair session (Grok 4.5-class)
 grokhunter -p "…"          # headless one-shot
 grokhunter plan "…"        # plan larger changes first
 nh-x11                     # XFCE desktop for editors (if --with-x11)
 ```
 
-## Aider + Grok (recommended optional)
+See also: [GROK-45.md](GROK-45.md).
 
-[Aider](https://aider.chat) is a terminal pair-programmer that works well inside the Kali proot. It can use xAI’s API (or other providers).
+## Aider + Grok 4.5 (recommended optional)
 
-### Install (inside `nethunter`)
+[Aider](https://aider.chat) is a terminal pair-programmer that works well inside the Kali proot. Use the same xAI key.
+
+### Install
 
 ```bash
-nethunter
-sudo apt update
+# Via installer flag:
+bash install.sh --with-aider
+
+# Or manually inside nethunter:
 sudo apt install -y python3-pip python3-venv git
 python3 -m venv ~/venv-aider
 source ~/venv-aider/bin/activate
 pip install aider-chat
 ```
 
-### Configure for Grok / xAI
+### Configure for Grok / xAI (Grok 4.5 tier)
 
 ```bash
-# Prefer secrets file (already used by GrokHunter)
-# Ensure XAI_API_KEY is set, e.g.:
-#   export XAI_API_KEY=xai-...
-# or source ~/.grok/secrets.env
-
+[[ -f ~/.grok/secrets.env ]] && source ~/.grok/secrets.env
 export OPENAI_API_BASE=https://api.x.ai/v1
 export OPENAI_API_KEY="${XAI_API_KEY}"
 
-# Optional: pin a model name your key supports
+# Prefer newest coding model available on your key (Grok 4 / 4.5 class)
 export AIDER_MODEL=grok-4
-# or: export AIDER_MODEL=grok-3
+# Override if your account lists e.g. a grok-4.5-specific id
 ```
 
 ### Usage
 
 ```bash
 cd /path/to/your/project
-source ~/venv-aider/bin/activate
-aider                          # chat + edit with git-aware commits
-aider --model grok-4           # explicit model
-aider main.py utils.py         # limit to specific files
+aider-grok                 # helper from --with-aider
+# or
+source ~/venv-aider/bin/activate && aider --model "${AIDER_MODEL:-grok-4}"
+aider main.py utils.py     # limit to specific files
 ```
 
 Tips:
-- Aider auto-commits by default — great for mobile sessions where you want a clear history.
-- Use `--no-auto-commits` if you prefer manual commits.
-- Keep `XAI_API_KEY` in `~/.grok/secrets.env` (mode 600); never commit it.
-
-### One-liner helper (optional)
-
-```bash
-# Save as ~/bin/aider-grok and chmod +x
-#!/data/data/com.termux/files/usr/bin/bash
-source "${HOME}/venv-aider/bin/activate" 2>/dev/null || true
-[ -f "${HOME}/.grok/secrets.env" ] && source "${HOME}/.grok/secrets.env"
-export OPENAI_API_BASE=https://api.x.ai/v1
-export OPENAI_API_KEY="${XAI_API_KEY:-$OPENAI_API_KEY}"
-exec aider "$@"
-```
-
-## opencode (optional)
-
-Community Termux/ARM builds exist for [opencode](https://github.com/opencode-ai). Prefer official docs for the latest aarch64 package. Typical pattern:
-
-```bash
-# Example only — check current release assets
-# wget …/opencode_*_aarch64.deb && sudo apt install ./opencode_*.deb
-opencode
-# Some builds support: opencode web
-```
-
-Use when you want a second agent UI; Grok Build remains the primary pair programmer for this lab.
+- Aider auto-commits by default — good for mobile history.
+- `--no-auto-commits` if you prefer manual commits.
+- Never commit `~/.grok/secrets.env`.
 
 ## Lightweight editors on device
 
 | Tool | When to use |
 |------|-------------|
-| `nh-x11` + XFCE | Full desktop (Geany, mousepad, etc.) |
+| `nh-x11` + XFCE | Full desktop |
 | `nvim` / `micro` | Terminal editing inside `nethunter` |
 | [Acode](https://acode.app) | Native Android editor beside Termux |
 
 ```bash
-# Inside nethunter
 sudo apt install -y neovim micro
 ```
 
 ## Recommendation
 
-1. **Default:** `grok` / `grokhunter` (already optimized for this lab).  
-2. **Add Aider** when you want git-native, auto-commit pair sessions with the same xAI key.  
+1. **Default:** `grok` / `grokhunter` optimized for **Grok 4.5**.  
+2. **Aider** when you want git-native auto-commit pairs on the same key.  
 3. **Desktop:** `nh-x11` when you need a visual editor.
