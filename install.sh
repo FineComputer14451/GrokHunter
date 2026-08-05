@@ -14,7 +14,7 @@ info() { echo "[GrokHunter] $*"; }
 REPO_RAW="https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main"
 REPO_TAR="https://github.com/FineComputer14451/GrokHunter/archive/refs/heads/main.tar.gz"
 MODULES=(cli.sh actions.sh grok.sh x11.sh)
-MODULES_VERSION="2026.2.3"
+MODULES_VERSION="2026.2.4"
 
 CLEANUP_TMP=""
 WAKE_HELD=0
@@ -163,25 +163,36 @@ DEFAULT_LOGIN=kali
 parse_cli "$@" || die "CLI parse failed"
 
 # termux-distro msg() uses ${P}/${S}/${N}/... before colors() runs.
-# Under our set -u that becomes: "P: unbound variable". Seed empties.
-N="${N-}" R="${R-}" G="${G-}" Y="${Y-}" B="${B-}" M="${M-}" C="${C-}" W="${W-}"
-P="${P-}" S="${S-}" T="${T-}"
-HC="${HC-}" RC="${RC-}" SU="${SU-}" RU="${RU-}" SV="${SV-}" RV="${RV-}"
-ENABLE_COLOR="${ENABLE_COLOR-1}"
+# Under set -u that is fatal ("P: unbound variable"). Seed + disable nounset.
+: "${N:=}" "${R:=}" "${G:=}" "${Y:=}" "${B:=}" "${M:=}" "${C:=}" "${W:=}"
+: "${P:=}" "${S:=}" "${T:=}"
+: "${HC:=}" "${RC:=}" "${SU:=}" "${RU:=}" "${SV:=}" "${RV:=}"
+: "${ENABLE_COLOR:=1}"
+: "${SYS_ARCH:=}" "${ROOTFS_DIRECTORY:=}" "${LOG_FILE:=/dev/null}"
+: "${KEEP_ROOTFS_DIRECTORY:=}" "${DE_INSTALLED:=}"
+
+_source_termux_distro() {
+  local engine="$1"
+  shift
+  set +u
+  # shellcheck disable=SC1090
+  source "${engine}" "$@"
+  local ec=$?
+  set -u
+  return "${ec}"
+}
 
 distro_template=""
 if [[ -n "${SCRIPT_DIR}" && -f "${SCRIPT_DIR}/termux-distro.sh" ]]; then
   distro_template="${SCRIPT_DIR}/termux-distro.sh"
 fi
 if [[ -n "${distro_template}" ]]; then
-  # shellcheck disable=SC1090
-  source "${distro_template}" "${@}" || die "termux-distro engine failed"
+  _source_termux_distro "${distro_template}" "$@" || die "termux-distro engine failed"
 else
   curl -fsSL --connect-timeout 15 --max-time 90 --retry 2 \
     -o ./termux-distro.sh \
     https://raw.githubusercontent.com/jorexdeveloper/termux-distro/main/termux-distro.sh \
     || die "need network to fetch termux-distro engine"
   [[ -s ./termux-distro.sh ]] || die "downloaded termux-distro.sh is empty"
-  # shellcheck disable=SC1090
-  source ./termux-distro.sh "${@}" || die "termux-distro engine failed after download"
+  _source_termux_distro ./termux-distro.sh "$@" || die "termux-distro engine failed after download"
 fi
