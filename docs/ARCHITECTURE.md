@@ -1,67 +1,70 @@
-# GrokHunter Architecture
+# GrokHunter Rootless — Architecture
 
 ## Design goals
 
-1. **Overlay, not fork** — never rebuild Kali rootfs or NetHunter kernels.
-2. **Official Grok binary** — always install via xAI's installer; no custom forks of `grok`.
-3. **Idempotent install** — safe to re-run; marker-based shell edits.
-4. **Mobile-first UX** — compact TUI, always-approve permission mode, short aliases.
-5. **Ethical default** — recon skill and AGENTS.md refuse unauthorized offensive work.
+1. **Rootless first** — designed exclusively for unrooted Android via Termux + proot.
+2. **Overlay, not fork** — never rebuild Kali rootfs or NetHunter kernels.
+3. **Official Grok binary** — always install via xAI's installer; no custom forks of `grok`.
+4. **Idempotent install** — safe to re-run; marker-based shell edits.
+5. **Mobile-first UX** — compact TUI, always-approve permission mode, short aliases.
+6. **Ethical default** — recon skill and AGENTS.md refuse unauthorized offensive work.
 
-## Layers
+## Scope
+
+GrokHunter **only** targets the rootless path:
 
 ```
-Android host
-  ├── NetHunter App / Magisk / wireless firmware
-  └── chroot / proot Kali rootfs
-        ├── apt packages (kali-nethunter-nano|core|full)
-        └── GrokHunter overlay
-              ├── ~/.grok/bin/grok          (official)
-              ├── ~/.grok/config.toml       (merged NetHunter profile)
-              ├── ~/.local/bin/grokhunter*
-              ├── ~/.grok/skills/grokhunter
-              ├── ~/.grok/skills/nethunter-recon
-              └── shell markers in ~/.zshrc / ~/.bashrc
+Android (stock / unrooted)
+  └── Termux
+        └── proot → Kali NetHunter rootfs (nano / mini / full)
+              └── GrokHunter overlay
+                    ├── Grok Build CLI
+                    ├── nh-x11 (Termux:X11 helper)
+                    ├── grokhunter CLI + doctor
+                    └── skills / profile
 ```
 
-## Why NetHunter (not pure Termux)
+It does **not**:
+- Require or install Magisk / custom recovery
+- Touch kernels, HID, or firmware modules
+- Support or document the classic rooted NetHunter (KeX + Magisk) path
 
-| Concern | Termux | NetHunter chroot |
-|---------|--------|------------------|
-| Full Kali toolchains | Limited | Native apt |
-| `/etc/resolv.conf` | Broken for static musl | Works — no DNS byte-patch |
-| Root / HID / mana | Host only | Integrated scripts |
-| Grok static musl binary | Needs GrokTerm patch | Runs as-is |
+For rooted devices use official Kali NetHunter documentation instead.
 
-GrokHunter therefore **does not** ship the 16-byte DNS patch used by GrokTerm. If you run Grok on bare Termux, use GrokTerm / grok-cli-termux-native instead.
+## Why rootless (Termux + proot)?
 
-## Install flow
+| Concern | Bare Termux | GrokHunter Rootless | Rooted NetHunter |
+|---------|-------------|---------------------|------------------|
+| Root required | No | **No** | Yes |
+| Full Kali tools | Limited | Native apt | Native apt + HID |
+| Grok static binary | Needs DNS patch | Runs as-is inside proot | Runs as-is |
+| Warranty | Intact | **Intact** | Often voided |
+| Target audience | General | **Most Android users** | Advanced / unlocked |
 
-1. Detect NetHunter / Kali + arch
-2. Ensure `curl`/`git`/`python3`
-3. Ensure Grok Build ≥ min version
-4. Install bin wrappers → `~/.local/bin`
-5. Merge NetHunter UI/models keys into config (backup first)
-6. Install skills → `~/.grok/skills`
-7. Inject shell profile markers
-8. Optional MOTD (needs root for `/etc/update-motd.d`)
-9. Write `~/.grokhunter/install.meta` for doctor/uninstall
+## Install flow (rootless)
+
+1. Detect Termux + architecture
+2. Pull latest NetHunter rootfs from Kali `/current/` (dynamic SHA256)
+3. Optional: desktop (XFCE default) + browser
+4. Optional: native Grok Build CLI
+5. Optional: Termux:X11 packages + `nh-x11` helper + `/tmp` bind patch
+6. Write install metadata for doctor / uninstall
 
 ## Config merge policy
 
-`install.sh` **does not** replace the entire `config.toml`. It:
+`install.sh` does **not** replace the entire Grok `config.toml`. It:
 
-- Backs up to `config.toml.bak.grokhunter-<timestamp>`
-- Ensures key NetHunter UI keys exist (`compact_mode`, `permission_mode`, `theme`, `screen_mode`)
-- Sets `[models] default = "grok-4.5"` only if missing or empty
-- Leaves custom `[model.*]` agent definitions untouched
+- Backs up first
+- Ensures key mobile UI keys exist
+- Sets a sensible default model only if missing
+- Leaves custom agent definitions untouched
 
 ## Uninstall policy
 
-Removes wrappers, skills, shell markers, MOTD fragment. Keeps:
+Removes wrappers, skills, shell markers. Keeps:
 
-- `~/.grok/bin/grok` and auth
-- User projects under `$HOME`
-- Config backup files
+- Grok binary and auth
+- User projects
+- Config backups
 
-`--purge-grok` additionally removes Grok binary state (destructive; confirm).
+`--purge-grok` additionally removes Grok binary state (destructive).

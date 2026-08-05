@@ -1,20 +1,22 @@
-# GrokHunter
+# GrokHunter Rootless
 
-**Kali NetHunter powered by Grok Build — AI-agent mobile lab overlay & one-command installer**
+**Kali NetHunter Rootless × Grok Build — AI-agent mobile lab for unrooted Android**
 
-GrokHunter turns a rootless Kali NetHunter install on Termux into an AI-agent-first mobile penetration testing and builder environment, powered by [Grok Build](https://x.ai/cli).
+GrokHunter turns **rootless** Kali NetHunter (Termux + proot) into an AI-agent-first mobile penetration testing and builder environment, powered by [Grok Build](https://x.ai/cli).
+
+No root. No custom kernel. No warranty void.
 
 > Not affiliated with xAI or Offensive Security.
 
 ---
 
-## Quick Install
+## Quick Install (Rootless)
 
 ```bash
-# One-liner (recommended)
+# One-liner
 bash <(curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/install.sh)
 
-# Or clone first
+# Or clone
 git clone https://github.com/FineComputer14451/GrokHunter.git
 cd GrokHunter
 bash install.sh
@@ -26,8 +28,8 @@ bash install.sh
 bash install.sh --full --de xfce --browser chromium --with-grok --with-x11
 ```
 
-This installs:
-- Latest Kali NetHunter rootfs (dynamic `/current/`)
+Installs:
+- Latest **rootless** Kali NetHunter rootfs (`/current/`)
 - XFCE desktop
 - Chromium
 - Native Grok Build CLI
@@ -35,10 +37,25 @@ This installs:
 
 ---
 
+## Why Rootless?
+
+| | Rootless (GrokHunter) | Rooted NetHunter |
+|--|----------------------|------------------|
+| Root required | **No** | Yes |
+| Warranty | Intact | Often voided |
+| Install | Termux + proot | Custom recovery / Magisk |
+| Grok Build | Native static binary | Same |
+| HID / Mana / firmware | Limited | Full |
+| Target users | Most Android devices | Advanced / unlocked devices |
+
+GrokHunter is designed exclusively for the **rootless** path. It does not install or depend on Magisk, custom kernels, or HID modules.
+
+---
+
 ## Architecture
 
 ```
-install.sh              Thin entry point (one-command compatible)
+install.sh              Thin entry point (one-command / curl|bash)
 lib/
   ├── cli.sh            Argument parsing & help
   ├── actions.sh        Install / config / DE / browser hooks
@@ -55,11 +72,9 @@ skills/                 Agent skills (orchestrator + recon)
 docs/                   Architecture & install notes
 ```
 
-The thin `install.sh` automatically fetches the `lib/` modules when run via `curl | bash`.
-
 ---
 
-## CLI Options (installer)
+## CLI Options
 
 ```
 -f, --full              Full installation (includes desktop)
@@ -80,33 +95,30 @@ The thin `install.sh` automatically fetches the `lib/` modules when run via `cur
 ## After Install
 
 ```bash
-nethunter          # Enter Kali shell
+nethunter          # Enter Kali shell (rootless proot)
 nh-x11             # Low-latency desktop (requires Termux:X11 APK)
 grok               # Grok Build interactive TUI
 grokhunter         # Primary GrokHunter CLI
-grokhunter status  # Quick status
+grokhunter status  # Quick status (includes x11=yes/no)
 grokhunter doctor  # Full health report
 ```
 
 **Termux:X11 note**  
-You still need the Termux:X11 APK from the [official nightly releases](https://github.com/termux/termux-x11/releases).
+Install the Termux:X11 APK from the [official nightly releases](https://github.com/termux/termux-x11/releases).
 
 ---
 
-## GrokHunter CLI (`bin/grokhunter`)
+## GrokHunter CLI
 
 ```bash
 grokhunter                  # Interactive TUI
 grokhunter status           # Short status line
 grokhunter doctor           # Full health report
 grokhunter ensure           # Install/upgrade Grok Build binary
-grokhunter install [args]   # Run / re-run the NetHunter installer
+grokhunter install [args]   # Run / re-run the rootless installer
 grokhunter plan "…"         # Plan mode
 grokhunter -p "…"           # Headless one-shot
-grokhunter -- <grok args>   # Pass-through
 ```
-
-Aliases (after profile install): `gh`, `ghn`, `ghd`, `ghp`, `ghh`
 
 ---
 
@@ -114,6 +126,7 @@ Aliases (after profile install): `gh`, `ghn`, `ghd`, `ghp`, `ghh`
 
 - Termux from F-Droid or GitHub (**not** Play Store)
 - Android 8+ (aarch64 recommended)
+- **No root required**
 - Stable internet
 - SuperGrok / X Premium+ **or** `XAI_API_KEY` for Grok Build
 
@@ -122,7 +135,7 @@ Aliases (after profile install): `gh`, `ghn`, `ghd`, `ghp`, `ghh`
 ## License
 
 GPL-3.0 (inherits from the original termux-nethunter / termux-distro work)  
-GrokHunter enhancements © 2026 FineComputer14451 / Grok (xAI)
+GrokHunter Rootless enhancements © 2026 FineComputer14451 / Grok (xAI)
 
 ---
 
