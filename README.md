@@ -20,41 +20,58 @@ cd GrokHunter
 bash install.sh
 ```
 
-### Recommended full install (NetHunter + XFCE + Chromium + Grok Build + Termux:X11)
+### Recommended full stack
 
 ```bash
 bash install.sh --full --de xfce --browser chromium --with-grok --with-x11
 ```
 
----
-
-## Features
-
-| Feature | Description |
-|---------|-------------|
-| **Dynamic rootfs** | Always pulls the latest Kali NetHunter rootfs from `/current/` |
-| **Official SHA256** | Verifies against live Kali SHA256SUMS |
-| **Grok Build native** | Optional install of native Termux Grok Build CLI (`--with-grok`) |
-| **Termux:X11** | Low-latency desktop integration with `nh-x11` helper (`--with-x11`) |
-| **CLI automation** | Fully non-interactive mode with sensible defaults |
-| **XFCE default** | Lightweight desktop recommended for Android |
-| **Multi-arch** | arm64, armhf, amd64, i386 |
+This installs:
+- Latest Kali NetHunter rootfs (dynamic `/current/`)
+- XFCE desktop
+- Chromium
+- Native Grok Build CLI
+- Termux:X11 low-latency desktop + `nh-x11` helper
 
 ---
 
-## CLI Options
+## Architecture
 
 ```
--f, --full              Full installation (includes desktop environment)
--m, --mini              Mini installation (essential packages only)
--n, --nano              Nano installation (minimal footprint)
---de <desktop>          Desktop environment (e17|gnome|i3|kde|lxde|mate|xfce)
---browser <browser>     Browser: chromium | firefox | both
+install.sh              Thin entry point (one-command compatible)
+lib/
+  ├── cli.sh            Argument parsing & help
+  ├── actions.sh        Install / config / DE / browser hooks
+  ├── grok.sh           Native Grok Build installer
+  └── x11.sh            Termux:X11 setup + nh-x11 helper
+
+bin/
+  ├── grokhunter        Primary CLI (status, doctor, plan, install, …)
+  ├── grok-nethunter    Full-screen TUI launcher
+  └── grokhunter-doctor Health report
+
+config/                 Grok Build profile + shell integration
+skills/                 Agent skills (orchestrator + recon)
+docs/                   Architecture & install notes
+```
+
+The thin `install.sh` automatically fetches the `lib/` modules when run via `curl | bash`.
+
+---
+
+## CLI Options (installer)
+
+```
+-f, --full              Full installation (includes desktop)
+-m, --mini              Mini (essential packages)
+-n, --nano              Nano (minimal footprint)
+--de <desktop>          e17 | gnome | i3 | kde | lxde | mate | xfce
+--browser <browser>     chromium | firefox | both
 --no-de                 Skip desktop environment
 --with-grok             Install native Grok Build CLI
 --no-grok               Skip Grok Build
---with-x11              Install & configure Termux:X11 + nh-x11 helper
---no-x11                Skip Termux:X11 setup
+--with-x11              Install Termux:X11 + nh-x11 helper
+--no-x11                Skip Termux:X11
 -h, --help              Show help
 ```
 
@@ -64,17 +81,38 @@ bash install.sh --full --de xfce --browser chromium --with-grok --with-x11
 
 ```bash
 nethunter          # Enter Kali shell
-nh-x11             # Launch low-latency desktop (if --with-x11 was used)
-grok               # Launch Grok Build TUI (if --with-grok was used)
+nh-x11             # Low-latency desktop (requires Termux:X11 APK)
+grok               # Grok Build interactive TUI
+grokhunter         # Primary GrokHunter CLI
+grokhunter status  # Quick status
+grokhunter doctor  # Full health report
 ```
 
-**Termux:X11 note:** You still need the Termux:X11 APK from the [official nightly releases](https://github.com/termux/termux-x11/releases).
+**Termux:X11 note**  
+You still need the Termux:X11 APK from the [official nightly releases](https://github.com/termux/termux-x11/releases).
+
+---
+
+## GrokHunter CLI (`bin/grokhunter`)
+
+```bash
+grokhunter                  # Interactive TUI
+grokhunter status           # Short status line
+grokhunter doctor           # Full health report
+grokhunter ensure           # Install/upgrade Grok Build binary
+grokhunter install [args]   # Run / re-run the NetHunter installer
+grokhunter plan "…"         # Plan mode
+grokhunter -p "…"           # Headless one-shot
+grokhunter -- <grok args>   # Pass-through
+```
+
+Aliases (after profile install): `gh`, `ghn`, `ghd`, `ghp`, `ghh`
 
 ---
 
 ## Requirements
 
-- Termux (from F-Droid or GitHub, **not** Play Store)
+- Termux from F-Droid or GitHub (**not** Play Store)
 - Android 8+ (aarch64 recommended)
 - Stable internet
 - SuperGrok / X Premium+ **or** `XAI_API_KEY` for Grok Build
