@@ -13,64 +13,101 @@
 ################################################################################
 set -euo pipefail
 
+die()  { echo "[GrokHunter] ERROR: $*" >&2; exit 1; }
+warn() { echo "[GrokHunter] WARN: $*" >&2; }
+info() { echo "[GrokHunter] $*"; }
+
 REPO_RAW="https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main"
 REPO_TAR="https://github.com/FineComputer14451/GrokHunter/archive/refs/heads/main.tar.gz"
 MODULES=(cli.sh actions.sh grok.sh x11.sh)
 
+CLEANUP_TMP=""
+WAKE_HELD=0
+
+cleanup() {
+  local ec=$?
+  [[ -n "${CLEANUP_TMP:-}" && -d "${CLEANUP_TMP}" ]] && rm -rf "${CLEANUP_TMP}" || true
+  if [[ "${WAKE_HELD}" -eq 1 ]] && command -v termux-wake-unlock >/dev/null 2>&1; then
+    termux-wake-unlock 2>/dev/null || true
+  fi
+  return "${ec}"
+}
+trap cleanup EXIT
+
 # ---------- Termux guards ---------------------------------------------------
 if [[ -z "${PREFIX:-}" || "${PREFIX}" != *com.termux* ]]; then
   if [[ ! -d /data/data/com.termux/files/usr ]]; then
-    echo "[GrokHunter] ERROR: This installer is for Termux on Android." >&2
-    echo "  Install Termux from F-Droid or GitHub (not Play Store), then retry." >&2
-    exit 1
+    die "This installer is for Termux on Android. Install Termux from F-Droid or GitHub (not Play Store)."
   fi
   export PREFIX="${PREFIX:-/data/data/com.termux/files/usr}"
 fi
 
-export PATH="${PREFIX}/bin:${PATH}"
+export PATH="${PREFIX}/bin:${PATH:-}"
 export HOME="${HOME:-/data/data/com.termux/files/home}"
 export TMPDIR="${TMPDIR:-${PREFIX}/tmp}"
-mkdir -p "${TMPDIR}" 2>/dev/null || true
+
+if ! mkdir -p "${TMPDIR}" 2>/dev/null; then
+  die "cannot create TMPDIR=${TMPDIR}"
+fi
+[[ -w "${HOME}" ]] || die "HOME not writable: ${HOME}"
 
 # ---------- Fast prerequisites (Termux pkg) ---------------------------------
 need_pkg=0
 for c in curl tar bash; do
   command -v "$c" >/dev/null 2>&1 || need_pkg=1
 done
-if [[ "$need_pkg" -eq 1 ]]; then
-  echo "[GrokHunter] Installing Termux prerequisites (curl tar)..."
-  pkg update -y >/dev/null 2>&1 || true
-  pkg install -y curl tar >/dev/null 2>&1 || {
-    echo "[GrokHunter] ERROR: need curl and tar. Run: pkg install curl tar" >&2
-    exit 1
-  }
+if [[ "${need_pkg}" -eq 1 ]]; then
+  info "Installing Termux prerequisites (curl tar)..."
+  if ! command -v pkg >/dev/null 2>&1; then
+    die "pkg not found — is this a real Termux environment?"
+  fi
+  pkg update -y >/dev/null 2>&1 || warn "pkg update failed (continuing)"
+  if ! pkg install -y curl tar >/dev/null 2>&1; then
+    die "need curl and tar. Run: pkg install curl tar"
+  fi
 fi
+command -v curl >/dev/null 2>&1 || die "curl still missing after install attempt"
+command -v tar >/dev/null 2>&1 || die "tar still missing after install attempt"
 
 if command -v termux-wake-lock >/dev/null 2>&1; then
-  termux-wake-lock 2>/dev/null || true
-  trap 'termux-wake-unlock 2>/dev/null || true' EXIT
+  if termux-wake-lock 2>/dev/null; then
+    WAKE_HELD=1
+  else
+    warn "termux-wake-lock failed (install may suspend on long downloads)"
+  fi
 fi
 
 # ---------- Resolve script location -----------------------------------------
 if [[ -n "${BASH_SOURCE[0]:-}" && -f "${BASH_SOURCE[0]}" ]]; then
-  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" || SCRIPT_DIR=""
 else
   SCRIPT_DIR=""
 fi
 
 LIB_DIR=""
-CLEANUP_TMP=""
 CACHE_DIR="${HOME}/.cache/grokhunter"
 REFRESH="${GROKHUNTER_REFRESH:-0}"
 
+validate_module() {
+  local f="$1"
+  [[ -f "$f" && -s "$f" ]] || return 1
+  grep -qE '^[a-zA-Z_][a-zA-Z0-9_]*\s*\(\)' "$f" 2>/dev/null || return 1
+  return 0
+}
+
 fetch_modules() {
   local dest="$1"
-  mkdir -p "${dest}/lib"
+  mkdir -p "${dest}/lib" || die "cannot create ${dest}/lib"
   local m fail=0
   for m in "${MODULES[@]}"; do
     if ! curl -fsSL --connect-timeout 12 --max-time 60 --retry 3 --retry-delay 1 \
          "${REPO_RAW}/lib/${m}" -o "${dest}/lib/${m}"; then
-      echo "[GrokHunter] Failed to fetch lib/${m}" >&2
+      warn "Failed to fetch lib/${m}"
+      fail=1
+      break
+    fi
+    if ! validate_module "${dest}/lib/${m}"; then
+      warn "Downloaded lib/${m} looks invalid"
       fail=1
       break
     fi
@@ -81,61 +118,70 @@ fetch_modules() {
 # ---------- Bootstrap modules -----------------------------------------------
 if [[ -n "${SCRIPT_DIR}" && -d "${SCRIPT_DIR}/lib" && "${REFRESH}" != "1" ]]; then
   LIB_DIR="${SCRIPT_DIR}/lib"
-  echo "[GrokHunter] Using local modules: ${LIB_DIR}"
+  info "Using local modules: ${LIB_DIR}"
 else
-  echo "[GrokHunter] Termux one-liner bootstrap..."
-  mkdir -p "${CACHE_DIR}"
+  info "Termux one-liner bootstrap..."
+  mkdir -p "${CACHE_DIR}" || die "cannot create cache ${CACHE_DIR}"
 
   if [[ "${REFRESH}" != "1" \
      && -f "${CACHE_DIR}/lib/cli.sh" \
      && -f "${CACHE_DIR}/lib/actions.sh" \
      && -f "${CACHE_DIR}/lib/grok.sh" \
      && -f "${CACHE_DIR}/lib/x11.sh" ]]; then
-    echo "[GrokHunter] Cache hit → ${CACHE_DIR}/lib"
+    info "Cache hit → ${CACHE_DIR}/lib"
     LIB_DIR="${CACHE_DIR}/lib"
   else
-    [[ "${REFRESH}" == "1" ]] && echo "[GrokHunter] Refreshing module cache..."
+    [[ "${REFRESH}" == "1" ]] && info "Refreshing module cache..."
     if fetch_modules "${CACHE_DIR}"; then
-      echo "[GrokHunter] Modules ready in ${CACHE_DIR}"
+      info "Modules ready in ${CACHE_DIR}"
       LIB_DIR="${CACHE_DIR}/lib"
     else
-      echo "[GrokHunter] Falling back to full tarball..."
-      TMP=$(mktemp -d)
-      CLEANUP_TMP="$TMP"
+      info "Falling back to full tarball..."
+      CLEANUP_TMP="$(mktemp -d "${TMPDIR}/grokhunter.XXXXXX")" || die "mktemp failed"
       if curl -fsSL --connect-timeout 20 --max-time 180 --retry 2 \
-           "${REPO_TAR}" | tar -xz -C "$TMP" --strip-components=1 2>/dev/null \
-         && [[ -d "${TMP}/lib" ]]; then
+           "${REPO_TAR}" | tar -xz -C "${CLEANUP_TMP}" --strip-components=1 2>/dev/null \
+         && [[ -d "${CLEANUP_TMP}/lib" ]]; then
         rm -rf "${CACHE_DIR}/lib"
-        cp -a "${TMP}/lib" "${CACHE_DIR}/"
+        mkdir -p "${CACHE_DIR}" || die "cannot prepare cache dir"
+        cp -a "${CLEANUP_TMP}/lib" "${CACHE_DIR}/" || die "failed to copy modules to cache"
         LIB_DIR="${CACHE_DIR}/lib"
-        echo "[GrokHunter] Modules from tarball"
+        info "Modules from tarball"
       else
-        echo "[GrokHunter] ERROR: cannot download modules from GitHub." >&2
-        echo "  Try: pkg install git && git clone https://github.com/FineComputer14451/GrokHunter.git" >&2
-        echo "       cd GrokHunter && bash install.sh" >&2
-        exit 1
+        die "cannot download modules from GitHub. Try: pkg install git && git clone https://github.com/FineComputer14451/GrokHunter.git && cd GrokHunter && bash install.sh"
       fi
     fi
   fi
 fi
 
+[[ -n "${LIB_DIR}" && -d "${LIB_DIR}" ]] || die "LIB_DIR not set after bootstrap"
+
 for m in "${MODULES[@]}"; do
-  if [[ ! -f "${LIB_DIR}/${m}" ]]; then
-    echo "[GrokHunter] ERROR: missing ${LIB_DIR}/${m}" >&2
-    exit 1
+  if ! validate_module "${LIB_DIR}/${m}"; then
+    die "missing or invalid module ${LIB_DIR}/${m} (try GROKHUNTER_REFRESH=1)"
   fi
 done
 
 # shellcheck source=/dev/null
-source "${LIB_DIR}/cli.sh"
+source "${LIB_DIR}/cli.sh" || die "failed to source cli.sh"
 # shellcheck source=/dev/null
-source "${LIB_DIR}/actions.sh"
+source "${LIB_DIR}/actions.sh" || die "failed to source actions.sh"
 # shellcheck source=/dev/null
-source "${LIB_DIR}/grok.sh"
+source "${LIB_DIR}/grok.sh" || die "failed to source grok.sh"
 # shellcheck source=/dev/null
-source "${LIB_DIR}/x11.sh"
+source "${LIB_DIR}/x11.sh" || die "failed to source x11.sh"
 
-[[ -n "${CLEANUP_TMP}" && -d "${CLEANUP_TMP}" ]] && rm -rf "${CLEANUP_TMP}"
+for fn in parse_cli install_grok_build setup_termux_x11; do
+  if ! declare -F "$fn" >/dev/null 2>&1; then
+    die "module missing function: $fn (refresh cache: GROKHUNTER_REFRESH=1)"
+  fi
+done
+
+if command -v df >/dev/null 2>&1; then
+  avail="$(df -BG "${HOME}" 2>/dev/null | awk 'NR==2 {gsub(/G/,"",$4); print $4}')"
+  if [[ -n "${avail}" ]] && [[ "${avail}" =~ ^[0-9]+$ ]] && [[ "${avail}" -lt 2 ]]; then
+    warn "Low free space (~${avail}G). Full desktop install may need 6G+."
+  fi
+fi
 
 DISTRO_NAME="Kali NetHunter"
 PROGRAM_NAME="install.sh"
@@ -160,7 +206,7 @@ DISTRO_LAUNCHER=${TERMUX_FILES_DIR}/usr/bin/nethunter
 DEFAULT_ROOTFS_DIR=${TERMUX_FILES_DIR}/kali
 DEFAULT_LOGIN=kali
 
-parse_cli "$@"
+parse_cli "$@" || die "CLI parse failed"
 
 distro_template=""
 if [[ -n "${SCRIPT_DIR}" && -f "${SCRIPT_DIR}/termux-distro.sh" ]]; then
@@ -169,13 +215,14 @@ fi
 
 if [[ -n "${distro_template}" ]]; then
   # shellcheck disable=SC1090
-  source "${distro_template}" "${@}" || exit 1
-elif curl -fsSL --connect-timeout 15 --retry 2 \
+  source "${distro_template}" "${@}" || die "termux-distro engine failed (${distro_template})"
+else
+  if ! curl -fsSL --connect-timeout 15 --max-time 90 --retry 2 \
        -o ./termux-distro.sh \
        https://raw.githubusercontent.com/jorexdeveloper/termux-distro/main/termux-distro.sh; then
+    die "need network to fetch termux-distro engine"
+  fi
+  [[ -s ./termux-distro.sh ]] || die "downloaded termux-distro.sh is empty"
   # shellcheck disable=SC1090
-  source ./termux-distro.sh "${@}" || exit 1
-else
-  echo "[GrokHunter] ERROR: need network to fetch termux-distro engine." >&2
-  exit 1
+  source ./termux-distro.sh "${@}" || die "termux-distro engine failed after download"
 fi
