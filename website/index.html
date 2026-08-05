@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GrokHunter — AI coding lab on unrooted Android</title>
+    <meta
+      name="description"
+      content="Kali NetHunter Rootless × Grok Build — AI coding & building lab for unrooted Android. No root required."
+    />
+    <meta property="og:title" content="GrokHunter" />
+    <meta
+      property="og:description"
+      content="Kali NetHunter Rootless × Grok Build — AI coding & building lab for unrooted Android."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="wrap header-inner">
+        <a href="#top" class="brand">
+          <span class="brand-mark" aria-hidden="true">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="4 17 10 11 4 5" />
+              <line x1="12" y1="19" x2="20" y2="19" />
+            </svg>
+          </span>
+          <span>Grok<span class="accent">Hunter</span></span>
+          <span class="badge">v1.0.0</span>
+        </a>
+        <nav class="nav" aria-label="Primary">
+          <a href="#features">Features</a>
+          <a href="#install">Install</a>
+          <a href="#cli">CLI</a>
+          <a href="#architecture">Architecture</a>
+        </nav>
+        <div class="header-actions">
+          <a
+            class="btn btn-ghost"
+            href="https://github.com/FineComputer14451/GrokHunter"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path
+                d="M12 .5C5.73.5.5 5.74.5 12.02c0 5.1 3.29 9.43 7.86 10.96.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.53-1.34-1.3-1.7-1.3-1.7-1.06-.73.08-.72.08-.72 1.17.08 1.79 1.2 1.79 1.2 1.04 1.78 2.73 1.27 3.4.97.1-.75.41-1.27.74-1.56-2.55-.29-5.23-1.28-5.23-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.43-2.69 5.4-5.25 5.69.42.36.79 1.08.79 2.18 0 1.57-.01 2.84-.01 3.23 0 .31.21.68.8.56A10.53 10.53 0 0 0 23.5 12C23.5 5.74 18.27.5 12 .5Z"
+              />
+            </svg>
+            <span class="gh-label">GitHub</span>
+          </a>
+          <button type="button" class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="4" y1="7" x2="20" y2="7" />
+              <line x1="4" y1="12" x2="20" y2="12" />
+              <line x1="4" y1="17" x2="20" y2="17" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <nav class="mobile-nav wrap" id="mobileNav" aria-label="Mobile">
+        <a href="#features">Features</a>
+        <a href="#install">Install</a>
+        <a href="#cli">CLI</a>
+        <a href="#architecture">Architecture</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero hero-wash">
+        <div class="grid-fade" aria-hidden="true"></div>
+        <div class="wrap hero-grid">
+          <div>
+            <div class="chips">
+              <span class="chip chip-brand">
+                <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                </svg>
+                Rootless · v1.0.0
+              </span>
+              <span class="chip">No root required</span>
+              <span class="chip">Coding & building</span>
+            </div>
+            <h1>
+              Kali NetHunter Rootless
+              <span class="accent">powered by Grok Build</span>
+            </h1>
+            <p class="lead">
+              Turn unrooted Android into an AI coding & building lab. Real Linux toolchains,
+              official Grok agent, and a low-latency desktop — one installer, no root.
+            </p>
+            <div class="code-block">
+              <div class="code-head">
+                <span class="code-label">Quick install</span>
+                <button
+                  type="button"
+                  class="copy-btn"
+                  data-copy="bash &lt;(curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/install.sh)"
+                >
+                  Copy
+                </button>
+              </div>
+              <pre><code>bash <(curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/install.sh)</code></pre>
+            </div>
+            <div class="cta-row">
+              <a class="btn btn-primary" href="#install">Full install guide</a>
+              <a
+                class="btn btn-ghost btn-lg"
+                href="https://github.com/FineComputer14451/GrokHunter"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View on GitHub
+              </a>
+            </div>
+            <p class="fineprint">
+              Not affiliated with xAI or Offensive Security. Aimed at coding, building, and
+              AI-assisted development.
+            </p>
+          </div>
+
+          <div class="terminal" aria-label="Install demo terminal">
+            <div class="terminal-bar">
+              <div class="dots">
+                <span class="dot r"></span>
+                <span class="dot y"></span>
+                <span class="dot g"></span>
+                <span class="terminal-title">install · rootless</span>
+              </div>
+              <button
+                type="button"
+                class="copy-btn"
+                data-copy="bash &lt;(curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/install.sh) --full --de xfce --browser chromium --with-grok --with-x11"
+              >
+                Copy install
+              </button>
+            </div>
+            <div class="terminal-body" id="terminalBody"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section alt" id="why">
+        <div class="wrap">
+          <p class="section-label">Why this stack</p>
+          <h2>A real lab on your phone</h2>
+          <p class="section-lead">
+            Perfect for learning languages, building tools, and mobile-first sessions with Grok as
+            your coding agent.
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Need</th>
+                  <th>What you get</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Real Linux toolchain</td>
+                  <td>apt, gcc, python, node, rust, go inside Kali</td>
+                </tr>
+                <tr>
+                  <td>No root</td>
+                  <td>Stock Android — rootless proot only</td>
+                </tr>
+                <tr>
+                  <td>AI pair-programmer</td>
+                  <td>Grok Build TUI + headless on-device</td>
+                </tr>
+                <tr>
+                  <td>Desktop IDE feel</td>
+                  <td>XFCE + Termux:X11 (low latency)</td>
+                </tr>
+                <tr>
+                  <td>Portability</td>
+                  <td>Entire lab lives in Termux</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="features">
+        <div class="wrap">
+          <p class="section-label">Features</p>
+          <h2>Everything for an on-device coding agent</h2>
+          <p class="section-lead">&nbsp;</p>
+          <div class="feature-grid">
+            <article class="card">
+              <div class="card-icon">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="5" y="2" width="14" height="20" rx="2" />
+                  <line x1="12" y1="18" x2="12.01" y2="18" />
+                </svg>
+              </div>
+              <h3>Rootless first</h3>
+              <p>
+                Termux + proot only. Stock Android, warranty intact — no Magisk, recovery, or
+                firmware modules.
+              </p>
+            </article>
+            <article class="card">
+              <div class="card-icon">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z" />
+                  <path d="M5 19l.8 2.2L8 22l-2.2.8L5 25l-.8-2.2L2 22l2.2-.8L5 19z" />
+                </svg>
+              </div>
+              <h3>Grok as on-device agent</h3>
+              <p>
+                Official Grok Build CLI with compact TUI, headless one-shots, and plan mode tuned
+                for mobile.
+              </p>
+            </article>
+            <article class="card">
+              <div class="card-icon">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="4" y="4" width="16" height="16" rx="2" />
+                  <rect x="9" y="9" width="6" height="6" />
+                  <line x1="9" y1="1" x2="9" y2="4" />
+                  <line x1="15" y1="1" x2="15" y2="4" />
+                  <line x1="9" y1="20" x2="9" y2="23" />
+                  <line x1="15" y1="20" x2="15" y2="23" />
+                  <line x1="20" y1="9" x2="23" y2="9" />
+                  <line x1="20" y1="14" x2="23" y2="14" />
+                  <line x1="1" y1="9" x2="4" y2="9" />
+                  <line x1="1" y1="14" x2="4" y2="14" />
+                </svg>
+              </div>
+              <h3>Real Linux toolchains</h3>
+              <p>Full Kali apt: gcc, python, node, rust, go — a real coding lab, not a toy shell.</p>
+            </article>
+            <article class="card">
+              <div class="card-icon">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="2" y="3" width="20" height="14" rx="2" />
+                  <line x1="8" y1="21" x2="16" y2="21" />
+                  <line x1="12" y1="17" x2="12" y2="21" />
+                </svg>
+              </div>
+              <h3>Desktop via Termux:X11</h3>
+              <p>
+                XFCE + low-latency nh-x11 helper for editors and browsers that feel like a mini
+                workstation.
+              </p>
+            </article>
+            <article class="card">
+              <div class="card-icon">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+                </svg>
+              </div>
+              <h3>Doctor & status</h3>
+              <p>
+                grokhunter doctor checks binary, PATH, secrets, DNS, and NetHunter packages in one
+                report.
+              </p>
+            </article>
+            <article class="card">
+              <div class="card-icon">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="12 2 2 7 12 12 22 7 12 2" />
+                  <polyline points="2 17 12 22 22 17" />
+                  <polyline points="2 12 12 17 22 12" />
+                </svg>
+              </div>
+              <h3>Overlay, not a fork</h3>
+              <p>
+                Sits on top of the official NetHunter rootfs. Idempotent install, clean uninstall,
+                modular lib/.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section alt" id="install">
+        <div class="wrap">
+          <p class="section-label">Install</p>
+          <h2>One command, modular stack</h2>
+          <p class="section-lead">
+            Requires Termux from F-Droid or GitHub, Android 8+, aarch64 recommended, and SuperGrok /
+            X Premium+ or an XAI_API_KEY for Grok Build.
+          </p>
+          <div class="install-grid">
+            <div>
+              <div class="install-block">
+                <div class="code-head">
+                  <div>
+                    <span class="step">01</span>
+                    <span class="title">One-liner</span>
+                  </div>
+                  <button
+                    type="button"
+                    class="copy-btn"
+                    data-copy="bash &lt;(curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/install.sh)"
+                  >
+                    Copy
+                  </button>
+                </div>
+                <pre><code>bash <(curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/install.sh)</code></pre>
+              </div>
+              <div class="install-block">
+                <div class="code-head">
+                  <div>
+                    <span class="step">02</span>
+                    <span class="title">Recommended full stack</span>
+                  </div>
+                  <button
+                    type="button"
+                    class="copy-btn"
+                    data-copy="bash install.sh --full --de xfce --browser chromium --with-grok --with-x11"
+                  >
+                    Copy
+                  </button>
+                </div>
+                <pre><code>bash install.sh --full --de xfce --browser chromium --with-grok --with-x11</code></pre>
+              </div>
+              <div class="install-block">
+                <div class="code-head">
+                  <div>
+                    <span class="step">03</span>
+                    <span class="title">Or clone</span>
+                  </div>
+                  <button
+                    type="button"
+                    class="copy-btn"
+                    data-copy="git clone https://github.com/FineComputer14451/GrokHunter.git\ncd GrokHunter\nbash install.sh"
+                  >
+                    Copy
+                  </button>
+                </div>
+                <pre><code>git clone https://github.com/FineComputer14451/GrokHunter.git
+cd GrokHunter
+bash install.sh</code></pre>
+              </div>
+            </div>
+            <div class="install-panel">
+              <h3>Installer flags</h3>
+              <ul class="flag-list">
+                <li><code>-f, --full</code><span>Full installation (includes desktop)</span></li>
+                <li><code>-m, --mini</code><span>Mini (essential packages)</span></li>
+                <li><code>-n, --nano</code><span>Nano (minimal footprint)</span></li>
+                <li><code>--de <desktop></code><span>e17 | gnome | i3 | kde | lxde | mate | xfce</span></li>
+                <li><code>--browser <name></code><span>chromium | firefox | both</span></li>
+                <li><code>--with-grok</code><span>Install native Grok Build CLI</span></li>
+                <li><code>--with-x11</code><span>Install Termux:X11 + nh-x11 helper</span></li>
+                <li><code>--no-de / --no-grok / --no-x11</code><span>Skip those stages</span></li>
+              </ul>
+              <div class="after-box">
+                <p>After install</p>
+                <ul>
+                  <li><span class="accent">nethunter</span> — enter Kali shell</li>
+                  <li><span class="accent">nh-x11</span> — low-latency desktop</li>
+                  <li><span class="accent">grok</span> — Grok Build TUI</li>
+                  <li><span class="accent">grokhunter doctor</span> — health report</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="cli">
+        <div class="wrap">
+          <p class="section-label">CLI</p>
+          <h2>grokhunter commands</h2>
+          <p class="section-lead">
+            Also: <code style="color: var(--accent)">grok-nethunter</code> fullscreen launcher
+          </p>
+          <div class="cli-list">
+            <div class="cli-row"><code>grokhunter</code><span>Interactive TUI</span></div>
+            <div class="cli-row"><code>grokhunter status</code><span>Short status line</span></div>
+            <div class="cli-row"><code>grokhunter doctor</code><span>Full health report</span></div>
+            <div class="cli-row"><code>grokhunter ensure</code><span>Install / upgrade Grok Build binary</span></div>
+            <div class="cli-row"><code>grokhunter install [args]</code><span>Run or re-run the rootless installer</span></div>
+            <div class="cli-row"><code>grokhunter plan "…"</code><span>Plan a coding task</span></div>
+            <div class="cli-row"><code>grokhunter -p "…"</code><span>Headless one-shot</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section alt" id="architecture">
+        <div class="wrap">
+          <p class="section-label">Architecture</p>
+          <h2>Overlay on a living rootfs</h2>
+          <p class="section-lead">
+            Design goals: rootless first, coding focus, official Grok binary, idempotent install,
+            mobile-first UX.
+          </p>
+          <div style="display: grid; gap: 0.35rem">
+            <div class="arch-layer" style="padding-left: 0">
+              <div class="arch-num">1</div>
+              <div class="arch-card"><strong>Android</strong><span>stock / unrooted</span></div>
+            </div>
+            <div class="arch-layer" style="padding-left: 12px">
+              <div class="arch-num">2</div>
+              <div class="arch-card"><strong>Termux</strong><span>F-Droid or GitHub (not Play Store)</span></div>
+            </div>
+            <div class="arch-layer" style="padding-left: 24px">
+              <div class="arch-num">3</div>
+              <div class="arch-card"><strong>proot → Kali NH</strong><span>nano / mini / full rootfs</span></div>
+            </div>
+            <div class="arch-layer" style="padding-left: 36px">
+              <div class="arch-num">4</div>
+              <div class="arch-card"><strong>GrokHunter overlay</strong><span>Grok CLI · nh-x11 · doctor · skills</span></div>
+            </div>
+          </div>
+          <div class="mini-grid">
+            <div class="mini-card">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              </svg>
+              <strong>No root</strong>
+              <p>No Magisk, HID, or custom recovery</p>
+            </div>
+            <div class="mini-card">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="12 2 2 7 12 12 22 7 12 2" />
+                <polyline points="2 17 12 22 22 17" />
+                <polyline points="2 12 12 17 22 12" />
+              </svg>
+              <strong>Not a fork</strong>
+              <p>Never rebuilds Kali rootfs or kernels</p>
+            </div>
+            <div class="mini-card">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+              </svg>
+              <strong>Idempotent</strong>
+              <p>Safe to re-run; uninstall keeps your projects</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="wrap">
+          <div class="cta-band hero-wash">
+            <div class="cta-band-inner">
+              <div>
+                <h2>Ship code from your pocket</h2>
+                <p>
+                  Clone the repo, run the installer, open Grok. Your mobile AI coding lab is ready.
+                </p>
+              </div>
+              <div class="cta-row" style="margin: 0">
+                <a
+                  class="btn btn-primary"
+                  href="https://github.com/FineComputer14451/GrokHunter"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >FineComputer14451/GrokHunter</a
+                >
+                <a class="btn btn-ghost btn-lg" href="#install">Install commands</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="wrap footer-inner">
+        <div>
+          <strong>GrokHunter Rootless © 2026 FineComputer14451</strong>
+          <div>GPL-3.0 · Credits: termux-nethunter, Grok Build, Termux:X11</div>
+        </div>
+        <div class="footer-links">
+          <a href="https://github.com/FineComputer14451/GrokHunter/blob/main/docs/INSTALL.md" target="_blank" rel="noopener noreferrer">Docs</a>
+          <a href="https://github.com/FineComputer14451/GrokHunter/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">Changelog</a>
+          <a href="https://github.com/FineComputer14451/GrokHunter" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>
