@@ -1,0 +1,141 @@
+#!/usr/bin/env bash
+# GrokHunter primary CLI — Kali NetHunter × Grok Build
+set -euo pipefail
+
+export PATH="${HOME}/.grok/bin:${HOME}/.local/bin:${PATH}"
+VERSION="${GROKHUNTER_VERSION:-1.0.0}"
+ROOT="${GROKHUNTER_HOME:-}"
+if [[ -z "$ROOT" ]]; then
+  # Resolve from this script → ../ when installed from repo, else ~/GrokHunter
+  HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  if [[ -f "${HERE}/../install.sh" ]]; then
+    ROOT="$(cd "${HERE}/.." && pwd)"
+  elif [[ -d "${HOME}/GrokHunter" ]]; then
+    ROOT="${HOME}/GrokHunter"
+  else
+    ROOT="${HERE}"
+  fi
+fi
+export GROKHUNTER_HOME="$ROOT"
+
+usage() {
+  cat <<EOF
+GrokHunter v${VERSION} — Kali NetHunter powered by Grok Build
+
+Usage:
+  grokhunter                  Interactive fullscreen TUI
+  grokhunter status           Short status line
+  grokhunter doctor           Full health report
+  grokhunter ensure           Install/upgrade Grok Build binary
+  grokhunter install          Re-run overlay installer
+  grokhunter plan <prompt>    Plan mode (-p with plan intent)
+  grokhunter -p <prompt>      Headless / one-shot
+  grokhunter -- <grok args>   Pass-through to grok
+  grokhunter help             This help
+  grokhunter version          Print version
+
+Aliases (after profile install):
+  gh   → grokhunter
+  ghn  → grok-nethunter
+  ghd  → doctor
+  ghp  → plan
+  ghh  → headless -p
+
+Env:
+  XAI_API_KEY              API auth
+  GROK_NETHUNTER_FLAGS     Extra default flags for launcher
+  GROKHUNTER_HOME          Overlay root (default ~/GrokHunter)
+  GROKHUNTER_MIN_GROK      Min binary version (default 0.2.93)
+EOF
+}
+
+cmd_status() {
+  local gver="missing"
+  if command -v grok >/dev/null 2>&1; then
+    gver=$(grok --version 2>/dev/null | head -1 || echo "unknown")
+  fi
+  local auth="no-key"
+  if [[ -n "${XAI_API_KEY:-}" ]]; then
+    auth="env-key"
+  elif [[ -r "${HOME}/.grok/secrets.env" ]]; then
+    auth="secrets.env"
+  elif [[ -r "${HOME}/.grok/auth.json" ]]; then
+    auth="auth.json"
+  fi
+  printf "GrokHunter %s | %s | auth=%s | home=%s\n" \
+    "$VERSION" "$gver" "$auth" "$ROOT"
+}
+
+cmd_ensure() {
+  local min="${GROKHUNTER_MIN_GROK:-0.2.93}"
+  if command -v grok >/dev/null 2>&1; then
+    local gver
+    gver=$(grok --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1 || true)
+    if [[ -n "$gver" ]] && printf '%s\n%s\n' "$min" "$gver" | sort -V | head -1 | grep -qx "$min"; then
+      if [[ "${1:-}" != "--force" ]]; then
+        echo "Grok Build ${gver} already ≥ ${min}"
+        return 0
+      fi
+    fi
+  fi
+  echo "Ensuring Grok Build via official installer…"
+  curl -fsSL https://x.ai/cli/install.sh | bash
+  export PATH="${HOME}/.grok/bin:${HOME}/.local/bin:${PATH}"
+  grok --version || true
+}
+
+cmd_plan() {
+  local prompt="$*"
+  if [[ -z "$prompt" ]]; then
+    echo "Usage: grokhunter plan <prompt>" >&2
+    exit 2
+  fi
+  exec "${HOME}/.local/bin/grok-nethunter" -p "Enter plan mode first. Task: ${prompt}"
+}
+
+main() {
+  local sub="${1:-}"
+  case "$sub" in
+    "" )
+      exec "${HOME}/.local/bin/grok-nethunter" "$@"
+      ;;
+    help|-h|--help)
+      usage
+      ;;
+    version|-V|--version)
+      echo "GrokHunter ${VERSION}"
+      ;;
+    status)
+      cmd_status
+      ;;
+    doctor)
+      exec "${HOME}/.local/bin/grokhunter-doctor"
+      ;;
+    ensure)
+      shift || true
+      cmd_ensure "${1:-}"
+      ;;
+    install)
+      exec bash "${ROOT}/install.sh"
+      ;;
+    plan)
+      shift
+      cmd_plan "$@"
+      ;;
+    -p|--prompt)
+      shift
+      # support: grokhunter -p "..." extra
+      exec "${HOME}/.local/bin/grok-nethunter" -p "$@"
+      ;;
+    --)
+      shift
+      exec "${HOME}/.local/bin/grok-nethunter" "$@"
+      ;;
+    *)
+      # Unknown subcommand: pass everything to grok launcher
+      exec "${HOME}/.local/bin/grok-nethunter" "$@"
+      ;;
+  esac
+}
+
+main "$@"

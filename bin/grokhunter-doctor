@@ -1,0 +1,179 @@
+#!/usr/bin/env bash
+# GrokHunter health report
+set -euo pipefail
+
+export PATH="${HOME}/.grok/bin:${HOME}/.local/bin:${PATH}"
+
+RED=$'\033[0;31m'
+GREEN=$'\033[0;32m'
+YELLOW=$'\033[1;33m'
+CYAN=$'\033[1;36m'
+NC=$'\033[0m'
+
+ok()   { printf "  ${GREEN}✓${NC} %s\n" "$*"; }
+warn() { printf "  ${YELLOW}!${NC} %s\n" "$*"; }
+bad()  { printf "  ${RED}✗${NC} %s\n" "$*"; }
+hdr()  { printf "\n${CYAN}%s${NC}\n" "$*"; }
+
+FAIL=0
+
+hdr "GrokHunter Doctor"
+printf "  Host: %s | Arch: %s | Kernel: %s\n" "$(hostname 2>/dev/null || echo '?')" "$(uname -m)" "$(uname -r)"
+
+# OS
+hdr "Operating system"
+if [[ -r /etc/os-release ]]; then
+  # shellcheck disable=SC1091
+  . /etc/os-release
+  if [[ "${ID:-}" == "kali" ]]; then
+    ok "Kali ${VERSION:-?} (${VERSION_CODENAME:-})"
+  else
+    warn "Not Kali (ID=${ID:-unknown}) — GrokHunter still works, NetHunter packages may be missing"
+  fi
+else
+  bad "No /etc/os-release"
+  FAIL=1
+fi
+
+if dpkg -l kali-nethunter-nano 2>/dev/null | grep -q '^ii'; then
+  ok "Package: kali-nethunter-nano"
+elif dpkg -l kali-nethunter-core 2>/dev/null | grep -q '^ii'; then
+  ok "Package: kali-nethunter-core"
+elif dpkg -l nethunter-utils 2>/dev/null | grep -q '^ii'; then
+  ok "Package: nethunter-utils"
+else
+  warn "No kali-nethunter-* package detected (desktop Kali or non-NH rootfs?)"
+fi
+
+# Android host signals
+if [[ -x /system/bin/getprop ]] || command -v getprop >/dev/null 2>&1; then
+  ok "Android host signals present (NetHunter-style environment)"
+else
+  warn "No Android getprop — may be pure desktop Kali"
+fi
+
+# Grok binary
+hdr "Grok Build"
+MIN_VER="${GROKHUNTER_MIN_GROK:-0.2.93}"
+if command -v grok >/dev/null 2>&1; then
+  GVER_LINE=$(grok --version 2>/dev/null | head -1 || true)
+  ok "Found: ${GVER_LINE:-grok} @ $(command -v grok)"
+  # crude semver compare major.minor.patch
+  GVER=$(echo "$GVER_LINE" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1 || true)
+  if [[ -n "$GVER" ]]; then
+    if printf '%s\n%s\n' "$MIN_VER" "$GVER" | sort -V | head -1 | grep -qx "$MIN_VER"; then
+      ok "Version ≥ ${MIN_VER}"
+    else
+      bad "Version ${GVER} < min ${MIN_VER} — run: grokhunter ensure"
+      FAIL=1
+    fi
+  fi
+else
+  bad "grok not on PATH"
+  FAIL=1
+fi
+
+# Launchers
+hdr "GrokHunter launchers"
+for b in grokhunter grok-nethunter grokhunter-doctor; do
+  if command -v "$b" >/dev/null 2>&1; then
+    ok "$b → $(command -v "$b")"
+  else
+    bad "$b missing from PATH"
+    FAIL=1
+  fi
+done
+
+# Auth
+hdr "Authentication"
+if [[ -n "${XAI_API_KEY:-}" ]]; then
+  ok "XAI_API_KEY is set in environment"
+elif [[ -r "${HOME}/.grok/secrets.env" ]] && grep -q 'XAI_API_KEY=' "${HOME}/.grok/secrets.env" 2>/dev/null; then
+  ok "XAI_API_KEY present in ~/.grok/secrets.env"
+else
+  if [[ -r "${HOME}/.grok/auth.json" ]]; then
+    ok "auth.json present (browser / prior login may work)"
+  else
+    warn "No API key detected — export XAI_API_KEY or run grok once to login"
+  fi
+fi
+
+if [[ -r "${HOME}/.grok/secrets.env" ]]; then
+  MODE=$(stat -c '%a' "${HOME}/.grok/secrets.env" 2>/dev/null || echo '?')
+  if [[ "$MODE" == "600" || "$MODE" == "400" ]]; then
+    ok "secrets.env mode ${MODE}"
+  else
+    warn "secrets.env mode is ${MODE} (recommend 600)"
+  fi
+fi
+
+# Network / DNS
+hdr "Network"
+if [[ -r /etc/resolv.conf ]]; then
+  ok "/etc/resolv.conf readable"
+  if grep -qE 'nameserver\s+' /etc/resolv.conf; then
+    ok "nameserver entries present"
+  else
+    warn "No nameserver lines in resolv.conf"
+  fi
+else
+  bad "Missing /etc/resolv.conf (Termux needs GrokTerm DNS patch — not NetHunter)"
+  FAIL=1
+fi
+
+if curl -fsS --max-time 5 https://api.x.ai/v1 >/dev/null 2>&1 \
+  || curl -fsS --max-time 5 -o /dev/null -w '' https://x.ai 2>/dev/null; then
+  ok "Outbound HTTPS reachable"
+else
+  # soft fail — many endpoints 404 without path
+  if curl -fsS --max-time 5 -o /dev/null -w '%{http_code}' https://x.ai 2>/dev/null | grep -qE '^[23]'; then
+    ok "x.ai reachable"
+  else
+    warn "Could not verify HTTPS to x.ai (offline or captive portal?)"
+  fi
+fi
+
+# Skills
+hdr "Skills"
+for s in grokhunter nethunter-recon; do
+  if [[ -f "${HOME}/.grok/skills/${s}/SKILL.md" ]]; then
+    ok "skill: ${s}"
+  else
+    warn "skill missing: ${s} — re-run install.sh"
+  fi
+done
+
+# Config
+hdr "Config"
+if [[ -f "${HOME}/.grok/config.toml" ]]; then
+  ok "~/.grok/config.toml exists"
+  if grep -q 'compact_mode\s*=\s*true' "${HOME}/.grok/config.toml" 2>/dev/null; then
+    ok "compact_mode=true (mobile-friendly)"
+  else
+    warn "compact_mode not true — optional NetHunter UX"
+  fi
+  if grep -q 'default\s*=\s*"grok-4.5"' "${HOME}/.grok/config.toml" 2>/dev/null; then
+    ok "default model grok-4.5"
+  else
+    warn "default model may not be grok-4.5"
+  fi
+else
+  warn "No config.toml yet — first grok launch will create one"
+fi
+
+# Meta
+hdr "Install meta"
+if [[ -f "${HOME}/.grokhunter/install.meta" ]]; then
+  ok "Installed: $(cat "${HOME}/.grokhunter/install.meta")"
+else
+  warn "No ~/.grokhunter/install.meta (partial install?)"
+fi
+
+printf "\n"
+if [[ "$FAIL" -eq 0 ]]; then
+  printf "${GREEN}Doctor: PASS${NC} — GrokHunter ready. Launch with: grokhunter\n"
+  exit 0
+else
+  printf "${RED}Doctor: ISSUES FOUND${NC} — fix items marked ✗ then re-run: grokhunter doctor\n"
+  exit 1
+fi

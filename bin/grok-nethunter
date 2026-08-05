@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# GrokHunter — NetHunter / mobile-friendly Grok Build launcher
+set -euo pipefail
+
+export PATH="${HOME}/.grok/bin:${HOME}/.local/bin:${PATH}"
+export COLORTERM="${COLORTERM:-truecolor}"
+if [[ -z "${TERM:-}" || "${TERM}" == "dumb" ]]; then
+  export TERM="xterm-256color"
+fi
+
+if [[ -r "${HOME}/.grok/secrets.env" ]]; then
+  set -a
+  # shellcheck disable=SC1091
+  source "${HOME}/.grok/secrets.env"
+  set +a
+fi
+
+GROK_BIN="${HOME}/.grok/bin/grok"
+if [[ ! -x "${GROK_BIN}" ]]; then
+  if command -v grok >/dev/null 2>&1; then
+    GROK_BIN="$(command -v grok)"
+  else
+    echo "grok not found. Install: bash ~/GrokHunter/install.sh" >&2
+    echo "  or: curl -fsSL https://x.ai/cli/install.sh | bash" >&2
+    exit 127
+  fi
+fi
+
+# Default fullscreen TUI; override with GROK_NETHUNTER_FLAGS
+DEFAULT_FLAGS=(--fullscreen)
+if [[ -n "${GROK_NETHUNTER_FLAGS:-}" ]]; then
+  # shellcheck disable=SC2206
+  DEFAULT_FLAGS=(${GROK_NETHUNTER_FLAGS})
+fi
+
+force_defaults=1
+for a in "$@"; do
+  case "$a" in
+    --minimal|--no-alt-screen|--fullscreen) force_defaults=0; break ;;
+  esac
+done
+
+if [[ force_defaults -eq 1 ]]; then
+  exec "${GROK_BIN}" "${DEFAULT_FLAGS[@]}" "$@"
+else
+  exec "${GROK_BIN}" "$@"
+fi

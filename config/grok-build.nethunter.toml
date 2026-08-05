@@ -1,0 +1,39 @@
+# GrokHunter — NetHunter-optimized Grok Build snippet
+# Merged carefully by install.sh (does not wipe custom [model.*] blocks).
+# Full reference: https://x.ai / grok --help
+
+[hints]
+worktree_tip_dismissed = true
+
+[features]
+telemetry = false
+
+[telemetry]
+trace_upload = false
+otel_enabled = false
+otel_metrics_exporter = "none"
+otel_logs_exporter = "none"
+
+[cli]
+installer = "internal"
+auto_update = true
+show_tips = true
+channel = "alpha"
+
+[ui]
+# NetHunter / small screens: compact + fullscreen TUI
+screen_mode = "fullscreen"
+max_thoughts_width = 100
+fork_secondary_model = "grok-build"
+yolo = false
+compact_mode = true
+permission_mode = "always-approve"
+theme = "groknight"
+combine_queued_prompts = true
+
+[ui.display_refresh]
+auto_cadence_enabled = true
+
+[models]
+default = "grok-4.5"
+default_reasoning_effort = "high"
