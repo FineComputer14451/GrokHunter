@@ -1,0 +1,80 @@
+#compdef grokhunter gh
+
+# GrokHunter zsh completion
+# Install: bash scripts/install-completions.sh
+# Then in ~/.zshrc: autoload -Uz compinit && compinit
+
+_grokhunter() {
+  local -a commands
+  commands=(
+    'status:Short status line (auth/x11/v9)'
+    'doctor:Full health report'
+    'ensure:Install or upgrade Grok Build binary'
+    'models:V9 / 4.5 model pickers'
+    'install:Run or re-run rootless installer'
+    'plan:Plan a coding task'
+    'help:Show help'
+    'version:Print version'
+  )
+
+  local -a model_cmds
+  model_cmds=(
+    'install:Write V9 pickers into ~/.grok/config.toml'
+    'status:Show whether V9 pickers are installed'
+    '--force:Force refresh of V9 pickers'
+  )
+
+  local -a install_opts
+  install_opts=(
+    '--full[Full installation]'
+    '--mini[Mini installation]'
+    '--nano[Nano installation]'
+    '--de[Desktop environment]:desktop:(xfce mate lxde kde gnome i3 e17)'
+    '--browser[Browser]:browser:(chromium firefox both)'
+    '--no-de[Skip desktop]'
+    '--with-grok[Install Grok Build]'
+    '--no-grok[Skip Grok Build]'
+    '--with-x11[Install Termux:X11]'
+    '--no-x11[Skip Termux:X11]'
+    '--with-aider[Install Aider]'
+    '--no-aider[Skip Aider]'
+    '--with-v9-models[Install V9 model pickers]'
+    '--no-v9-models[Skip V9 pickers]'
+    '--help[Show help]'
+  )
+
+  _arguments -C \
+    '1:command:->cmd' \
+    '*::arg:->args'
+
+  case $state in
+    cmd)
+      _describe -t commands 'grokhunter command' commands
+      _arguments \
+        '-p[Headless prompt]:prompt:' \
+        '--prompt[Headless prompt]:prompt:' \
+        '--[Pass-through to grok]'
+      ;;
+    args)
+      case $words[1] in
+        models)
+          _describe -t model_cmds 'models' model_cmds
+          ;;
+        install)
+          _arguments $install_opts
+          ;;
+        ensure)
+          _arguments '--force[Force reinstall even if version OK]'
+          ;;
+        plan)
+          _message 'plan prompt'
+          ;;
+        -p|--prompt)
+          _message 'prompt text'
+          ;;
+      esac
+      ;;
+  esac
+}
+
+_grokhunter "$@"

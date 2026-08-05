@@ -1,0 +1,10 @@
+#compdef nh-x11
+
+# nh-x11 — optional env hints
+_nh-x11() {
+  _arguments \
+    '(- *)--help[Show help]' \
+    '*:: :_message "env: NH_X11_LEGACY=1 NH_X11_DPI=240"'
+}
+
+_nh-x11 "$@"
