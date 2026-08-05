@@ -5,8 +5,8 @@
 1. **Rootless first** — unrooted Android via Termux + proot only.
 2. **Coding & building focus** — real Linux toolchains + Grok as on-device agent.
 3. **Overlay, not fork** — never rebuild Kali rootfs or kernels.
-4. **Official Grok binary** — install via xAI’s installer; no custom forks.
-5. **Idempotent install** — safe to re-run.
+4. **Grok binary** — shared installer (`scripts/ensure_grok.sh`): Termux-native first on Android, official xAI installer as fallback (override with `GROKHUNTER_GROK_INSTALLER`).
+5. **Idempotent install** — safe to re-run; modules/engine cached under `~/.cache/grokhunter`.
 6. **Mobile-first UX** — compact TUI, short aliases, desktop via Termux:X11.
 
 ## Scope
@@ -37,11 +37,27 @@ GrokHunter does **not** require Magisk, custom recovery, HID, or firmware module
 ## Install flow
 
 1. Detect Termux + architecture  
-2. Pull latest NetHunter rootfs (`/current/`, live SHA256)  
-3. Optional: desktop (XFCE) + browser  
-4. Optional: native Grok Build CLI  
-5. Optional: Termux:X11 + `nh-x11` + `/tmp` bind  
-6. Write install metadata for doctor / uninstall  
+2. Load `lib/*` (local clone or versioned cache; never leave engines in CWD)  
+3. Load `termux-distro` engine (vendored file or `~/.cache/grokhunter/termux-distro.sh`)  
+4. Pull latest NetHunter rootfs (`/current/`, live SHA256)  
+5. Optional: desktop + browser (session name saved for `nh-x11`)  
+6. Optional: Grok Build via `scripts/ensure_grok.sh`  
+7. Optional: Termux:X11 + `nh-x11` + `/tmp` bind  
+
+## Supply chain notes
+
+One-liner installs **download and execute** remote scripts (this repo’s modules, `termux-distro`, Grok installers). Mitigations:
+
+| Control | How |
+|---------|-----|
+| Prefer clone | `git clone` + `bash install.sh` audits files first |
+| Module version | `MODULES_VERSION` invalidates stale cache |
+| Engine cache | `termux-distro.sh` under `~/.cache/grokhunter`, not CWD |
+| Override URLs | `GROKHUNTER_DISTRO_ENGINE_URL`, `GROKHUNTER_GROK_*_URL` |
+| Refresh | `GROKHUNTER_REFRESH=1 bash install.sh …` |
+| Pin later | Vendor `termux-distro.sh` next to `install.sh` |
+
+Remote `curl | bash` remains a residual risk shared with most CLI installers.
 
 ## Uninstall policy
 
