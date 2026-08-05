@@ -14,7 +14,7 @@ info() { echo "[GrokHunter] $*"; }
 REPO_RAW="https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main"
 REPO_TAR="https://github.com/FineComputer14451/GrokHunter/archive/refs/heads/main.tar.gz"
 MODULES=(cli.sh actions.sh grok.sh x11.sh)
-MODULES_VERSION="2026.2.2"
+MODULES_VERSION="2026.2.3"
 
 CLEANUP_TMP=""
 WAKE_HELD=0
@@ -161,6 +161,13 @@ DEFAULT_ROOTFS_DIR=${TERMUX_FILES_DIR}/kali
 DEFAULT_LOGIN=kali
 
 parse_cli "$@" || die "CLI parse failed"
+
+# termux-distro msg() uses ${P}/${S}/${N}/... before colors() runs.
+# Under our set -u that becomes: "P: unbound variable". Seed empties.
+N="${N-}" R="${R-}" G="${G-}" Y="${Y-}" B="${B-}" M="${M-}" C="${C-}" W="${W-}"
+P="${P-}" S="${S-}" T="${T-}"
+HC="${HC-}" RC="${RC-}" SU="${SU-}" RU="${RU-}" SV="${SV-}" RV="${RV-}"
+ENABLE_COLOR="${ENABLE_COLOR-1}"
 
 distro_template=""
 if [[ -n "${SCRIPT_DIR}" && -f "${SCRIPT_DIR}/termux-distro.sh" ]]; then
