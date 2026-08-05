@@ -62,6 +62,18 @@ sudo apt install -y build-essential git python3 python3-pip nodejs npm
 # optional: rustup, go, etc. as needed
 ```
 
+## Optional: Aider + Grok
+
+For git-native terminal pair sessions with the same xAI key, see `docs/EDITORS.md` and the `aider-grok` skill.
+
+```bash
+# After one-time setup (docs/EDITORS.md)
+source ~/venv-aider/bin/activate
+export OPENAI_API_BASE=https://api.x.ai/v1
+export OPENAI_API_KEY="${XAI_API_KEY}"
+aider
+```
+
 ## Response style
 
 - Short, actionable, paste-ready commands
