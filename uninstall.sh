@@ -25,7 +25,7 @@ remove_bins() {
 }
 
 remove_skills() {
-  for s in grokhunter nethunter-recon; do
+  for s in grokhunter nethunter-recon pair-programming aider-grok; do
     if [[ -d "${SKILLS_DIR}/${s}" ]]; then
       rm -rf "${SKILLS_DIR}/${s}"
       log "Removed skill ${s}"
@@ -68,6 +68,34 @@ remove_meta() {
   log "Removed ~/.grokhunter"
 }
 
+remove_cache() {
+  # Module + termux-distro engine cache (safe; re-fetched on next install)
+  if [[ -d "${HOME}/.cache/grokhunter" ]]; then
+    rm -rf "${HOME}/.cache/grokhunter"
+    log "Removed ~/.cache/grokhunter"
+  fi
+}
+
+restore_launcher_backups() {
+  local prefix="${PREFIX:-/data/data/com.termux/files/usr}"
+  local f bak
+  for f in "${prefix}/bin/nethunter" "${prefix}/bin/nh"; do
+    bak="${f}.grokhunter.bak"
+    if [[ -f "${bak}" && -f "${f}" ]]; then
+      if mv -f "${bak}" "${f}" 2>/dev/null; then
+        log "Restored launcher from ${bak}"
+      else
+        warn "Could not restore ${bak}"
+      fi
+    fi
+  done
+  # nh-x11 helper
+  if [[ -f "${prefix}/bin/nh-x11" ]]; then
+    rm -f "${prefix}/bin/nh-x11"
+    log "Removed nh-x11"
+  fi
+}
+
 purge_grok() {
   warn "Purging Grok Build state under ~/.grok (auth, binary, config)…"
   # Keep a last-chance backup of config
@@ -85,12 +113,15 @@ main() {
   strip_shell
   remove_motd
   remove_meta
+  remove_cache
+  restore_launcher_backups
   if [[ "$PURGE_GROK" -eq 1 ]]; then
     purge_grok
   else
     log "Kept Grok Build binary and ~/.grok (use --purge-grok to strip binary dirs)"
   fi
   log "Done. Open a new shell to refresh PATH/aliases."
+  log "Note: Kali rootfs (nethunter) is left in place; remove separately if desired."
 }
 
 main "$@"

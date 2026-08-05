@@ -43,5 +43,9 @@ if [[ -d "${HOME}/Grok-Imagine-Cinematic-Studio" ]]; then
 fi
 
 export GROKHUNTER_HOME="${GROKHUNTER_HOME:-${HOME}/GrokHunter}"
-export GROKHUNTER_VERSION="${GROKHUNTER_VERSION:-1.0.0}"
+export GROKHUNTER_VERSION="${GROKHUNTER_VERSION:-1.0.1}"
+# Prefer clone bin/ when wrappers are not installed to ~/.local/bin yet
+if [[ -d "${GROKHUNTER_HOME}/bin" ]]; then
+  export PATH="${GROKHUNTER_HOME}/bin:${PATH}"
+fi
 # <<< grokhunter <<<
