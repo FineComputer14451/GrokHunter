@@ -17,10 +17,20 @@ The Aider path was previously surface-only (flags + docs). This release implemen
   - Auto-activates `~/venv-aider` when present
 - **Docs / skill** — aligned to `grok-4.5` and the real `aider-grok` command
 
+### From Grok-Build-2026.2-x11 precursor
+
+Useful bits extracted from the earlier monolithic “Grok Build Powered” installer:
+
+- **Storage pre-check** before rootfs download (warn + optional abort)
+- **Chromium `--no-sandbox`** patch on the `.desktop` Exec line (required under proot)
+- **Richer post-complete** quick-start lines (incl. `aider-grok`)
+- **Expanded offline SHA fallbacks** (arm64/armhf × nano/mini/full)
+- **ARCHITECTURE.md** — historical precursor section
+
 ### Versioning
 
 - `VERSION` → **1.0.2**
-- `MODULES_VERSION` → `2026.2.5` (forces one-liner module cache refresh)
+- `MODULES_VERSION` → `2026.2.6` (forces one-liner module cache refresh)
 
 ---
 
