@@ -4,6 +4,16 @@
 
 Code-review follow-ups for supply-chain hygiene, install reliability, and DE-aware desktop.
 
+### SpaceXAI alignment
+
+- **Aider default model** — `aider-grok` and docs pin **`grok-4.5`** (was `grok-4`)
+- **`scripts/spacexai_smoke.sh`** — Responses API smoke test (`XAI_API_KEY` + `api.x.ai`)
+- **`templates/spacexai_hello.py`** — minimal OpenAI-compatible client snippet
+- **Docs / skills** — SpaceXAI anchors (`XAI_API_KEY`, base URL, console, docs.x.ai)
+- **`grokhunter ai-smoke`** — CLI entry for SpaceXAI smoke (`smoke` alias)
+- **`grokhunter models`** — implemented `install|status` (was documented but missing)
+- **`ghai` alias** — `grokhunter ai-smoke` (profile + docs)
+
 ### Fixes
 
 - **Website deploy** — GitHub Actions workflow deploys `website/` to GitHub Pages
