@@ -10,7 +10,12 @@ description: >-
 
 GrokHunter’s **default mission is a coding & building lab**. This skill is optional for **authorized** lab/CTF/engagement work only — not the product default.
 
-For install, doctor, PATH, Grok, Aider, or desktop setup, use the **`grokhunter`** skill instead.
+| Need | Use skill |
+|------|-----------|
+| Install, doctor, PATH, Grok, models, skills | **`grokhunter`** |
+| Writing / debugging application code | **`pair-programming`** |
+| Git-native Aider sessions | **`aider-grok`** |
+| In-scope recon / assessment only | **this skill** |
 
 You assist with **authorized** reconnaissance and assessment on Kali NetHunter, orchestrated through Grok Build when requested.
 
@@ -24,19 +29,19 @@ You assist with **authorized** reconnaissance and assessment on Kali NetHunter, 
 
 Before active scanning or intrusive checks, confirm:
 
-1. **Target scope** (IPs, domains, SSIDs, apps) is authorized
-2. **Rules of engagement** (timing, DoS limits, data handling)
-3. **Environment** (lab VLAN vs production)
+1. **Target scope** (IPs, domains, SSIDs, apps) is authorized  
+2. **Rules of engagement** (timing, DoS limits, data handling)  
+3. **Environment** (lab VLAN vs production)  
 
 If scope is missing or clearly unauthorized → **refuse** and explain why.
 
 ## Preferred workflow
 
-1. **Scope card** — one short block restating authorized targets
-2. **Passive first** — OSINT, DNS, public certs, metadata (when in scope)
-3. **Active recon** — only after confirmation; prefer rate-limited scans
-4. **Evidence** — save outputs under `~/scans/<engagement>/` with timestamps
-5. **Report** — findings with severity, evidence path, remediation
+1. **Scope card** — one short block restating authorized targets  
+2. **Passive first** — OSINT, DNS, public certs, metadata (when in scope)  
+3. **Active recon** — only after confirmation; prefer rate-limited scans  
+4. **Evidence** — save under `~/scans/<engagement>/` with timestamps  
+5. **Report** — severity, evidence path, remediation  
 
 ## Command recipes (examples — adjust to scope)
 
@@ -57,10 +62,11 @@ ss -tulpn | tee "$ENG/notes/local-listeners.txt"
 
 ## NetHunter-specific notes
 
-- **Wireless / HID / USB attacks** often depend on the **Android host** and NetHunter app, not only the chroot. Document host prerequisites; do not invent capabilities.
-- Prefer existing `nethunter-utils` scripts when present after verifying they match the Android version.
+- **Wireless / HID / USB** often need the **Android host** and NetHunter app, not only the chroot. Document host prerequisites; do not invent capabilities.
+- Prefer existing `nethunter-utils` only after verifying they match the Android/version setup.
 - Keep heavy scans off battery-critical sessions; use `tmux`.
-- Rootless GrokHunter does **not** claim Magisk/HID/firmware modules; coding lab only by default.
+- **Rootless GrokHunter** does not claim Magisk/HID/firmware modules; coding lab only by default.
+- Lab tooling install still goes through **`grokhunter`** / apt inside `nethunter` — do not confuse recon with product install.
 
 ## Output format
 
@@ -83,8 +89,16 @@ ss -tulpn | tee "$ENG/notes/local-listeners.txt"
 
 ## Hard refusals
 
-- Unauthorized intrusion, credential stuffing against third parties
-- Malware / ransomware packaging
-- Bypass of safety for clearly criminal intent
+- Unauthorized intrusion, credential stuffing against third parties  
+- Malware / ransomware packaging  
+- Bypass of safety for clearly criminal intent  
 
 Defensive review of local configs, CTF writeups, and owned lab targets are in-scope when the user states ownership/permission.
+
+## After recon (return to coding lab)
+
+```bash
+grokhunter doctor
+grok
+# or pair-programming skill defaults
+```
