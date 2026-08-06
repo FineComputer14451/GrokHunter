@@ -1,5 +1,29 @@
 # Changelog
 
+## [1.0.2] — 2026-08-06 — Complete Aider integration
+
+The Aider path was previously surface-only (flags + docs). This release implements the missing installer logic and the promised helper.
+
+### Aider
+
+- **`lib/grok.sh`** — real implementation (was `PLACEHOLDER`)
+  - `install_aider()` — creates `~/venv-aider` inside NetHunter, installs `aider-chat`, drops helpers
+  - `install_grok_build()` — wraps shared `scripts/ensure_grok.sh`
+  - `install_v9_models()` / `install_shell_completions()` — call the existing scripts
+- **`bin/aider-grok`** — first-class wrapper
+  - Sources `~/.grok/secrets.env`
+  - Sets `OPENAI_API_BASE=https://api.x.ai/v1`
+  - Defaults to **`grok-4.5`** (`AIDER_MODEL` overridable)
+  - Auto-activates `~/venv-aider` when present
+- **Docs / skill** — aligned to `grok-4.5` and the real `aider-grok` command
+
+### Versioning
+
+- `VERSION` → **1.0.2**
+- `MODULES_VERSION` → `2026.2.5` (forces one-liner module cache refresh)
+
+---
+
 ## [1.0.1] — 2026-08-05 — Harden / fix patch
 
 Code-review follow-ups for supply-chain hygiene, install reliability, and DE-aware desktop.
