@@ -204,4 +204,27 @@ bash -c '
 '
 info "remove_skills discover OK"
 
+# ---------- install_agents → ~/.grok/agents (runtime multi-agent) ----------
+bash -c '
+  set -euo pipefail
+  SCRIPT_DIR="$(pwd)"
+  export HOME=$(mktemp -d)
+  source lib/grok.sh
+  msg() { :; }
+  cursor() { :; }
+  install_agents
+  while IFS= read -r n; do
+    [[ -n "$n" ]] || continue
+    [[ -f "$HOME/.grok/agents/$n.md" ]]
+  done < <(_gh_list_agent_names "$SCRIPT_DIR")
+  printf "%s\n" "---" "name: user-custom" "---" > "$HOME/.grok/agents/user-custom.md"
+  install_agents
+  [[ -f "$HOME/.grok/agents/user-custom.md" ]]
+  names="$(_gh_list_agent_names "$SCRIPT_DIR")"
+  echo "$names" | grep -qx "benjamin"
+  echo "$names" | grep -qx "coding-team"
+  rm -rf "$HOME"
+'
+info "install_agents OK"
+
 info "ALL OK"

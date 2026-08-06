@@ -9,6 +9,13 @@
 - Uninstall no longer guesses historical skill names when `skills/` is missing
 - `cmd_skills_status` drops dead `missing:` branch; ci-unit asserts full scan + user-only preserve
 
+### Coding Team agents (runtime multi-agent)
+
+- **`agents/`** — Grok Build agent defs: `benjamin` (plan), `lucas`, `harper`, `coding-team`
+- **`lib/agents-discover.sh`** + **`install_agents`** → `~/.grok/agents/` (loaded by Grok at runtime)
+- Doctor optional Agents section; uninstall removes product agent files only
+- Docs: `docs/CODING-TEAM.md`
+
 ## [1.0.2] — 2026-08-06 — Complete Aider integration
 
 The Aider path was previously surface-only (flags + docs). This release implements the missing installer logic and the promised helper.

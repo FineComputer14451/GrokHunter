@@ -261,7 +261,8 @@ cmd_skills() {
 Usage: grokhunter skills [status|install]
 
   status    Show which skills are under ~/.grok/skills (default)
-  install   Copy repo skills + refresh ~/.local/bin wrappers
+  install   Copy repo skills + Coding Team agents; refresh wrappers
+            (agents → ~/.grok/agents for Grok runtime /config-agents)
 EOF
       return 0
       ;;

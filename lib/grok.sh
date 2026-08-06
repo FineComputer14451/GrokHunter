@@ -15,7 +15,19 @@ elif [[ -n "${GROKHUNTER_HOME:-}" && -f "${GROKHUNTER_HOME}/lib/skills-discover.
   # shellcheck disable=SC1091
   source "${GROKHUNTER_HOME}/lib/skills-discover.sh"
 fi
-unset _GH_DISCOVER
+# Agent discovery (Coding Team) — same overlay roots
+_GH_AGENTS_DISCOVER="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" 2>/dev/null && pwd)/agents-discover.sh"
+if [[ -f "${_GH_AGENTS_DISCOVER}" ]]; then
+  # shellcheck disable=SC1090
+  source "${_GH_AGENTS_DISCOVER}"
+elif [[ -n "${SCRIPT_DIR:-}" && -f "${SCRIPT_DIR}/lib/agents-discover.sh" ]]; then
+  # shellcheck disable=SC1091
+  source "${SCRIPT_DIR}/lib/agents-discover.sh"
+elif [[ -n "${GROKHUNTER_HOME:-}" && -f "${GROKHUNTER_HOME}/lib/agents-discover.sh" ]]; then
+  # shellcheck disable=SC1091
+  source "${GROKHUNTER_HOME}/lib/agents-discover.sh"
+fi
+unset _GH_DISCOVER _GH_AGENTS_DISCOVER
 
 # ---------------------------------------------------------------------------
 # Path helpers (single resolution path for scripts / bins)
@@ -93,8 +105,9 @@ install_cli_bins() {
     msg -tw "No CLI wrappers installed — clone full repo with bin/"
   fi
 
-  # Skills go to ~/.grok/skills (uninstall already removes them)
+  # Skills + Coding Team agents for Grok Build runtime discovery
   install_skills || true
+  install_agents || true
 }
 
 # Copy repo skills/ into ~/.grok/skills for Grok Build skill discovery.
@@ -130,6 +143,39 @@ install_skills() {
     msg -ts "Installed ${count} skill(s) under ~/.grok/skills"
   else
     msg -tw "No skills installed"
+  fi
+}
+
+# Copy repo agents/*.md → ~/.grok/agents for Grok Build agent runtime.
+# Does not delete user-only agents not in the product scan.
+install_agents() {
+  msg -t "Installing GrokHunter agents → ~/.grok/agents"
+  local root src dest name count=0
+  root="$(_gh_overlay_root || true)"
+  if [[ -z "${root}" || ! -d "${root}/agents" ]]; then
+    msg -tw "No agents/ tree in overlay — skip"
+    return 0
+  fi
+  if ! declare -F _gh_list_agent_names >/dev/null 2>&1; then
+    msg -tw "Agent discovery missing (lib/agents-discover.sh) — skip"
+    return 0
+  fi
+  mkdir -p "${HOME}/.grok/agents" 2>/dev/null || true
+  while IFS= read -r name; do
+    [[ -n "${name}" ]] || continue
+    src="${root}/agents/${name}.md"
+    dest="${HOME}/.grok/agents/${name}.md"
+    [[ -f "${src}" ]] || continue
+    if ! cp -f "${src}" "${dest}" 2>/dev/null; then
+      msg -tw "Failed to install agent: ${name}"
+      continue
+    fi
+    count=$((count + 1))
+  done < <(_gh_list_agent_names "${root}")
+  if [[ ${count} -gt 0 ]]; then
+    msg -ts "Installed ${count} agent(s) under ~/.grok/agents (runtime: /config-agents)"
+  else
+    msg -tw "No agents installed"
   fi
 }
 

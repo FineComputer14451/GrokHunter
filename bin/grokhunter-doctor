@@ -14,11 +14,16 @@ fi
 export GROKHUNTER_HOME="${GROKHUNTER_HOME:-${_GH_ROOT}}"
 export PATH="${HOME}/.grok/bin:${HOME}/.local/bin:${GROKHUNTER_HOME}/bin:${PATH}"
 
-# Skill discovery (CORE + list) — single source
+# Skill + agent discovery — single sources
 # shellcheck disable=SC1091
 if [[ -f "${GROKHUNTER_HOME}/lib/skills-discover.sh" ]]; then
   # shellcheck source=lib/skills-discover.sh
   source "${GROKHUNTER_HOME}/lib/skills-discover.sh"
+fi
+# shellcheck disable=SC1091
+if [[ -f "${GROKHUNTER_HOME}/lib/agents-discover.sh" ]]; then
+  # shellcheck source=lib/agents-discover.sh
+  source "${GROKHUNTER_HOME}/lib/agents-discover.sh"
 fi
 
 RED=$'\033[0;31m'
@@ -260,6 +265,21 @@ if declare -F _gh_list_skill_names >/dev/null 2>&1; then
 else
   warn "skill discovery missing (lib/skills-discover.sh) — limited skills check"
   WARN=1
+fi
+
+# ---------- Agents (Coding Team; optional, never required) ----------
+hdr "Agents"
+if declare -F _gh_list_agent_names >/dev/null 2>&1; then
+  while IFS= read -r s; do
+    [[ -n "${s}" ]] || continue
+    if [[ -f "${HOME}/.grok/agents/${s}.md" ]]; then
+      ok "agent: ${s} (~/.grok/agents) — runtime /config-agents or spawn"
+    else
+      ok "agent (repo only): ${s} — install: grokhunter skills install"
+    fi
+  done < <(_gh_list_agent_names "${GROKHUNTER_HOME}")
+else
+  ok "agents: (no agents-discover.sh)"
 fi
 
 # ---------- Config / models ----------

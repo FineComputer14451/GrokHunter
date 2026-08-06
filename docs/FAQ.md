@@ -59,6 +59,8 @@ bash install.sh --overlay-only --with-grok --with-v9-models --with-completions
 
 Product skills are any `skills/<name>/SKILL.md` in the repo. `grokhunter skills install` copies all of them. Core health is still the coding trio (`skills=N/3`); `x11-desktop` and `nethunter-recon` are optional.
 
+**Coding Team agents** (true multi-agent system prompts): `benjamin`, `lucas`, `harper`, `coding-team` install to `~/.grok/agents/`. Grok loads them at runtime via `/config-agents` or spawn `subagent_type`. See [CODING-TEAM.md](CODING-TEAM.md).
+
 Requires at least one `--with-*` flag.
 
 ## How do I check V9 model pickers / API key?
