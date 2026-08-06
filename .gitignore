@@ -6,3 +6,4 @@ secrets.env
 __pycache__/
 # Never commit a CWD-downloaded engine (install now caches under ~/.cache/grokhunter)
 /termux-distro.sh
+.worktrees/
