@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+### Skills discovery
+
+- **`lib/skills-discover.sh`** — single source for skill list + core set (`GH_CORE_SKILLS`)
+- **status / doctor / uninstall / install** all use the same discover helpers
+- Uninstall no longer guesses historical skill names when `skills/` is missing
+- `cmd_skills_status` drops dead `missing:` branch; ci-unit asserts full scan + user-only preserve
+
 ## [1.0.2] — 2026-08-06 — Complete Aider integration
 
 The Aider path was previously surface-only (flags + docs). This release implements the missing installer logic and the promised helper.

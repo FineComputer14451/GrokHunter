@@ -2,6 +2,21 @@
 # GrokHunter — Grok Build + Aider + V9 helpers
 # Called from lib/actions.sh during install / complete phase.
 
+# Skill discovery (list + CORE) — single source
+# shellcheck source=lib/skills-discover.sh
+_GH_DISCOVER="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" 2>/dev/null && pwd)/skills-discover.sh"
+if [[ -f "${_GH_DISCOVER}" ]]; then
+  # shellcheck disable=SC1090
+  source "${_GH_DISCOVER}"
+elif [[ -n "${SCRIPT_DIR:-}" && -f "${SCRIPT_DIR}/lib/skills-discover.sh" ]]; then
+  # shellcheck disable=SC1091
+  source "${SCRIPT_DIR}/lib/skills-discover.sh"
+elif [[ -n "${GROKHUNTER_HOME:-}" && -f "${GROKHUNTER_HOME}/lib/skills-discover.sh" ]]; then
+  # shellcheck disable=SC1091
+  source "${GROKHUNTER_HOME}/lib/skills-discover.sh"
+fi
+unset _GH_DISCOVER
+
 # ---------------------------------------------------------------------------
 # Path helpers (single resolution path for scripts / bins)
 # ---------------------------------------------------------------------------
@@ -26,26 +41,6 @@ _gh_resolve() {
     fi
   fi
   return 1
-}
-
-# List product skill names under <root>/skills (dirs with SKILL.md; skip _*).
-# Prints one name per line, sorted. Empty if none.
-_gh_list_skill_names() {
-  local root="${1:-}" d name
-  [[ -n "${root}" && -d "${root}/skills" ]] || return 0
-  local -a names=()
-  for d in "${root}/skills"/*/; do
-    [[ -d "${d}" ]] || continue
-    name="${d%/}"
-    name="${name##*/}"
-    [[ "${name}" == _* ]] && continue
-    [[ -f "${d}SKILL.md" ]] || continue
-    names+=("${name}")
-  done
-  if [[ ${#names[@]} -eq 0 ]]; then
-    return 0
-  fi
-  printf '%s\n' "${names[@]}" | LC_ALL=C sort -u
 }
 
 _gh_install_bin() {
@@ -116,13 +111,19 @@ install_skills() {
     [[ -n "${name}" ]] || continue
     src="${root}/skills/${name}"
     dest="${HOME}/.grok/skills/${name}"
-    if [[ -d "${src}" && -f "${src}/SKILL.md" ]]; then
-      rm -rf "${dest}" 2>/dev/null || true
-      mkdir -p "${dest}" 2>/dev/null || true
-      cp -a "${src}/." "${dest}/" 2>/dev/null || cp -R "${src}/"* "${dest}/" 2>/dev/null || true
-      if [[ -f "${dest}/SKILL.md" ]]; then
-        count=$((count + 1))
+    [[ -d "${src}" && -f "${src}/SKILL.md" ]] || continue
+    rm -rf "${dest}" 2>/dev/null || true
+    mkdir -p "${dest}" 2>/dev/null || true
+    if ! cp -a "${src}/." "${dest}/" 2>/dev/null; then
+      if ! cp -R "${src}/"* "${dest}/" 2>/dev/null; then
+        msg -tw "Failed to install skill: ${name}"
+        continue
       fi
+    fi
+    if [[ -f "${dest}/SKILL.md" ]]; then
+      count=$((count + 1))
+    else
+      msg -tw "Skill install incomplete (no SKILL.md): ${name}"
     fi
   done < <(_gh_list_skill_names "${root}")
   if [[ ${count} -gt 0 ]]; then

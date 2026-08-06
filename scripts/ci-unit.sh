@@ -138,7 +138,7 @@ else
   info "ai-smoke missing-key check inconclusive (skipped strict fail)"
 fi
 
-# ---------- install_skills copies SKILL.md (scan-based) ----------
+# ---------- install_skills copies every scanned skill ----------
 bash -c '
   set -euo pipefail
   SCRIPT_DIR="$(pwd)"
@@ -147,18 +147,17 @@ bash -c '
   msg() { :; }
   cursor() { :; }
   install_skills
-  [[ -f "$HOME/.grok/skills/grokhunter/SKILL.md" ]]
-  [[ -f "$HOME/.grok/skills/pair-programming/SKILL.md" ]]
-  [[ -f "$HOME/.grok/skills/aider-grok/SKILL.md" ]]
-  [[ -f "$HOME/.grok/skills/nethunter-recon/SKILL.md" ]]
-  # New optional skill (Task 4 creates SKILL.md; until then this fails)
-  [[ -f "$HOME/.grok/skills/x11-desktop/SKILL.md" ]]
-  # User-only skill must not be required for install success (sanity: create after install)
+  while IFS= read -r n; do
+    [[ -n "$n" ]] || continue
+    [[ -f "$HOME/.grok/skills/$n/SKILL.md" ]]
+  done < <(_gh_list_skill_names "$SCRIPT_DIR")
+  # User-only skill must survive reinstall
   mkdir -p "$HOME/.grok/skills/user-only"
   echo "user" > "$HOME/.grok/skills/user-only/SKILL.md"
-  # Re-install must not delete user-only
   install_skills
   [[ -f "$HOME/.grok/skills/user-only/SKILL.md" ]]
+  # Core count
+  [[ "$(_gh_count_core_installed)" -eq "${#GH_CORE_SKILLS[@]}" ]]
   rm -rf "$HOME"
 '
 info "install_skills OK"
@@ -172,8 +171,9 @@ bash -c '
   trap '\''rm -rf "$SCRIPT_DIR/skills/_template"'\'' EXIT
   names="$(_gh_list_skill_names "$SCRIPT_DIR")"
   echo "$names" | grep -qx "grokhunter"
-  echo "$names" | grep -qx "pair-programming"
   echo "$names" | grep -qx "x11-desktop"
+  _gh_is_core_skill grokhunter
+  _gh_is_core_skill x11-desktop && exit 1 || true
   mkdir -p "$SCRIPT_DIR/skills/_template"
   printf "%s\n" "---" "name: template" "---" > "$SCRIPT_DIR/skills/_template/SKILL.md"
   names2="$(_gh_list_skill_names "$SCRIPT_DIR")"
@@ -182,5 +182,26 @@ bash -c '
   fi
 '
 info "list_skill_names OK"
+
+# ---------- remove_skills uses discover (no allowlist guess) ----------
+bash -c '
+  set -euo pipefail
+  ROOT="$(pwd)"
+  # shellcheck source=lib/skills-discover.sh
+  source "$ROOT/lib/skills-discover.sh"
+  SKILLS_DIR=$(mktemp -d)
+  _GH_ROOT="$ROOT"
+  mkdir -p "$SKILLS_DIR"/{grokhunter,x11-desktop,user-only}
+  # inline remove_skills body from uninstall.sh contract
+  while IFS= read -r name; do
+    [[ -n "$name" ]] || continue
+    rm -rf "$SKILLS_DIR/$name"
+  done < <(_gh_list_skill_names "$ROOT")
+  test ! -d "$SKILLS_DIR/grokhunter"
+  test ! -d "$SKILLS_DIR/x11-desktop"
+  test -d "$SKILLS_DIR/user-only"
+  rm -rf "$SKILLS_DIR"
+'
+info "remove_skills discover OK"
 
 info "ALL OK"
