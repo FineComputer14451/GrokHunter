@@ -42,6 +42,7 @@ Useful bits extracted from the earlier monolithic “Grok Build Powered” insta
 - **`--overlay-only`** — install optional overlays without rootfs / termux-distro
 - **Atomic proot bind patch** — pure bash rewrite of launcher binds (no multi-line `sed -i`)
 - **`install_cli_bins`** — copies `grokhunter` / doctor / launchers into `~/.local/bin` (and Termux `PREFIX/bin` when present)
+- **Skills** — `grokhunter` / `pair-programming` / `aider-grok` / `nethunter-recon` updated for overlay-only, models CLI, file-based helpers, SpaceXAI smoke, and Grok 4.5 defaults
 
 ---
 
