@@ -30,7 +30,7 @@ Useful bits extracted from the earlier monolithic “Grok Build Powered” insta
 ### Versioning
 
 - `VERSION` → **1.0.2**
-- `MODULES_VERSION` → `2026.2.9` (atomic bind patch + ~/.local/bin wrappers)
+- `MODULES_VERSION` → `2026.2.10` (install skills + site refresh)
 
 ### Code quality (review blockers)
 
@@ -45,6 +45,8 @@ Useful bits extracted from the earlier monolithic “Grok Build Powered” insta
 - **Skills** — `grokhunter` / `pair-programming` / `aider-grok` / `nethunter-recon` updated for overlay-only, models CLI, file-based helpers, SpaceXAI smoke, and Grok 4.5 defaults
 - **`grokhunter ai-smoke` / `smoke`** — wired to `scripts/spacexai_smoke.sh`; profile alias `ghai`; completions include `--overlay-only` and completions flags
 - **`scripts/ci-unit.sh`** — local/CI unit checks (bash -n, parse_cli, maybe_install, bind patch, ai-smoke missing-key) without requiring workflow-token updates
+- **`install_skills`** — copies `skills/*` into `~/.grok/skills` during overlay/complete (matches uninstall)
+- **Website** — badge v1.0.2; CLI/flags for models, ai-smoke, overlay-only
 
 ---
 

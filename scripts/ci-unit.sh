@@ -129,4 +129,19 @@ else
   info "ai-smoke missing-key check inconclusive (skipped strict fail)"
 fi
 
+# ---------- install_skills copies SKILL.md ----------
+bash -c '
+  set -euo pipefail
+  SCRIPT_DIR="$(pwd)"
+  export HOME=$(mktemp -d)
+  source lib/grok.sh
+  msg() { :; }
+  cursor() { :; }
+  install_skills
+  [[ -f "$HOME/.grok/skills/grokhunter/SKILL.md" ]]
+  [[ -f "$HOME/.grok/skills/pair-programming/SKILL.md" ]]
+  rm -rf "$HOME"
+'
+info "install_skills OK"
+
 info "ALL OK"
