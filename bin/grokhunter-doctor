@@ -14,6 +14,13 @@ fi
 export GROKHUNTER_HOME="${GROKHUNTER_HOME:-${_GH_ROOT}}"
 export PATH="${HOME}/.grok/bin:${HOME}/.local/bin:${GROKHUNTER_HOME}/bin:${PATH}"
 
+# Skill discovery (CORE + list) — single source
+# shellcheck disable=SC1091
+if [[ -f "${GROKHUNTER_HOME}/lib/skills-discover.sh" ]]; then
+  # shellcheck source=lib/skills-discover.sh
+  source "${GROKHUNTER_HOME}/lib/skills-discover.sh"
+fi
+
 RED=$'\033[0;31m'
 GREEN=$'\033[0;32m'
 YELLOW=$'\033[1;33m'
@@ -228,33 +235,31 @@ done
 
 # ---------- Skills ----------
 hdr "Skills"
-for s in pair-programming grokhunter aider-grok; do
-  if [[ -f "${HOME}/.grok/skills/${s}/SKILL.md" ]]; then
-    ok "skill: ${s} (~/.grok/skills)"
-  elif [[ -f "${GROKHUNTER_HOME}/skills/${s}/SKILL.md" ]]; then
-    warn "skill (repo only): ${s} — run: bash install.sh --overlay-only --with-completions"
-    WARN=1
-  else
-    warn "skill missing: ${s}"
-    WARN=1
-  fi
-done
-# Optional / non-core product skills (never required)
-if [[ -d "${GROKHUNTER_HOME}/skills" ]]; then
-  for d in "${GROKHUNTER_HOME}/skills"/*/; do
-    [[ -d "${d}" ]] || continue
-    s="${d%/}"; s="${s##*/}"
-    [[ "${s}" == _* ]] && continue
-    [[ -f "${d}SKILL.md" ]] || continue
-    case "${s}" in
-      grokhunter|pair-programming|aider-grok) continue ;;
-    esac
+if declare -F _gh_list_skill_names >/dev/null 2>&1; then
+  for s in "${GH_CORE_SKILLS[@]}"; do
     if [[ -f "${HOME}/.grok/skills/${s}/SKILL.md" ]]; then
-      ok "skill (optional): ${s} (~/.grok/skills)"
+      ok "skill: ${s} (~/.grok/skills)"
     elif [[ -f "${GROKHUNTER_HOME}/skills/${s}/SKILL.md" ]]; then
-      ok "skill (optional, repo only): ${s} — install: grokhunter skills install"
+      warn "skill (repo only): ${s} — run: bash install.sh --overlay-only --with-completions"
+      WARN=1
+    else
+      warn "skill missing: ${s}"
+      WARN=1
     fi
   done
+  # Optional / non-core product skills (never required)
+  while IFS= read -r s; do
+    [[ -n "${s}" ]] || continue
+    _gh_is_core_skill "${s}" && continue
+    if [[ -f "${HOME}/.grok/skills/${s}/SKILL.md" ]]; then
+      ok "skill (optional): ${s} (~/.grok/skills)"
+    else
+      ok "skill (optional, repo only): ${s} — install: grokhunter skills install"
+    fi
+  done < <(_gh_list_skill_names "${GROKHUNTER_HOME}")
+else
+  warn "skill discovery missing (lib/skills-discover.sh) — limited skills check"
+  WARN=1
 fi
 
 # ---------- Config / models ----------

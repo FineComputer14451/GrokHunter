@@ -12,6 +12,14 @@ SKILLS_DIR="${HOME}/.grok/skills"
 MARKER_BEGIN="# >>> grokhunter >>>"
 MARKER_END="# <<< grokhunter <<<"
 
+# Overlay root (script directory) + skill discovery
+_GH_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
+if [[ -f "${_GH_ROOT}/lib/skills-discover.sh" ]]; then
+  # shellcheck source=lib/skills-discover.sh
+  source "${_GH_ROOT}/lib/skills-discover.sh"
+fi
+
 log() { printf '[+] %s\n' "$*"; }
 warn() { printf '[!] %s\n' "$*"; }
 
@@ -35,28 +43,23 @@ remove_bins() {
 }
 
 remove_skills() {
-  local root name
-  root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-  if [[ ! -d "${root}/skills" ]]; then
-    # Fallback: remove known historical names only if repo tree absent
-    for name in grokhunter pair-programming aider-grok nethunter-recon x11-desktop; do
-      if [[ -d "${SKILLS_DIR}/${name}" ]]; then
-        rm -rf "${SKILLS_DIR}/${name}"
-        log "Removed skill ${name}"
-      fi
-    done
+  local name
+  if [[ ! -d "${_GH_ROOT}/skills" ]]; then
+    # No product tree next to uninstall.sh — do not guess skill names
+    warn "No skills/ next to uninstall.sh — leaving ~/.grok/skills unchanged"
     return 0
   fi
-  for d in "${root}/skills"/*/; do
-    [[ -d "${d}" ]] || continue
-    name="${d%/}"; name="${name##*/}"
-    [[ "${name}" == _* ]] && continue
-    [[ -f "${d}SKILL.md" ]] || continue
+  if ! declare -F _gh_list_skill_names >/dev/null 2>&1; then
+    warn "skill discovery missing — leaving ~/.grok/skills unchanged"
+    return 0
+  fi
+  while IFS= read -r name; do
+    [[ -n "${name}" ]] || continue
     if [[ -d "${SKILLS_DIR}/${name}" ]]; then
       rm -rf "${SKILLS_DIR}/${name}"
       log "Removed skill ${name}"
     fi
-  done
+  done < <(_gh_list_skill_names "${_GH_ROOT}")
 }
 
 strip_shell() {

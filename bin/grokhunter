@@ -15,6 +15,13 @@ else
 fi
 export GROKHUNTER_HOME="${GROKHUNTER_HOME:-$ROOT}"
 
+# Skill discovery (CORE + list) — single source
+# shellcheck disable=SC1091
+if [[ -f "${GROKHUNTER_HOME}/lib/skills-discover.sh" ]]; then
+  # shellcheck source=lib/skills-discover.sh
+  source "${GROKHUNTER_HOME}/lib/skills-discover.sh"
+fi
+
 # Prefer repo bin/ when not installed to PATH (doctor/dev clone)
 export PATH="${GROKHUNTER_HOME}/bin:${PATH}"
 
@@ -128,19 +135,17 @@ cmd_status() {
   if [[ -f "${cfg}" ]] && grep -qF "${marker}" "${cfg}" 2>/dev/null; then
     models="yes"
   fi
-  local skills="0"
-  local s
-  for s in grokhunter pair-programming aider-grok; do
-    if [[ -f "${HOME}/.grok/skills/${s}/SKILL.md" ]]; then
-      skills=$((skills + 1))
-    fi
-  done
+  local skills core_n
+  skills="$(_gh_count_core_installed 2>/dev/null || echo 0)"
+  core_n="${#GH_CORE_SKILLS[@]}"
+  [[ "${core_n}" -gt 0 ]] || core_n=3
   local wrappers="no"
   if command -v grokhunter >/dev/null 2>&1 || [[ -x "${HOME}/.local/bin/grokhunter" ]]; then
     wrappers="yes"
   fi
-  printf "GrokHunter %s | %s | auth=%s | x11=%s | models=%s | skills-core=%s/3 | wrappers=%s | session=%s | home=%s\n" \
-    "$VERSION" "$gver" "$auth" "$x11" "$models" "$skills" "$wrappers" "$session" "$GROKHUNTER_HOME"
+  # skills-core label (remote polish) + dynamic denominator from GH_CORE_SKILLS
+  printf "GrokHunter %s | %s | auth=%s | x11=%s | models=%s | skills-core=%s/%s | wrappers=%s | session=%s | home=%s\n" \
+    "$VERSION" "$gver" "$auth" "$x11" "$models" "$skills" "$core_n" "$wrappers" "$session" "$GROKHUNTER_HOME"
 }
 
 cmd_ensure() {
@@ -200,7 +205,7 @@ cmd_ai_smoke() {
 }
 
 cmd_skills_status() {
-  local s dest count=0 name
+  local name dest count=0
   local skills_root="${GROKHUNTER_HOME}/skills"
   echo "skills dir: ${HOME}/.grok/skills"
   echo "repo:       ${skills_root}"
@@ -208,35 +213,26 @@ cmd_skills_status() {
     echo "  missing:   (no repo skills/ tree)"
     return 1
   fi
-  # shellcheck disable=SC2012
+  if ! declare -F _gh_list_skill_names >/dev/null 2>&1; then
+    echo "  error: skill discovery not loaded (lib/skills-discover.sh)" >&2
+    return 1
+  fi
   while IFS= read -r name; do
     [[ -n "${name}" ]] || continue
-    s="${name}"
-    dest="${HOME}/.grok/skills/${s}/SKILL.md"
+    dest="${HOME}/.grok/skills/${name}/SKILL.md"
     if [[ -f "${dest}" ]]; then
-      echo "  installed: ${s}"
+      echo "  installed: ${name}"
       count=$((count + 1))
-    elif [[ -f "${skills_root}/${s}/SKILL.md" ]]; then
-      echo "  repo-only: ${s}  (run: grokhunter skills install)"
     else
-      echo "  missing:   ${s}"
+      echo "  repo-only: ${name}  (run: grokhunter skills install)"
     fi
-  done < <(
-    for d in "${skills_root}"/*/; do
-      [[ -d "${d}" ]] || continue
-      name="${d%/}"; name="${name##*/}"
-      [[ "${name}" == _* ]] && continue
-      [[ -f "${d}SKILL.md" ]] || continue
-      printf '%s\n' "${name}"
-    done | LC_ALL=C sort -u
-  )
+  done < <(_gh_list_skill_names "${GROKHUNTER_HOME}")
   echo "installed: ${count}"
-  # Success if core trio present (not full inventory)
-  local core=0
-  for s in grokhunter pair-programming aider-grok; do
-    [[ -f "${HOME}/.grok/skills/${s}/SKILL.md" ]] && core=$((core + 1))
-  done
-  [[ ${core} -ge 3 ]]
+  # Success if all core skills present (not full inventory)
+  local core core_n
+  core="$(_gh_count_core_installed)"
+  core_n="${#GH_CORE_SKILLS[@]}"
+  [[ "${core}" -ge "${core_n}" ]]
 }
 
 cmd_skills_install() {
