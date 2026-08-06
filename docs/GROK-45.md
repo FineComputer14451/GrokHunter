@@ -26,9 +26,10 @@ grokhunter -p "your task"
 ```bash
 export OPENAI_API_BASE=https://api.x.ai/v1
 export OPENAI_API_KEY="${XAI_API_KEY}"
-# Prefer the newest Grok coding model your account exposes, e.g.:
-export AIDER_MODEL=grok-4
-# If the API lists a 4.5-specific id, set that instead.
+export AIDER_MODEL=grok-4.5
+# Preferred: use the helper (already defaults to grok-4.5)
+aider-grok
+# or
 aider --model "$AIDER_MODEL"
 ```
 
