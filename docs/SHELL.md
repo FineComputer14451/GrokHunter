@@ -29,6 +29,7 @@ Tab-complete:
 ```zsh
 grokhunter <TAB>
 grokhunter models <TAB>
+grokhunter ai-smoke <TAB>
 grokhunter install --de <TAB>
 gh <TAB>          # alias
 ```
@@ -60,6 +61,7 @@ Same installer. In `~/.bashrc`:
 | `ghs` | `grokhunter status` |
 | `ghp` | `grokhunter plan` |
 | `ghm` | `grokhunter models` |
+| `ghai` | `grokhunter ai-smoke` |
 | `ghh "…"` | `grokhunter -p "…"` |
 
 ## Termux tip
