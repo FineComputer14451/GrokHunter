@@ -57,6 +57,21 @@ bash install.sh --full --de xfce --with-grok --with-x11
 -h, --help              Show help
 ```
 
+## Overlay-only (no rootfs re-download)
+
+When Kali is already installed, add optional pieces without running termux-distro:
+
+```bash
+bash install.sh --overlay-only --with-x11 --with-aider
+bash install.sh --overlay-only --with-grok --with-v9-models --with-completions
+# or:
+grokhunter install --overlay-only --with-v9-models
+```
+
+Requires at least one `--with-*` flag. Does **not** install DE/browser or pull a new rootfs.
+
+Helpers (`nh-x11`, `aider-grok`) are installed from repo `bin/` files (single source of truth).
+
 ## Environment overrides
 
 | Variable | Purpose |

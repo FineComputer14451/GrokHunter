@@ -59,7 +59,7 @@ Usage:
   grokhunter doctor           Full health report
   grokhunter ensure           Install/upgrade Grok Build binary
   grokhunter models [cmd]     V9 / 4.5 model pickers (install|status)
-  grokhunter install [args]   Run / re-run the NetHunter installer
+  grokhunter install [args]   Run / re-run installer (supports --overlay-only)
   grokhunter plan <prompt>    Plan mode
   grokhunter -p <prompt>      Headless / one-shot
   grokhunter -- <grok args>   Pass-through to grok
