@@ -45,6 +45,22 @@ pre_install_actions() {
     else
       cursor -u1; msg -tw "Could not fetch SHA256SUMS — using bundled checksums"
     fi
+
+    # Storage pre-check (from Grok-Build-2026.2 precursor)
+    local available required=2
+    available=$(df -BG "${TERMUX_FILES_DIR:-/data/data/com.termux/files}" 2>/dev/null | awk 'NR==2 {gsub(/G/,"",$4); print $4}')
+    [[ ${SELECTED_INSTALLATION} == full ]] && required=6
+    if [[ -n ${available} && ${available} -lt ${required} ]]; then
+      msg -tw "Low storage: ${available}GB free (need ~${required}GB+ for ${SELECTED_INSTALLATION})"
+      if [[ ${NON_INTERACTIVE} -eq 0 ]]; then
+        if ! ask -y -- -t "Continue with limited space?"; then
+          msg -te "Installation aborted by user"
+          exit 1
+        fi
+      else
+        msg -tw "Non-interactive: continuing despite low storage"
+      fi
+    fi
   fi
 }
 
@@ -132,12 +148,18 @@ pre_complete_actions() {
 post_complete_actions() {
   echo
   msg -a "${P}GrokHunter Rootless is ready!  (coding & building lab)${S}"
-  msg -a "  nethunter          # Kali shell"
-  msg -a "  nh-x11             # desktop (if configured)"
-  msg -a "  grok / grokhunter  # pair programming"
-  msg -a "  grokhunter models  # V9 / 4.5 pickers"
-  msg -a "  grokhunter doctor  # health report"
-  msg -a "  source ~/.grok/profile.sh  # zsh/bash completions"
+  echo
+  msg -a "  ${T}Quick start:${S}"
+  msg -a "    nethunter              # Kali shell"
+  msg -a "    nh-x11                 # desktop (if configured)"
+  msg -a "    grok / grokhunter      # pair programming"
+  msg -a "    aider-grok             # git-native pair (if --with-aider)"
+  msg -a "    grokhunter models      # V9 / 4.5 pickers"
+  msg -a "    grokhunter doctor      # health report"
+  msg -a "    source ~/.grok/profile.sh  # zsh/bash completions"
+  echo
+  msg -a "  ${T}Auth:${S}  export XAI_API_KEY=xai-...  or put it in ~/.grok/secrets.env"
+  msg -a "  ${T}Docs:${S}   docs/EDITORS.md  docs/GROK-45.md  docs/X11-PERFORMANCE.md"
 }
 
 set_up_de() {
@@ -162,6 +184,23 @@ set_up_de() {
   local pkgs=(tigervnc-standalone-server dbus-x11 kali-desktop-"${selected_desktop,,}")
   if distro_exec apt update && distro_exec apt install -y "${pkgs[@]}"; then
     msg -ts "${selected_desktop} installed"
+    # Remember session for nh-x11 (DE-aware)
+    local session_cmd=startxfce4
+    case "${selected_desktop,,}" in
+      e17|enlightenment) session_cmd=enlightenment_start ;;
+      gnome) session_cmd=gnome-session ;;
+      i3) session_cmd=i3 ;;
+      kde|plasma) session_cmd=startplasma-x11 ;;
+      lxde) session_cmd=startlxde ;;
+      mate) session_cmd=mate-session ;;
+      xfce|xfce4) session_cmd=startxfce4 ;;
+    esac
+    if declare -F save_x11_session >/dev/null 2>&1; then
+      save_x11_session "${session_cmd}"
+    else
+      mkdir -p "${HOME}/.config/grokhunter" 2>/dev/null || true
+      printf '%s\n' "${session_cmd}" > "${HOME}/.config/grokhunter/x11-session" 2>/dev/null || true
+    fi
   else
     msg -te "Failed to install ${selected_desktop}"; return 1
   fi
@@ -182,6 +221,19 @@ set_up_browser() {
   msg -tn "Installing browser (${selected_browser})..."
   if distro_exec apt install -y ${selected_browser}; then
     cursor -u1; msg -ts "Browser installed"
+    # Chromium under proot needs --no-sandbox (from precursor)
+    if [[ "${selected_browser}" == *chromium* ]]; then
+      local desk="${ROOTFS_DIRECTORY}/usr/share/applications/chromium.desktop"
+      if [[ -f "${desk}" ]]; then
+        if sed -Ei 's/^(Exec=.*chromium).*(%U)$/\1 --no-sandbox \2/' "${desk}" 2>/dev/null; then
+          msg -ts "Chromium desktop entry: --no-sandbox applied"
+        else
+          msg -tw "Could not patch chromium.desktop — launch with --no-sandbox manually under proot"
+        fi
+      else
+        msg -tw "chromium.desktop not found yet — under proot always use: chromium --no-sandbox"
+      fi
+    fi
   else
     cursor -u1; msg -te "Failed to install browser"
   fi
