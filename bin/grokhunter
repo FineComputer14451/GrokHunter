@@ -4,7 +4,7 @@ set -euo pipefail
 
 export PATH="${HOME}/.grok/bin:${HOME}/.local/bin:${PATH}"
 
-# Resolve overlay root
+# Resolve overlay root (clone → ~/GrokHunter → script dir)
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 if [[ -f "${HERE}/../install.sh" ]]; then
   ROOT="$(cd "${HERE}/.." && pwd)"
@@ -55,7 +55,7 @@ GrokHunter v${VERSION} — Kali NetHunter powered by Grok Build
 
 Usage:
   grokhunter                  Interactive fullscreen TUI
-  grokhunter status           Short status line
+  grokhunter status           Short status line (always exit 0)
   grokhunter doctor           Full health report
   grokhunter ensure           Install/upgrade Grok Build binary
   grokhunter models [cmd]     V9 / 4.5 model pickers (install|status|force)
@@ -68,6 +68,18 @@ Usage:
   grokhunter -- <grok args>   Pass-through to grok
   grokhunter help             This help
   grokhunter version          Print version
+
+Skills:
+  skills install   scans skills/*/SKILL.md → ~/.grok/skills
+  status skills-core=N/3  counts only the core coding trio
+                     (grokhunter, pair-programming, aider-grok)
+  optional skills (x11-desktop, nethunter-recon, …) appear under
+  `skills status` and doctor optional section only
+
+Exit codes:
+  0  success (status always 0; doctor PASS / PASS-with-warnings)
+  1  operational failure (doctor ISSUES; skills/models incomplete)
+  2  usage error
 
 Aliases (after profile install):
   gh   → grokhunter
@@ -127,7 +139,7 @@ cmd_status() {
   if command -v grokhunter >/dev/null 2>&1 || [[ -x "${HOME}/.local/bin/grokhunter" ]]; then
     wrappers="yes"
   fi
-  printf "GrokHunter %s | %s | auth=%s | x11=%s | models=%s | skills=%s/3 | wrappers=%s | session=%s | home=%s\n" \
+  printf "GrokHunter %s | %s | auth=%s | x11=%s | models=%s | skills-core=%s/3 | wrappers=%s | session=%s | home=%s\n" \
     "$VERSION" "$gver" "$auth" "$x11" "$models" "$skills" "$wrappers" "$session" "$GROKHUNTER_HOME"
 }
 
