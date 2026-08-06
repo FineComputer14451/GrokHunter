@@ -18,6 +18,7 @@ Android (stock / unrooted)
               └── GrokHunter overlay
                     ├── Grok Build CLI (coding agent)
                     ├── nh-x11 (desktop for editors / IDEs)
+                    ├── aider-grok (optional git-native pair)
                     ├── grokhunter CLI + doctor
                     └── skills / profile
 ```
@@ -39,10 +40,24 @@ GrokHunter does **not** require Magisk, custom recovery, HID, or firmware module
 1. Detect Termux + architecture  
 2. Load `lib/*` (local clone or versioned cache; never leave engines in CWD)  
 3. Load `termux-distro` engine (vendored file or `~/.cache/grokhunter/termux-distro.sh`)  
-4. Pull latest NetHunter rootfs (`/current/`, live SHA256)  
-5. Optional: desktop + browser (session name saved for `nh-x11`)  
+4. Pull latest NetHunter rootfs (`/current/`, live SHA256) + storage pre-check  
+5. Optional: desktop + browser (session name saved for `nh-x11`; Chromium gets `--no-sandbox`)  
 6. Optional: Grok Build via `scripts/ensure_grok.sh`  
 7. Optional: Termux:X11 + `nh-x11` + `/tmp` bind  
+8. Optional: Aider (`--with-aider` → `~/venv-aider` + `aider-grok`)  
+9. Optional: V9 / 4.5 model pickers + shell completions  
+
+## Historical precursor
+
+An earlier **monolithic** script existed as *“Termux NetHunter Installer — Grok Build Powered Edition”* (`VERSION_NAME=Grok-Build-2026.2-x11`). It was a single-file enhancement of the jorexdeveloper `termux-nethunter` / `termux-distro` lineage with Grok Build + Termux:X11 hooks.
+
+GrokHunter is the modular successor. Useful ideas carried forward from that precursor include:
+
+- Storage free-space pre-check before rootfs download  
+- Chromium desktop-entry `--no-sandbox` patch (required under proot)  
+- Richer post-install quick-start messaging  
+
+The old script’s X11 helper used `nethunter -r` (incorrect — `-r` is `--rename`); GrokHunter’s `nh-x11` is DE-aware and does not use `-r`.
 
 ## Supply chain notes
 
