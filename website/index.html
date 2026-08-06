@@ -32,7 +32,7 @@
             </svg>
           </span>
           <span>Grok<span class="accent">Hunter</span></span>
-          <span class="badge">v1.0.0</span>
+          <span class="badge">v1.0.2</span>
         </a>
         <nav class="nav" aria-label="Primary">
           <a href="#features">Features</a>
@@ -81,7 +81,7 @@
                 <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
                 </svg>
-                Rootless · v1.0.0
+                Rootless · v1.0.2
               </span>
               <span class="chip">No root required</span>
               <span class="chip">Coding & building</span>
@@ -353,6 +353,8 @@ bash install.sh</code></pre>
                 <li><code>--browser <name></code><span>chromium | firefox | both</span></li>
                 <li><code>--with-grok</code><span>Install native Grok Build CLI</span></li>
                 <li><code>--with-x11</code><span>Install Termux:X11 + nh-x11 helper</span></li>
+                <li><code>--with-aider / --with-v9-models</code><span>Aider helper + model pickers</span></li>
+                <li><code>--overlay-only</code><span>Optional overlays only (no rootfs re-download)</span></li>
                 <li><code>--no-de / --no-grok / --no-x11</code><span>Skip those stages</span></li>
               </ul>
               <div class="after-box">
@@ -362,6 +364,7 @@ bash install.sh</code></pre>
                   <li><span class="accent">nh-x11</span> — low-latency desktop</li>
                   <li><span class="accent">grok</span> — Grok Build TUI</li>
                   <li><span class="accent">grokhunter doctor</span> — health report</li>
+                  <li><span class="accent">grokhunter models</span> — V9 / 4.5 pickers</li>
                 </ul>
               </div>
             </div>
@@ -381,9 +384,12 @@ bash install.sh</code></pre>
             <div class="cli-row"><code>grokhunter status</code><span>Short status line</span></div>
             <div class="cli-row"><code>grokhunter doctor</code><span>Full health report</span></div>
             <div class="cli-row"><code>grokhunter ensure</code><span>Install / upgrade Grok Build binary</span></div>
-            <div class="cli-row"><code>grokhunter install [args]</code><span>Run or re-run the rootless installer</span></div>
+            <div class="cli-row"><code>grokhunter models</code><span>V9 / 4.5 model pickers (install|status)</span></div>
+            <div class="cli-row"><code>grokhunter ai-smoke</code><span>SpaceXAI API smoke test</span></div>
+            <div class="cli-row"><code>grokhunter install [args]</code><span>Installer (supports --overlay-only)</span></div>
             <div class="cli-row"><code>grokhunter plan "…"</code><span>Plan a coding task</span></div>
             <div class="cli-row"><code>grokhunter -p "…"</code><span>Headless one-shot</span></div>
+            <div class="cli-row"><code>bash scripts/ci-unit.sh</code><span>Local unit checks</span></div>
           </div>
         </div>
       </section>

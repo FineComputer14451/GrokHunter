@@ -77,6 +77,38 @@ install_cli_bins() {
   else
     msg -tw "No CLI wrappers installed — clone full repo with bin/"
   fi
+
+  # Skills go to ~/.grok/skills (uninstall already removes them)
+  install_skills || true
+}
+
+# Copy repo skills/ into ~/.grok/skills for Grok Build skill discovery.
+install_skills() {
+  msg -t "Installing GrokHunter skills → ~/.grok/skills"
+  local root src dest name count=0
+  root="$(_gh_overlay_root || true)"
+  if [[ -z "${root}" || ! -d "${root}/skills" ]]; then
+    msg -tw "No skills/ tree in overlay — skip"
+    return 0
+  fi
+  mkdir -p "${HOME}/.grok/skills" 2>/dev/null || true
+  for name in grokhunter pair-programming aider-grok nethunter-recon; do
+    src="${root}/skills/${name}"
+    dest="${HOME}/.grok/skills/${name}"
+    if [[ -d "${src}" && -f "${src}/SKILL.md" ]]; then
+      rm -rf "${dest}" 2>/dev/null || true
+      mkdir -p "${dest}" 2>/dev/null || true
+      cp -a "${src}/." "${dest}/" 2>/dev/null || cp -R "${src}/"* "${dest}/" 2>/dev/null || true
+      if [[ -f "${dest}/SKILL.md" ]]; then
+        count=$((count + 1))
+      fi
+    fi
+  done
+  if [[ ${count} -gt 0 ]]; then
+    msg -ts "Installed ${count} skill(s) under ~/.grok/skills"
+  else
+    msg -tw "No skills installed"
+  fi
 }
 
 # ---------------------------------------------------------------------------
