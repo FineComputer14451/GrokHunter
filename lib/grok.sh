@@ -3,20 +3,56 @@
 # Called from lib/actions.sh during install / complete phase.
 
 # ---------------------------------------------------------------------------
+# Path helpers (single resolution path for scripts / bins)
+# ---------------------------------------------------------------------------
+_gh_overlay_root() {
+  local d
+  for d in "${SCRIPT_DIR:-}" "${GROKHUNTER_HOME:-}" "${HOME}/GrokHunter"; do
+    if [[ -n "${d}" && -d "${d}" && ( -f "${d}/install.sh" || -d "${d}/bin" || -d "${d}/scripts" ) ]]; then
+      printf '%s\n' "${d}"
+      return 0
+    fi
+  done
+  return 1
+}
+
+_gh_resolve() {
+  local rel="$1"
+  local root
+  if root="$(_gh_overlay_root)"; then
+    if [[ -f "${root}/${rel}" ]]; then
+      printf '%s\n' "${root}/${rel}"
+      return 0
+    fi
+  fi
+  return 1
+}
+
+_gh_install_bin() {
+  local rel="$1"
+  local dest="$2"
+  local src
+  if ! src="$(_gh_resolve "${rel}")"; then
+    msg -tw "Missing ${rel} in overlay"
+    return 1
+  fi
+  mkdir -p "$(dirname "${dest}")" 2>/dev/null || true
+  if command -v install >/dev/null 2>&1; then
+    install -m 755 "${src}" "${dest}" 2>/dev/null || cp -f "${src}" "${dest}"
+  else
+    cp -f "${src}" "${dest}"
+  fi
+  chmod 755 "${dest}" 2>/dev/null || true
+}
+
+# ---------------------------------------------------------------------------
 # Grok Build
 # ---------------------------------------------------------------------------
 install_grok_build() {
   msg -t "Installing Grok Build CLI"
 
   local ensure=""
-  # Prefer the shared script from the overlay / cache
-  if [[ -n "${SCRIPT_DIR:-}" && -f "${SCRIPT_DIR}/scripts/ensure_grok.sh" ]]; then
-    ensure="${SCRIPT_DIR}/scripts/ensure_grok.sh"
-  elif [[ -f "${HOME}/GrokHunter/scripts/ensure_grok.sh" ]]; then
-    ensure="${HOME}/GrokHunter/scripts/ensure_grok.sh"
-  elif [[ -n "${GROKHUNTER_HOME:-}" && -f "${GROKHUNTER_HOME}/scripts/ensure_grok.sh" ]]; then
-    ensure="${GROKHUNTER_HOME}/scripts/ensure_grok.sh"
-  fi
+  ensure="$(_gh_resolve "scripts/ensure_grok.sh" || true)"
 
   if [[ -n "${ensure}" && -f "${ensure}" ]]; then
     msg -tn "Running shared ensure_grok.sh…"
@@ -52,22 +88,13 @@ install_grok_build() {
 install_aider() {
   msg -t "Installing Aider (git-native pair-programmer for Grok)"
 
-  local rootfs_home="${ROOTFS_DIRECTORY:-/data/data/com.termux/files/kali}/home/kali"
-  local venv_dir="${rootfs_home}/venv-aider"
+  local rootfs="${ROOTFS_DIRECTORY:-/data/data/com.termux/files/kali}"
   local host_local_bin="${HOME}/.local/bin"
-  local overlay_bin=""
-
-  # Resolve overlay bin so we can drop aider-grok there too
-  if [[ -n "${SCRIPT_DIR:-}" && -d "${SCRIPT_DIR}/bin" ]]; then
-    overlay_bin="${SCRIPT_DIR}/bin"
-  elif [[ -d "${HOME}/GrokHunter/bin" ]]; then
-    overlay_bin="${HOME}/GrokHunter/bin"
-  elif [[ -n "${GROKHUNTER_HOME:-}" && -d "${GROKHUNTER_HOME}/bin" ]]; then
-    overlay_bin="${GROKHUNTER_HOME}/bin"
-  fi
+  local helper_src=""
+  helper_src="$(_gh_resolve "bin/aider-grok" || true)"
 
   # Prefer installing inside the Kali rootfs (where coding actually happens)
-  if declare -F distro_exec >/dev/null 2>&1 && [[ -d "${ROOTFS_DIRECTORY:-}" ]]; then
+  if declare -F distro_exec >/dev/null 2>&1 && [[ -d "${rootfs}" ]]; then
     msg -tn "Creating Python venv + installing aider-chat inside NetHunter…"
     if distro_exec bash -c '
       set -e
@@ -88,7 +115,7 @@ install_aider() {
       msg -tw "Rootfs Aider install had issues — see docs/EDITORS.md for manual steps"
     fi
   else
-    # Fallback: host-side venv (still useful on pure Termux)
+    # Fallback: host-side venv (still useful on pure Termux / overlay-only)
     msg -tn "Creating host-side ~/venv-aider…"
     if command -v python3 >/dev/null 2>&1; then
       python3 -m venv "${HOME}/venv-aider" 2>/dev/null || true
@@ -108,87 +135,25 @@ install_aider() {
     fi
   fi
 
-  # Write the aider-grok helper (host + overlay)
-  mkdir -p "${host_local_bin}" 2>/dev/null || true
-  local helper_content
-  helper_content="$(cat << 'AIDER_GROK_EOF'
-#!/usr/bin/env bash
-# aider-grok — GrokHunter helper: Aider + xAI / Grok 4.5
-# Sources ~/.grok/secrets.env, sets OpenAI-compatible base, launches aider.
-set -euo pipefail
+  # Install canonical bin/aider-grok (no embedded heredoc)
+  if [[ -z "${helper_src}" || ! -f "${helper_src}" ]]; then
+    msg -tw "bin/aider-grok missing — clone the repo or re-run from a full tree"
+  else
+    mkdir -p "${host_local_bin}" 2>/dev/null || true
+    _gh_install_bin "bin/aider-grok" "${host_local_bin}/aider-grok" \
+      && msg -ts "Helper: ${host_local_bin}/aider-grok"
 
-# Secrets (never echo)
-if [[ -r "${HOME}/.grok/secrets.env" ]]; then
-  set -a
-  # shellcheck disable=SC1091
-  source "${HOME}/.grok/secrets.env"
-  set +a
-fi
-
-# xAI OpenAI-compatible endpoint
-export OPENAI_API_BASE="${OPENAI_API_BASE:-https://api.x.ai/v1}"
-if [[ -n "${XAI_API_KEY:-}" ]]; then
-  export OPENAI_API_KEY="${XAI_API_KEY}"
-fi
-
-# Prefer Grok 4.5-class coding model (override with AIDER_MODEL if needed)
-export AIDER_MODEL="${AIDER_MODEL:-grok-4.5}"
-
-# Prefer the NetHunter / lab venv if present
-if [[ -x "${HOME}/venv-aider/bin/aider" ]]; then
-  # shellcheck disable=SC1091
-  source "${HOME}/venv-aider/bin/activate"
-elif [[ -x "/home/kali/venv-aider/bin/aider" ]]; then
-  # shellcheck disable=SC1091
-  source "/home/kali/venv-aider/bin/activate"
-fi
-
-if ! command -v aider >/dev/null 2>&1; then
-  echo "[aider-grok] aider not found." >&2
-  echo "  Inside nethunter:  source ~/venv-aider/bin/activate" >&2
-  echo "  Or re-run:         bash install.sh --with-aider" >&2
-  echo "  Manual:            docs/EDITORS.md" >&2
-  exit 1
-fi
-
-# Default model if user did not pass --model
-has_model=0
-for a in "$@"; do
-  case "$a" in
-    --model|--model=*) has_model=1 ;;
-  esac
-done
-
-if [[ "${has_model}" -eq 0 ]]; then
-  exec aider --model "${AIDER_MODEL}" "$@"
-else
-  exec aider "$@"
-fi
-AIDER_GROK_EOF
-)"
-
-  # Install helper on host
-  printf '%s\n' "${helper_content}" > "${host_local_bin}/aider-grok"
-  chmod 755 "${host_local_bin}/aider-grok" 2>/dev/null || true
-  msg -ts "Helper: ${host_local_bin}/aider-grok"
-
-  # Also drop into overlay bin/ when available
-  if [[ -n "${overlay_bin}" ]]; then
-    printf '%s\n' "${helper_content}" > "${overlay_bin}/aider-grok"
-    chmod 755 "${overlay_bin}/aider-grok" 2>/dev/null || true
-  fi
-
-  # Best-effort: copy helper into the rootfs so it is available as kali user
-  if declare -F distro_exec >/dev/null 2>&1 && [[ -d "${ROOTFS_DIRECTORY:-}" ]]; then
-    distro_exec bash -c "
-      mkdir -p /usr/local/bin /home/kali/.local/bin 2>/dev/null || true
-      cat > /usr/local/bin/aider-grok << 'INNER'
-${helper_content}
-INNER
-      chmod 755 /usr/local/bin/aider-grok
-      cp -f /usr/local/bin/aider-grok /home/kali/.local/bin/aider-grok 2>/dev/null || true
-      chown kali:kali /home/kali/.local/bin/aider-grok 2>/dev/null || true
-    " 2>/dev/null || true
+    # Best-effort: copy into rootfs without string embedding
+    if [[ -d "${rootfs}" ]]; then
+      mkdir -p "${rootfs}/usr/local/bin" "${rootfs}/home/kali/.local/bin" 2>/dev/null || true
+      if cp -f "${helper_src}" "${rootfs}/usr/local/bin/aider-grok" 2>/dev/null; then
+        chmod 755 "${rootfs}/usr/local/bin/aider-grok" 2>/dev/null || true
+        cp -f "${helper_src}" "${rootfs}/home/kali/.local/bin/aider-grok" 2>/dev/null || true
+        chmod 755 "${rootfs}/home/kali/.local/bin/aider-grok" 2>/dev/null || true
+        chown kali:kali "${rootfs}/home/kali/.local/bin/aider-grok" 2>/dev/null || true
+        msg -ts "Helper also installed in rootfs /usr/local/bin/aider-grok"
+      fi
+    fi
   fi
 
   msg -a "  Usage (inside nethunter):  aider-grok"
@@ -203,13 +168,7 @@ install_v9_models() {
   msg -t "Installing Grok V9 / 4.5 model pickers"
 
   local script=""
-  if [[ -n "${SCRIPT_DIR:-}" && -f "${SCRIPT_DIR}/scripts/install_v9_grok_models.sh" ]]; then
-    script="${SCRIPT_DIR}/scripts/install_v9_grok_models.sh"
-  elif [[ -f "${HOME}/GrokHunter/scripts/install_v9_grok_models.sh" ]]; then
-    script="${HOME}/GrokHunter/scripts/install_v9_grok_models.sh"
-  elif [[ -n "${GROKHUNTER_HOME:-}" && -f "${GROKHUNTER_HOME}/scripts/install_v9_grok_models.sh" ]]; then
-    script="${GROKHUNTER_HOME}/scripts/install_v9_grok_models.sh"
-  fi
+  script="$(_gh_resolve "scripts/install_v9_grok_models.sh" || true)"
 
   if [[ -n "${script}" && -f "${script}" ]]; then
     msg -tn "Running install_v9_grok_models.sh…"
@@ -232,13 +191,7 @@ install_shell_completions() {
   msg -t "Installing shell completions"
 
   local script=""
-  if [[ -n "${SCRIPT_DIR:-}" && -f "${SCRIPT_DIR}/scripts/install-completions.sh" ]]; then
-    script="${SCRIPT_DIR}/scripts/install-completions.sh"
-  elif [[ -f "${HOME}/GrokHunter/scripts/install-completions.sh" ]]; then
-    script="${HOME}/GrokHunter/scripts/install-completions.sh"
-  elif [[ -n "${GROKHUNTER_HOME:-}" && -f "${GROKHUNTER_HOME}/scripts/install-completions.sh" ]]; then
-    script="${GROKHUNTER_HOME}/scripts/install-completions.sh"
-  fi
+  script="$(_gh_resolve "scripts/install-completions.sh" || true)"
 
   if [[ -n "${script}" && -f "${script}" ]]; then
     if bash "${script}"; then

@@ -3,6 +3,7 @@
 # shellcheck disable=SC2034
 
 NON_INTERACTIVE=0
+OVERLAY_ONLY=0
 SELECTED_INSTALLATION=""
 SELECTED_DE=""
 SELECTED_BROWSER=""
@@ -54,12 +55,15 @@ Options:
   --no-v9-models          Skip V9 model pickers
   --with-completions      Install zsh/bash completions + profile snippet
   --no-completions        Skip shell completions
+  --overlay-only          Skip rootfs / termux-distro; only run optional overlays
+                          (use with --with-grok / --with-x11 / --with-aider / …)
   -h, --help              Show this help and exit
 
 Examples:
   install.sh --full --de xfce --with-grok --with-x11 --with-aider --with-completions
   install.sh -m
   install.sh --nano --no-de --with-grok
+  install.sh --overlay-only --with-x11 --with-aider --with-v9-models
 
 Env:
   GROKHUNTER_REFRESH=1              Bypass module + engine cache
@@ -134,6 +138,7 @@ parse_cli() {
       --no-v9-models)   _feature_no v9; NON_INTERACTIVE=1; shift ;;
       --with-completions) _feature_yes completions; NON_INTERACTIVE=1; shift ;;
       --no-completions)   _feature_no completions; NON_INTERACTIVE=1; shift ;;
+      --overlay-only) OVERLAY_ONLY=1; NON_INTERACTIVE=1; shift ;;
       -h|--help)     show_help 0 ;;
       *)
         echo "Error: Unknown option '$1'" >&2

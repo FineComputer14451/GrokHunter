@@ -30,7 +30,7 @@ Useful bits extracted from the earlier monolithic “Grok Build Powered” insta
 ### Versioning
 
 - `VERSION` → **1.0.2**
-- `MODULES_VERSION` → `2026.2.7` (engine cache + feature table + models CLI)
+- `MODULES_VERSION` → `2026.2.8` (file-based helpers + overlay-only)
 
 ### Code quality (review blockers)
 
@@ -38,6 +38,8 @@ Useful bits extracted from the earlier monolithic “Grok Build Powered” insta
 - **Optional features** — `FEATURE_*=yes|no|auto` + single `maybe_install` / `run_optional_features` (replaces copy-pasted SKIP/INSTALL blocks)
 - **`grokhunter models`** — real `install|status|force` (dispatches to `scripts/install_v9_grok_models.sh`)
 - **`bin/grokhunter`** — shared `_grok_launcher`; VERSION fallback 1.0.2; doctor resolves non-executable clone bins
+- **File-based helpers** — canonical `bin/nh-x11` + `bin/aider-grok` installed via copy (no heredoc snapshots)
+- **`--overlay-only`** — install optional overlays without rootfs / termux-distro
 
 ---
 

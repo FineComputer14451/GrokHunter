@@ -84,6 +84,37 @@ save_x11_session() {
   fi
 }
 
+# Canonical nh-x11 lives in bin/nh-x11 (install copies; no heredoc drift).
+_resolve_overlay_file() {
+  local rel="$1"
+  local d
+  for d in "${SCRIPT_DIR:-}" "${GROKHUNTER_HOME:-}" "${HOME}/GrokHunter"; do
+    if [[ -n "${d}" && -f "${d}/${rel}" ]]; then
+      printf '%s\n' "${d}/${rel}"
+      return 0
+    fi
+  done
+  return 1
+}
+
+_install_repo_bin() {
+  local rel="$1"
+  local dest="$2"
+  local src
+  if ! src="$(_resolve_overlay_file "${rel}")"; then
+    msg -tw "Missing repo file: ${rel}"
+    return 1
+  fi
+  mkdir -p "$(dirname "${dest}")" 2>/dev/null || true
+  if command -v install >/dev/null 2>&1; then
+    install -m 755 "${src}" "${dest}" || cp -f "${src}" "${dest}"
+  else
+    cp -f "${src}" "${dest}"
+  fi
+  chmod 755 "${dest}" 2>/dev/null || true
+  return 0
+}
+
 setup_termux_x11() {
   msg -t "Setting up Termux:X11 (low-latency desktop)"
 
@@ -104,126 +135,21 @@ setup_termux_x11() {
   done
 
   local helper="${TERMUX_FILES_DIR}/usr/bin/nh-x11"
-  cat > "${helper}" << 'X11HELPER'
-#!/data/data/com.termux/files/usr/bin/bash
-# nh-x11 — Kali desktop via Termux:X11 (GrokHunter Rootless)
-# IMPORTANT: do NOT pass -r to nethunter — that means --rename rootfs.
-
-set -euo pipefail
-
-_ROOTFS="${NH_ROOTFS:-/data/data/com.termux/files/kali}"
-_CFG_SESSION=""
-for _p in \
-  "${HOME}/.config/grokhunter/x11-session" \
-  "/data/data/com.termux/files/home/.config/grokhunter/x11-session"
-do
-  if [[ -r "${_p}" ]]; then
-    _CFG_SESSION="$(tr -d '[:space:]' < "${_p}" 2>/dev/null || true)"
-    [[ -n "${_CFG_SESSION}" ]] && break
+  if _install_repo_bin "bin/nh-x11" "${helper}"; then
+    msg -ts "Installed helper: nh-x11 (from repo bin/nh-x11)"
+  else
+    msg -tw "Could not install nh-x11 — clone repo or ensure bin/nh-x11 is present"
   fi
-done
-
-_session_exists() {
-  local cmd="$1"
-  [[ -z "${cmd}" ]] && return 1
-  [[ -x "${_ROOTFS}/usr/bin/${cmd}" ]] \
-    || [[ -x "${_ROOTFS}/bin/${cmd}" ]] \
-    || [[ -x "${_ROOTFS}/usr/bin/X11/${cmd}" ]]
-}
-
-_pick_session() {
-  if [[ -n "${NH_X11_SESSION:-}" ]]; then
-    printf '%s\n' "${NH_X11_SESSION}"
-    return 0
-  fi
-  if [[ -n "${_CFG_SESSION}" ]] && _session_exists "${_CFG_SESSION}"; then
-    printf '%s\n' "${_CFG_SESSION}"
-    return 0
-  fi
-  local c
-  for c in startxfce4 startlxde mate-session i3 startplasma-x11 enlightenment_start gnome-session; do
-    if _session_exists "${c}"; then
-      printf '%s\n' "${c}"
-      return 0
-    fi
-  done
-  if [[ -n "${_CFG_SESSION}" ]]; then
-    printf '%s\n' "${_CFG_SESSION}"
-    return 0
-  fi
-  printf '%s\n' "startxfce4"
-}
-
-SESSION_CMD="$(_pick_session)"
-if [[ ! "${SESSION_CMD}" =~ ^[A-Za-z0-9_./+-]+$ ]]; then
-  echo "[nh-x11] WARN: rejecting unsafe session '${SESSION_CMD}'; using startxfce4" >&2
-  SESSION_CMD="startxfce4"
-fi
-SESSION_CMD="${SESSION_CMD##*/}"
-
-SESSION_PREP=""
-case "${SESSION_CMD}" in
-  startxfce4)
-    SESSION_PREP='xfconf-query -c xfwm4 -p /general/use_compositing -s false 2>/dev/null || true;'
-    ;;
-esac
-
-if ! command -v nethunter >/dev/null 2>&1 && ! command -v nh >/dev/null 2>&1; then
-  echo "[nh-x11] nethunter/nh launcher missing — re-run install.sh" >&2
-  exit 1
-fi
-if ! command -v termux-x11 >/dev/null 2>&1; then
-  echo "[nh-x11] termux-x11 not found — pkg install termux-x11-nightly" >&2
-  exit 1
-fi
-if [[ ! -d "${_ROOTFS}" ]]; then
-  echo "[nh-x11] rootfs missing: ${_ROOTFS} — re-run install.sh" >&2
-  exit 1
-fi
-
-LAUNCHER="nethunter"
-command -v nethunter >/dev/null 2>&1 || LAUNCHER="nh"
-
-am force-stop com.termux.x11 2>/dev/null || true
-pkill -f '[t]ermux-x11' 2>/dev/null || true
-sleep 0.4
-
-pulseaudio --start \
-  --load="module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" \
-  --exit-idle-time=-1 2>/dev/null || true
-
-export XDG_RUNTIME_DIR="${TMPDIR:-/data/data/com.termux/files/usr/tmp}"
-mkdir -p "${XDG_RUNTIME_DIR}"
-
-X11_EXTRA=()
-[[ "${NH_X11_LEGACY:-0}" == "1" ]] && X11_EXTRA+=(-legacy-drawing)
-[[ -n "${NH_X11_DPI:-}" ]] && X11_EXTRA+=(-dpi "${NH_X11_DPI}")
-
-termux-x11 :0 "${X11_EXTRA[@]}" >/dev/null 2>&1 &
-sleep 2
-
-am start --user 0 -n com.termux.x11/com.termux.x11.MainActivity >/dev/null 2>&1 || true
-sleep 0.8
-
-echo "[nh-x11] Termux:X11 on :0 — starting ${SESSION_CMD} (via ${LAUNCHER})..."
-
-# nethunter args become the proot command. DO NOT use -r (that is --rename).
-# Run a login shell with DISPLAY set, then the DE session as user kali.
-exec "${LAUNCHER}" /bin/bash -lc "export DISPLAY=:0 PULSE_SERVER=127.0.0.1 XDG_RUNTIME_DIR=/tmp LANG=\${LANG:-en_US.UTF-8}; ${SESSION_PREP} exec su - kali -c '${SESSION_CMD}'"
-X11HELPER
-
-  chmod 755 "${helper}"
-  msg -ts "Created helper command: nh-x11"
   msg -a "  Session: NH_X11_SESSION or ~/.config/grokhunter/x11-session"
   optimize_proot_binds 2>/dev/null || true
 
   echo
-  msg -a "  ${T}Usage:${S}"
+  msg -a "  ${T:-}Usage:${S:-}"
   msg -a "    1. Install Termux:X11 APK (prefer sharedUid if Termux is from GitHub)"
-  msg -a "    2. Run:  ${P}nh-x11${S}"
-  msg -a "    Override DE:  ${P}NH_X11_SESSION=startxfce4 nh-x11${S}"
-  msg -a "    Black screen?  ${P}NH_X11_LEGACY=1 nh-x11${S}"
-  msg -a "  ${T}Tips:${S} docs/X11-PERFORMANCE.md  docs/PROOT.md"
+  msg -a "    2. Run:  ${P:-}nh-x11${S:-}"
+  msg -a "    Override DE:  ${P:-}NH_X11_SESSION=startxfce4 nh-x11${S:-}"
+  msg -a "    Black screen?  ${P:-}NH_X11_LEGACY=1 nh-x11${S:-}"
+  msg -a "  ${T:-}Tips:${S:-} docs/X11-PERFORMANCE.md  docs/PROOT.md"
 }
 
 optimize_proot_binds() {

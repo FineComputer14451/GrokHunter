@@ -31,7 +31,7 @@ die_with_help() {
 REPO_RAW="https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main"
 REPO_TAR="https://github.com/FineComputer14451/GrokHunter/archive/refs/heads/main.tar.gz"
 MODULES=(cli.sh actions.sh grok.sh x11.sh)
-MODULES_VERSION="2026.2.7"
+MODULES_VERSION="2026.2.8"
 
 CLEANUP_TMP=""
 WAKE_HELD=0
@@ -214,6 +214,44 @@ DEFAULT_LOGIN=kali
 parse_cli "$@" || die_with_help "Invalid command-line options." \
   "Run with --help to see available flags" \
   "Example:  bash install.sh --full --de xfce --with-grok --with-x11"
+
+# Lightweight messaging when termux-distro is not loaded (overlay-only).
+_ensure_msg_stubs() {
+  if declare -F msg >/dev/null 2>&1; then
+    return 0
+  fi
+  msg() {
+    # Compatible with termux-distro msg flags: -t -tn -ts -tw -te -a
+    shift || true
+    printf '[GrokHunter] %s\n' "$*"
+  }
+  cursor() { :; }
+}
+
+# Overlay-only: optional packages without re-downloading NetHunter rootfs.
+if [[ "${OVERLAY_ONLY:-0}" -eq 1 ]]; then
+  info "Overlay-only mode — skipping rootfs / termux-distro engine"
+  : "${ROOTFS_DIRECTORY:=${DEFAULT_ROOTFS_DIR:-/data/data/com.termux/files/kali}}"
+  : "${TERMUX_FILES_DIR:=/data/data/com.termux/files}"
+  : "${P:=}" "${S:=}" "${T:=}" "${W:=}" "${B:=}" "${M:=}"
+  _ensure_msg_stubs
+  export GROKHUNTER_HOME="${GROKHUNTER_HOME:-${SCRIPT_DIR:-${HOME}/GrokHunter}}"
+  # Default: if user passed only --overlay-only with no --with-*, nothing runs.
+  # Require at least one explicit yes feature, or warn.
+  if [[ "${FEATURE_GROK}" == "auto" && "${FEATURE_X11}" == "auto" \
+     && "${FEATURE_AIDER}" == "auto" && "${FEATURE_V9}" == "auto" \
+     && "${FEATURE_COMPLETIONS}" == "auto" ]]; then
+    die_with_help "Overlay-only needs at least one --with-* flag." \
+      "Example:  bash install.sh --overlay-only --with-x11 --with-aider" \
+      "Example:  bash install.sh --overlay-only --with-grok --with-v9-models --with-completions"
+  fi
+  run_optional_features
+  echo
+  info "Overlay-only complete."
+  info "  doctor:  bash ${GROKHUNTER_HOME}/bin/grokhunter-doctor"
+  info "  models:  bash ${GROKHUNTER_HOME}/bin/grokhunter models status"
+  exit 0
+fi
 
 # termux-distro msg() uses ${P}/${S}/${N}/... before colors() runs.
 # Under set -u that is fatal (\"P: unbound variable\"). Seed + disable nounset.
