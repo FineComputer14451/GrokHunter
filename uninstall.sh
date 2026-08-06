@@ -9,15 +9,21 @@ fi
 
 BIN_DIR="${HOME}/.local/bin"
 SKILLS_DIR="${HOME}/.grok/skills"
+AGENTS_DIR="${HOME}/.grok/agents"
 MARKER_BEGIN="# >>> grokhunter >>>"
 MARKER_END="# <<< grokhunter <<<"
 
-# Overlay root (script directory) + skill discovery
+# Overlay root (script directory) + discovery helpers
 _GH_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck disable=SC1091
 if [[ -f "${_GH_ROOT}/lib/skills-discover.sh" ]]; then
   # shellcheck source=lib/skills-discover.sh
   source "${_GH_ROOT}/lib/skills-discover.sh"
+fi
+# shellcheck disable=SC1091
+if [[ -f "${_GH_ROOT}/lib/agents-discover.sh" ]]; then
+  # shellcheck source=lib/agents-discover.sh
+  source "${_GH_ROOT}/lib/agents-discover.sh"
 fi
 
 log() { printf '[+] %s\n' "$*"; }
@@ -60,6 +66,25 @@ remove_skills() {
       log "Removed skill ${name}"
     fi
   done < <(_gh_list_skill_names "${_GH_ROOT}")
+}
+
+remove_agents() {
+  local name
+  if [[ ! -d "${_GH_ROOT}/agents" ]]; then
+    warn "No agents/ next to uninstall.sh — leaving ~/.grok/agents unchanged"
+    return 0
+  fi
+  if ! declare -F _gh_list_agent_names >/dev/null 2>&1; then
+    warn "agent discovery missing — leaving ~/.grok/agents unchanged"
+    return 0
+  fi
+  while IFS= read -r name; do
+    [[ -n "${name}" ]] || continue
+    if [[ -f "${AGENTS_DIR}/${name}.md" ]]; then
+      rm -f "${AGENTS_DIR}/${name}.md"
+      log "Removed agent ${name}"
+    fi
+  done < <(_gh_list_agent_names "${_GH_ROOT}")
 }
 
 strip_shell() {
@@ -139,6 +164,7 @@ main() {
   echo "Uninstalling GrokHunter overlay…"
   remove_bins
   remove_skills
+  remove_agents
   strip_shell
   remove_motd
   remove_meta

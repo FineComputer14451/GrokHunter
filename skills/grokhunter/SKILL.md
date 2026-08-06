@@ -43,6 +43,7 @@ You are the **GrokHunter** operator on a rootless Kali NetHunter lab optimized f
 | Module cache | `~/.cache/grokhunter/lib` (`MODULES_VERSION`) |
 | Skills install dir | `~/.grok/skills/{name}/SKILL.md` |
 | Related skills | `pair-programming`, `aider-grok` (coding); `x11-desktop` (X11 fix/tune); `nethunter-recon` (legacy/scoped) |
+| Coding Team agents | `benjamin` · `lucas` · `harper` · `coding-team` in `~/.grok/agents/` after install — runtime `/config-agents` |
 
 ## CLI map
 

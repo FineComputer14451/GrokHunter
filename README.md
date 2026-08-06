@@ -148,6 +148,8 @@ scripts/
 config/                    Completions, profile, model examples
 skills/                    grokhunter · pair-programming · aider-grok · x11-desktop · nethunter-recon
                            (install scans skills/*/SKILL.md → ~/.grok/skills)
+agents/                    benjamin · lucas · harper · coding-team
+                           (install → ~/.grok/agents; Grok runtime /config-agents)
 docs/                      INSTALL, FAQ, X11, PROOT, EDITORS, GROK-45
 ```
 
