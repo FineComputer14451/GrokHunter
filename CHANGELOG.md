@@ -44,7 +44,7 @@ Useful bits extracted from the earlier monolithic “Grok Build Powered” insta
 - **`install_cli_bins`** — copies `grokhunter` / doctor / launchers into `~/.local/bin` (and Termux `PREFIX/bin` when present)
 - **Skills** — `grokhunter` / `pair-programming` / `aider-grok` / `nethunter-recon` updated for overlay-only, models CLI, file-based helpers, SpaceXAI smoke, and Grok 4.5 defaults
 - **`grokhunter ai-smoke` / `smoke`** — wired to `scripts/spacexai_smoke.sh`; profile alias `ghai`; completions include `--overlay-only` and completions flags
-- **CI smoke** — unit checks for parse_cli, maybe_install, bind patch, CLI help
+- **`scripts/ci-unit.sh`** — local/CI unit checks (bash -n, parse_cli, maybe_install, bind patch, ai-smoke missing-key) without requiring workflow-token updates
 
 ---
 
