@@ -16,12 +16,22 @@ log() { printf '[+] %s\n' "$*"; }
 warn() { printf '[!] %s\n' "$*"; }
 
 remove_bins() {
-  for b in grokhunter grok-nethunter grokhunter-doctor; do
+  for b in grokhunter grok-nethunter grokhunter-doctor aider-grok nh-x11; do
     if [[ -f "${BIN_DIR}/${b}" ]]; then
       rm -f "${BIN_DIR}/${b}"
       log "Removed ${BIN_DIR}/${b}"
     fi
   done
+  # Termux PREFIX copies (if present)
+  local prefix_bin="${PREFIX:-}/bin"
+  if [[ -n "${PREFIX:-}" && -d "${prefix_bin}" ]]; then
+    for b in grokhunter grok-nethunter grokhunter-doctor; do
+      if [[ -f "${prefix_bin}/${b}" ]]; then
+        rm -f "${prefix_bin}/${b}"
+        log "Removed ${prefix_bin}/${b}"
+      fi
+    done
+  fi
 }
 
 remove_skills() {

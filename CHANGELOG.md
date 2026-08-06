@@ -30,7 +30,7 @@ Useful bits extracted from the earlier monolithic “Grok Build Powered” insta
 ### Versioning
 
 - `VERSION` → **1.0.2**
-- `MODULES_VERSION` → `2026.2.8` (file-based helpers + overlay-only)
+- `MODULES_VERSION` → `2026.2.9` (atomic bind patch + ~/.local/bin wrappers)
 
 ### Code quality (review blockers)
 
@@ -40,6 +40,8 @@ Useful bits extracted from the earlier monolithic “Grok Build Powered” insta
 - **`bin/grokhunter`** — shared `_grok_launcher`; VERSION fallback 1.0.2; doctor resolves non-executable clone bins
 - **File-based helpers** — canonical `bin/nh-x11` + `bin/aider-grok` installed via copy (no heredoc snapshots)
 - **`--overlay-only`** — install optional overlays without rootfs / termux-distro
+- **Atomic proot bind patch** — pure bash rewrite of launcher binds (no multi-line `sed -i`)
+- **`install_cli_bins`** — copies `grokhunter` / doctor / launchers into `~/.local/bin` (and Termux `PREFIX/bin` when present)
 
 ---
 

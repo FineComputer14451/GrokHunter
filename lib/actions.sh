@@ -129,6 +129,10 @@ _completions_want() {
 }
 
 run_optional_features() {
+  # Always place CLI wrappers on PATH when running overlays / complete phase
+  if declare -F install_cli_bins >/dev/null 2>&1; then
+    install_cli_bins || true
+  fi
   maybe_install "${FEATURE_GROK:-auto}" \
     "Also install native Grok Build CLI (recommended)?" \
     install_grok_build

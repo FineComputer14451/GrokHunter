@@ -45,6 +45,40 @@ _gh_install_bin() {
   chmod 755 "${dest}" 2>/dev/null || true
 }
 
+# Install primary CLI wrappers into ~/.local/bin (PATH-friendly).
+install_cli_bins() {
+  msg -t "Installing GrokHunter CLI wrappers → ~/.local/bin"
+  local dest_dir="${HOME}/.local/bin"
+  local name src
+  local installed=0
+  mkdir -p "${dest_dir}" 2>/dev/null || true
+
+  for name in grokhunter grokhunter-doctor grok-nethunter aider-grok nh-x11; do
+    if src="$(_gh_resolve "bin/${name}")"; then
+      if _gh_install_bin "bin/${name}" "${dest_dir}/${name}"; then
+        installed=$((installed + 1))
+      fi
+    fi
+  done
+
+  # Also drop into Termux PREFIX/bin when present (host PATH)
+  local prefix_bin="${PREFIX:-}/bin"
+  if [[ -n "${PREFIX:-}" && -d "${prefix_bin}" ]]; then
+    for name in grokhunter grokhunter-doctor grok-nethunter; do
+      if _gh_resolve "bin/${name}" >/dev/null 2>&1; then
+        _gh_install_bin "bin/${name}" "${prefix_bin}/${name}" 2>/dev/null || true
+      fi
+    done
+  fi
+
+  if [[ ${installed} -gt 0 ]]; then
+    msg -ts "Installed ${installed} wrapper(s) under ${dest_dir}"
+    msg -a "  Ensure PATH includes ~/.local/bin (profile snippet does this)"
+  else
+    msg -tw "No CLI wrappers installed — clone full repo with bin/"
+  fi
+}
+
 # ---------------------------------------------------------------------------
 # Grok Build
 # ---------------------------------------------------------------------------
