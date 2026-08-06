@@ -254,7 +254,7 @@ if [[ -f "${HOME}/.grok/config.toml" ]]; then
   else
     warn "compact_mode not true (optional UX)"
   fi
-  local v9_marker="# --- Grok Imagine Cinematic Studio: v9-4p5 specialist models"
+  v9_marker="# --- Grok Imagine Cinematic Studio: v9-4p5 specialist models"
   if grep -qF "${v9_marker}" "${HOME}/.grok/config.toml" 2>/dev/null; then
     ok "V9 / 4.5 model pickers present (grokhunter models status)"
   else
