@@ -83,6 +83,70 @@ post_config_actions() {
   fi
 }
 
+# Resolve FEATURE_*=yes|no|auto into a concrete install decision.
+# Completions: non-interactive auto follows sibling --with-grok|v9|aider.
+maybe_install() {
+  local want="${1:-auto}"
+  local prompt="$2"
+  local fn="$3"
+  local allow_fail="${4:-0}"
+  local decision="${want}"
+
+  case "${decision}" in
+    no) return 0 ;;
+    yes) ;;
+    auto)
+      if [[ ${NON_INTERACTIVE:-0} -eq 1 ]]; then
+        return 0
+      fi
+      if ! ask -y -- -t "${prompt}"; then
+        return 0
+      fi
+      ;;
+    *) return 0 ;;
+  esac
+
+  if [[ "${allow_fail}" -eq 1 ]]; then
+    "${fn}" || true
+  else
+    "${fn}"
+  fi
+}
+
+_completions_want() {
+  local want="${FEATURE_COMPLETIONS:-auto}"
+  if [[ "${want}" == "auto" && ${NON_INTERACTIVE:-0} -eq 1 ]]; then
+    if [[ "${FEATURE_GROK:-auto}" == "yes" \
+       || "${FEATURE_V9:-auto}" == "yes" \
+       || "${FEATURE_AIDER:-auto}" == "yes" ]]; then
+      printf 'yes\n'
+      return 0
+    fi
+    printf 'no\n'
+    return 0
+  fi
+  printf '%s\n' "${want}"
+}
+
+run_optional_features() {
+  maybe_install "${FEATURE_GROK:-auto}" \
+    "Also install native Grok Build CLI (recommended)?" \
+    install_grok_build
+  maybe_install "${FEATURE_X11:-auto}" \
+    "Also set up Termux:X11 (low-latency desktop)?" \
+    setup_termux_x11
+  maybe_install "${FEATURE_AIDER:-auto}" \
+    "Also install Aider (git-native pair-programmer)?" \
+    install_aider
+  maybe_install "${FEATURE_V9:-auto}" \
+    "Also install Grok V9 / 4.5 model pickers (/model chat-expert, multi, auto)?" \
+    install_v9_models
+  maybe_install "$(_completions_want)" \
+    "Install zsh/bash completions for grokhunter (recommended)?" \
+    install_shell_completions \
+    1
+}
+
 pre_complete_actions() {
   if [[ ${SKIP_DE} -eq 0 && ! ${DE_INSTALLED} && ${SELECTED_INSTALLATION} != full ]]; then
     if [[ ${NON_INTERACTIVE} -eq 1 && -n ${SELECTED_DE} ]]; then
@@ -92,57 +156,7 @@ pre_complete_actions() {
     fi
   fi
 
-  if [[ ${SKIP_GROK} -eq 0 ]]; then
-    if [[ ${NON_INTERACTIVE} -eq 1 ]]; then
-      [[ ${INSTALL_GROK} -eq 1 ]] && install_grok_build
-    else
-      if ask -y -- -t "Also install native Grok Build CLI (recommended)?"; then
-        install_grok_build
-      fi
-    fi
-  fi
-
-  if [[ ${SKIP_X11} -eq 0 ]]; then
-    if [[ ${NON_INTERACTIVE} -eq 1 ]]; then
-      [[ ${INSTALL_X11} -eq 1 ]] && setup_termux_x11
-    else
-      if ask -y -- -t "Also set up Termux:X11 (low-latency desktop)?"; then
-        setup_termux_x11
-      fi
-    fi
-  fi
-
-  if [[ ${SKIP_AIDER:-0} -eq 0 ]]; then
-    if [[ ${NON_INTERACTIVE} -eq 1 ]]; then
-      [[ ${INSTALL_AIDER:-0} -eq 1 ]] && install_aider
-    else
-      if ask -y -- -t "Also install Aider (git-native pair-programmer)?"; then
-        install_aider
-      fi
-    fi
-  fi
-
-  if [[ ${SKIP_V9:-0} -eq 0 ]]; then
-    if [[ ${NON_INTERACTIVE} -eq 1 ]]; then
-      [[ ${INSTALL_V9:-0} -eq 1 ]] && install_v9_models
-    else
-      if ask -y -- -t "Also install Grok V9 / 4.5 model pickers (/model chat-expert, multi, auto)?"; then
-        install_v9_models
-      fi
-    fi
-  fi
-
-  if [[ ${SKIP_COMPLETIONS:-0} -eq 0 ]]; then
-    if [[ ${NON_INTERACTIVE} -eq 1 ]]; then
-      if [[ ${INSTALL_COMPLETIONS:-0} -eq 1 || ${INSTALL_GROK:-0} -eq 1 || ${INSTALL_V9:-0} -eq 1 || ${INSTALL_AIDER:-0} -eq 1 ]]; then
-        install_shell_completions || true
-      fi
-    else
-      if ask -y -- -t "Install zsh/bash completions for grokhunter (recommended)?"; then
-        install_shell_completions || true
-      fi
-    fi
-  fi
+  run_optional_features
 }
 
 post_complete_actions() {

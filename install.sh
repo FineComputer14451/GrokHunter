@@ -31,7 +31,7 @@ die_with_help() {
 REPO_RAW="https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main"
 REPO_TAR="https://github.com/FineComputer14451/GrokHunter/archive/refs/heads/main.tar.gz"
 MODULES=(cli.sh actions.sh grok.sh x11.sh)
-MODULES_VERSION="2026.2.6"
+MODULES_VERSION="2026.2.7"
 
 CLEANUP_TMP=""
 WAKE_HELD=0
@@ -235,26 +235,70 @@ _source_termux_distro() {
   return "${ec}"
 }
 
-distro_template=""
-if [[ -n "${SCRIPT_DIR}" && -f "${SCRIPT_DIR}/termux-distro.sh" ]]; then
-  distro_template="${SCRIPT_DIR}/termux-distro.sh"
-fi
-if [[ -n "${distro_template}" ]]; then
-  _source_termux_distro "${distro_template}" "$@" || die_with_help "termux-distro engine failed." \
-    "Try running the installer again" \
-    "Or clone the repo and run:  bash install.sh"
-else
-  curl -fsSL --connect-timeout 15 --max-time 90 --retry 2 \
-    -o ./termux-distro.sh \
-    https://raw.githubusercontent.com/jorexdeveloper/termux-distro/main/termux-distro.sh \
-    || die_with_help "Could not download the termux-distro engine." \
+# Validate termux-distro engine: non-empty, not an HTML error page, looks like shell.
+validate_distro_engine() {
+  local f="$1"
+  [[ -f "$f" && -s "$f" ]] || return 1
+  if head -c 256 "$f" 2>/dev/null | grep -qiE '<!DOCTYPE|<html'; then
+    return 1
+  fi
+  if head -1 "$f" 2>/dev/null | grep -qE '^#!'; then
+    return 0
+  fi
+  grep -qE '^[a-zA-Z_][a-zA-Z0-9_]*\s*\(\)' "$f" 2>/dev/null
+}
+
+# Prefer vendored → cached → download into ~/.cache (never pollute CWD).
+# Override URL: GROKHUNTER_DISTRO_ENGINE_URL
+resolve_distro_engine() {
+  local default_url="https://raw.githubusercontent.com/jorexdeveloper/termux-distro/main/termux-distro.sh"
+  local url="${GROKHUNTER_DISTRO_ENGINE_URL:-${default_url}}"
+  local cache_file="${CACHE_DIR}/termux-distro.sh"
+  local dest=""
+
+  if [[ -n "${SCRIPT_DIR}" && -f "${SCRIPT_DIR}/termux-distro.sh" ]]; then
+    if validate_distro_engine "${SCRIPT_DIR}/termux-distro.sh"; then
+      printf '%s\n' "${SCRIPT_DIR}/termux-distro.sh"
+      return 0
+    fi
+    warn "Vendored termux-distro.sh failed validation — trying cache/download"
+  fi
+
+  if [[ "${REFRESH}" != "1" ]] && validate_distro_engine "${cache_file}"; then
+    info "Using cached termux-distro engine → ${cache_file}"
+    printf '%s\n' "${cache_file}"
+    return 0
+  fi
+
+  mkdir -p "${CACHE_DIR}" || die "cannot create cache ${CACHE_DIR}"
+  dest="$(mktemp "${CACHE_DIR}/termux-distro.XXXXXX")" || die "mktemp failed for distro engine"
+  info "Fetching termux-distro engine…"
+  if ! curl -fsSL --connect-timeout 15 --max-time 90 --retry 2 \
+       "${url}" -o "${dest}"; then
+    rm -f "${dest}"
+    die_with_help "Could not download the termux-distro engine." \
       "Check your internet connection / DNS" \
-      "Re-run the installer" \
-      "Or clone the repo and run:  bash install.sh"
-  [[ -s ./termux-distro.sh ]] || die_with_help "Downloaded termux-distro.sh is empty." \
-    "Check your network and try again" \
-    "Or clone the repository and run the installer locally"
-  _source_termux_distro ./termux-distro.sh "$@" || die_with_help "termux-distro engine failed after download." \
-    "Try again with a stable connection" \
-    "Or clone the repo and run:  bash install.sh"
-fi
+      "Pin a fork:  GROKHUNTER_DISTRO_ENGINE_URL=https://… bash install.sh" \
+      "Or vendor termux-distro.sh next to install.sh"
+  fi
+  if ! validate_distro_engine "${dest}"; then
+    rm -f "${dest}"
+    die_with_help "Downloaded termux-distro engine looks invalid (empty or HTML)." \
+      "Check GROKHUNTER_DISTRO_ENGINE_URL if set" \
+      "Force refresh:  GROKHUNTER_REFRESH=1 bash install.sh" \
+      "Or clone the repo and vendor termux-distro.sh"
+  fi
+  mv -f "${dest}" "${cache_file}" || die "failed to install engine cache at ${cache_file}"
+  info "Engine cached at ${cache_file}"
+  printf '%s\n' "${cache_file}"
+}
+
+DISTRO_ENGINE="$(resolve_distro_engine)" \
+  || die_with_help "Could not resolve termux-distro engine." \
+    "GROKHUNTER_REFRESH=1 bash install.sh" \
+    "Or vendor termux-distro.sh next to install.sh"
+
+_source_termux_distro "${DISTRO_ENGINE}" "$@" || die_with_help "termux-distro engine failed." \
+  "Try again with a stable connection" \
+  "Force refresh:  GROKHUNTER_REFRESH=1 bash install.sh" \
+  "Or clone the repo and run:  bash install.sh"

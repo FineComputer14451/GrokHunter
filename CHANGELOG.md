@@ -30,7 +30,14 @@ Useful bits extracted from the earlier monolithic “Grok Build Powered” insta
 ### Versioning
 
 - `VERSION` → **1.0.2**
-- `MODULES_VERSION` → `2026.2.6` (forces one-liner module cache refresh)
+- `MODULES_VERSION` → `2026.2.7` (engine cache + feature table + models CLI)
+
+### Code quality (review blockers)
+
+- **`termux-distro` engine** — resolve via vendored → `~/.cache/grokhunter/termux-distro.sh` → download into cache (never CWD); `GROKHUNTER_DISTRO_ENGINE_URL` override; HTML/empty validation
+- **Optional features** — `FEATURE_*=yes|no|auto` + single `maybe_install` / `run_optional_features` (replaces copy-pasted SKIP/INSTALL blocks)
+- **`grokhunter models`** — real `install|status|force` (dispatches to `scripts/install_v9_grok_models.sh`)
+- **`bin/grokhunter`** — shared `_grok_launcher`; VERSION fallback 1.0.2; doctor resolves non-executable clone bins
 
 ---
 
