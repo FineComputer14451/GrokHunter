@@ -7,7 +7,7 @@ _grokhunter_completions() {
   cur="${COMP_WORDS[COMP_CWORD]}"
   prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-  local cmds="status doctor ensure models install plan help version"
+  local cmds="status doctor ensure models ai-smoke smoke install plan help version"
   local model_sub="install status --force"
   local install_opts="--full --mini --nano --de --browser --no-de --with-grok --no-grok --with-x11 --no-x11 --with-aider --no-aider --with-v9-models --no-v9-models --help"
 
