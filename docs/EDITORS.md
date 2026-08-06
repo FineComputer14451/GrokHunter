@@ -21,15 +21,17 @@ See also: [GROK-45.md](GROK-45.md).
 ### Install
 
 ```bash
-# Via installer flag:
+# Via installer flag (preferred):
 bash install.sh --with-aider
 
 # Or manually inside nethunter:
 sudo apt install -y python3-pip python3-venv git
 python3 -m venv ~/venv-aider
 source ~/venv-aider/bin/activate
-pip install aider-chat
+pip install -U aider-chat
 ```
+
+The installer also places the `aider-grok` helper in `~/.local/bin` and (when possible) inside the rootfs.
 
 ### Configure for Grok / xAI (Grok 4.5 tier)
 
@@ -38,19 +40,19 @@ pip install aider-chat
 export OPENAI_API_BASE=https://api.x.ai/v1
 export OPENAI_API_KEY="${XAI_API_KEY}"
 
-# Prefer newest coding model available on your key (Grok 4 / 4.5 class)
-export AIDER_MODEL=grok-4
-# Override if your account lists e.g. a grok-4.5-specific id
+# Default in aider-grok is already grok-4.5
+# Override only if your account exposes a different coding id:
+# export AIDER_MODEL=grok-4.5
 ```
 
 ### Usage
 
 ```bash
 cd /path/to/your/project
-aider-grok                 # helper from --with-aider
+aider-grok                 # recommended helper (auto model + secrets)
 # or
-source ~/venv-aider/bin/activate && aider --model "${AIDER_MODEL:-grok-4}"
-aider main.py utils.py     # limit to specific files
+source ~/venv-aider/bin/activate && aider --model "${AIDER_MODEL:-grok-4.5}"
+aider-grok main.py utils.py   # limit to specific files
 ```
 
 Tips:
@@ -73,5 +75,5 @@ sudo apt install -y neovim micro
 ## Recommendation
 
 1. **Default:** `grok` / `grokhunter` optimized for **Grok 4.5**.  
-2. **Aider** when you want git-native auto-commit pairs on the same key.  
+2. **Aider** (`aider-grok`) when you want git-native auto-commit pairs on the same key.  
 3. **Desktop:** `nh-x11` when you need a visual editor.
