@@ -39,7 +39,7 @@ GrokHunter does **not** require Magisk, custom recovery, HID, or firmware module
 
 1. Detect Termux + architecture  
 2. Load `lib/*` (local clone or versioned cache; never leave engines in CWD)  
-3. Load `termux-distro` engine (vendored file or `~/.cache/grokhunter/termux-distro.sh`)  
+3. Load `termux-distro` engine (vendored next to `install.sh` → `~/.cache/grokhunter/termux-distro.sh` → download into cache; override with `GROKHUNTER_DISTRO_ENGINE_URL`)  
 4. Pull latest NetHunter rootfs (`/current/`, live SHA256) + storage pre-check  
 5. Optional: desktop + browser (session name saved for `nh-x11`; Chromium gets `--no-sandbox`)  
 6. Optional: Grok Build via `scripts/ensure_grok.sh`  

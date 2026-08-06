@@ -25,14 +25,14 @@ warn() { printf "  ${YELLOW}!${NC} %s\n" "$*"; }
 bad()  { printf "  ${RED}✗${NC} %s\n" "$*"; }
 hdr()  { printf "\n${CYAN}%s${NC}\n" "$*"; }
 
-# Resolve a command on PATH or under GROKHUNTER_HOME/bin
+# Resolve a command on PATH or under GROKHUNTER_HOME/bin (exec or bash-runnable)
 resolve_bin() {
   local name="$1"
   if command -v "$name" >/dev/null 2>&1; then
     command -v "$name"
     return 0
   fi
-  if [[ -x "${GROKHUNTER_HOME}/bin/${name}" ]]; then
+  if [[ -x "${GROKHUNTER_HOME}/bin/${name}" || -f "${GROKHUNTER_HOME}/bin/${name}" ]]; then
     printf '%s\n' "${GROKHUNTER_HOME}/bin/${name}"
     return 0
   fi
@@ -250,6 +250,8 @@ if [[ -d "${HOME}/.cache/grokhunter" ]]; then
   fi
   if [[ -f "${HOME}/.cache/grokhunter/termux-distro.sh" ]]; then
     ok "termux-distro engine cached (not in CWD)"
+  else
+    warn "No termux-distro engine cache yet (created on next install.sh run)"
   fi
 else
   warn "No module cache yet (normal for clone-only installs)"

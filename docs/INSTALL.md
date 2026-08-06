@@ -62,10 +62,12 @@ bash install.sh --full --de xfce --with-grok --with-x11
 | Variable | Purpose |
 |----------|---------|
 | `GROKHUNTER_REFRESH=1` | Bypass module + engine cache |
-| `GROKHUNTER_DISTRO_ENGINE_URL` | Pin/fork of `termux-distro.sh` |
+| `GROKHUNTER_DISTRO_ENGINE_URL` | Pin/fork of `termux-distro.sh` (default: jorexdeveloper main) |
 | `GROKHUNTER_GROK_INSTALLER` | `auto` \| `official` \| `termux-native` |
 | `GROKHUNTER_FORCE_GROK=1` | Reinstall Grok even if present |
 | `NH_X11_SESSION` | Desktop start command for `nh-x11` (e.g. `startlxde`) |
+
+**Engine resolution order:** vendored `./termux-distro.sh` next to `install.sh` → `~/.cache/grokhunter/termux-distro.sh` → download into that cache (never CWD).
 
 ## Chromium under proot
 

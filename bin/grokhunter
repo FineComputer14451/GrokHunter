@@ -22,8 +22,32 @@ export PATH="${GROKHUNTER_HOME}/bin:${PATH}"
 if [[ -f "${GROKHUNTER_HOME}/VERSION" ]]; then
   VERSION="$(tr -d '[:space:]' < "${GROKHUNTER_HOME}/VERSION")"
 else
-  VERSION="${GROKHUNTER_VERSION:-1.0.1}"
+  VERSION="${GROKHUNTER_VERSION:-1.0.2}"
 fi
+
+_grok_launcher() {
+  local launcher="${HOME}/.local/bin/grok-nethunter"
+  if [[ -x "${launcher}" ]]; then
+    printf '%s\n' "${launcher}"
+    return 0
+  fi
+  launcher="${GROKHUNTER_HOME}/bin/grok-nethunter"
+  printf '%s\n' "${launcher}"
+}
+
+_v9_script() {
+  local s="${GROKHUNTER_HOME}/scripts/install_v9_grok_models.sh"
+  if [[ -f "${s}" ]]; then
+    printf '%s\n' "${s}"
+    return 0
+  fi
+  s="${HERE}/../scripts/install_v9_grok_models.sh"
+  if [[ -f "${s}" ]]; then
+    printf '%s\n' "${s}"
+    return 0
+  fi
+  return 1
+}
 
 usage() {
   cat <<EOF
@@ -34,6 +58,7 @@ Usage:
   grokhunter status           Short status line
   grokhunter doctor           Full health report
   grokhunter ensure           Install/upgrade Grok Build binary
+  grokhunter models [cmd]     V9 / 4.5 model pickers (install|status)
   grokhunter install [args]   Run / re-run the NetHunter installer
   grokhunter plan <prompt>    Plan mode
   grokhunter -p <prompt>      Headless / one-shot
@@ -46,6 +71,7 @@ Aliases (after profile install):
   ghn  → grok-nethunter
   ghd  → doctor
   ghp  → plan
+  ghm  → models
   ghh  → headless -p
 
 Env:
@@ -56,6 +82,7 @@ Env:
   GROKHUNTER_GROK_INSTALLER   auto|official|termux-native (ensure)
   GROKHUNTER_FORCE_GROK=1     Reinstall Grok even if present
   GROKHUNTER_REFRESH=1        Bypass module/engine cache on install
+  GROKHUNTER_DISTRO_ENGINE_URL  Pin/fork of termux-distro.sh (install)
 EOF
 }
 
@@ -131,18 +158,76 @@ cmd_plan() {
     echo "Usage: grokhunter plan <prompt>" >&2
     exit 2
   fi
-  local launcher="${HOME}/.local/bin/grok-nethunter"
-  [[ -x "$launcher" ]] || launcher="${GROKHUNTER_HOME}/bin/grok-nethunter"
-  exec "$launcher" -p "Enter plan mode first. Task: ${prompt}"
+  exec "$(_grok_launcher)" -p "Enter plan mode first. Task: ${prompt}"
+}
+
+cmd_models_status() {
+  local cfg="${GROK_CONFIG:-${HOME}/.grok/config.toml}"
+  local marker="# --- Grok Imagine Cinematic Studio: v9-4p5 specialist models"
+  echo "config: ${cfg}"
+  if [[ ! -f "${cfg}" ]]; then
+    echo "status: missing (no config.toml — run grok once, then: grokhunter models install)"
+    return 1
+  fi
+  if grep -qF "${marker}" "${cfg}" 2>/dev/null \
+    && grep -qE '^\[model\.(chat-expert|multi|auto|"chat-expert")' "${cfg}" 2>/dev/null; then
+    echo "status: installed (V9 / 4.5 picker surface present)"
+    echo "  switch: /model chat-expert · multi · auto · grok-v9"
+    return 0
+  fi
+  echo "status: incomplete or missing V9 pickers"
+  echo "  fix: grokhunter models install"
+  return 1
+}
+
+cmd_models() {
+  local sub="${1:-status}"
+  shift || true
+  local script
+  case "${sub}" in
+    help|-h|--help)
+      cat <<'EOF'
+Usage: grokhunter models [install|status|force]
+
+  install   Write V9 / 4.5 model pickers into ~/.grok/config.toml
+  status    Report whether pickers are present (default)
+  force     Re-install pickers even if already complete
+
+Script: scripts/install_v9_grok_models.sh
+EOF
+      return 0
+      ;;
+    status|--status)
+      cmd_models_status
+      return $?
+      ;;
+    install)
+      if ! script="$(_v9_script)"; then
+        echo "scripts/install_v9_grok_models.sh not found under ${GROKHUNTER_HOME}" >&2
+        exit 1
+      fi
+      exec bash "${script}" "$@"
+      ;;
+    force|--force)
+      if ! script="$(_v9_script)"; then
+        echo "scripts/install_v9_grok_models.sh not found under ${GROKHUNTER_HOME}" >&2
+        exit 1
+      fi
+      exec bash "${script}" --force "$@"
+      ;;
+    *)
+      echo "Unknown models subcommand: ${sub}" >&2
+      echo "Usage: grokhunter models [install|status|force]" >&2
+      exit 2
+      ;;
+  esac
 }
 
 main() {
   local sub="${1:-}"
   case "$sub" in
     "")
-      local launcher="${HOME}/.local/bin/grok-nethunter"
-      [[ -x "$launcher" ]] || launcher="${GROKHUNTER_HOME}/bin/grok-nethunter"
-      exec "$launcher" "$@"
+      exec "$(_grok_launcher)" "$@"
       ;;
     help|-h|--help)
       usage
@@ -156,11 +241,15 @@ main() {
     doctor)
       local doc="${HOME}/.local/bin/grokhunter-doctor"
       [[ -x "$doc" ]] || doc="${GROKHUNTER_HOME}/bin/grokhunter-doctor"
-      exec "$doc"
+      exec bash "$doc"
       ;;
     ensure)
       shift || true
       cmd_ensure "${1:-}"
+      ;;
+    models)
+      shift || true
+      cmd_models "$@"
       ;;
     install)
       shift || true
@@ -172,20 +261,14 @@ main() {
       ;;
     -p|--prompt)
       shift
-      local launcher="${HOME}/.local/bin/grok-nethunter"
-      [[ -x "$launcher" ]] || launcher="${GROKHUNTER_HOME}/bin/grok-nethunter"
-      exec "$launcher" -p "$@"
+      exec "$(_grok_launcher)" -p "$@"
       ;;
     --)
       shift
-      local launcher="${HOME}/.local/bin/grok-nethunter"
-      [[ -x "$launcher" ]] || launcher="${GROKHUNTER_HOME}/bin/grok-nethunter"
-      exec "$launcher" "$@"
+      exec "$(_grok_launcher)" "$@"
       ;;
     *)
-      local launcher="${HOME}/.local/bin/grok-nethunter"
-      [[ -x "$launcher" ]] || launcher="${GROKHUNTER_HOME}/bin/grok-nethunter"
-      exec "$launcher" "$@"
+      exec "$(_grok_launcher)" "$@"
       ;;
   esac
 }
