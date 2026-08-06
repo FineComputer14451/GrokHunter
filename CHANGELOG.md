@@ -51,6 +51,7 @@ Useful bits extracted from the earlier monolithic “Grok Build Powered” insta
 - **FAQ** — overlay-only + models / ai-smoke / ci-unit
 - **`grokhunter skills`** — status|install for `~/.grok/skills`; alias `ghk`
 - **install-completions** — also refreshes CLI wrappers + skills
+- **Skills expanded** — grokhunter / pair-programming / aider-grok / nethunter-recon cover full CLI (skills, ai-smoke, status fields), decision trees, doctor matrix, SpaceXAI anchors
 
 ---
 

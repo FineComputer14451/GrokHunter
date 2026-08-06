@@ -15,6 +15,7 @@ You help the operator use **Aider** as a terminal pair programmer with **xAI / G
 - User asks for Aider, “git-aware pair”, auto-commit coding sessions
 - Preference for CLI-only pair programming over the Grok TUI
 - Combining Aider with the existing `XAI_API_KEY`
+- Repairing `aider-grok` helper or `~/venv-aider`
 
 ## Setup (paste-ready)
 
@@ -24,6 +25,9 @@ bash ~/GrokHunter/install.sh --overlay-only --with-aider
 
 # Full install path:
 bash ~/GrokHunter/install.sh --with-aider
+
+# Also refresh wrappers + lab skills:
+grokhunter skills install
 
 # Manual inside nethunter:
 sudo apt update && sudo apt install -y python3-pip python3-venv git
@@ -37,7 +41,7 @@ export OPENAI_API_KEY="${XAI_API_KEY}"
 export AIDER_MODEL=grok-4.5
 ```
 
-Installer places **`bin/aider-grok`** into `~/.local/bin` and (when possible) the Kali rootfs. Canonical source is the repo file — not a heredoc snapshot.
+Installer places **`bin/aider-grok`** into `~/.local/bin` and (when possible) the Kali rootfs. Canonical source is the repo file.
 
 ## Daily use
 
@@ -54,27 +58,36 @@ aider --model "${AIDER_MODEL:-grok-4.5}"
 ```bash
 AIDER_MODEL=grok-4.5 aider-grok
 aider-grok --model grok-4.5
-# OpenAI-compatible base (default already set by helper):
-# OPENAI_API_BASE=https://api.x.ai/v1
+# OPENAI_API_BASE defaults to https://api.x.ai/v1 inside the helper
 ```
+
+### What `aider-grok` does
+
+1. Sources `~/.grok/secrets.env` if present  
+2. Sets `OPENAI_API_BASE=https://api.x.ai/v1` and maps `XAI_API_KEY` → `OPENAI_API_KEY`  
+3. Defaults `AIDER_MODEL=grok-4.5`  
+4. Activates `~/venv-aider` or `/home/kali/venv-aider` when available  
+5. Runs `aider --model …` unless user already passed `--model`
 
 ## Rules
 
 - Prefer small, reviewable edits
 - Never print or commit API keys
-- Aider auto-commits by default — mention that when starting a session
-- Default model is **grok-4.5**; override with `AIDER_MODEL` or `--model` if needed
-- If `aider` is missing: re-run `--overlay-only --with-aider` or manual venv steps above
+- Aider **auto-commits by default** — mention that when starting a session
+- Default model is **grok-4.5**; override with `AIDER_MODEL` or `--model`
+- If `aider` is missing: re-run `--overlay-only --with-aider` or manual venv steps
 
-## Relation to Grok Build
+## Relation to other tools
 
 | Tool | Role |
 |------|------|
-| `grok` / `grokhunter` | Default interactive + headless agent for this lab |
-| `aider-grok` / `aider` | Optional git-native terminal pair-programmer using the same key |
-| `scripts/spacexai_smoke.sh` | API key / Responses smoke (not a pair session) |
+| `grok` / `grokhunter` | Default interactive + headless agent |
+| `aider-grok` / `aider` | Git-native terminal pair (same key) |
+| `grokhunter ai-smoke` | API key / Responses smoke (not a pair session) |
+| `grokhunter skills` | Lab skill files + PATH wrappers |
+| `pair-programming` skill | Coding session style for Grok TUI |
 
-Both can coexist. Guide the user to the tool that matches the session (TUI vs pure CLI + git).
+Both Grok Build and Aider can coexist. Match the tool to the session (TUI vs pure CLI + git).
 
 ## Troubleshooting
 
@@ -83,8 +96,17 @@ grokhunter doctor
 which aider-grok
 ls -la ~/venv-aider/bin/aider /home/kali/venv-aider/bin/aider 2>/dev/null
 test -r ~/.grok/secrets.env && echo "secrets: present" || echo "secrets: missing"
-# reinstall helper only:
+grokhunter skills install
 bash ~/GrokHunter/install.sh --overlay-only --with-aider
+grokhunter ai-smoke    # verifies XAI_API_KEY reaches api.x.ai
 ```
+
+| Symptom | Fix |
+|---------|-----|
+| `aider not found` | Install venv / `--with-aider` |
+| `aider-grok` missing | `grokhunter skills install` or overlay install |
+| Auth / 401 | Fix `XAI_API_KEY` in secrets.env; `ai-smoke` |
+| Wrong model | `AIDER_MODEL=grok-4.5` or `--model` |
+| Commits unwanted | Start Aider with no-auto-commit flags per Aider docs; warn user |
 
 Docs: `docs/EDITORS.md`, `docs/GROK-45.md`.
