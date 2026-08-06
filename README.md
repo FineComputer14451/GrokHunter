@@ -92,6 +92,7 @@ grokhunter             # Primary CLI / TUI
 grokhunter status      # auth / x11 / v9 quick line
 grokhunter doctor      # Full health report
 grokhunter models      # Install or status V9 model pickers
+grokhunter ai-smoke    # SpaceXAI API smoke (needs XAI_API_KEY)
 grokhunter plan "…"    # Plan a coding task
 grokhunter -p "…"      # Headless one-shot
 ```
@@ -134,12 +135,14 @@ lib/
   grok.sh                  Grok Build + Aider + V9 helpers
   x11.sh                   Termux:X11 + nh-x11 + /tmp bind patch
 bin/
-  grokhunter               status | doctor | models | ensure | plan | install
+  grokhunter               status | doctor | models | ai-smoke | ensure | plan | install
   grokhunter-doctor        Health report
   grok-nethunter           Full-screen launcher
+  nh-x11 / aider-grok      Desktop + Aider helpers
 scripts/
   install_v9_grok_models.sh   Atomic V9 [model.*] picker install
-config/                    Example Grok Build model surface
+  spacexai_smoke.sh           SpaceXAI Responses API smoke
+config/                    Completions, profile, model examples
 skills/                    grokhunter · pair-programming · aider-grok · nethunter-recon
 docs/                      INSTALL, FAQ, X11, PROOT, EDITORS, GROK-45
 ```

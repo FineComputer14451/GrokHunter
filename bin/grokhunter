@@ -58,7 +58,9 @@ Usage:
   grokhunter status           Short status line
   grokhunter doctor           Full health report
   grokhunter ensure           Install/upgrade Grok Build binary
-  grokhunter models [cmd]     V9 / 4.5 model pickers (install|status)
+  grokhunter models [cmd]     V9 / 4.5 model pickers (install|status|force)
+  grokhunter ai-smoke [prompt] SpaceXAI API smoke (scripts/spacexai_smoke.sh)
+  grokhunter smoke [prompt]   Alias for ai-smoke
   grokhunter install [args]   Run / re-run installer (supports --overlay-only)
   grokhunter plan <prompt>    Plan mode
   grokhunter -p <prompt>      Headless / one-shot
@@ -72,6 +74,7 @@ Aliases (after profile install):
   ghd  → doctor
   ghp  → plan
   ghm  → models
+  ghai → ai-smoke
   ghh  → headless -p
 
 Env:
@@ -150,6 +153,19 @@ cmd_install() {
     exit 1
   fi
   exec bash "$installer" "$@"
+}
+
+cmd_ai_smoke() {
+  local script="${GROKHUNTER_HOME}/scripts/spacexai_smoke.sh"
+  if [[ ! -f "${script}" ]]; then
+    script="${HERE}/../scripts/spacexai_smoke.sh"
+  fi
+  if [[ ! -f "${script}" ]]; then
+    echo "scripts/spacexai_smoke.sh not found under ${GROKHUNTER_HOME}" >&2
+    echo "  Clone the repo or re-run install from a full tree." >&2
+    exit 1
+  fi
+  exec bash "${script}" "$@"
 }
 
 cmd_plan() {
@@ -250,6 +266,10 @@ main() {
     models)
       shift || true
       cmd_models "$@"
+      ;;
+    ai-smoke|smoke)
+      shift || true
+      cmd_ai_smoke "$@"
       ;;
     install)
       shift || true

@@ -124,8 +124,10 @@ nh-x11
 ### SpaceXAI API smoke (app / key check)
 
 ```bash
-source ~/.grok/secrets.env
-bash ~/GrokHunter/scripts/spacexai_smoke.sh
+source ~/.grok/secrets.env   # or export XAI_API_KEY=…
+grokhunter ai-smoke
+# alias: ghai
+# or: bash ~/GrokHunter/scripts/spacexai_smoke.sh
 # or: python3 ~/GrokHunter/templates/spacexai_hello.py
 ```
 
