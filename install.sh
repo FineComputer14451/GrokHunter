@@ -14,7 +14,7 @@ info() { echo "[GrokHunter] $*"; }
 REPO_RAW="https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main"
 REPO_TAR="https://github.com/FineComputer14451/GrokHunter/archive/refs/heads/main.tar.gz"
 MODULES=(cli.sh actions.sh grok.sh x11.sh)
-MODULES_VERSION="2026.2.4"
+MODULES_VERSION="2026.2.5"
 
 CLEANUP_TMP=""
 WAKE_HELD=0
@@ -175,7 +175,7 @@ _source_termux_distro() {
   local engine="$1"
   shift
   set +u
-  # shellcheck disable=SC1090
+  # shellcheck source=/dev/null
   source "${engine}" "$@"
   local ec=$?
   set -u
