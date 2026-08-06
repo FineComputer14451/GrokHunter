@@ -21,46 +21,68 @@ _ensure_workspace() {
   mkdir -p "${GROK_WORKSPACE}" 2>/dev/null || true
 }
 
+# Pure-bash atomic patch: insert extra proot binds after the first "-b /dev" line.
+# Avoids multi-line sed -i (brittle across sed dialects).
 _patch_launcher_binds() {
   local f="$1"
+  local line found=0 tmp
+  local -a out=()
+  local b
+
   [[ -f "${f}" ]] || return 0
 
-  # Already patched?
   if grep -q "${GROKHUNTER_BINDS_MARK}" "${f}" 2>/dev/null; then
     msg -ts "${f##*/}: binds OK"
     return 0
   fi
 
-  # Backup once
-  if [[ ! -f "${f}.grokhunter.bak" ]]; then
-    cp -a "${f}" "${f}.grokhunter.bak" 2>/dev/null || true
-  fi
-
-  # Only attempt if a -b /dev line exists (standard nethunter launcher shape)
   if ! grep -q -- "-b /dev" "${f}"; then
     msg -tw "Could not auto-patch ${f##*/} (no '-b /dev' anchor found)"
     return 1
   fi
 
+  if [[ ! -f "${f}.grokhunter.bak" ]]; then
+    cp -a "${f}" "${f}.grokhunter.bak" 2>/dev/null || true
+  fi
+
   _ensure_workspace
 
-  # Build the block we will insert after the first "-b /dev" line
-  local insert_block="${GROKHUNTER_BINDS_MARK}"
-  local b
-  for b in "${_GROKHUNTER_EXTRA_BINDS[@]}"; do
-    insert_block="${insert_block}
-        ${b} \\"
-  done
-
-  # Insert after the line that contains "-b /dev"
-  if sed -i "/-b \\\/dev/{
-a\\
-${insert_block}
-}" "${f}" 2>/dev/null; then
-    if grep -q "${GROKHUNTER_BINDS_MARK}" "${f}" 2>/dev/null; then
-      msg -ts "Patched ${f##*/} with optimized binds"
-      return 0
+  while IFS= read -r line || [[ -n "${line}" ]]; do
+    out+=("${line}")
+    if [[ ${found} -eq 0 && "${line}" == *"-b /dev"* ]]; then
+      found=1
+      out+=("${GROKHUNTER_BINDS_MARK}")
+      for b in "${_GROKHUNTER_EXTRA_BINDS[@]}"; do
+        out+=("        ${b} \\")
+      done
     fi
+  done < "${f}"
+
+  if [[ ${found} -eq 0 ]]; then
+    msg -tw "Could not auto-patch ${f##*/} (anchor not applied)"
+    return 1
+  fi
+
+  tmp="$(mktemp "${f}.grokhunter.XXXXXX")" || {
+    msg -tw "mktemp failed while patching ${f##*/}"
+    return 1
+  }
+  # Preserve final newline
+  printf '%s\n' "${out[@]}" > "${tmp}" || {
+    rm -f "${tmp}"
+    msg -tw "Failed writing temp patch for ${f##*/}"
+    return 1
+  }
+  if ! mv -f "${tmp}" "${f}"; then
+    rm -f "${tmp}"
+    msg -tw "Failed installing patched ${f##*/}"
+    return 1
+  fi
+  chmod --reference="${f}.grokhunter.bak" "${f}" 2>/dev/null || chmod 755 "${f}" 2>/dev/null || true
+
+  if grep -q "${GROKHUNTER_BINDS_MARK}" "${f}" 2>/dev/null; then
+    msg -ts "Patched ${f##*/} with optimized binds"
+    return 0
   fi
 
   msg -tw "Could not auto-patch ${f##*/}"

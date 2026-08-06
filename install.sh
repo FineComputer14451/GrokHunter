@@ -31,7 +31,7 @@ die_with_help() {
 REPO_RAW="https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main"
 REPO_TAR="https://github.com/FineComputer14451/GrokHunter/archive/refs/heads/main.tar.gz"
 MODULES=(cli.sh actions.sh grok.sh x11.sh)
-MODULES_VERSION="2026.2.8"
+MODULES_VERSION="2026.2.9"
 
 CLEANUP_TMP=""
 WAKE_HELD=0
@@ -248,8 +248,9 @@ if [[ "${OVERLAY_ONLY:-0}" -eq 1 ]]; then
   run_optional_features
   echo
   info "Overlay-only complete."
-  info "  doctor:  bash ${GROKHUNTER_HOME}/bin/grokhunter-doctor"
-  info "  models:  bash ${GROKHUNTER_HOME}/bin/grokhunter models status"
+  info "  PATH wrappers:  ~/.local/bin (grokhunter, doctor, …)"
+  info "  doctor:  grokhunter doctor   # or bash ${GROKHUNTER_HOME}/bin/grokhunter-doctor"
+  info "  models:  grokhunter models status"
   exit 0
 fi
 

@@ -70,7 +70,7 @@ grokhunter install --overlay-only --with-v9-models
 
 Requires at least one `--with-*` flag. Does **not** install DE/browser or pull a new rootfs.
 
-Helpers (`nh-x11`, `aider-grok`) are installed from repo `bin/` files (single source of truth).
+Helpers (`nh-x11`, `aider-grok`, `grokhunter`, …) are installed from repo `bin/` into **`~/.local/bin`** (and Termux `PREFIX/bin` when available). Ensure `PATH` includes `~/.local/bin` (see `~/.grok/profile.sh`).
 
 ## Environment overrides
 
