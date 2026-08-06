@@ -4,6 +4,9 @@ Run diagnostics first:
 
 ```bash
 grokhunter doctor
+
+# Local unit checks (syntax + feature table + bind patch; no network)
+bash scripts/ci-unit.sh
 ```
 
 ## Install / bootstrap
