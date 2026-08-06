@@ -49,6 +49,8 @@ Useful bits extracted from the earlier monolithic “Grok Build Powered” insta
 - **Website** — badge v1.0.2; CLI/flags for models, ai-smoke, overlay-only
 - **status / doctor** — models, skills count, PATH wrappers; doctor warns when skills only in repo
 - **FAQ** — overlay-only + models / ai-smoke / ci-unit
+- **`grokhunter skills`** — status|install for `~/.grok/skills`; alias `ghk`
+- **install-completions** — also refreshes CLI wrappers + skills
 
 ---
 

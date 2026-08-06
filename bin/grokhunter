@@ -59,6 +59,7 @@ Usage:
   grokhunter doctor           Full health report
   grokhunter ensure           Install/upgrade Grok Build binary
   grokhunter models [cmd]     V9 / 4.5 model pickers (install|status|force)
+  grokhunter skills [cmd]     Install/status lab skills under ~/.grok/skills
   grokhunter ai-smoke [prompt] SpaceXAI API smoke (scripts/spacexai_smoke.sh)
   grokhunter smoke [prompt]   Alias for ai-smoke
   grokhunter install [args]   Run / re-run installer (supports --overlay-only)
@@ -74,6 +75,7 @@ Aliases (after profile install):
   ghd  → doctor
   ghp  → plan
   ghm  → models
+  ghk  → skills
   ghai → ai-smoke
   ghh  → headless -p
 
@@ -185,6 +187,71 @@ cmd_ai_smoke() {
   exec bash "${script}" "$@"
 }
 
+cmd_skills_status() {
+  local s dest count=0
+  echo "skills dir: ${HOME}/.grok/skills"
+  echo "repo:       ${GROKHUNTER_HOME}/skills"
+  for s in grokhunter pair-programming aider-grok nethunter-recon; do
+    dest="${HOME}/.grok/skills/${s}/SKILL.md"
+    if [[ -f "${dest}" ]]; then
+      echo "  installed: ${s}"
+      count=$((count + 1))
+    elif [[ -f "${GROKHUNTER_HOME}/skills/${s}/SKILL.md" ]]; then
+      echo "  repo-only: ${s}  (run: grokhunter skills install)"
+    else
+      echo "  missing:   ${s}"
+    fi
+  done
+  echo "installed: ${count}"
+  [[ ${count} -ge 3 ]]
+}
+
+cmd_skills_install() {
+  local root="${GROKHUNTER_HOME}"
+  if [[ ! -f "${root}/lib/grok.sh" ]]; then
+    echo "lib/grok.sh not found under ${root}" >&2
+    exit 1
+  fi
+  # shellcheck disable=SC1091
+  SCRIPT_DIR="${root}"
+  export SCRIPT_DIR
+  # shellcheck source=/dev/null
+  source "${root}/lib/grok.sh"
+  msg() { shift || true; printf '[grokhunter skills] %s\n' "$*"; }
+  cursor() { :; }
+  install_cli_bins
+  cmd_skills_status || true
+}
+
+cmd_skills() {
+  local sub="${1:-status}"
+  shift || true
+  case "${sub}" in
+    help|-h|--help)
+      cat <<'EOF'
+Usage: grokhunter skills [status|install]
+
+  status    Show which skills are under ~/.grok/skills (default)
+  install   Copy repo skills + refresh ~/.local/bin wrappers
+EOF
+      return 0
+      ;;
+    status|--status)
+      cmd_skills_status
+      return $?
+      ;;
+    install)
+      cmd_skills_install
+      return $?
+      ;;
+    *)
+      echo "Unknown skills subcommand: ${sub}" >&2
+      echo "Usage: grokhunter skills [status|install]" >&2
+      exit 2
+      ;;
+  esac
+}
+
 cmd_plan() {
   local prompt="$*"
   if [[ -z "$prompt" ]]; then
@@ -283,6 +350,10 @@ main() {
     models)
       shift || true
       cmd_models "$@"
+      ;;
+    skills)
+      shift || true
+      cmd_skills "$@"
       ;;
     ai-smoke|smoke)
       shift || true

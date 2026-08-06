@@ -112,7 +112,9 @@ info "bind-patch OK"
 
 # ---------- CLI help surfaces ----------
 bash bin/grokhunter help | grep -q ai-smoke || die "help missing ai-smoke"
+bash bin/grokhunter help | grep -q skills || die "help missing skills"
 bash bin/grokhunter models help | grep -q install || die "models help missing install"
+bash bin/grokhunter skills help | grep -q install || die "skills help missing install"
 info "cli help OK"
 
 # ---------- status line fields ----------
