@@ -140,7 +140,7 @@ bin/
 scripts/
   install_v9_grok_models.sh   Atomic V9 [model.*] picker install
 config/                    Example Grok Build model surface
-skills/                    Pair-programming skill (Grok 4.5)
+skills/                    grokhunter · pair-programming · aider-grok · nethunter-recon
 docs/                      INSTALL, FAQ, X11, PROOT, EDITORS, GROK-45
 ```
 
