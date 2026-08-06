@@ -35,10 +35,26 @@ remove_bins() {
 }
 
 remove_skills() {
-  for s in grokhunter nethunter-recon pair-programming aider-grok; do
-    if [[ -d "${SKILLS_DIR}/${s}" ]]; then
-      rm -rf "${SKILLS_DIR}/${s}"
-      log "Removed skill ${s}"
+  local root name
+  root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  if [[ ! -d "${root}/skills" ]]; then
+    # Fallback: remove known historical names only if repo tree absent
+    for name in grokhunter pair-programming aider-grok nethunter-recon x11-desktop; do
+      if [[ -d "${SKILLS_DIR}/${name}" ]]; then
+        rm -rf "${SKILLS_DIR}/${name}"
+        log "Removed skill ${name}"
+      fi
+    done
+    return 0
+  fi
+  for d in "${root}/skills"/*/; do
+    [[ -d "${d}" ]] || continue
+    name="${d%/}"; name="${name##*/}"
+    [[ "${name}" == _* ]] && continue
+    [[ -f "${d}SKILL.md" ]] || continue
+    if [[ -d "${SKILLS_DIR}/${name}" ]]; then
+      rm -rf "${SKILLS_DIR}/${name}"
+      log "Removed skill ${name}"
     fi
   done
 }

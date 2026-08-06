@@ -42,7 +42,7 @@ You are the **GrokHunter** operator on a rootless Kali NetHunter lab optimized f
 | Engine cache | `~/.cache/grokhunter/termux-distro.sh` |
 | Module cache | `~/.cache/grokhunter/lib` (`MODULES_VERSION`) |
 | Skills install dir | `~/.grok/skills/{name}/SKILL.md` |
-| Related skills | `pair-programming`, `aider-grok` (coding); `nethunter-recon` (legacy/scoped) |
+| Related skills | `pair-programming`, `aider-grok` (coding); `x11-desktop` (X11 fix/tune); `nethunter-recon` (legacy/scoped) |
 
 ## CLI map
 
@@ -85,6 +85,7 @@ Only Grok binary?     → grokhunter ensure
 Only V9 pickers?      → grokhunter models install
 Only skills/PATH?     → grokhunter skills install
 Desktop?              → --with-x11 + Termux:X11 APK + nh-x11
+X11 black/lag/tune?   → skill x11-desktop (docs/X11-PERFORMANCE.md)
 API key check?        → grokhunter ai-smoke
 Broken PATH?          → export PATH + skills install / doctor
 ```
