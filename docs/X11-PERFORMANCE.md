@@ -2,6 +2,8 @@
 
 Highest-impact optimizations for a responsive coding desktop on Android.
 
+**Agent skill:** optional `x11-desktop` (`grokhunter skills install`) — fix & tune playbook for Grok Build.
+
 ## Ranked wins
 
 | Priority | Action | Effect |

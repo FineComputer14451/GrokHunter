@@ -188,22 +188,43 @@ cmd_ai_smoke() {
 }
 
 cmd_skills_status() {
-  local s dest count=0
+  local s dest count=0 name
+  local skills_root="${GROKHUNTER_HOME}/skills"
   echo "skills dir: ${HOME}/.grok/skills"
-  echo "repo:       ${GROKHUNTER_HOME}/skills"
-  for s in grokhunter pair-programming aider-grok nethunter-recon; do
+  echo "repo:       ${skills_root}"
+  if [[ ! -d "${skills_root}" ]]; then
+    echo "  missing:   (no repo skills/ tree)"
+    return 1
+  fi
+  # shellcheck disable=SC2012
+  while IFS= read -r name; do
+    [[ -n "${name}" ]] || continue
+    s="${name}"
     dest="${HOME}/.grok/skills/${s}/SKILL.md"
     if [[ -f "${dest}" ]]; then
       echo "  installed: ${s}"
       count=$((count + 1))
-    elif [[ -f "${GROKHUNTER_HOME}/skills/${s}/SKILL.md" ]]; then
+    elif [[ -f "${skills_root}/${s}/SKILL.md" ]]; then
       echo "  repo-only: ${s}  (run: grokhunter skills install)"
     else
       echo "  missing:   ${s}"
     fi
-  done
+  done < <(
+    for d in "${skills_root}"/*/; do
+      [[ -d "${d}" ]] || continue
+      name="${d%/}"; name="${name##*/}"
+      [[ "${name}" == _* ]] && continue
+      [[ -f "${d}SKILL.md" ]] || continue
+      printf '%s\n' "${name}"
+    done | LC_ALL=C sort -u
+  )
   echo "installed: ${count}"
-  [[ ${count} -ge 3 ]]
+  # Success if core trio present (not full inventory)
+  local core=0
+  for s in grokhunter pair-programming aider-grok; do
+    [[ -f "${HOME}/.grok/skills/${s}/SKILL.md" ]] && core=$((core + 1))
+  done
+  [[ ${core} -ge 3 ]]
 }
 
 cmd_skills_install() {

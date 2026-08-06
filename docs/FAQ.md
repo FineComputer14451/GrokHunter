@@ -57,6 +57,8 @@ bash install.sh --overlay-only --with-grok --with-v9-models --with-completions
 # refreshes CLI wrappers + skills under ~/.local/bin and ~/.grok/skills
 ```
 
+Product skills are any `skills/<name>/SKILL.md` in the repo. `grokhunter skills install` copies all of them. Core health is still the coding trio (`skills=N/3`); `x11-desktop` and `nethunter-recon` are optional.
+
 Requires at least one `--with-*` flag.
 
 ## How do I check V9 model pickers / API key?
