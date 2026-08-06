@@ -61,6 +61,7 @@ Same installer. In `~/.bashrc`:
 | `ghs` | `grokhunter status` |
 | `ghp` | `grokhunter plan` |
 | `ghm` | `grokhunter models` |
+| `ghk` | `grokhunter skills` |
 | `ghai` | `grokhunter ai-smoke` |
 | `ghh "…"` | `grokhunter -p "…"` |
 

@@ -11,6 +11,7 @@ _grokhunter() {
     'doctor:Full health report'
     'ensure:Install or upgrade Grok Build binary'
     'models:V9 / 4.5 model pickers'
+    'skills:Install/status lab skills (~/.grok/skills)'
     'ai-smoke:SpaceXAI API smoke test'
     'smoke:Alias for ai-smoke'
     'install:Run or re-run rootless installer'
@@ -25,6 +26,13 @@ _grokhunter() {
     'status:Show whether V9 pickers are installed'
     'force:Force refresh of V9 pickers'
     'help:Models help'
+  )
+
+  local -a skills_cmds
+  skills_cmds=(
+    'install:Copy skills + refresh PATH wrappers'
+    'status:Show installed vs repo-only skills'
+    'help:Skills help'
   )
 
   local -a install_opts
@@ -65,6 +73,9 @@ _grokhunter() {
       case $words[1] in
         models)
           _describe -t model_cmds 'models' model_cmds
+          ;;
+        skills)
+          _describe -t skills_cmds 'skills' skills_cmds
           ;;
         install)
           _arguments $install_opts

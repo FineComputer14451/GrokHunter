@@ -36,6 +36,7 @@ if [[ -n "${ZSH_VERSION:-}" ]]; then
   (( ${+aliases[ghs]} )) || alias ghs='grokhunter status'
   (( ${+aliases[ghp]} )) || alias ghp='grokhunter plan'
   (( ${+aliases[ghm]} )) || alias ghm='grokhunter models'
+  (( ${+aliases[ghk]} )) || alias ghk='grokhunter skills'
   (( ${+aliases[ghai]} )) || alias ghai='grokhunter ai-smoke'
   if ! typeset -f ghh >/dev/null 2>&1; then
     ghh() { grokhunter -p "$*"; }
@@ -57,6 +58,7 @@ if [[ -n "${BASH_VERSION:-}" ]]; then
   alias ghs='grokhunter status' 2>/dev/null || true
   alias ghp='grokhunter plan' 2>/dev/null || true
   alias ghm='grokhunter models' 2>/dev/null || true
+  alias ghk='grokhunter skills' 2>/dev/null || true
   alias ghai='grokhunter ai-smoke' 2>/dev/null || true
   ghh() { grokhunter -p "$*"; }
 fi

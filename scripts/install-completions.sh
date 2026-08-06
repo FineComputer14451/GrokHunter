@@ -32,6 +32,19 @@ if [[ -f "$PROFILE_SRC" ]]; then
   info "Profile snippet: $PROFILE_DST"
 fi
 
+# Also install CLI wrappers + skills (same as overlay complete phase)
+if [[ -f "${ROOT}/lib/grok.sh" ]]; then
+  # shellcheck disable=SC1091
+  SCRIPT_DIR="${ROOT}"
+  export SCRIPT_DIR GROKHUNTER_HOME="${GROKHUNTER_HOME:-${ROOT}}"
+  # shellcheck source=/dev/null
+  source "${ROOT}/lib/grok.sh"
+  msg() { shift || true; info "$*"; }
+  cursor() { :; }
+  install_cli_bins 2>/dev/null || true
+  info "CLI wrappers + skills refreshed (if bin/skills present)"
+fi
+
 cat <<'EOF'
 
 Add to ~/.zshrc (if not already):
