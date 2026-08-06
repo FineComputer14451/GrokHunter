@@ -75,6 +75,8 @@ GROKHUNTER_REFRESH=1 bash install.sh --help
 --with-x11 / --no-x11
 --with-aider / --no-aider
 --with-v9-models / --no-v9-models
+--with-completions / --no-completions
+--overlay-only          Optional overlays only (no rootfs re-download)
 -h, --help
 ```
 

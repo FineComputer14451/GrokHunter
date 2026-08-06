@@ -108,8 +108,25 @@ cmd_status() {
   if [[ -r "${HOME}/.config/grokhunter/x11-session" ]]; then
     session="$(tr -d '[:space:]' < "${HOME}/.config/grokhunter/x11-session")"
   fi
-  printf "GrokHunter %s | %s | auth=%s | x11=%s | session=%s | home=%s\n" \
-    "$VERSION" "$gver" "$auth" "$x11" "$session" "$GROKHUNTER_HOME"
+  local models="no"
+  local cfg="${GROK_CONFIG:-${HOME}/.grok/config.toml}"
+  local marker="# --- Grok Imagine Cinematic Studio: v9-4p5 specialist models"
+  if [[ -f "${cfg}" ]] && grep -qF "${marker}" "${cfg}" 2>/dev/null; then
+    models="yes"
+  fi
+  local skills="0"
+  local s
+  for s in grokhunter pair-programming aider-grok; do
+    if [[ -f "${HOME}/.grok/skills/${s}/SKILL.md" ]]; then
+      skills=$((skills + 1))
+    fi
+  done
+  local wrappers="no"
+  if command -v grokhunter >/dev/null 2>&1 || [[ -x "${HOME}/.local/bin/grokhunter" ]]; then
+    wrappers="yes"
+  fi
+  printf "GrokHunter %s | %s | auth=%s | x11=%s | models=%s | skills=%s/3 | wrappers=%s | session=%s | home=%s\n" \
+    "$VERSION" "$gver" "$auth" "$x11" "$models" "$skills" "$wrappers" "$session" "$GROKHUNTER_HOME"
 }
 
 cmd_ensure() {

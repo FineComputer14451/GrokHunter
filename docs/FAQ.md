@@ -47,6 +47,27 @@ GROKHUNTER_REFRESH=1 bash install.sh --with-grok   # refresh modules + Grok
 grokhunter ensure             # Grok binary only (shared ensure_grok.sh)
 ```
 
+## Can I add features without re-downloading Kali?
+
+Yes — **overlay-only** (no rootfs / termux-distro):
+
+```bash
+bash install.sh --overlay-only --with-x11 --with-aider
+bash install.sh --overlay-only --with-grok --with-v9-models --with-completions
+# refreshes CLI wrappers + skills under ~/.local/bin and ~/.grok/skills
+```
+
+Requires at least one `--with-*` flag.
+
+## How do I check V9 model pickers / API key?
+
+```bash
+grokhunter models status
+grokhunter models install
+grokhunter ai-smoke          # SpaceXAI Responses smoke (needs XAI_API_KEY)
+bash scripts/ci-unit.sh      # local unit checks (no network)
+```
+
 ## Where are secrets stored?
 
 `~/.grok/secrets.env` (mode `600`). Never commit this file.
