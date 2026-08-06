@@ -28,6 +28,26 @@ _gh_resolve() {
   return 1
 }
 
+# List product skill names under <root>/skills (dirs with SKILL.md; skip _*).
+# Prints one name per line, sorted. Empty if none.
+_gh_list_skill_names() {
+  local root="${1:-}" d name
+  [[ -n "${root}" && -d "${root}/skills" ]] || return 0
+  local -a names=()
+  for d in "${root}/skills"/*/; do
+    [[ -d "${d}" ]] || continue
+    name="${d%/}"
+    name="${name##*/}"
+    [[ "${name}" == _* ]] && continue
+    [[ -f "${d}SKILL.md" ]] || continue
+    names+=("${name}")
+  done
+  if [[ ${#names[@]} -eq 0 ]]; then
+    return 0
+  fi
+  printf '%s\n' "${names[@]}" | LC_ALL=C sort -u
+}
+
 _gh_install_bin() {
   local rel="$1"
   local dest="$2"
@@ -92,7 +112,8 @@ install_skills() {
     return 0
   fi
   mkdir -p "${HOME}/.grok/skills" 2>/dev/null || true
-  for name in grokhunter pair-programming aider-grok nethunter-recon; do
+  while IFS= read -r name; do
+    [[ -n "${name}" ]] || continue
     src="${root}/skills/${name}"
     dest="${HOME}/.grok/skills/${name}"
     if [[ -d "${src}" && -f "${src}/SKILL.md" ]]; then
@@ -103,7 +124,7 @@ install_skills() {
         count=$((count + 1))
       fi
     fi
-  done
+  done < <(_gh_list_skill_names "${root}")
   if [[ ${count} -gt 0 ]]; then
     msg -ts "Installed ${count} skill(s) under ~/.grok/skills"
   else
