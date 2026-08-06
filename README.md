@@ -142,6 +142,7 @@ bin/
 scripts/
   install_v9_grok_models.sh   Atomic V9 [model.*] picker install
   spacexai_smoke.sh           SpaceXAI Responses API smoke
+  ci-unit.sh                  Local unit checks (bash scripts/ci-unit.sh)
 config/                    Completions, profile, model examples
 skills/                    grokhunter · pair-programming · aider-grok · nethunter-recon
 docs/                      INSTALL, FAQ, X11, PROOT, EDITORS, GROK-45
