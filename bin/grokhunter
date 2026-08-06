@@ -81,7 +81,7 @@ Skills:
   status skills-core=N/3  counts only the core coding trio
                      (grokhunter, pair-programming, aider-grok)
   optional skills (x11-desktop, nethunter-recon, …) appear under
-  `skills status` and doctor optional section only
+  "skills status" and doctor optional section only
 
 Exit codes:
   0  success (status always 0; doctor PASS / PASS-with-warnings)
