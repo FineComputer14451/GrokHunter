@@ -138,7 +138,7 @@ else
   info "ai-smoke missing-key check inconclusive (skipped strict fail)"
 fi
 
-# ---------- install_skills copies SKILL.md ----------
+# ---------- install_skills copies SKILL.md (scan-based) ----------
 bash -c '
   set -euo pipefail
   SCRIPT_DIR="$(pwd)"
@@ -149,8 +149,36 @@ bash -c '
   install_skills
   [[ -f "$HOME/.grok/skills/grokhunter/SKILL.md" ]]
   [[ -f "$HOME/.grok/skills/pair-programming/SKILL.md" ]]
+  [[ -f "$HOME/.grok/skills/aider-grok/SKILL.md" ]]
+  [[ -f "$HOME/.grok/skills/nethunter-recon/SKILL.md" ]]
+  # New optional skill (Task 4 creates SKILL.md; until then this fails)
+  [[ -f "$HOME/.grok/skills/x11-desktop/SKILL.md" ]]
+  # User-only skill must not be required for install success (sanity: create after install)
+  mkdir -p "$HOME/.grok/skills/user-only"
+  echo "user" > "$HOME/.grok/skills/user-only/SKILL.md"
+  # Re-install must not delete user-only
+  install_skills
+  [[ -f "$HOME/.grok/skills/user-only/SKILL.md" ]]
   rm -rf "$HOME"
 '
 info "install_skills OK"
+
+# ---------- _gh_list_skill_names skips underscore dirs ----------
+bash -c '
+  set -euo pipefail
+  SCRIPT_DIR="$(pwd)"
+  source lib/grok.sh
+  msg() { :; }
+  trap '\''rm -rf "$SCRIPT_DIR/skills/_template"'\'' EXIT
+  names="$(_gh_list_skill_names "$SCRIPT_DIR")"
+  echo "$names" | grep -qx "grokhunter"
+  mkdir -p "$SCRIPT_DIR/skills/_template"
+  printf "%s\n" "---" "name: template" "---" > "$SCRIPT_DIR/skills/_template/SKILL.md"
+  names2="$(_gh_list_skill_names "$SCRIPT_DIR")"
+  if echo "$names2" | grep -q "_template"; then
+    exit 1
+  fi
+'
+info "list_skill_names OK"
 
 info "ALL OK"
