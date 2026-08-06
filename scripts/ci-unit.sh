@@ -173,6 +173,7 @@ bash -c '
   names="$(_gh_list_skill_names "$SCRIPT_DIR")"
   echo "$names" | grep -qx "grokhunter"
   echo "$names" | grep -qx "pair-programming"
+  echo "$names" | grep -qx "x11-desktop"
   mkdir -p "$SCRIPT_DIR/skills/_template"
   printf "%s\n" "---" "name: template" "---" > "$SCRIPT_DIR/skills/_template/SKILL.md"
   names2="$(_gh_list_skill_names "$SCRIPT_DIR")"
