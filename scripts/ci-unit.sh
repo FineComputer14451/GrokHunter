@@ -115,6 +115,13 @@ bash bin/grokhunter help | grep -q ai-smoke || die "help missing ai-smoke"
 bash bin/grokhunter models help | grep -q install || die "models help missing install"
 info "cli help OK"
 
+# ---------- status line fields ----------
+st="$(bash bin/grokhunter status)"
+echo "${st}" | grep -q 'models=' || die "status missing models="
+echo "${st}" | grep -q 'skills=' || die "status missing skills="
+echo "${st}" | grep -q 'wrappers=' || die "status missing wrappers="
+info "status line OK"
+
 # ---------- ai-smoke missing-key path (no network) ----------
 # Unset key for this subshell only; do not touch secrets files.
 if env -u XAI_API_KEY bash -c '

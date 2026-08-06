@@ -208,14 +208,32 @@ elif [[ -x "${HOME}/venv-aider/bin/aider" ]]; then
 else
   warn "Aider not installed — see docs/EDITORS.md"
 fi
+if command -v aider-grok >/dev/null 2>&1 || [[ -x "${HOME}/.local/bin/aider-grok" ]]; then
+  ok "aider-grok helper present"
+fi
+
+# ---------- PATH wrappers ----------
+hdr "PATH wrappers (~/.local/bin)"
+for b in grokhunter grokhunter-doctor grok-nethunter; do
+  if command -v "$b" >/dev/null 2>&1; then
+    ok "$b on PATH → $(command -v "$b")"
+  elif [[ -f "${HOME}/.local/bin/${b}" ]]; then
+    warn "$b in ~/.local/bin but not on PATH — source ~/.grok/profile.sh"
+    WARN=1
+  else
+    warn "$b not installed — bash install.sh --overlay-only --with-completions"
+    WARN=1
+  fi
+done
 
 # ---------- Skills ----------
 hdr "Skills"
 for s in pair-programming grokhunter aider-grok; do
   if [[ -f "${HOME}/.grok/skills/${s}/SKILL.md" ]]; then
-    ok "skill: ${s}"
+    ok "skill: ${s} (~/.grok/skills)"
   elif [[ -f "${GROKHUNTER_HOME}/skills/${s}/SKILL.md" ]]; then
-    ok "skill (repo): ${s}"
+    warn "skill (repo only): ${s} — run: bash install.sh --overlay-only --with-completions"
+    WARN=1
   else
     warn "skill missing: ${s}"
     WARN=1
@@ -227,7 +245,7 @@ if [[ -f "${HOME}/.grok/skills/nethunter-recon/SKILL.md" ]] \
   ok "skill: nethunter-recon (legacy; authorized use only)"
 fi
 
-# ---------- Config ----------
+# ---------- Config / models ----------
 hdr "Config"
 if [[ -f "${HOME}/.grok/config.toml" ]]; then
   ok "~/.grok/config.toml exists"
@@ -236,9 +254,20 @@ if [[ -f "${HOME}/.grok/config.toml" ]]; then
   else
     warn "compact_mode not true (optional UX)"
   fi
+  local v9_marker="# --- Grok Imagine Cinematic Studio: v9-4p5 specialist models"
+  if grep -qF "${v9_marker}" "${HOME}/.grok/config.toml" 2>/dev/null; then
+    ok "V9 / 4.5 model pickers present (grokhunter models status)"
+  else
+    warn "V9 pickers not installed — grokhunter models install"
+    WARN=1
+  fi
 else
   warn "No config.toml yet — first grok launch will create one"
   WARN=1
+fi
+if [[ -f "${GROKHUNTER_HOME}/scripts/spacexai_smoke.sh" ]] \
+   || [[ -f "${GROKHUNTER_HOME}/scripts/ci-unit.sh" ]]; then
+  ok "repo scripts present (ai-smoke / ci-unit)"
 fi
 
 # ---------- Cache / modules ----------

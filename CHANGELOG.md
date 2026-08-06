@@ -47,6 +47,8 @@ Useful bits extracted from the earlier monolithic “Grok Build Powered” insta
 - **`scripts/ci-unit.sh`** — local/CI unit checks (bash -n, parse_cli, maybe_install, bind patch, ai-smoke missing-key) without requiring workflow-token updates
 - **`install_skills`** — copies `skills/*` into `~/.grok/skills` during overlay/complete (matches uninstall)
 - **Website** — badge v1.0.2; CLI/flags for models, ai-smoke, overlay-only
+- **status / doctor** — models, skills count, PATH wrappers; doctor warns when skills only in repo
+- **FAQ** — overlay-only + models / ai-smoke / ci-unit
 
 ---
 
