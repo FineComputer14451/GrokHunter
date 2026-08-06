@@ -2,7 +2,7 @@
 # GrokHunter Rootless — health report (coding lab)
 set -euo pipefail
 
-# Resolve overlay (same rules as bin/grokhunter)
+# Resolve overlay root (clone → ~/GrokHunter → script dir)
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 if [[ -f "${HERE}/../install.sh" ]]; then
   _GH_ROOT="$(cd "${HERE}/.." && pwd)"
@@ -310,7 +310,7 @@ if curl -fsS --max-time 5 -o /dev/null -w '' https://x.ai 2>/dev/null \
   || curl -fsS --max-time 5 -o /dev/null https://api.x.ai 2>/dev/null; then
   ok "HTTPS to x.ai reachable"
 else
-  warn "Could not verify reachability to x.ai"
+  warn "Offline or no route to x.ai (HTTPS probe failed — normal when offline)"
   WARN=1
 fi
 

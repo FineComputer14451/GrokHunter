@@ -120,7 +120,7 @@ info "cli help OK"
 # ---------- status line fields ----------
 st="$(bash bin/grokhunter status)"
 echo "${st}" | grep -q 'models=' || die "status missing models="
-echo "${st}" | grep -q 'skills=' || die "status missing skills="
+echo "${st}" | grep -qE 'skills(-core)?=' || die "status missing skills-core="
 echo "${st}" | grep -q 'wrappers=' || die "status missing wrappers="
 info "status line OK"
 
