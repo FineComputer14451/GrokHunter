@@ -239,10 +239,22 @@ for s in pair-programming grokhunter aider-grok; do
     WARN=1
   fi
 done
-# legacy
-if [[ -f "${HOME}/.grok/skills/nethunter-recon/SKILL.md" ]] \
-   || [[ -f "${GROKHUNTER_HOME}/skills/nethunter-recon/SKILL.md" ]]; then
-  ok "skill: nethunter-recon (legacy; authorized use only)"
+# Optional / non-core product skills (never required)
+if [[ -d "${GROKHUNTER_HOME}/skills" ]]; then
+  for d in "${GROKHUNTER_HOME}/skills"/*/; do
+    [[ -d "${d}" ]] || continue
+    s="${d%/}"; s="${s##*/}"
+    [[ "${s}" == _* ]] && continue
+    [[ -f "${d}SKILL.md" ]] || continue
+    case "${s}" in
+      grokhunter|pair-programming|aider-grok) continue ;;
+    esac
+    if [[ -f "${HOME}/.grok/skills/${s}/SKILL.md" ]]; then
+      ok "skill (optional): ${s} (~/.grok/skills)"
+    elif [[ -f "${GROKHUNTER_HOME}/skills/${s}/SKILL.md" ]]; then
+      ok "skill (optional, repo only): ${s} — install: grokhunter skills install"
+    fi
+  done
 fi
 
 # ---------- Config / models ----------
