@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# aider-grok — GrokHunter helper: Aider + xAI / Grok 4.5
+# Sources ~/.grok/secrets.env, sets OpenAI-compatible base, launches aider.
+set -euo pipefail
+
+# Secrets (never echo)
+if [[ -r "${HOME}/.grok/secrets.env" ]]; then
+  set -a
+  # shellcheck disable=SC1091
+  source "${HOME}/.grok/secrets.env"
+  set +a
+fi
+
+# xAI OpenAI-compatible endpoint
+export OPENAI_API_BASE="${OPENAI_API_BASE:-https://api.x.ai/v1}"
+if [[ -n "${XAI_API_KEY:-}" ]]; then
+  export OPENAI_API_KEY="${XAI_API_KEY}"
+fi
+
+# Prefer Grok 4.5-class coding model (override with AIDER_MODEL if needed)
+export AIDER_MODEL="${AIDER_MODEL:-grok-4.5}"
+
+# Prefer the NetHunter / lab venv if present
+if [[ -x "${HOME}/venv-aider/bin/aider" ]]; then
+  # shellcheck disable=SC1091
+  source "${HOME}/venv-aider/bin/activate"
+elif [[ -x "/home/kali/venv-aider/bin/aider" ]]; then
+  # shellcheck disable=SC1091
+  source "/home/kali/venv-aider/bin/activate"
+fi
+
+if ! command -v aider >/dev/null 2>&1; then
+  echo "[aider-grok] aider not found." >&2
+  echo "  Inside nethunter:  source ~/venv-aider/bin/activate" >&2
+  echo "  Or re-run:         bash install.sh --with-aider" >&2
+  echo "  Manual:            docs/EDITORS.md" >&2
+  exit 1
+fi
+
+# Default model if user did not pass --model
+has_model=0
+for a in "$@"; do
+  case "$a" in
+    --model|--model=*) has_model=1 ;;
+  esac
+done
+
+if [[ "${has_model}" -eq 0 ]]; then
+  exec aider --model "${AIDER_MODEL}" "$@"
+else
+  exec aider "$@"
+fi
