@@ -11,6 +11,8 @@ _grokhunter() {
     'doctor:Full health report'
     'ensure:Install or upgrade Grok Build binary'
     'models:V9 / 4.5 model pickers'
+    'ai-smoke:SpaceXAI API smoke test'
+    'smoke:Alias for ai-smoke'
     'install:Run or re-run rootless installer'
     'plan:Plan a coding task'
     'help:Show help'
@@ -21,7 +23,8 @@ _grokhunter() {
   model_cmds=(
     'install:Write V9 pickers into ~/.grok/config.toml'
     'status:Show whether V9 pickers are installed'
-    '--force:Force refresh of V9 pickers'
+    'force:Force refresh of V9 pickers'
+    'help:Models help'
   )
 
   local -a install_opts
@@ -40,6 +43,9 @@ _grokhunter() {
     '--no-aider[Skip Aider]'
     '--with-v9-models[Install V9 model pickers]'
     '--no-v9-models[Skip V9 pickers]'
+    '--with-completions[Install shell completions]'
+    '--no-completions[Skip shell completions]'
+    '--overlay-only[Optional overlays only; no rootfs download]'
     '--help[Show help]'
   )
 
@@ -66,8 +72,8 @@ _grokhunter() {
         ensure)
           _arguments '--force[Force reinstall even if version OK]'
           ;;
-        plan)
-          _message 'plan prompt'
+        plan|ai-smoke|smoke)
+          _message 'prompt text'
           ;;
         -p|--prompt)
           _message 'prompt text'

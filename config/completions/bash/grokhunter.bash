@@ -8,8 +8,8 @@ _grokhunter_completions() {
   prev="${COMP_WORDS[COMP_CWORD-1]}"
 
   local cmds="status doctor ensure models ai-smoke smoke install plan help version"
-  local model_sub="install status --force"
-  local install_opts="--full --mini --nano --de --browser --no-de --with-grok --no-grok --with-x11 --no-x11 --with-aider --no-aider --with-v9-models --no-v9-models --help"
+  local model_sub="install status force --force help"
+  local install_opts="--full --mini --nano --de --browser --no-de --with-grok --no-grok --with-x11 --no-x11 --with-aider --no-aider --with-v9-models --no-v9-models --with-completions --no-completions --overlay-only --help"
 
   if [[ ${COMP_CWORD} -eq 1 ]]; then
     COMPREPLY=( $(compgen -W "${cmds} -p --prompt --" -- "${cur}") )
@@ -31,6 +31,9 @@ _grokhunter_completions() {
       ;;
     ensure)
       COMPREPLY=( $(compgen -W "--force" -- "${cur}") )
+      ;;
+    ai-smoke|smoke)
+      # free-form prompt
       ;;
   esac
 }
