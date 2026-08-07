@@ -338,7 +338,10 @@ DISTRO_ENGINE="$(resolve_distro_engine)" \
     "GROKHUNTER_REFRESH=1 bash install.sh" \
     "Or vendor termux-distro.sh next to install.sh"
 
-_source_termux_distro "${DISTRO_ENGINE}" "$@" || die_with_help "termux-distro engine failed." \
+# parse_cli already applied GrokHunter flags into SELECTED_* / FEATURE_* / etc.
+# Do NOT forward "$@" into termux-distro — it only accepts its own options
+# (-d, -l, --install-only, …) and rejects --full / --with-* as "Unrecognized option".
+_source_termux_distro "${DISTRO_ENGINE}" || die_with_help "termux-distro engine failed." \
   "Try again with a stable connection" \
   "Force refresh:  GROKHUNTER_REFRESH=1 bash install.sh" \
   "Or clone the repo and run:  bash install.sh"

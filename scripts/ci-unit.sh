@@ -258,4 +258,14 @@ captured="$(resolve_distro_engine 2>/dev/null)"
 TEST_RESOLVE
 info "resolve_distro_engine capture OK"
 
+# ---------- engine must not receive GrokHunter CLI flags ----------
+# Regression: _source_termux_distro "${DISTRO_ENGINE}" "$@" forwarded --full
+# and termux-distro died with "Unrecognized option '--full'".
+if grep -nE '_source_termux_distro[[:space:]]+"\$\{DISTRO_ENGINE\}"[[:space:]]+"\$@"' install.sh; then
+  die "install.sh must not forward \$@ into termux-distro (GH flags already in parse_cli vars)"
+fi
+grep -qE '_source_termux_distro[[:space:]]+"\$\{DISTRO_ENGINE\}"' install.sh \
+  || die "install.sh missing _source_termux_distro DISTRO_ENGINE call"
+info "engine argv isolation OK"
+
 info "ALL OK"
