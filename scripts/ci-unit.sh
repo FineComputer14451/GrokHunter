@@ -227,4 +227,35 @@ bash -c '
 '
 info "install_agents OK"
 
+# ---------- resolve_distro_engine: path-only stdout (no info pollution) ----------
+# Regression: info on stdout made DISTRO_ENGINE="$(resolve_distro_engine)" a
+# multi-line string → source failed with "No such file or directory".
+grep -qE 'info\(\) \{ echo "\[GrokHunter\] \$\*" >&2; \}' install.sh \
+  || die "install.sh info() must write to stderr (protects command substitution)"
+
+bash <<'TEST_RESOLVE'
+set -euo pipefail
+CACHE="$(mktemp -d)"
+trap 'rm -rf "$CACHE"' EXIT
+printf '%s\n' '#!/usr/bin/env bash' 'termux_distro_probe() { :; }' \
+  > "$CACHE/termux-distro.sh"
+
+eval "$(
+  sed -n "/^validate_distro_engine()/,/^}/p; /^resolve_distro_engine()/,/^}/p" install.sh
+)"
+info() { echo "[GrokHunter] $*" >&2; }
+warn() { echo "[GrokHunter] WARN: $*" >&2; }
+die()  { echo "[GrokHunter] ERROR: $*" >&2; exit 1; }
+die_with_help() { die "$@"; }
+SCRIPT_DIR=""
+REFRESH=0
+CACHE_DIR="$CACHE"
+
+captured="$(resolve_distro_engine 2>/dev/null)"
+# Must be exactly the cache path (not a multi-line log+path blob)
+[[ "$captured" == "$CACHE/termux-distro.sh" ]]
+[[ -f "$captured" ]]
+TEST_RESOLVE
+info "resolve_distro_engine capture OK"
+
 info "ALL OK"

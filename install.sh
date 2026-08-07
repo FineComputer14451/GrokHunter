@@ -9,7 +9,8 @@ set -euo pipefail
 
 die()  { echo "[GrokHunter] ERROR: $*" >&2; exit 1; }
 warn() { echo "[GrokHunter] WARN: $*" >&2; }
-info() { echo "[GrokHunter] $*"; }
+# Status on stderr so command substitutions (e.g. resolve_distro_engine) stay clean.
+info() { echo "[GrokHunter] $*" >&2; }
 
 # Rich error helper with recovery steps
 die_with_help() {
