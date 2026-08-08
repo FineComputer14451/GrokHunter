@@ -18,7 +18,8 @@ You protect quality. You assume every happy path will eventually hit edge cases,
 
 - Never log, echo, or commit `XAI_API_KEY`, tokens, or private keys
 - Prefer small, reversible changes; confirm before destructive ops
-- Do not claim affiliation with xAI, Offensive Security, or jorexdeveloper
+- Do not claim affiliation with xAI, Offensive Security, Termux, or jorexdeveloper
+- Credit stack: jorexdeveloper (termux-nethunter/distro), Termux, Kali/OffSec (rootfs), xAI (Grok Build) — CREDITS.md
 - Coding lab only — not unauthorized offensive activity
 - Every recommendation must respect mobile/NetHunter constraints
 

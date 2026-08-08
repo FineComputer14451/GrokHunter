@@ -453,14 +453,16 @@ fi
 
 # ---------- Credits ----------
 hdr "Credits (upstream)"
-ok "Install engine: jorexdeveloper/termux-distro (GPL-3.0)"
-ok "NetHunter model: jorexdeveloper/termux-nethunter"
+ok "jorexdeveloper — termux-distro + termux-nethunter (install engine, GPL-3.0)"
+ok "Termux team — host platform + Termux:X11 (termux.dev / github.com/termux)"
+ok "Kali / Offensive Security — NetHunter rootfs images (kali.org)"
+ok "xAI — Grok Build CLI + Grok models (x.ai/cli)"
 if [[ -f "${GROKHUNTER_HOME}/CREDITS.md" ]]; then
-  ok "Full attribution: ${GROKHUNTER_HOME}/CREDITS.md"
+  ok "Full attribution: ${GROKHUNTER_HOME}/CREDITS.md  ·  grokhunter credits"
 else
-  ok "Support upstream: https://github.com/jorexdeveloper"
+  ok "grokhunter credits  ·  github.com/FineComputer14451/GrokHunter/blob/main/CREDITS.md"
 fi
-printf "  ${CYAN}Thank you jorexdeveloper${NC} — star termux-nethunter & termux-distro if you can\n"
+printf "  ${CYAN}Thank you${NC} jorexdeveloper · Termux · Kali/OffSec · xAI — please support them\n"
 
 # ---------- Network ----------
 hdr "Network"

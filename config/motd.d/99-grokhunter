@@ -8,7 +8,6 @@ if command -v grok >/dev/null 2>&1; then
 else
   printf '  Agent: grok not on PATH — run: bash ~/GrokHunter/install.sh\n'
 fi
-printf '  Launch: \033[1mgrokhunter\033[0m  ·  Health: \033[1mgrokhunter doctor\033[0m\n'
-printf '  Engine credit: \033[1mjorexdeveloper\033[0m — termux-nethunter / termux-distro\n'
-printf '  https://github.com/jorexdeveloper  ·  CREDITS.md\n'
+printf '  Launch: \033[1mgrokhunter\033[0m  ·  Health: \033[1mgrokhunter doctor\033[0m  ·  Credits: \033[1mgrokhunter credits\033[0m\n'
+printf '  Thanks: jorexdeveloper · Termux · Kali/OffSec · xAI  (see CREDITS.md)\n'
 printf '\n'

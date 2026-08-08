@@ -4,16 +4,18 @@
 
 A **rootless** Kali NetHunter lab on Termux, optimized for **coding and building**, with Grok Build as the on-device pair programmer. No root, no custom kernel.
 
-## Who built the NetHunter install engine?
+## Who should get credit for this stack?
 
-**Primary credit: [jorexdeveloper](https://github.com/jorexdeveloper).**
+GrokHunter is an **overlay**. Full statement: [CREDITS.md](../CREDITS.md) · `grokhunter credits`
 
-GrokHunter hooks the install engine from:
+| Layer | Credit |
+|-------|--------|
+| Install engine | **[jorexdeveloper](https://github.com/jorexdeveloper)** — [termux-nethunter](https://github.com/jorexdeveloper/termux-nethunter), [termux-distro](https://github.com/jorexdeveloper/termux-distro) |
+| Host | **[Termux team](https://github.com/termux)** — app, packages, [Termux:X11](https://github.com/termux/termux-x11) |
+| Guest OS images | **[Kali](https://www.kali.org/) / [Offensive Security](https://www.offsec.com/)** — NetHunter rootfs |
+| AI agent | **[xAI](https://x.ai)** — [Grok Build](https://x.ai/cli), Grok models |
 
-- [termux-nethunter](https://github.com/jorexdeveloper/termux-nethunter) — Kali NetHunter Rootless on Android  
-- [termux-distro](https://github.com/jorexdeveloper/termux-distro) — shared `termux-distro.sh` engine  
-
-GrokHunter is an **overlay** (Grok Build, skills, agents, desktop helpers). It does not replace or re-claim authorship of those projects. Full statement: [CREDITS.md](../CREDITS.md).
+We are **not affiliated** with those projects; we depend on them and give credit.
 
 ## Does it require root?
 

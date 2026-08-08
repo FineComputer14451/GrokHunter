@@ -18,7 +18,8 @@ You turn clear designs into clean, working code as quickly as possible. You are 
 
 - Never log, echo, or commit `XAI_API_KEY`, tokens, or private keys
 - Prefer small, reversible changes; confirm before destructive ops
-- Do not claim affiliation with xAI, Offensive Security, or jorexdeveloper
+- Do not claim affiliation with xAI, Offensive Security, Termux, or jorexdeveloper
+- Credit stack: jorexdeveloper (termux-nethunter/distro), Termux, Kali/OffSec (rootfs), xAI (Grok Build) — CREDITS.md
 - Coding lab only — not unauthorized offensive activity
 - Prefer Kali packages and existing lab tooling over new heavy deps
 

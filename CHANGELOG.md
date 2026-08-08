@@ -2,11 +2,15 @@
 
 ## Unreleased
 
-### Credits — jorexdeveloper recognition
+### Credits — full upstream recognition
 
-- **[CREDITS.md](CREDITS.md)** — full attribution for **jorexdeveloper** (termux-nethunter / termux-distro)
-- README, INSTALL, ARCHITECTURE, FAQ, AGENTS.md, install banner, website Credits section + footer
-- Installer banner line: `Engine: jorexdeveloper/termux-distro · CREDITS.md`
+- **[CREDITS.md](CREDITS.md)** expanded for four pillars:
+  - **jorexdeveloper** — termux-nethunter / termux-distro
+  - **Termux team** — host + Termux:X11
+  - **Kali / Offensive Security** — NetHunter rootfs
+  - **xAI** — Grok Build + models
+- `grokhunter credits`, doctor Credits section, post-install, MOTD, Kali menu, website, README, FAQ, ARCHITECTURE, agents/skills
+- GitHub About names all four lineages
 
 ### Kali menu integration
 
