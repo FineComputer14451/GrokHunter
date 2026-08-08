@@ -35,7 +35,6 @@
 
   document.querySelectorAll("[data-copy]").forEach((btn) => {
     btn.addEventListener("click", async () => {
-      // getAttribute already returns decoded attribute text
       const text = (btn.getAttribute("data-copy") || "").replace(/\\n/g, "\n");
       await copyText(text);
       const prev = btn.textContent;
@@ -46,6 +45,31 @@
     });
   });
 
+  // Active nav highlight on scroll
+  const navLinks = Array.from(document.querySelectorAll(".nav a[href^='#']"));
+  const sections = navLinks
+    .map((a) => {
+      const id = a.getAttribute("href").slice(1);
+      const el = document.getElementById(id);
+      return el ? { id, el, a } : null;
+    })
+    .filter(Boolean);
+
+  function setActiveNav() {
+    const y = window.scrollY + 96;
+    let current = sections[0];
+    for (const s of sections) {
+      if (s.el.offsetTop <= y) current = s;
+    }
+    navLinks.forEach((a) => a.classList.remove("nav-active"));
+    if (current) current.a.classList.add("nav-active");
+  }
+
+  if (sections.length) {
+    window.addEventListener("scroll", setActiveNav, { passive: true });
+    setActiveNav();
+  }
+
   // Terminal animation
   const body = document.getElementById("terminalBody");
   if (!body) return;
@@ -54,19 +78,26 @@
     {
       kind: "cmd",
       prompt: "termux $ ",
-      text: "bash install.sh --full --de xfce --with-grok --with-x11",
+      text: "bash install.sh --full --de xfce --with-grok --with-x11 --with-aider",
     },
     { kind: "out", text: "[grokhunter] detecting Termux + aarch64 … ok" },
     { kind: "out", text: "[grokhunter] pulling Kali NetHunter rootfs (current) …" },
-    { kind: "out", text: "[grokhunter] installing XFCE + Chromium …" },
-    { kind: "out", text: "[grokhunter] installing Grok Build CLI … done" },
+    { kind: "out", text: "[grokhunter] installing XFCE + desktop session …" },
+    { kind: "out", text: "[grokhunter] ensure Grok Build ≥ 1.0.0 … grok 1.0.0 [stable]" },
+    { kind: "out", text: "[grokhunter] NetHunter profile → channel=stable · grok-4.5" },
+    { kind: "out", text: "[grokhunter] Aider via uv + Python 3.12 … aider 0.86.2" },
     { kind: "out", text: "[grokhunter] wiring Termux:X11 + nh-x11 … done" },
     {
       kind: "ok",
-      text: "[grokhunter] ready — run: nethunter | nh-x11 | grok | grokhunter",
+      text: "[grokhunter] ready — nethunter | nh-x11 | grok | grokhunter | aider-grok",
     },
+    { kind: "cmd", prompt: "kali $ ", text: "grokhunter skills install" },
+    { kind: "out", text: "[skills] 5 skills · 8 agents · 8 personas · 7 roles" },
     { kind: "cmd", prompt: "kali $ ", text: "grokhunter doctor" },
-    { kind: "ok", text: "✓ grok binary  ✓ PATH  ✓ secrets  ✓ NetHunter rootfs" },
+    {
+      kind: "ok",
+      text: "✓ grok 1.0.0  ✓ profile  ✓ skills-core 3/3  ✓ agents  ✓ personas  ✓ roles",
+    },
   ];
 
   const reduce =
@@ -74,9 +105,9 @@
 
   function escapeHtml(s) {
     return s
-      .replace(/&/g, "&")
-      .replace(/</g, "<")
-      .replace(/>/g, ">");
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
   }
 
   function renderAll() {
@@ -143,12 +174,12 @@
           "</span>" +
           (typing ? '<span class="cursor">▌</span>' : "");
         charIdx += 1;
-        window.setTimeout(tick, 26);
+        window.setTimeout(tick, 22);
         return;
       }
       lineIdx += 1;
       charIdx = 0;
-      window.setTimeout(tick, 200);
+      window.setTimeout(tick, 180);
       return;
     }
 
@@ -156,7 +187,7 @@
     el.textContent = line.text;
     lineIdx += 1;
     charIdx = 0;
-    window.setTimeout(tick, 85);
+    window.setTimeout(tick, 75);
   }
 
   window.setTimeout(tick, 400);
