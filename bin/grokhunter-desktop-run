@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+# Launch a GrokHunter command from a .desktop entry (Kali / XFCE menu).
+# Ensures PATH includes Grok + wrappers even when the DE does not source profile.
+set -euo pipefail
+
+export PATH="${HOME}/.grok/bin:${HOME}/.local/bin:${PATH:-}"
+export COLORTERM="${COLORTERM:-truecolor}"
+if [[ -z "${TERM:-}" || "${TERM}" == "dumb" ]]; then
+  export TERM="xterm-256color"
+fi
+
+if [[ -r "${HOME}/.grok/secrets.env" ]]; then
+  set -a
+  # shellcheck disable=SC1091
+  source "${HOME}/.grok/secrets.env"
+  set +a
+fi
+
+if [[ -r "${HOME}/.grok/profile.sh" ]]; then
+  # shellcheck disable=SC1091
+  source "${HOME}/.grok/profile.sh" 2>/dev/null || true
+fi
+
+cmd="${1:-}"
+shift || true
+
+if [[ -z "${cmd}" ]]; then
+  echo "Usage: grokhunter-desktop-run <command> [args…]" >&2
+  echo "  commands: grok | doctor | setup | team | scout | review | fix | desktop | aider | status" >&2
+  exit 2
+fi
+
+_pause() {
+  echo
+  # shellcheck disable=SC2162
+  read -r -p "Press Enter to close…" _ || true
+}
+
+case "${cmd}" in
+  grok|tui)
+    if command -v grok-nethunter >/dev/null 2>&1; then
+      exec grok-nethunter "$@"
+    fi
+    exec grok --fullscreen "$@"
+    ;;
+  grok-nethunter)
+    exec grok-nethunter "$@"
+    ;;
+  doctor)
+    grokhunter doctor "$@" || true
+    _pause
+    exit 0
+    ;;
+  setup)
+    grokhunter setup "$@" || true
+    _pause
+    exit 0
+    ;;
+  team|coding-team)
+    exec grokhunter team "$@"
+    ;;
+  scout|review|fix|desktop|benjamin|lucas|harper)
+    exec grokhunter "${cmd}" "$@"
+    ;;
+  aider|aider-grok)
+    if command -v aider-grok >/dev/null 2>&1; then
+      exec aider-grok "$@"
+    fi
+    echo "aider-grok not found — run: grokhunter setup --with-aider" >&2
+    _pause
+    exit 1
+    ;;
+  status)
+    grokhunter status || true
+    _pause
+    exit 0
+    ;;
+  shell|lab)
+    exec bash -l
+    ;;
+  *)
+    if command -v grokhunter >/dev/null 2>&1; then
+      exec grokhunter "${cmd}" "$@"
+    fi
+    echo "Unknown command: ${cmd}" >&2
+    exit 2
+    ;;
+esac

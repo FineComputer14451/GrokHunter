@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Grok Build
+GenericName=AI coding agent
+Comment=Grok Build TUI — pair programmer (GrokHunter)
+Exec=grokhunter-desktop-run grok
+Icon=utilities-terminal
+Terminal=true
+Categories=X-GrokHunter;Development;
+Keywords=grok;ai;coding;grokhunter;
+StartupNotify=false

@@ -212,7 +212,14 @@ setup_termux_x11() {
   if [[ -r "${HOME}/.config/grokhunter/x11-session" ]]; then
     msg -ts "X11 session: $(tr -d '[:space:]' < "${HOME}/.config/grokhunter/x11-session")"
   fi
+  # Desktop menu entries (Grok Build, Coding Team, Doctor, …)
+  if declare -F install_kali_menu >/dev/null 2>&1; then
+    install_kali_menu || true
+  elif [[ -n "${SCRIPT_DIR:-}" && -f "${SCRIPT_DIR}/scripts/install_kali_menu.sh" ]]; then
+    bash "${SCRIPT_DIR}/scripts/install_kali_menu.sh" || true
+  fi
   msg -a "  Session: NH_X11_SESSION or ~/.config/grokhunter/x11-session"
+  msg -a "  Menu:    Applications → GrokHunter (after menu install)"
   optimize_proot_binds 2>/dev/null || true
 
   echo
