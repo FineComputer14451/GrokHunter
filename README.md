@@ -11,7 +11,7 @@ Turn Termux + proot Kali into a Linux development environment on your phone, wit
 > Not affiliated with xAI or Offensive Security.
 
 **Product site:** [finecomputer14451.github.io/GrokHunter](https://finecomputer14451.github.io/GrokHunter/)  
-**Release:** [v1.0.4](https://github.com/FineComputer14451/GrokHunter/releases/tag/v1.0.6) · Grok Build **1.0.0+**
+**Release:** [v1.0.6](https://github.com/FineComputer14451/GrokHunter/releases/tag/v1.0.6) · Grok Build **1.0.0+**
 
 Source: [`website/`](website/) · deploy: push `website/**` or **Actions → Deploy website**.
 
