@@ -217,6 +217,10 @@ main() {
   remove_agents
   remove_personas
   remove_roles
+  # Kali / XFCE menu entries
+  if [[ -f "${_GH_ROOT}/scripts/install_kali_menu.sh" ]]; then
+    bash "${_GH_ROOT}/scripts/install_kali_menu.sh" --remove 2>/dev/null || true
+  fi
   strip_shell
   remove_motd
   remove_meta

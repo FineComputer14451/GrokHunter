@@ -132,11 +132,30 @@ install_cli_bins() {
   # Short commands as real bins (work outside interactive shells; not bash aliases only)
   install_cli_shortcuts || true
 
+  # Kali / XFCE application menu (GrokHunter submenu)
+  install_kali_menu || true
+
   # Skills + agents + personas + roles for Grok Build runtime discovery
   install_skills || true
   install_agents || true
   install_personas || true
   install_roles || true
+}
+
+# Install freedesktop .desktop entries + XFCE applications-merged submenu.
+install_kali_menu() {
+  local script=""
+  script="$(_gh_resolve "scripts/install_kali_menu.sh" || true)"
+  if [[ -z "${script}" || ! -f "${script}" ]]; then
+    msg -tw "scripts/install_kali_menu.sh missing — skip Kali menu"
+    return 0
+  fi
+  msg -t "Installing Kali / XFCE menu entries (GrokHunter submenu)"
+  if bash "${script}"; then
+    msg -ts "Kali menu: Applications → GrokHunter"
+  else
+    msg -tw "Kali menu install had issues — try: bash scripts/install_kali_menu.sh"
+  fi
 }
 
 # Install ghsu/ght/... as real executables under ~/.local/bin (aliases alone fail in non-interactive shells).

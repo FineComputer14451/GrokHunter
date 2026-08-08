@@ -125,6 +125,7 @@ Usage:
   grokhunter status           Short status line (always exit 0)
   grokhunter doctor           Full health report
   grokhunter setup [opts]     One-shot lab sync (ensure + skills + optional models)
+  grokhunter menu [install|remove]  Kali/XFCE Applications → GrokHunter submenu
   grokhunter ensure           Install/upgrade Grok Build binary
   grokhunter models [cmd]     V9 / 4.5 model pickers (install|status|force)
   grokhunter skills [cmd]     Install/status lab skills under ~/.grok/skills
@@ -455,6 +456,38 @@ cmd_install() {
   exec bash "$installer" "$@"
 }
 
+cmd_menu() {
+  local sub="${1:-install}"
+  local script="${GROKHUNTER_HOME}/scripts/install_kali_menu.sh"
+  if [[ ! -f "${script}" ]]; then
+    echo "scripts/install_kali_menu.sh not found under ${GROKHUNTER_HOME}" >&2
+    return 1
+  fi
+  case "${sub}" in
+    help|-h|--help)
+      cat <<'EOF'
+Usage: grokhunter menu [install|remove|help]
+
+  install   Add Applications → GrokHunter submenu (default)
+  remove    Remove GrokHunter .desktop menu entries
+EOF
+      return 0
+      ;;
+    install|add|"")
+      bash "${script}"
+      return $?
+      ;;
+    remove|uninstall|--remove)
+      bash "${script}" --remove
+      return $?
+      ;;
+    *)
+      echo "Unknown menu subcommand: ${sub}" >&2
+      return 2
+      ;;
+  esac
+}
+
 cmd_ai_smoke() {
   local script="${GROKHUNTER_HOME}/scripts/spacexai_smoke.sh"
   if [[ ! -f "${script}" ]]; then
@@ -646,6 +679,10 @@ main() {
     setup|sync|boot)
       shift || true
       cmd_setup "$@"
+      ;;
+    menu|kali-menu|desktop-menu)
+      shift || true
+      cmd_menu "${1:-install}"
       ;;
     ensure)
       shift || true

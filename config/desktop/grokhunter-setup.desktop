@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=GrokHunter Setup
+GenericName=Lab sync
+Comment=One-shot ensure + skills + doctor (GrokHunter setup)
+Exec=grokhunter-desktop-run setup
+Icon=system-software-update
+Terminal=true
+Categories=X-GrokHunter;Settings;
+Keywords=setup;sync;grokhunter;
+StartupNotify=false

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Scout (map codebase)
+GenericName=Read-only explorer agent
+Comment=GrokHunter scout agent — fast codebase map
+Exec=grokhunter-desktop-run scout
+Icon=system-search
+Terminal=true
+Categories=X-GrokHunter;Development;
+Keywords=scout;explore;grokhunter;
+StartupNotify=false

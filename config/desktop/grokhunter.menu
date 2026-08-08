@@ -1,0 +1,15 @@
+<!DOCTYPE Menu PUBLIC "-//freedesktop//DTD Menu 1.0//EN"
+  "http://www.freedesktop.org/standards/menu-spec/menu-1.0.dtd">
+<!-- Merge into Applications → GrokHunter submenu (XFCE / Kali desktop) -->
+<Menu>
+  <Name>Applications</Name>
+  <Menu>
+    <Name>GrokHunter</Name>
+    <Directory>grokhunter.directory</Directory>
+    <Include>
+      <And>
+        <Category>X-GrokHunter</Category>
+      </And>
+    </Include>
+  </Menu>
+</Menu>
