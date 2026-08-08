@@ -180,6 +180,11 @@ post_complete_actions() {
   echo
   msg -a "  ${T}Auth:${S}  export XAI_API_KEY=xai-...  or put it in ~/.grok/secrets.env"
   msg -a "  ${T}Docs:${S}   docs/EDITORS.md  docs/GROK-45.md  docs/X11-PERFORMANCE.md"
+  echo
+  msg -a "  ${T}Credits:${S} Rootless install engine by ${P}jorexdeveloper${S}"
+  msg -a "    termux-nethunter  https://github.com/jorexdeveloper/termux-nethunter"
+  msg -a "    termux-distro     https://github.com/jorexdeveloper/termux-distro"
+  msg -a "    Full attribution: CREDITS.md  ·  Thank you jorexdeveloper"
 }
 
 set_up_de() {

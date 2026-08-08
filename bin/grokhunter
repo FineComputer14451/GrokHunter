@@ -141,6 +141,7 @@ Usage:
   grokhunter plan <prompt>    Plan mode (built-in plan agent)
   grokhunter -p <prompt>      Headless / one-shot
   grokhunter -- <grok args>   Pass-through to grok
+  grokhunter credits          Upstream attribution (jorexdeveloper · CREDITS.md)
   grokhunter help             This help
   grokhunter version          Print version
 
@@ -594,6 +595,45 @@ cmd_plan() {
   exec "${grok_bin}" --agent plan --permission-mode plan -p "${prompt}"
 }
 
+cmd_credits() {
+  local f="${GROKHUNTER_HOME}/CREDITS.md"
+  cat <<EOF
+GrokHunter Rootless — credits
+=============================
+
+Primary upstream (required recognition)
+  Developer:  jorexdeveloper
+  Profile:    https://github.com/jorexdeveloper
+
+  termux-nethunter  Install Kali NetHunter Rootless on Android
+    https://github.com/jorexdeveloper/termux-nethunter
+
+  termux-distro     Shared install engine (termux-distro.sh)
+    https://github.com/jorexdeveloper/termux-distro
+
+GrokHunter is an overlay for an AI coding lab (Grok Build, skills, agents).
+It does NOT claim authorship of the NetHunter rootless install engine.
+
+Thank you, jorexdeveloper — please star and support the projects above.
+
+EOF
+  if [[ -f "${f}" ]]; then
+    echo "Full statement: ${f}"
+    echo
+    # Print the primary section without dumping entire file twice
+    if command -v sed >/dev/null 2>&1; then
+      sed -n '1,50p' "${f}"
+      echo
+      echo "… (see CREDITS.md for complete file)"
+    else
+      cat "${f}"
+    fi
+  else
+    echo "CREDITS.md not found under ${GROKHUNTER_HOME}"
+    echo "Online: https://github.com/FineComputer14451/GrokHunter/blob/main/CREDITS.md"
+  fi
+}
+
 cmd_models_status() {
   local cfg="${GROK_CONFIG:-${HOME}/.grok/config.toml}"
   local marker="# --- Grok Imagine Cinematic Studio: v9-4p5 specialist models"
@@ -667,6 +707,9 @@ main() {
       ;;
     version|-V|--version)
       echo "GrokHunter ${VERSION}"
+      ;;
+    credits|credit|attribution|thanks)
+      cmd_credits
       ;;
     status)
       cmd_status

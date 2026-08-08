@@ -9,4 +9,6 @@ else
   printf '  Agent: grok not on PATH — run: bash ~/GrokHunter/install.sh\n'
 fi
 printf '  Launch: \033[1mgrokhunter\033[0m  ·  Health: \033[1mgrokhunter doctor\033[0m\n'
+printf '  Engine credit: \033[1mjorexdeveloper\033[0m — termux-nethunter / termux-distro\n'
+printf '  https://github.com/jorexdeveloper  ·  CREDITS.md\n'
 printf '\n'

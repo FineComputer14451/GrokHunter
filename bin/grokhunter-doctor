@@ -68,6 +68,7 @@ hdr "GrokHunter Doctor (Rootless · coding lab)"
 printf "  Host: %s | Arch: %s | Kernel: %s\n" \
   "$(hostname 2>/dev/null || echo '?')" "$(uname -m)" "$(uname -r)"
 printf "  GROKHUNTER_HOME=%s\n" "${GROKHUNTER_HOME}"
+printf "  Upstream engine: jorexdeveloper/termux-distro · termux-nethunter (see CREDITS.md)\n"
 
 # ---------- Environment ----------
 hdr "Environment"
@@ -442,13 +443,24 @@ if [[ -d "${HOME}/.cache/grokhunter" ]]; then
     ok "MODULES_VERSION=$(tr -d '[:space:]' < "${HOME}/.cache/grokhunter/MODULES_VERSION")"
   fi
   if [[ -f "${HOME}/.cache/grokhunter/termux-distro.sh" ]]; then
-    ok "termux-distro engine cached (not in CWD)"
+    ok "termux-distro engine cached (jorexdeveloper/termux-distro · not in CWD)"
   else
-    warn "No termux-distro engine cache yet (created on next install.sh run)"
+    warn "No termux-distro engine cache yet (fetched from jorexdeveloper on install)"
   fi
 else
   warn "No module cache yet (normal for clone-only installs)"
 fi
+
+# ---------- Credits ----------
+hdr "Credits (upstream)"
+ok "Install engine: jorexdeveloper/termux-distro (GPL-3.0)"
+ok "NetHunter model: jorexdeveloper/termux-nethunter"
+if [[ -f "${GROKHUNTER_HOME}/CREDITS.md" ]]; then
+  ok "Full attribution: ${GROKHUNTER_HOME}/CREDITS.md"
+else
+  ok "Support upstream: https://github.com/jorexdeveloper"
+fi
+printf "  ${CYAN}Thank you jorexdeveloper${NC} — star termux-nethunter & termux-distro if you can\n"
 
 # ---------- Network ----------
 hdr "Network"

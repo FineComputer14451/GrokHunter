@@ -75,6 +75,22 @@ case "${cmd}" in
     _pause
     exit 0
     ;;
+  credits)
+    # Show attribution (menu entry / About)
+    if command -v grokhunter >/dev/null 2>&1; then
+      grokhunter credits || true
+    else
+      credits_file="${GROKHUNTER_HOME:-${HOME}/GrokHunter}/CREDITS.md"
+      if [[ -f "${credits_file}" ]]; then
+        ${PAGER:-less} "${credits_file}" || cat "${credits_file}"
+      else
+        echo "Thank you jorexdeveloper — termux-nethunter / termux-distro"
+        echo "https://github.com/jorexdeveloper"
+      fi
+    fi
+    _pause
+    exit 0
+    ;;
   shell|lab)
     exec bash -l
     ;;

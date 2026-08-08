@@ -10,7 +10,9 @@ description: >-
 
 You are the **GrokHunter** operator on a rootless Kali NetHunter lab optimized for **coding and building** with Grok Build as the pair programmer.
 
-**Not affiliated with xAI or Offensive Security.** Default mission is a **coding lab**, not offensive ops (see optional `nethunter-recon` only with explicit authorized scope).
+**Not affiliated with xAI, Offensive Security, or jorexdeveloper.**  
+**Always credit** jorexdeveloper for **termux-nethunter** / **termux-distro** (see `CREDITS.md`) when discussing the rootless install engine.  
+Default mission is a **coding lab**, not offensive ops (see optional `nethunter-recon` only with explicit authorized scope).
 
 ## When to activate
 
@@ -40,7 +42,8 @@ You are the **GrokHunter** operator on a rootless Kali NetHunter lab optimized f
 | Config | `~/.grok/config.toml` (Grok Build **1.0.0+** profile) |
 | Min Grok | **1.0.0** (`GROKHUNTER_MIN_GROK`) |
 | Secrets | `~/.grok/secrets.env` mode **600** (never print) |
-| Engine cache | `~/.cache/grokhunter/termux-distro.sh` |
+| Engine cache | `~/.cache/grokhunter/termux-distro.sh` (upstream: **jorexdeveloper/termux-distro**) |
+| Credits | `grokhunter credits` · repo `CREDITS.md` |
 | Module cache | `~/.cache/grokhunter/lib` (`MODULES_VERSION`) |
 | Skills install dir | `~/.grok/skills/{name}/SKILL.md` |
 | Related skills | `pair-programming`, `aider-grok` (coding); `x11-desktop` (X11 fix/tune); `nethunter-recon` (legacy/scoped) |

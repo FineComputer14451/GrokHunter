@@ -8,7 +8,8 @@
 
 Turn Termux + proot Kali into a Linux development environment on your phone, with [Grok](https://x.ai/cli) as an on-device pair programmer. **No root required.**
 
-> Not affiliated with xAI or Offensive Security.
+> Built on [termux-nethunter](https://github.com/jorexdeveloper/termux-nethunter) / [termux-distro](https://github.com/jorexdeveloper/termux-distro) by **[jorexdeveloper](https://github.com/jorexdeveloper)**.  
+> Not affiliated with xAI, Offensive Security, or jorexdeveloper — we credit and depend on their work. See [CREDITS.md](CREDITS.md).
 
 **Product site:** [finecomputer14451.github.io/GrokHunter](https://finecomputer14451.github.io/GrokHunter/)  
 **Release:** [v1.0.6](https://github.com/FineComputer14451/GrokHunter/releases/tag/v1.0.6) · Grok Build **1.0.0+**
