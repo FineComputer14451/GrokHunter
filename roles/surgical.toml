@@ -1,0 +1,4 @@
+# Surgical role — one-bug patches (Fix-shaped)
+description = "Minimal one-issue patches; low blast radius"
+default_capability_mode = "all"
+reasoning_effort = "medium"

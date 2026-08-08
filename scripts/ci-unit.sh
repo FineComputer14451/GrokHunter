@@ -29,6 +29,8 @@ extra=(
   lib/grok.sh
   lib/x11.sh
   scripts/install_v9_grok_models.sh
+  scripts/install_aider.sh
+  scripts/install_grok_profile.sh
   scripts/spacexai_smoke.sh
   scripts/ensure_grok.sh
   scripts/ci-unit.sh
@@ -226,6 +228,52 @@ bash -c '
   rm -rf "$HOME"
 '
 info "install_agents OK"
+
+# ---------- install_personas → ~/.grok/personas ----------
+bash -c '
+  set -euo pipefail
+  SCRIPT_DIR="$(pwd)"
+  export HOME=$(mktemp -d)
+  source lib/grok.sh
+  msg() { :; }
+  cursor() { :; }
+  install_personas
+  while IFS= read -r n; do
+    [[ -n "$n" ]] || continue
+    [[ -f "$HOME/.grok/personas/$n.toml" ]]
+  done < <(_gh_list_persona_names "$SCRIPT_DIR")
+  printf "%s\n" "description = \"user\"" "instructions = \"x\"" > "$HOME/.grok/personas/user-custom.toml"
+  install_personas
+  [[ -f "$HOME/.grok/personas/user-custom.toml" ]]
+  names="$(_gh_list_persona_names "$SCRIPT_DIR")"
+  echo "$names" | grep -qx "mobile"
+  echo "$names" | grep -qx "design-card"
+  rm -rf "$HOME"
+'
+info "install_personas OK"
+
+# ---------- install_roles → ~/.grok/roles ----------
+bash -c '
+  set -euo pipefail
+  SCRIPT_DIR="$(pwd)"
+  export HOME=$(mktemp -d)
+  source lib/grok.sh
+  msg() { :; }
+  cursor() { :; }
+  install_roles
+  while IFS= read -r n; do
+    [[ -n "$n" ]] || continue
+    [[ -f "$HOME/.grok/roles/$n.toml" ]]
+  done < <(_gh_list_role_names "$SCRIPT_DIR")
+  printf "%s\n" "description = \"user\"" > "$HOME/.grok/roles/user-custom.toml"
+  install_roles
+  [[ -f "$HOME/.grok/roles/user-custom.toml" ]]
+  names="$(_gh_list_role_names "$SCRIPT_DIR")"
+  echo "$names" | grep -qx "architect"
+  echo "$names" | grep -qx "builder"
+  rm -rf "$HOME"
+'
+info "install_roles OK"
 
 # ---------- resolve_distro_engine: path-only stdout (no info pollution) ----------
 # Regression: info on stdout made DISTRO_ENGINE="$(resolve_distro_engine)" a

@@ -27,7 +27,31 @@ elif [[ -n "${GROKHUNTER_HOME:-}" && -f "${GROKHUNTER_HOME}/lib/agents-discover.
   # shellcheck disable=SC1091
   source "${GROKHUNTER_HOME}/lib/agents-discover.sh"
 fi
-unset _GH_DISCOVER _GH_AGENTS_DISCOVER
+# Persona discovery (subagent overlays) — same overlay roots
+_GH_PERSONAS_DISCOVER="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" 2>/dev/null && pwd)/personas-discover.sh"
+if [[ -f "${_GH_PERSONAS_DISCOVER}" ]]; then
+  # shellcheck disable=SC1090
+  source "${_GH_PERSONAS_DISCOVER}"
+elif [[ -n "${SCRIPT_DIR:-}" && -f "${SCRIPT_DIR}/lib/personas-discover.sh" ]]; then
+  # shellcheck disable=SC1091
+  source "${SCRIPT_DIR}/lib/personas-discover.sh"
+elif [[ -n "${GROKHUNTER_HOME:-}" && -f "${GROKHUNTER_HOME}/lib/personas-discover.sh" ]]; then
+  # shellcheck disable=SC1091
+  source "${GROKHUNTER_HOME}/lib/personas-discover.sh"
+fi
+# Role discovery (capability / effort defaults)
+_GH_ROLES_DISCOVER="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" 2>/dev/null && pwd)/roles-discover.sh"
+if [[ -f "${_GH_ROLES_DISCOVER}" ]]; then
+  # shellcheck disable=SC1090
+  source "${_GH_ROLES_DISCOVER}"
+elif [[ -n "${SCRIPT_DIR:-}" && -f "${SCRIPT_DIR}/lib/roles-discover.sh" ]]; then
+  # shellcheck disable=SC1091
+  source "${SCRIPT_DIR}/lib/roles-discover.sh"
+elif [[ -n "${GROKHUNTER_HOME:-}" && -f "${GROKHUNTER_HOME}/lib/roles-discover.sh" ]]; then
+  # shellcheck disable=SC1091
+  source "${GROKHUNTER_HOME}/lib/roles-discover.sh"
+fi
+unset _GH_DISCOVER _GH_AGENTS_DISCOVER _GH_PERSONAS_DISCOVER _GH_ROLES_DISCOVER
 
 # ---------------------------------------------------------------------------
 # Path helpers (single resolution path for scripts / bins)
@@ -105,9 +129,11 @@ install_cli_bins() {
     msg -tw "No CLI wrappers installed — clone full repo with bin/"
   fi
 
-  # Skills + Coding Team agents for Grok Build runtime discovery
+  # Skills + agents + personas + roles for Grok Build runtime discovery
   install_skills || true
   install_agents || true
+  install_personas || true
+  install_roles || true
 }
 
 # Copy repo skills/ into ~/.grok/skills for Grok Build skill discovery.
@@ -179,17 +205,84 @@ install_agents() {
   fi
 }
 
+# Copy repo personas/*.toml → ~/.grok/personas for Grok Build subagent overlays.
+# Does not delete user-only personas not in the product scan.
+install_personas() {
+  msg -t "Installing GrokHunter personas → ~/.grok/personas"
+  local root src dest name count=0
+  root="$(_gh_overlay_root || true)"
+  if [[ -z "${root}" || ! -d "${root}/personas" ]]; then
+    msg -tw "No personas/ tree in overlay — skip"
+    return 0
+  fi
+  if ! declare -F _gh_list_persona_names >/dev/null 2>&1; then
+    msg -tw "Persona discovery missing (lib/personas-discover.sh) — skip"
+    return 0
+  fi
+  mkdir -p "${HOME}/.grok/personas" 2>/dev/null || true
+  while IFS= read -r name; do
+    [[ -n "${name}" ]] || continue
+    src="${root}/personas/${name}.toml"
+    dest="${HOME}/.grok/personas/${name}.toml"
+    [[ -f "${src}" ]] || continue
+    if ! cp -f "${src}" "${dest}" 2>/dev/null; then
+      msg -tw "Failed to install persona: ${name}"
+      continue
+    fi
+    count=$((count + 1))
+  done < <(_gh_list_persona_names "${root}")
+  if [[ ${count} -gt 0 ]]; then
+    msg -ts "Installed ${count} persona(s) under ~/.grok/personas (runtime: /personas)"
+  else
+    msg -tw "No personas installed"
+  fi
+}
+
+# Copy repo roles/*.toml → ~/.grok/roles for Grok Build subagent resolution.
+install_roles() {
+  msg -t "Installing GrokHunter roles → ~/.grok/roles"
+  local root src dest name count=0
+  root="$(_gh_overlay_root || true)"
+  if [[ -z "${root}" || ! -d "${root}/roles" ]]; then
+    msg -tw "No roles/ tree in overlay — skip"
+    return 0
+  fi
+  if ! declare -F _gh_list_role_names >/dev/null 2>&1; then
+    msg -tw "Role discovery missing (lib/roles-discover.sh) — skip"
+    return 0
+  fi
+  mkdir -p "${HOME}/.grok/roles" 2>/dev/null || true
+  while IFS= read -r name; do
+    [[ -n "${name}" ]] || continue
+    src="${root}/roles/${name}.toml"
+    dest="${HOME}/.grok/roles/${name}.toml"
+    [[ -f "${src}" ]] || continue
+    if ! cp -f "${src}" "${dest}" 2>/dev/null; then
+      msg -tw "Failed to install role: ${name}"
+      continue
+    fi
+    count=$((count + 1))
+  done < <(_gh_list_role_names "${root}")
+  if [[ ${count} -gt 0 ]]; then
+    msg -ts "Installed ${count} role(s) under ~/.grok/roles"
+  else
+    msg -tw "No roles installed"
+  fi
+}
+
 # ---------------------------------------------------------------------------
 # Grok Build
 # ---------------------------------------------------------------------------
 install_grok_build() {
-  msg -t "Installing Grok Build CLI"
+  msg -t "Installing Grok Build CLI (requires ≥ 1.0.0)"
 
-  local ensure=""
+  local ensure="" profile=""
   ensure="$(_gh_resolve "scripts/ensure_grok.sh" || true)"
+  profile="$(_gh_resolve "scripts/install_grok_profile.sh" || true)"
 
+  # ensure_grok already merges the 1.0.0 NetHunter profile when present
   if [[ -n "${ensure}" && -f "${ensure}" ]]; then
-    msg -tn "Running shared ensure_grok.sh…"
+    msg -tn "Running shared ensure_grok.sh (Grok Build 1.0.0+)…"
     if bash "${ensure}"; then
       cursor -u1
       msg -ts "Grok Build ready"
@@ -203,6 +296,9 @@ install_grok_build() {
          "${GROKHUNTER_GROK_OFFICIAL_URL:-https://x.ai/cli/install.sh}" | bash; then
       cursor -u1
       msg -ts "Grok Build installed (official)"
+      if [[ -n "${profile}" && -f "${profile}" ]]; then
+        bash "${profile}" || true
+      fi
     else
       cursor -u1
       msg -te "Grok Build install failed"
@@ -213,86 +309,144 @@ install_grok_build() {
   export PATH="${HOME}/.grok/bin:${HOME}/.local/bin:${PATH:-}"
   if command -v grok >/dev/null 2>&1; then
     msg -a "  $(grok --version 2>/dev/null | head -1 || echo grok)"
+    local gver
+    gver=$(grok --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1 || true)
+    if [[ -n "${gver}" ]]; then
+      if ! printf '%s\n%s\n' "1.0.0" "${gver}" | sort -V | head -1 | grep -qx "1.0.0"; then
+        msg -tw "Grok Build ${gver} < 1.0.0 — run: grokhunter ensure --force"
+      fi
+    fi
   fi
 }
 
 # ---------------------------------------------------------------------------
 # Aider (git-native pair programmer, xAI / Grok 4.5)
 # ---------------------------------------------------------------------------
-install_aider() {
-  msg -t "Installing Aider (git-native pair-programmer for Grok)"
+# Run scripts/install_aider.sh inside NetHunter when possible.
+# Copies the script into the rootfs so host paths need not be bind-mounted.
+_gh_run_install_aider_in_nethunter() {
+  local script_path="$1"
+  local rootfs="${ROOTFS_DIRECTORY:-/data/data/com.termux/files/kali}"
+  local guest_script="/tmp/gh-install-aider.sh"
+  local env_prefix="export HOME=/home/kali GROKHUNTER_AIDER_HOME=/home/kali PATH=/home/kali/.local/bin:\$PATH;"
 
+  # Already inside Kali/NetHunter — run locally (no proot hop).
+  if [[ -f /etc/os-release ]] && grep -qiE 'kali|nethunter' /etc/os-release 2>/dev/null; then
+    env HOME="${GROKHUNTER_AIDER_HOME:-${HOME:-/home/kali}}" \
+      GROKHUNTER_AIDER_HOME="${GROKHUNTER_AIDER_HOME:-${HOME:-/home/kali}}" \
+      bash "${script_path}"
+    return $?
+  fi
+
+  if [[ ! -d "${rootfs}" ]]; then
+    return 2
+  fi
+
+  mkdir -p "${rootfs}/tmp" 2>/dev/null || true
+  if ! cp -f "${script_path}" "${rootfs}${guest_script}" 2>/dev/null; then
+    # Rootfs tmp not writable from host — try stdin methods only
+    guest_script=""
+  else
+    chmod 755 "${rootfs}${guest_script}" 2>/dev/null || true
+  fi
+
+  if declare -F distro_exec >/dev/null 2>&1 && [[ -n "${guest_script}" ]]; then
+    distro_exec bash -lc "${env_prefix} bash ${guest_script}"
+    return $?
+  fi
+  if command -v nethunter >/dev/null 2>&1; then
+    if [[ -n "${guest_script}" ]]; then
+      nethunter /bin/bash -lc "${env_prefix} bash ${guest_script}"
+    else
+      nethunter /bin/bash -lc "${env_prefix} bash -s" < "${script_path}"
+    fi
+    return $?
+  fi
+  if command -v nh >/dev/null 2>&1; then
+    if [[ -n "${guest_script}" ]]; then
+      nh /bin/bash -lc "${env_prefix} bash ${guest_script}"
+    else
+      nh /bin/bash -lc "${env_prefix} bash -s" < "${script_path}"
+    fi
+    return $?
+  fi
+  return 2
+}
+
+_gh_install_aider_helper() {
   local rootfs="${ROOTFS_DIRECTORY:-/data/data/com.termux/files/kali}"
   local host_local_bin="${HOME}/.local/bin"
   local helper_src=""
   helper_src="$(_gh_resolve "bin/aider-grok" || true)"
 
-  # Prefer installing inside the Kali rootfs (where coding actually happens)
-  if declare -F distro_exec >/dev/null 2>&1 && [[ -d "${rootfs}" ]]; then
-    msg -tn "Creating Python venv + installing aider-chat inside NetHunter…"
-    if distro_exec bash -c '
-      set -e
-      export DEBIAN_FRONTEND=noninteractive
-      apt-get update -qq >/dev/null 2>&1 || true
-      apt-get install -y -qq python3 python3-pip python3-venv git >/dev/null 2>&1 || true
-      python3 -m venv "$HOME/venv-aider"
-      # shellcheck disable=SC1091
-      source "$HOME/venv-aider/bin/activate"
-      pip install -U pip >/dev/null
-      pip install -U aider-chat
-      echo "aider version: $(aider --version 2>/dev/null | head -1 || echo unknown)"
-    '; then
-      cursor -u1
-      msg -ts "Aider installed in ~/venv-aider (Kali)"
-    else
-      cursor -u1
-      msg -tw "Rootfs Aider install had issues — see docs/EDITORS.md for manual steps"
-    fi
-  else
-    # Fallback: host-side venv (still useful on pure Termux / overlay-only)
-    msg -tn "Creating host-side ~/venv-aider…"
-    if command -v python3 >/dev/null 2>&1; then
-      python3 -m venv "${HOME}/venv-aider" 2>/dev/null || true
-      # shellcheck disable=SC1091
-      if source "${HOME}/venv-aider/bin/activate" 2>/dev/null; then
-        pip install -U pip >/dev/null 2>&1 || true
-        pip install -U aider-chat >/dev/null 2>&1 || true
-        cursor -u1
-        msg -ts "Aider host venv ready"
-      else
-        cursor -u1
-        msg -tw "Could not create host venv"
-      fi
-    else
-      cursor -u1
-      msg -tw "python3 missing on host — install Aider manually inside nethunter"
-    fi
-  fi
-
-  # Install canonical bin/aider-grok (no embedded heredoc)
   if [[ -z "${helper_src}" || ! -f "${helper_src}" ]]; then
     msg -tw "bin/aider-grok missing — clone the repo or re-run from a full tree"
-  else
-    mkdir -p "${host_local_bin}" 2>/dev/null || true
-    _gh_install_bin "bin/aider-grok" "${host_local_bin}/aider-grok" \
-      && msg -ts "Helper: ${host_local_bin}/aider-grok"
+    return 1
+  fi
+  mkdir -p "${host_local_bin}" 2>/dev/null || true
+  _gh_install_bin "bin/aider-grok" "${host_local_bin}/aider-grok" \
+    && msg -ts "Helper: ${host_local_bin}/aider-grok"
 
-    # Best-effort: copy into rootfs without string embedding
-    if [[ -d "${rootfs}" ]]; then
-      mkdir -p "${rootfs}/usr/local/bin" "${rootfs}/home/kali/.local/bin" 2>/dev/null || true
-      if cp -f "${helper_src}" "${rootfs}/usr/local/bin/aider-grok" 2>/dev/null; then
-        chmod 755 "${rootfs}/usr/local/bin/aider-grok" 2>/dev/null || true
-        cp -f "${helper_src}" "${rootfs}/home/kali/.local/bin/aider-grok" 2>/dev/null || true
-        chmod 755 "${rootfs}/home/kali/.local/bin/aider-grok" 2>/dev/null || true
-        chown kali:kali "${rootfs}/home/kali/.local/bin/aider-grok" 2>/dev/null || true
-        msg -ts "Helper also installed in rootfs /usr/local/bin/aider-grok"
+  if [[ -d "${rootfs}" ]]; then
+    mkdir -p "${rootfs}/usr/local/bin" "${rootfs}/home/kali/.local/bin" 2>/dev/null || true
+    if cp -f "${helper_src}" "${rootfs}/usr/local/bin/aider-grok" 2>/dev/null; then
+      chmod 755 "${rootfs}/usr/local/bin/aider-grok" 2>/dev/null || true
+      cp -f "${helper_src}" "${rootfs}/home/kali/.local/bin/aider-grok" 2>/dev/null || true
+      chmod 755 "${rootfs}/home/kali/.local/bin/aider-grok" 2>/dev/null || true
+      chown kali:kali "${rootfs}/home/kali/.local/bin/aider-grok" 2>/dev/null || true
+      msg -ts "Helper also installed in rootfs /usr/local/bin/aider-grok"
+    fi
+  fi
+  return 0
+}
+
+install_aider() {
+  msg -t "Installing Aider (git-native pair-programmer for Grok)"
+
+  local script_path=""
+  local ec=0
+  script_path="$(_gh_resolve "scripts/install_aider.sh" || true)"
+
+  if [[ -z "${script_path}" || ! -f "${script_path}" ]]; then
+    msg -te "scripts/install_aider.sh missing — clone the full repo"
+    msg -a "  Manual:  curl -LsSf https://aider.chat/install.sh | sh"
+    return 1
+  fi
+
+  # Prefer NetHunter (coding lab); fall back to host only if not available.
+  # Shared installer uses uv + managed Python 3.12 (aider-chat rejects 3.13).
+  msg -tn "Installing Aider via shared installer (uv + Python 3.12)…"
+  if _gh_run_install_aider_in_nethunter "${script_path}"; then
+    cursor -u1
+    msg -ts "Aider installed inside NetHunter"
+  else
+    ec=$?
+    if [[ "${ec}" -eq 2 ]]; then
+      cursor -u1
+      msg -tn "No NetHunter exec path — installing on host…"
+      if bash "${script_path}"; then
+        cursor -u1
+        msg -ts "Aider installed on host"
+      else
+        cursor -u1
+        msg -tw "Host Aider install failed — see docs/EDITORS.md"
+      fi
+    else
+      cursor -u1
+      msg -tw "NetHunter Aider install had issues — trying host fallback…"
+      if bash "${script_path}"; then
+        msg -ts "Aider installed on host (fallback)"
+      else
+        msg -tw "Aider install failed — docs/EDITORS.md or: bash scripts/install_aider.sh"
       fi
     fi
   fi
 
-  msg -a "  Usage (inside nethunter):  aider-grok"
-  msg -a "  Or:  source ~/venv-aider/bin/activate && aider --model grok-4.5"
-  msg -a "  Docs: docs/EDITORS.md"
+  _gh_install_aider_helper || true
+
+  msg -a "  Usage:  aider-grok"
+  msg -a "  Repair: bash scripts/install_aider.sh   # or GROKHUNTER_FORCE_AIDER=1 …"
+  msg -a "  Docs:   docs/EDITORS.md"
 }
 
 # ---------------------------------------------------------------------------

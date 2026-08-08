@@ -1,0 +1,5 @@
+# Reliability role — harden and test (Harper-shaped)
+description = "Tests, edge cases, hardening; Harden cards; high scrutiny"
+default_capability_mode = "all"
+reasoning_effort = "high"
+default_fork_context = true
