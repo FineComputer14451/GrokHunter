@@ -6,11 +6,10 @@ Turn Termux + proot Kali into a Linux development environment on your phone, wit
 
 > Not affiliated with xAI or Offensive Security.
 
-**Product site:** [`website/`](website/) · live (after Pages + Actions):
-[finecomputer14451.github.io/GrokHunter](https://finecomputer14451.github.io/GrokHunter/)
+**Product site:** [finecomputer14451.github.io/GrokHunter](https://finecomputer14451.github.io/GrokHunter/)  
+**Release:** [v1.0.3](https://github.com/FineComputer14451/GrokHunter/releases/tag/v1.0.3) · Grok Build **1.0.0+**
 
-Deploy: **Settings → Pages → Source = GitHub Actions**, then push to `main` or run
-**Actions → Deploy website**. Workflow: [`.github/workflows/deploy-website.yml`](.github/workflows/deploy-website.yml).
+Source: [`website/`](website/) · deploy: push `website/**` or **Actions → Deploy website**.
 
 
 ---
@@ -37,9 +36,10 @@ bash install.sh --full --de xfce --browser chromium \
 |-----------|----------------|
 | Kali rootfs | Latest NetHunter **rootless** image (proot) |
 | Desktop | XFCE (or other DE) + Chromium |
-| Grok Build | Native CLI pair programmer |
+| Grok Build | **1.0.0+** TUI / headless pair programmer |
 | Termux:X11 | Low-latency GUI + `nh-x11` helper |
-| Aider | Optional git-native pair tool (xAI-ready) |
+| Aider | Optional git-native pair (uv + Python 3.12) |
+| Agents / personas / roles | Coding Team + lab specialists (`skills install`) |
 | V9 pickers | `/model chat-expert` · `multi` · `auto` · `grok-v9` aliases |
 
 Refresh cached modules after upgrades:
