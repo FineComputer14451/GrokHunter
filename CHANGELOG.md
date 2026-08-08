@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [1.0.6] — 2026-08-08 — Doctor & desktop polish
+
 ### CLI shortcuts as real binaries
 
 - **`install_cli_shortcuts`** drops `ghsu`, `ght`, `ghd`, … into `~/.local/bin` (not shell aliases only)
@@ -12,6 +14,11 @@
 
 - **`ensure_x11_session`** probes DE binaries and writes `~/.config/grokhunter/x11-session` when missing
 - Doctor auto-creates it; `setup` / `setup_termux_x11` also ensure it (default often `startxfce4`)
+
+### Doctor: nethunter PATH
+
+- Inside Kali proot, launcher on Termux host is **OK** (not required on guest PATH)
+- Clearer messaging when launcher is missing vs host-only
 
 ## [1.0.5] — 2026-08-08 — Lab ops CLI (setup · team · agents)
 
