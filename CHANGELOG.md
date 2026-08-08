@@ -5,7 +5,8 @@
 ### Site & CI
 
 - Website badge/copy → **v1.0.3** / Grok Build 1.0.0; CLI rows for `ensure` + `skills install`
-- Smoke workflow runs full `scripts/ci-unit.sh` after bash -n
+- GitHub Pages enabled; product site live
+- Smoke + `ci-unit` in Actions: local branch `ci/unit-in-smoke` (needs `workflow` token scope to push)
 
 ## [1.0.3] — 2026-08-08 — Grok Build 1.0.0 lab stack
 
