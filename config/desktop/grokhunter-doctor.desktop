@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=GrokHunter Doctor
+GenericName=Lab health check
+Comment=Full GrokHunter health report
+Exec=grokhunter-desktop-run doctor
+Icon=dialog-information
+Terminal=true
+Categories=X-GrokHunter;System;
+Keywords=doctor;health;grokhunter;
+StartupNotify=false

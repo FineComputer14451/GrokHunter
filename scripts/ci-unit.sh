@@ -31,11 +31,13 @@ extra=(
   scripts/install_v9_grok_models.sh
   scripts/install_aider.sh
   scripts/install_grok_profile.sh
+  scripts/install_kali_menu.sh
   scripts/spacexai_smoke.sh
   scripts/ensure_grok.sh
   scripts/ci-unit.sh
   bin/grokhunter
   bin/grokhunter-doctor
+  bin/grokhunter-desktop-run
   bin/nh-x11
   bin/aider-grok
   bin/grok-nethunter
@@ -117,6 +119,8 @@ bash bin/grokhunter help | grep -q ai-smoke || die "help missing ai-smoke"
 bash bin/grokhunter help | grep -q skills || die "help missing skills"
 bash bin/grokhunter help | grep -q setup || die "help missing setup"
 bash bin/grokhunter help | grep -q team || die "help missing team"
+bash bin/grokhunter help | grep -q menu || die "help missing menu"
+bash bin/grokhunter menu help | grep -q install || die "menu help missing install"
 bash bin/grokhunter help | grep -q scout || die "help missing scout"
 bash bin/grokhunter models help | grep -q install || die "models help missing install"
 bash bin/grokhunter skills help | grep -q install || die "skills help missing install"

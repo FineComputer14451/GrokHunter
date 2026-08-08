@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### Kali menu integration
+
+- **Applications → GrokHunter** submenu (XFCE / freedesktop): Grok Build, Coding Team, Scout, Aider, Doctor, Setup
+- `config/desktop/*.desktop` + `grokhunter.menu` / `grokhunter.directory`
+- `scripts/install_kali_menu.sh` · `grokhunter menu [install|remove]`
+- Wired into `skills install` / X11 setup; doctor checks menu presence
+
 ## [1.0.6] — 2026-08-08 — Doctor & desktop polish
 
 ### CLI shortcuts as real binaries

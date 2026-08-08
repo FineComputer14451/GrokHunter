@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Aider + Grok
+GenericName=Git-native pair programmer
+Comment=Aider wired to xAI / Grok 4.5 (aider-grok)
+Exec=grokhunter-desktop-run aider
+Icon=text-editor
+Terminal=true
+Categories=X-GrokHunter;Development;
+Keywords=aider;git;grok;pair;
+StartupNotify=false

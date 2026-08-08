@@ -220,6 +220,19 @@ else
   warn "nh-x11 missing — optional: install.sh --with-x11"
   WARN=1
 fi
+# Kali application menu (GrokHunter submenu)
+if [[ -f "${HOME}/.config/menus/applications-merged/grokhunter.menu" ]] \
+   && compgen -G "${HOME}/.local/share/applications/grokhunter-*.desktop" >/dev/null 2>&1; then
+  ok "Kali/XFCE menu: Applications → GrokHunter"
+elif [[ -d "${HOME}/.local/share/applications" ]] \
+   && compgen -G "${HOME}/.local/share/applications/grokhunter-*.desktop" >/dev/null 2>&1; then
+  ok "Desktop entries present (~/.local/share/applications/grokhunter-*)"
+  warn "Menu merge missing — run: bash scripts/install_kali_menu.sh"
+  WARN=1
+else
+  warn "No Kali menu entries — run: bash scripts/install_kali_menu.sh"
+  WARN=1
+fi
 if [[ -r "${HOME}/.config/grokhunter/x11-session" ]]; then
   ok "X11 session preference: $(tr -d '[:space:]' < "${HOME}/.config/grokhunter/x11-session")"
 else

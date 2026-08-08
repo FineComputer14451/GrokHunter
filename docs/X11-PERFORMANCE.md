@@ -93,3 +93,16 @@ nh-x11
 ```
 
 Related: [PROOT.md](PROOT.md), [INSTALL.md](INSTALL.md).
+
+## Kali application menu
+
+After desktop install (or anytime inside Kali):
+
+```bash
+grokhunter menu install
+# or
+bash scripts/install_kali_menu.sh
+```
+
+Look for **Applications → GrokHunter** (Grok Build, Coding Team, Scout, Aider, Doctor, Setup).  
+Log out/in of XFCE if the submenu does not appear immediately. Remove with `grokhunter menu remove`.
