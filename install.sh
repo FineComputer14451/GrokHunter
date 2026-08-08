@@ -4,6 +4,13 @@
 # Coding lab: Kali NetHunter (proot) + Grok Build + optional Termux:X11 / Aider
 #
 # https://github.com/FineComputer14451/GrokHunter
+#
+# BUILT ON (primary credit — please support upstream):
+#   jorexdeveloper — termux-nethunter & termux-distro (GPL-3.0)
+#   https://github.com/jorexdeveloper/termux-nethunter
+#   https://github.com/jorexdeveloper/termux-distro
+#   Default engine URL: raw.githubusercontent.com/jorexdeveloper/termux-distro
+#   See CREDITS.md in this repository.
 ################################################################################
 set -euo pipefail
 

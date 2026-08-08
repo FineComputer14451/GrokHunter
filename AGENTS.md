@@ -22,7 +22,8 @@ You are working inside a **rootless Kali NetHunter** environment enhanced with *
 
 - Never log, echo, or commit `XAI_API_KEY`, tokens, or private keys
 - Prefer small, reversible changes; confirm before destructive ops
-- Do not claim affiliation with xAI or Offensive Security
+- Do not claim affiliation with xAI, Offensive Security, or jorexdeveloper
+- **Always credit** jorexdeveloper for termux-nethunter / termux-distro (see CREDITS.md) when discussing the install engine or rootless NetHunter base
 - This is a coding lab — not a platform for unauthorized offensive activity
 
 ## Tooling preferences

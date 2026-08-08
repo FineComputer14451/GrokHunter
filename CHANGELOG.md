@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Credits — jorexdeveloper recognition
+
+- **[CREDITS.md](CREDITS.md)** — full attribution for **jorexdeveloper** (termux-nethunter / termux-distro)
+- README, INSTALL, ARCHITECTURE, FAQ, AGENTS.md, install banner, website Credits section + footer
+- Installer banner line: `Engine: jorexdeveloper/termux-distro · CREDITS.md`
+
 ### Kali menu integration
 
 - **Applications → GrokHunter** submenu (XFCE / freedesktop): Grok Build, Coding Team, Scout, Aider, Doctor, Setup

@@ -47,9 +47,22 @@ GrokHunter does **not** require Magisk, custom recovery, HID, or firmware module
 8. Optional: Aider (`--with-aider` → `~/venv-aider` + `aider-grok`)  
 9. Optional: V9 / 4.5 model pickers + shell completions  
 
+## Upstream foundation (required credit)
+
+GrokHunter does **not** reimplement rootfs download or proot launcher plumbing from scratch. It **hooks** the install engine from:
+
+| Project | Author | Role |
+|---------|--------|------|
+| [termux-distro](https://github.com/jorexdeveloper/termux-distro) | **jorexdeveloper** | `termux-distro.sh` lifecycle engine |
+| [termux-nethunter](https://github.com/jorexdeveloper/termux-nethunter) | **jorexdeveloper** | NetHunter rootless product / install model |
+
+Default engine URL: `https://raw.githubusercontent.com/jorexdeveloper/termux-distro/main/termux-distro.sh`  
+
+See **[CREDITS.md](../CREDITS.md)** for the full attribution statement. Please star and support the upstream repositories.
+
 ## Historical precursor
 
-An earlier **monolithic** script existed as *“Termux NetHunter Installer — Grok Build Powered Edition”* (`VERSION_NAME=Grok-Build-2026.2-x11`). It was a single-file enhancement of the jorexdeveloper `termux-nethunter` / `termux-distro` lineage with Grok Build + Termux:X11 hooks.
+An earlier **monolithic** script existed as *“Termux NetHunter Installer — Grok Build Powered Edition”* (`VERSION_NAME=Grok-Build-2026.2-x11`). It was a single-file enhancement of the **jorexdeveloper** `termux-nethunter` / `termux-distro` lineage with Grok Build + Termux:X11 hooks.
 
 GrokHunter is the modular successor. Useful ideas carried forward from that precursor include:
 

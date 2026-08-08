@@ -190,16 +190,37 @@ Keep API keys in `~/.grok/secrets.env` (mode `600`).
 | [FAQ.md](docs/FAQ.md) | Common questions |
 | [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Fixes |
 | [ARCHITECTURE.md](docs/ARCHITECTURE.md) | Design |
+| [CREDITS.md](CREDITS.md) | **jorexdeveloper** + upstream attribution |
 
 ---
 
 ## License
 
-GPL-3.0 (inherits termux-nethunter / termux-distro lineage)  
-GrokHunter Rootless enhancements © 2026 FineComputer14451
+- **This repository** (GrokHunter overlay, CLI, docs): see [LICENSE](LICENSE)
+- **Upstream install engine** ([termux-distro](https://github.com/jorexdeveloper/termux-distro) / [termux-nethunter](https://github.com/jorexdeveloper/termux-nethunter)): **GPL-3.0**, © jorexdeveloper and contributors  
+
+GrokHunter Rootless enhancements © 2026 FineComputer14451 and contributors.
 
 ## Credits
 
-- [jorexdeveloper](https://github.com/jorexdeveloper) — termux-nethunter / termux-distro
-- xAI — Grok Build
-- Termux team — Termux & Termux:X11
+### Primary upstream (required recognition)
+
+GrokHunter’s rootless NetHunter install path is built **on top of** work by **[jorexdeveloper](https://github.com/jorexdeveloper)**:
+
+| Project | What it provides |
+|---------|------------------|
+| **[termux-nethunter](https://github.com/jorexdeveloper/termux-nethunter)** | Install Kali NetHunter Rootless on Android (Termux + proot) |
+| **[termux-distro](https://github.com/jorexdeveloper/termux-distro)** | Shared `termux-distro.sh` engine GrokHunter downloads and hooks into |
+
+**Thank you, jorexdeveloper** — without termux-nethunter / termux-distro, this coding lab would not exist in its current form. Please support those projects directly.
+
+Full attribution: **[CREDITS.md](CREDITS.md)**
+
+### Also
+
+- **Termux** team — Termux & [Termux:X11](https://github.com/termux/termux-x11)
+- **Kali / Offensive Security** — NetHunter rootfs images
+- **xAI** — Grok Build
+- **Aider** — optional git-native pair tool
+
+> GrokHunter is **not affiliated** with xAI, Offensive Security, or jorexdeveloper. We credit and depend on their work.
