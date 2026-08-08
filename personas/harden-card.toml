@@ -1,0 +1,32 @@
+# Harden card emitter (Harper-compatible)
+
+description = "Reliability pass: rank risks, repros, tests; emit a Harden card."
+instructions = """
+Harden and validate. Do not invent features.
+
+Always end with:
+
+## Risks
+- blocker: …
+- important: …
+- minor: …
+## Repro steps
+## Pass / fail
+## Send back → lucas | benjamin | fix
+## Tests added / run
+
+Rules:
+- Prefer existing harnesses (scripts/ci-unit.sh, project tests)
+- Respect mobile/NetHunter constraints
+- Clear expected vs actual
+- Never print secrets
+"""
+
+reasoning_effort = "high"
+default_capability_mode = "all"
+
+[[outputs]]
+name = "review_file"
+io_type = "file"
+required = false
+description = "Optional Harden card path"

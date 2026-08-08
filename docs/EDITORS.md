@@ -18,17 +18,28 @@ See also: [GROK-45.md](GROK-45.md).
 
 [Aider](https://aider.chat) is a terminal pair-programmer that works well inside the Kali proot. Use the same xAI key.
 
+### Why installs used to fail
+
+- **Python 3.13**: Kali’s default `python3` is often 3.13; `aider-chat` requires **≥3.10,<3.13**.
+- **Missing `ensurepip`**: `python3 -m venv` fails without `python3-venv` / `python3-full`.
+- Plain `pip install aider-chat` into a 3.13 venv therefore fails on current NetHunter images.
+
+GrokHunter’s installer now uses the **official uv + managed Python 3.12** path (`scripts/install_aider.sh`).
+
 ### Install
 
 ```bash
 # Via installer flag (preferred):
 bash install.sh --with-aider
+# Or without touching rootfs:
+bash install.sh --overlay-only --with-aider
 
-# Or manually inside nethunter:
-sudo apt install -y python3-pip python3-venv git
-python3 -m venv ~/venv-aider
-source ~/venv-aider/bin/activate
-pip install -U aider-chat
+# Repair / reinstall only Aider (inside nethunter or clone):
+bash ~/GrokHunter/scripts/install_aider.sh
+GROKHUNTER_FORCE_AIDER=1 bash ~/GrokHunter/scripts/install_aider.sh
+
+# Official upstream one-liner (same idea):
+curl -LsSf https://aider.chat/install.sh | sh
 ```
 
 The installer also places the `aider-grok` helper in `~/.local/bin` and (when possible) inside the rootfs.
@@ -50,8 +61,8 @@ export OPENAI_API_KEY="${XAI_API_KEY}"
 ```bash
 cd /path/to/your/project
 aider-grok                 # recommended helper (auto model + secrets)
-# or
-source ~/venv-aider/bin/activate && aider --model "${AIDER_MODEL:-grok-4.5}"
+# or (uv tool install puts aider on PATH)
+aider --model "${AIDER_MODEL:-grok-4.5}"
 aider-grok main.py utils.py   # limit to specific files
 ```
 
@@ -59,6 +70,7 @@ Tips:
 - Aider auto-commits by default — good for mobile history.
 - `--no-auto-commits` if you prefer manual commits.
 - Never commit `~/.grok/secrets.env`.
+- Env: `GROKHUNTER_AIDER_METHOD=auto|uv|venv|curl`, `GROKHUNTER_FORCE_AIDER=1`.
 
 ## Lightweight editors on device
 

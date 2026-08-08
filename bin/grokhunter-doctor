@@ -25,6 +25,16 @@ if [[ -f "${GROKHUNTER_HOME}/lib/agents-discover.sh" ]]; then
   # shellcheck source=lib/agents-discover.sh
   source "${GROKHUNTER_HOME}/lib/agents-discover.sh"
 fi
+# shellcheck disable=SC1091
+if [[ -f "${GROKHUNTER_HOME}/lib/personas-discover.sh" ]]; then
+  # shellcheck source=lib/personas-discover.sh
+  source "${GROKHUNTER_HOME}/lib/personas-discover.sh"
+fi
+# shellcheck disable=SC1091
+if [[ -f "${GROKHUNTER_HOME}/lib/roles-discover.sh" ]]; then
+  # shellcheck source=lib/roles-discover.sh
+  source "${GROKHUNTER_HOME}/lib/roles-discover.sh"
+fi
 
 RED=$'\033[0;31m'
 GREEN=$'\033[0;32m'
@@ -101,19 +111,47 @@ else
 fi
 
 # ---------- Grok Build ----------
-hdr "Grok Build (pair programmer)"
-MIN_VER="${GROKHUNTER_MIN_GROK:-0.2.93}"
+hdr "Grok Build (pair programmer · 1.0.0+)"
+MIN_VER="${GROKHUNTER_MIN_GROK:-1.0.0}"
 if command -v grok >/dev/null 2>&1; then
   GVER_LINE=$(grok --version 2>/dev/null | head -1 || true)
   ok "Found: ${GVER_LINE:-grok} @ $(command -v grok)"
   GVER=$(echo "$GVER_LINE" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1 || true)
   if [[ -n "$GVER" ]]; then
     if printf '%s\n%s\n' "$MIN_VER" "$GVER" | sort -V | head -1 | grep -qx "$MIN_VER"; then
-      ok "Version ≥ ${MIN_VER}"
+      ok "Version ≥ ${MIN_VER} (Grok Build 1.0.0 target)"
     else
       bad "Version ${GVER} < min ${MIN_VER} — run: grokhunter ensure"
       FAIL=1
     fi
+  fi
+  # Channel / profile hints for 1.0.0
+  CFG="${GROK_CONFIG:-${HOME}/.grok/config.toml}"
+  if [[ -f "${CFG}" ]]; then
+    if grep -qE 'channel\s*=\s*"alpha"' "${CFG}" 2>/dev/null; then
+      warn "config channel=alpha — prefer stable on 1.0.0 (run: bash scripts/install_grok_profile.sh)"
+      WARN=1
+    fi
+    if grep -qE 'fork_secondary_model\s*=\s*"grok-build"' "${CFG}" 2>/dev/null; then
+      warn "fork_secondary_model=grok-build may be invalid — set grok-4.5 via install_grok_profile.sh"
+      WARN=1
+    fi
+    if grep -qF "GrokHunter NetHunter profile (Grok Build 1.0.0" "${CFG}" 2>/dev/null \
+      || grep -qF "GrokHunter NetHunter profile" "${CFG}" 2>/dev/null; then
+      ok "NetHunter 1.0.0 profile marker present"
+    else
+      warn "NetHunter profile not merged — bash ${GROKHUNTER_HOME}/scripts/install_grok_profile.sh"
+      WARN=1
+    fi
+  else
+    warn "No ~/.grok/config.toml yet — start grok once or run install_grok_profile.sh"
+    WARN=1
+  fi
+  if grok models >/dev/null 2>&1; then
+    ok "grok models reachable"
+  else
+    warn "grok models failed — check auth (grok login or XAI_API_KEY)"
+    WARN=1
   fi
 else
   bad "grok not on PATH — run: grokhunter ensure  or  install.sh --with-grok"
@@ -215,10 +253,12 @@ fi
 hdr "Optional pair tools"
 if command -v aider >/dev/null 2>&1; then
   ok "aider on PATH"
+elif [[ -x "${HOME}/.local/bin/aider" ]]; then
+  ok "aider in ~/.local/bin (uv tool install)"
 elif [[ -x "${HOME}/venv-aider/bin/aider" ]]; then
   ok "aider in ~/venv-aider (activate before use)"
 else
-  warn "Aider not installed — see docs/EDITORS.md"
+  warn "Aider not installed — bash scripts/install_aider.sh  or  docs/EDITORS.md"
 fi
 if command -v aider-grok >/dev/null 2>&1 || [[ -x "${HOME}/.local/bin/aider-grok" ]]; then
   ok "aider-grok helper present"
@@ -280,6 +320,36 @@ if declare -F _gh_list_agent_names >/dev/null 2>&1; then
   done < <(_gh_list_agent_names "${GROKHUNTER_HOME}")
 else
   ok "agents: (no agents-discover.sh)"
+fi
+
+# ---------- Personas (subagent overlays; optional) ----------
+hdr "Personas"
+if declare -F _gh_list_persona_names >/dev/null 2>&1; then
+  while IFS= read -r s; do
+    [[ -n "${s}" ]] || continue
+    if [[ -f "${HOME}/.grok/personas/${s}.toml" ]]; then
+      ok "persona: ${s} (~/.grok/personas) — runtime /personas"
+    else
+      ok "persona (repo only): ${s} — install: grokhunter skills install"
+    fi
+  done < <(_gh_list_persona_names "${GROKHUNTER_HOME}")
+else
+  ok "personas: (no personas-discover.sh)"
+fi
+
+# ---------- Roles (capability defaults; optional) ----------
+hdr "Roles"
+if declare -F _gh_list_role_names >/dev/null 2>&1; then
+  while IFS= read -r s; do
+    [[ -n "${s}" ]] || continue
+    if [[ -f "${HOME}/.grok/roles/${s}.toml" ]]; then
+      ok "role: ${s} (~/.grok/roles)"
+    else
+      ok "role (repo only): ${s} — install: grokhunter skills install"
+    fi
+  done < <(_gh_list_role_names "${GROKHUNTER_HOME}")
+else
+  ok "roles: (no roles-discover.sh)"
 fi
 
 # ---------- Config / models ----------

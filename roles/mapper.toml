@@ -1,0 +1,4 @@
+# Mapper role — fast read-only exploration (Scout-shaped)
+description = "Fast read-only codebase / install-flow mapping"
+default_capability_mode = "read-only"
+reasoning_effort = "medium"

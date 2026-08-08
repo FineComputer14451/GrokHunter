@@ -6,7 +6,7 @@ You are working inside a **rootless Kali NetHunter** environment enhanced with *
 
 - OS: Kali GNU/Linux (NetHunter nano/mini/full) via Termux proot
 - Host: Android aarch64 (unrooted)
-- Agent: `grok` (Grok Build) under `~/.grok/bin` and `~/.local/bin`
+- Agent: `grok` (Grok Build **1.0.0+**) under `~/.grok/bin` and `~/.local/bin`
 - Launchers: `grokhunter`, `grok-nethunter`
 - Desktop: Termux:X11 + `nh-x11` when installed
 - Secrets: `~/.grok/secrets.env` (mode 600) — never print or commit

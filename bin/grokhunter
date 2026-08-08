@@ -29,7 +29,7 @@ export PATH="${GROKHUNTER_HOME}/bin:${PATH}"
 if [[ -f "${GROKHUNTER_HOME}/VERSION" ]]; then
   VERSION="$(tr -d '[:space:]' < "${GROKHUNTER_HOME}/VERSION")"
 else
-  VERSION="${GROKHUNTER_VERSION:-1.0.2}"
+  VERSION="${GROKHUNTER_VERSION:-1.0.3}"
 fi
 
 _grok_launcher() {
@@ -102,9 +102,10 @@ Env:
   XAI_API_KEY                 API auth
   GROK_NETHUNTER_FLAGS        Extra default flags for launcher
   GROKHUNTER_HOME             Overlay root (default ~/GrokHunter)
-  GROKHUNTER_MIN_GROK         Min binary version (default 0.2.93)
+  GROKHUNTER_MIN_GROK         Min binary version (default 1.0.0)
   GROKHUNTER_GROK_INSTALLER   auto|official|termux-native (ensure)
   GROKHUNTER_FORCE_GROK=1     Reinstall Grok even if present
+  GROKHUNTER_SKIP_PROFILE=1   Skip NetHunter config.toml profile merge
   GROKHUNTER_REFRESH=1        Bypass module/engine cache on install
   GROKHUNTER_DISTRO_ENGINE_URL  Pin/fork of termux-distro.sh (install)
 EOF
@@ -149,33 +150,24 @@ cmd_status() {
 }
 
 cmd_ensure() {
-  local min="${GROKHUNTER_MIN_GROK:-0.2.93}"
-  local force=0
+  local min="${GROKHUNTER_MIN_GROK:-1.0.0}"
   if [[ "${1:-}" == "--force" ]]; then
-    force=1
     export GROKHUNTER_FORCE_GROK=1
   fi
 
-  if command -v grok >/dev/null 2>&1 && [[ "${force}" -eq 0 ]]; then
-    local gver
-    gver=$(grok --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1 || true)
-    if [[ -n "$gver" ]] && printf '%s\n%s\n' "$min" "$gver" | sort -V | head -1 | grep -qx "$min"; then
-      echo "Grok Build ${gver} already ≥ ${min}"
-      echo "  (reinstall: grokhunter ensure --force)"
-      return 0
-    fi
-  fi
-
+  # ensure_grok.sh enforces min version, prefers `grok update`, applies 1.0.0 profile
   local ensure="${GROKHUNTER_HOME}/scripts/ensure_grok.sh"
   if [[ ! -f "$ensure" ]]; then
     ensure="${HERE}/../scripts/ensure_grok.sh"
   fi
   if [[ -f "$ensure" ]]; then
-    echo "Ensuring Grok Build via shared installer…"
+    echo "Ensuring Grok Build ≥ ${min} (1.0.0+ profile)…"
     bash "$ensure"
   else
     echo "scripts/ensure_grok.sh not found — falling back to official installer…"
     curl -fsSL "${GROKHUNTER_GROK_OFFICIAL_URL:-https://x.ai/cli/install.sh}" | bash
+    local profile="${GROKHUNTER_HOME}/scripts/install_grok_profile.sh"
+    [[ -f "${profile}" ]] && bash "${profile}" || true
   fi
   export PATH="${HOME}/.grok/bin:${HOME}/.local/bin:${PATH}"
   grok --version || true
@@ -261,8 +253,8 @@ cmd_skills() {
 Usage: grokhunter skills [status|install]
 
   status    Show which skills are under ~/.grok/skills (default)
-  install   Copy repo skills + Coding Team agents; refresh wrappers
-            (agents → ~/.grok/agents for Grok runtime /config-agents)
+  install   Copy repo skills + agents + personas + roles; refresh wrappers
+            (~/.grok/{skills,agents,personas,roles})
 EOF
       return 0
       ;;
@@ -288,7 +280,18 @@ cmd_plan() {
     echo "Usage: grokhunter plan <prompt>" >&2
     exit 2
   fi
-  exec "$(_grok_launcher)" -p "Enter plan mode first. Task: ${prompt}"
+  # Grok Build 1.0.0: built-in plan agent (read-only architect), headless -p
+  export PATH="${HOME}/.grok/bin:${HOME}/.local/bin:${PATH}"
+  local grok_bin="${HOME}/.grok/bin/grok"
+  if [[ ! -x "${grok_bin}" ]]; then
+    if command -v grok >/dev/null 2>&1; then
+      grok_bin="$(command -v grok)"
+    else
+      echo "grok not found — run: grokhunter ensure" >&2
+      exit 127
+    fi
+  fi
+  exec "${grok_bin}" --agent plan --permission-mode plan -p "${prompt}"
 }
 
 cmd_models_status() {

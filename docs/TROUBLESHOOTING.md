@@ -132,13 +132,26 @@ sudo apt update
 sudo apt install -y build-essential git python3 python3-pip
 ```
 
-### Aider not found
+### Aider not found / install fails
 
-See [EDITORS.md](EDITORS.md). Typical fix:
+Common on current Kali: **Python 3.13** + missing `python3-venv`.  
+`aider-chat` needs Python **&lt;3.13**. Use the shared installer (uv + 3.12):
 
 ```bash
-source ~/venv-aider/bin/activate
+bash ~/GrokHunter/scripts/install_aider.sh
+# or
+bash ~/GrokHunter/install.sh --overlay-only --with-aider
 ```
+
+Manual upstream path:
+
+```bash
+curl -LsSf https://aider.chat/install.sh | sh
+export PATH="$HOME/.local/bin:$PATH"
+aider --version
+```
+
+See [EDITORS.md](EDITORS.md).
 
 ## Network
 

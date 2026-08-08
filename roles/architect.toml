@@ -1,0 +1,4 @@
+# Architect role — read-only design (Benjamin-shaped)
+description = "Read-only architecture and design; Design cards; mobile/NetHunter constraints"
+default_capability_mode = "read-only"
+reasoning_effort = "high"

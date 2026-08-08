@@ -23,16 +23,18 @@ You help the operator use **Aider** as a terminal pair programmer with **xAI / G
 # Preferred — overlay only (no rootfs re-download):
 bash ~/GrokHunter/install.sh --overlay-only --with-aider
 
+# Repair Aider only (uv + managed Python 3.12 — required on Kali 3.13):
+bash ~/GrokHunter/scripts/install_aider.sh
+GROKHUNTER_FORCE_AIDER=1 bash ~/GrokHunter/scripts/install_aider.sh
+
 # Full install path:
 bash ~/GrokHunter/install.sh --with-aider
 
 # Also refresh wrappers + lab skills:
 grokhunter skills install
 
-# Manual inside nethunter:
-sudo apt update && sudo apt install -y python3-pip python3-venv git
-python3 -m venv ~/venv-aider && source ~/venv-aider/bin/activate
-pip install -U aider-chat
+# Official upstream (same uv approach):
+curl -LsSf https://aider.chat/install.sh | sh
 
 # Auth (reuse GrokHunter secrets — never print the key)
 [ -f ~/.grok/secrets.env ] && source ~/.grok/secrets.env
@@ -40,6 +42,8 @@ export OPENAI_API_BASE=https://api.x.ai/v1
 export OPENAI_API_KEY="${XAI_API_KEY}"
 export AIDER_MODEL=grok-4.5
 ```
+
+**Do not** `pip install aider-chat` into system Python 3.13 — it will fail (`requires-python <3.13`). Use `scripts/install_aider.sh`.
 
 Installer places **`bin/aider-grok`** into `~/.local/bin` and (when possible) the Kali rootfs. Canonical source is the repo file.
 
@@ -66,7 +70,7 @@ aider-grok --model grok-4.5
 1. Sources `~/.grok/secrets.env` if present  
 2. Sets `OPENAI_API_BASE=https://api.x.ai/v1` and maps `XAI_API_KEY` → `OPENAI_API_KEY`  
 3. Defaults `AIDER_MODEL=grok-4.5`  
-4. Activates `~/venv-aider` or `/home/kali/venv-aider` when available  
+4. Finds `aider` via PATH, `~/.local/bin` (uv tool), or `~/venv-aider`  
 5. Runs `aider --model …` unless user already passed `--model`
 
 ## Rules
@@ -103,7 +107,9 @@ grokhunter ai-smoke    # verifies XAI_API_KEY reaches api.x.ai
 
 | Symptom | Fix |
 |---------|-----|
-| `aider not found` | Install venv / `--with-aider` |
+| `aider not found` | `bash scripts/install_aider.sh` or `--overlay-only --with-aider` |
+| pip / Python 3.13 errors | Expected — use uv installer, not plain pip on 3.13 |
+| `ensurepip` / venv errors | `sudo apt install -y python3-venv python3-full` then re-run script |
 | `aider-grok` missing | `grokhunter skills install` or overlay install |
 | Auth / 401 | Fix `XAI_API_KEY` in secrets.env; `ai-smoke` |
 | Wrong model | `AIDER_MODEL=grok-4.5` or `--model` |

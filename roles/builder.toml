@@ -1,0 +1,5 @@
+# Builder role — full implementation (Lucas-shaped)
+description = "Full-access implementer for small shippable increments; Build cards"
+default_capability_mode = "all"
+reasoning_effort = "medium"
+default_fork_context = true

@@ -1,6 +1,8 @@
 # GrokHunter / Cinematic Studio — V9 Model Layer v4.5 picker surface
+# Compatible with Grok Build 1.0.0+ (stable).
 # All aliases route to base model grok-4.5 (cli-chat-proxy / SuperGrok).
 # Native product slugs may differ; these are picker IDs for /model …
+# See: docs.x.ai/build · grok models · /model <alias>
 
 [model.grok-v9-4p5-chat-expert]
 name = "Grok V9 4.5 Chat Expert"

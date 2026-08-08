@@ -1,0 +1,5 @@
+# Code review role — lab review notes (Review agent-shaped)
+description = "Read-focused review; structured findings; no feature implementation"
+default_capability_mode = "all"
+reasoning_effort = "high"
+default_fork_context = true

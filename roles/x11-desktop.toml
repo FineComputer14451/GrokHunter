@@ -1,0 +1,4 @@
+# X11 desktop role — Termux:X11 / nh-x11 (Desktop agent-shaped)
+description = "Termux:X11, nh-x11, proot binds, black screen and perf fixes"
+default_capability_mode = "all"
+reasoning_effort = "medium"

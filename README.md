@@ -93,22 +93,24 @@ grok                   # Interactive Grok session
 grokhunter             # Primary CLI / TUI
 grokhunter status      # auth / x11 / v9 quick line
 grokhunter doctor      # Full health report
+grokhunter ensure      # Grok Build ≥ 1.0.0 + NetHunter profile
 grokhunter models      # Install or status V9 model pickers
 grokhunter ai-smoke    # SpaceXAI API smoke (needs XAI_API_KEY)
-grokhunter plan "…"    # Plan a coding task
+grokhunter plan "…"    # Plan agent (Grok Build 1.0.0)
 grokhunter -p "…"      # Headless one-shot
 ```
 
-### Grok 4.5 + V9 pickers
+### Grok Build 1.0.0 + Grok 4.5
 
 ```bash
-grokhunter models install          # write aliases into ~/.grok/config.toml
+grokhunter ensure                  # binary ≥ 1.0.0 + stable profile
+bash scripts/install_grok_profile.sh --force
+grokhunter models install          # optional /model aliases → grok-4.5
 grokhunter models status
-bash scripts/install_v9_grok_models.sh --force
 ```
 
 In-session: `/model chat-expert` · `/model multi` · `/model auto` · `/model grok-v9`  
-Base model remains **grok-4.5**. See [docs/GROK-45.md](docs/GROK-45.md).
+Base model remains **grok-4.5**. See [docs/GROK-45.md](docs/GROK-45.md) and [docs/GROK-BUILD-1.0.md](docs/GROK-BUILD-1.0.md).
 
 ### Termux:X11
 
@@ -173,6 +175,7 @@ Keep API keys in `~/.grok/secrets.env` (mode `600`).
 |-----|--------|
 | [INSTALL.md](docs/INSTALL.md) | Step-by-step install |
 | [GROK-45.md](docs/GROK-45.md) | Grok 4.5 profile + V9 pickers |
+| [GROK-BUILD-1.0.md](docs/GROK-BUILD-1.0.md) | Grok Build **1.0.0** compatibility |
 | [X11-PERFORMANCE.md](docs/X11-PERFORMANCE.md) | Termux:X11 tuning |
 | [EDITORS.md](docs/EDITORS.md) | Aider / editors |
 | [PROOT.md](docs/PROOT.md) | proot binds & storage |
