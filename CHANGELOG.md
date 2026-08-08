@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### CLI shortcuts as real binaries
+
+- **`install_cli_shortcuts`** drops `ghsu`, `ght`, `ghd`, … into `~/.local/bin` (not shell aliases only)
+- Works in non-interactive shells / Termux where bash aliases are disabled
+- Does **not** install `gh` (avoids clobbering GitHub CLI)
+
 ## [1.0.5] — 2026-08-08 — Lab ops CLI (setup · team · agents)
 
 ### CLI features

@@ -129,11 +129,75 @@ install_cli_bins() {
     msg -tw "No CLI wrappers installed — clone full repo with bin/"
   fi
 
+  # Short commands as real bins (work outside interactive shells; not bash aliases only)
+  install_cli_shortcuts || true
+
   # Skills + agents + personas + roles for Grok Build runtime discovery
   install_skills || true
   install_agents || true
   install_personas || true
   install_roles || true
+}
+
+# Install ghsu/ght/... as real executables under ~/.local/bin (aliases alone fail in non-interactive shells).
+install_cli_shortcuts() {
+  local dest_dir="${HOME}/.local/bin"
+  mkdir -p "${dest_dir}" 2>/dev/null || true
+  local name target
+  # name → arguments after grokhunter
+  local -a pairs=(
+    "ghsu:setup"
+    "ght:team"
+    "ghd:doctor"
+    "ghs:status"
+    "ghp:plan"
+    "ghm:models"
+    "ghk:skills"
+    "ghai:ai-smoke"
+    "ghn:nethunter-launcher"
+  )
+  local count=0
+  for pair in "${pairs[@]}"; do
+    name="${pair%%:*}"
+    target="${pair#*:}"
+    if [[ "${target}" == "nethunter-launcher" ]]; then
+      cat > "${dest_dir}/${name}" <<'EOS'
+#!/usr/bin/env bash
+# GrokHunter shortcut: ghn → grok-nethunter
+set -euo pipefail
+export PATH="${HOME}/.grok/bin:${HOME}/.local/bin:${PATH}"
+if command -v grok-nethunter >/dev/null 2>&1; then
+  exec grok-nethunter "$@"
+fi
+exec grok --fullscreen "$@"
+EOS
+    else
+      cat > "${dest_dir}/${name}" <<EOS
+#!/usr/bin/env bash
+# GrokHunter shortcut: ${name} → grokhunter ${target}
+set -euo pipefail
+export PATH="\${HOME}/.grok/bin:\${HOME}/.local/bin:\${PATH}"
+if command -v grokhunter >/dev/null 2>&1; then
+  exec grokhunter ${target} "\$@"
+fi
+# Fallback: repo checkout
+for d in "\${GROKHUNTER_HOME:-}" "\${HOME}/GrokHunter"; do
+  if [[ -n "\${d}" && -x "\${d}/bin/grokhunter" ]]; then
+    exec "\${d}/bin/grokhunter" ${target} "\$@"
+  fi
+done
+echo "${name}: grokhunter not found — install wrappers: bash ~/GrokHunter/scripts/install-completions.sh" >&2
+exit 127
+EOS
+    fi
+    chmod 755 "${dest_dir}/${name}" 2>/dev/null || true
+    count=$((count + 1))
+  done
+  # Prefer not to shadow GitHub CLI `gh` if present as a real binary we didn't install
+  # (do not install `gh` shortcut — conflicts with GitHub CLI)
+  if [[ ${count} -gt 0 ]]; then
+    msg -ts "Installed ${count} shortcuts under ${dest_dir} (ghsu, ght, ghd, …)"
+  fi
 }
 
 # Copy repo skills/ into ~/.grok/skills for Grok Build skill discovery.
