@@ -103,12 +103,43 @@ if command -v proot >/dev/null 2>&1 || [[ -n "${PROOT_TMPDIR:-}" ]] || grep -q p
   ok "proot signals present (rootless)"
 fi
 
-if command -v nethunter >/dev/null 2>&1 || command -v nh >/dev/null 2>&1; then
-  ok "nethunter/nh launcher on PATH"
+# nethunter/nh live on the Termux host. Inside Kali proot they are usually NOT on PATH
+# (you launch Kali from Termux). Treat host paths as healthy for rootless layout.
+_nh_path=""
+if command -v nethunter >/dev/null 2>&1; then
+  _nh_path="$(command -v nethunter)"
+elif command -v nh >/dev/null 2>&1; then
+  _nh_path="$(command -v nh)"
+fi
+_nh_host=""
+for _cand in \
+  "${PREFIX:-}/bin/nethunter" \
+  /data/data/com.termux/files/usr/bin/nethunter \
+  /data/data/com.termux/files/usr/bin/nh
+do
+  if [[ -x "${_cand}" ]]; then
+    _nh_host="${_cand}"
+    break
+  fi
+done
+unset _cand
+
+if [[ -n "${_nh_path}" ]]; then
+  ok "nethunter/nh launcher on PATH → ${_nh_path}"
+elif [[ -n "${_nh_host}" ]]; then
+  if [[ "${ID:-}" == "kali" ]] || [[ -f /etc/debian_chroot ]]; then
+    ok "nethunter launcher on Termux host → ${_nh_host}"
+    ok "Inside Kali proot — launcher is used from Termux (not required on guest PATH)"
+  else
+    ok "nethunter launcher found → ${_nh_host}"
+    warn "Not on PATH — add Termux bin: export PATH=\"\${PREFIX}/bin:\$PATH\""
+    WARN=1
+  fi
 else
-  warn "nethunter launcher not on PATH (run install.sh if missing)"
+  warn "nethunter launcher not found — run install.sh on Termux host if NetHunter is missing"
   WARN=1
 fi
+unset _nh_path _nh_host
 
 # ---------- Grok Build ----------
 hdr "Grok Build (pair programmer · 1.0.0+)"
