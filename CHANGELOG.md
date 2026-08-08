@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Site & CI
+
+- Website badge/copy → **v1.0.3** / Grok Build 1.0.0; CLI rows for `ensure` + `skills install`
+- Smoke workflow runs full `scripts/ci-unit.sh` after bash -n
+
 ## [1.0.3] — 2026-08-08 — Grok Build 1.0.0 lab stack
 
 Full alignment with **Grok Build 1.0.0** (stable), plus Aider reliability, expanded Coding Team, personas, and roles.
