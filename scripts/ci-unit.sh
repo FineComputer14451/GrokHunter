@@ -115,14 +115,22 @@ info "bind-patch OK"
 # ---------- CLI help surfaces ----------
 bash bin/grokhunter help | grep -q ai-smoke || die "help missing ai-smoke"
 bash bin/grokhunter help | grep -q skills || die "help missing skills"
+bash bin/grokhunter help | grep -q setup || die "help missing setup"
+bash bin/grokhunter help | grep -q team || die "help missing team"
+bash bin/grokhunter help | grep -q scout || die "help missing scout"
 bash bin/grokhunter models help | grep -q install || die "models help missing install"
 bash bin/grokhunter skills help | grep -q install || die "skills help missing install"
+bash bin/grokhunter setup --help | grep -q with-models || die "setup help missing --with-models"
+bash bin/grokhunter agents help | grep -q status || die "agents help missing status"
 info "cli help OK"
 
 # ---------- status line fields ----------
 st="$(bash bin/grokhunter status)"
 echo "${st}" | grep -q 'models=' || die "status missing models="
 echo "${st}" | grep -qE 'skills(-core)?=' || die "status missing skills-core="
+echo "${st}" | grep -q 'agents=' || die "status missing agents="
+echo "${st}" | grep -q 'personas=' || die "status missing personas="
+echo "${st}" | grep -q 'roles=' || die "status missing roles="
 echo "${st}" | grep -q 'wrappers=' || die "status missing wrappers="
 info "status line OK"
 

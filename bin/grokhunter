@@ -15,11 +15,26 @@ else
 fi
 export GROKHUNTER_HOME="${GROKHUNTER_HOME:-$ROOT}"
 
-# Skill discovery (CORE + list) — single source
+# Discovery helpers (skills / agents / personas / roles)
 # shellcheck disable=SC1091
 if [[ -f "${GROKHUNTER_HOME}/lib/skills-discover.sh" ]]; then
   # shellcheck source=lib/skills-discover.sh
   source "${GROKHUNTER_HOME}/lib/skills-discover.sh"
+fi
+# shellcheck disable=SC1091
+if [[ -f "${GROKHUNTER_HOME}/lib/agents-discover.sh" ]]; then
+  # shellcheck source=lib/agents-discover.sh
+  source "${GROKHUNTER_HOME}/lib/agents-discover.sh"
+fi
+# shellcheck disable=SC1091
+if [[ -f "${GROKHUNTER_HOME}/lib/personas-discover.sh" ]]; then
+  # shellcheck source=lib/personas-discover.sh
+  source "${GROKHUNTER_HOME}/lib/personas-discover.sh"
+fi
+# shellcheck disable=SC1091
+if [[ -f "${GROKHUNTER_HOME}/lib/roles-discover.sh" ]]; then
+  # shellcheck source=lib/roles-discover.sh
+  source "${GROKHUNTER_HOME}/lib/roles-discover.sh"
 fi
 
 # Prefer repo bin/ when not installed to PATH (doctor/dev clone)
@@ -29,8 +44,53 @@ export PATH="${GROKHUNTER_HOME}/bin:${PATH}"
 if [[ -f "${GROKHUNTER_HOME}/VERSION" ]]; then
   VERSION="$(tr -d '[:space:]' < "${GROKHUNTER_HOME}/VERSION")"
 else
-  VERSION="${GROKHUNTER_VERSION:-1.0.4}"
+  VERSION="${GROKHUNTER_VERSION:-1.0.5}"
 fi
+
+_count_installed() {
+  # $1 = kind: agents|personas|roles
+  local kind="$1" n=0 name
+  case "${kind}" in
+    agents)
+      if declare -F _gh_list_agent_names >/dev/null 2>&1; then
+        while IFS= read -r name; do
+          [[ -n "${name}" ]] || continue
+          [[ -f "${HOME}/.grok/agents/${name}.md" ]] && n=$((n + 1))
+        done < <(_gh_list_agent_names "${GROKHUNTER_HOME}")
+      fi
+      ;;
+    personas)
+      if declare -F _gh_list_persona_names >/dev/null 2>&1; then
+        while IFS= read -r name; do
+          [[ -n "${name}" ]] || continue
+          [[ -f "${HOME}/.grok/personas/${name}.toml" ]] && n=$((n + 1))
+        done < <(_gh_list_persona_names "${GROKHUNTER_HOME}")
+      fi
+      ;;
+    roles)
+      if declare -F _gh_list_role_names >/dev/null 2>&1; then
+        while IFS= read -r name; do
+          [[ -n "${name}" ]] || continue
+          [[ -f "${HOME}/.grok/roles/${name}.toml" ]] && n=$((n + 1))
+        done < <(_gh_list_role_names "${GROKHUNTER_HOME}")
+      fi
+      ;;
+  esac
+  printf '%s\n' "${n}"
+}
+
+_resolve_grok_bin() {
+  local grok_bin="${HOME}/.grok/bin/grok"
+  if [[ -x "${grok_bin}" ]]; then
+    printf '%s\n' "${grok_bin}"
+    return 0
+  fi
+  if command -v grok >/dev/null 2>&1; then
+    command -v grok
+    return 0
+  fi
+  return 1
+}
 
 _grok_launcher() {
   local launcher="${HOME}/.local/bin/grok-nethunter"
@@ -64,24 +124,35 @@ Usage:
   grokhunter                  Interactive fullscreen TUI
   grokhunter status           Short status line (always exit 0)
   grokhunter doctor           Full health report
+  grokhunter setup [opts]     One-shot lab sync (ensure + skills + optional models)
   grokhunter ensure           Install/upgrade Grok Build binary
   grokhunter models [cmd]     V9 / 4.5 model pickers (install|status|force)
   grokhunter skills [cmd]     Install/status lab skills under ~/.grok/skills
+  grokhunter agents [cmd]     List/status Coding Team agents
+  grokhunter team [prompt]    Launch coding-team agent (TUI or -p headless)
+  grokhunter scout [prompt]   Launch scout agent
+  grokhunter review [prompt]  Launch review agent
+  grokhunter fix [prompt]     Launch fix agent
+  grokhunter desktop [prompt] Launch desktop (X11) agent
   grokhunter ai-smoke [prompt] SpaceXAI API smoke (scripts/spacexai_smoke.sh)
   grokhunter smoke [prompt]   Alias for ai-smoke
   grokhunter install [args]   Run / re-run installer (supports --overlay-only)
-  grokhunter plan <prompt>    Plan mode
+  grokhunter plan <prompt>    Plan mode (built-in plan agent)
   grokhunter -p <prompt>      Headless / one-shot
   grokhunter -- <grok args>   Pass-through to grok
   grokhunter help             This help
   grokhunter version          Print version
 
+setup options:
+  --force-grok     Reinstall Grok even if present
+  --with-models    Also install V9 /model pickers
+  --with-aider     Also run scripts/install_aider.sh
+  --no-doctor      Skip doctor at the end
+  --yes            Non-interactive (default for flags)
+
 Skills:
-  skills install   scans skills/*/SKILL.md → ~/.grok/skills
-  status skills-core=N/3  counts only the core coding trio
-                     (grokhunter, pair-programming, aider-grok)
-  optional skills (x11-desktop, nethunter-recon, …) appear under
-  "skills status" and doctor optional section only
+  skills install   skills + agents + personas + roles + wrappers
+  status skills-core=N/3  core trio only (grokhunter, pair-programming, aider-grok)
 
 Exit codes:
   0  success (status always 0; doctor PASS / PASS-with-warnings)
@@ -92,6 +163,8 @@ Aliases (after profile install):
   gh   → grokhunter
   ghn  → grok-nethunter
   ghd  → doctor
+  ghsu → setup
+  ght  → team
   ghp  → plan
   ghm  → models
   ghk  → skills
@@ -144,9 +217,197 @@ cmd_status() {
   if command -v grokhunter >/dev/null 2>&1 || [[ -x "${HOME}/.local/bin/grokhunter" ]]; then
     wrappers="yes"
   fi
-  # skills-core label (remote polish) + dynamic denominator from GH_CORE_SKILLS
-  printf "GrokHunter %s | %s | auth=%s | x11=%s | models=%s | skills-core=%s/%s | wrappers=%s | session=%s | home=%s\n" \
-    "$VERSION" "$gver" "$auth" "$x11" "$models" "$skills" "$core_n" "$wrappers" "$session" "$GROKHUNTER_HOME"
+  local agents personas roles
+  agents="$(_count_installed agents)"
+  personas="$(_count_installed personas)"
+  roles="$(_count_installed roles)"
+  printf "GrokHunter %s | %s | auth=%s | x11=%s | models=%s | skills-core=%s/%s | agents=%s | personas=%s | roles=%s | wrappers=%s | session=%s | home=%s\n" \
+    "$VERSION" "$gver" "$auth" "$x11" "$models" "$skills" "$core_n" \
+    "$agents" "$personas" "$roles" "$wrappers" "$session" "$GROKHUNTER_HOME"
+}
+
+# One-shot: ensure Grok → skills/agents/personas/roles → optional models/aider → doctor
+cmd_setup() {
+  local force_grok=0 with_models=0 with_aider=0 no_doctor=0
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --force-grok) force_grok=1; shift ;;
+      --with-models) with_models=1; shift ;;
+      --with-aider) with_aider=1; shift ;;
+      --no-doctor) no_doctor=1; shift ;;
+      --yes|-y) shift ;; # accepted for scripting symmetry
+      -h|--help)
+        cat <<'EOF'
+Usage: grokhunter setup [options]
+
+  One-shot lab sync for an existing clone / overlay:
+    1. grokhunter ensure   (Grok Build ≥ 1.0.0 + NetHunter profile)
+    2. grokhunter skills install
+    3. optional: models install / Aider install
+    4. grokhunter doctor   (unless --no-doctor)
+
+Options:
+  --force-grok     Reinstall Grok even if present
+  --with-models    Install V9 /model pickers
+  --with-aider     Run scripts/install_aider.sh
+  --no-doctor      Skip doctor summary
+  --yes            Non-interactive (default)
+EOF
+        return 0
+        ;;
+      *)
+        echo "Unknown setup option: $1" >&2
+        echo "Try: grokhunter setup --help" >&2
+        return 2
+        ;;
+    esac
+  done
+
+  echo "=== GrokHunter setup (v${VERSION}) ==="
+  echo "home: ${GROKHUNTER_HOME}"
+  echo
+
+  echo "→ [1/4] ensure Grok Build…"
+  if [[ "${force_grok}" -eq 1 ]]; then
+    cmd_ensure --force
+  else
+    cmd_ensure
+  fi
+  echo
+
+  echo "→ [2/4] skills + agents + personas + roles…"
+  cmd_skills_install
+  echo
+
+  if [[ "${with_models}" -eq 1 ]]; then
+    echo "→ [3/4] V9 model pickers…"
+    local script
+    if script="$(_v9_script)"; then
+      bash "${script}" || echo "  WARN: models install reported issues" >&2
+    else
+      echo "  WARN: install_v9_grok_models.sh missing" >&2
+    fi
+    echo
+  else
+    echo "→ [3/4] models skipped (pass --with-models)"
+    echo
+  fi
+
+  if [[ "${with_aider}" -eq 1 ]]; then
+    echo "→ Aider…"
+    local aider="${GROKHUNTER_HOME}/scripts/install_aider.sh"
+    if [[ -f "${aider}" ]]; then
+      bash "${aider}" || echo "  WARN: Aider install reported issues" >&2
+    else
+      echo "  WARN: scripts/install_aider.sh missing" >&2
+    fi
+    echo
+  fi
+
+  if [[ "${no_doctor}" -eq 0 ]]; then
+    echo "→ [4/4] doctor…"
+    local doc="${HOME}/.local/bin/grokhunter-doctor"
+    [[ -x "$doc" ]] || doc="${GROKHUNTER_HOME}/bin/grokhunter-doctor"
+    if [[ -f "${doc}" ]]; then
+      bash "${doc}" || true
+    else
+      echo "  doctor not found"
+    fi
+  else
+    echo "→ doctor skipped (--no-doctor)"
+  fi
+
+  echo
+  echo "=== setup complete ==="
+  cmd_status
+}
+
+cmd_agents_status() {
+  local name n=0
+  echo "agents dir: ${HOME}/.grok/agents"
+  echo "repo:       ${GROKHUNTER_HOME}/agents"
+  if ! declare -F _gh_list_agent_names >/dev/null 2>&1; then
+    echo "  error: agents-discover not loaded" >&2
+    return 1
+  fi
+  while IFS= read -r name; do
+    [[ -n "${name}" ]] || continue
+    if [[ -f "${HOME}/.grok/agents/${name}.md" ]]; then
+      echo "  installed: ${name}"
+      n=$((n + 1))
+    else
+      echo "  repo-only: ${name}  (run: grokhunter skills install)"
+    fi
+  done < <(_gh_list_agent_names "${GROKHUNTER_HOME}")
+  echo "installed: ${n}"
+  echo "launch:    grokhunter team | scout | review | fix | desktop"
+  echo "tui:       /config-agents"
+  [[ "${n}" -gt 0 ]]
+}
+
+cmd_agents() {
+  local sub="${1:-status}"
+  shift || true
+  case "${sub}" in
+    help|-h|--help)
+      cat <<'EOF'
+Usage: grokhunter agents [status|list|help]
+
+  status|list   Show installed vs repo Coding Team agents (default)
+  help          This help
+
+Install agents:  grokhunter skills install
+Launch:          grokhunter team | scout | review | fix | desktop
+EOF
+      return 0
+      ;;
+    status|list|--status)
+      cmd_agents_status
+      return $?
+      ;;
+    *)
+      echo "Unknown agents subcommand: ${sub}" >&2
+      echo "Usage: grokhunter agents [status|list|help]" >&2
+      return 2
+      ;;
+  esac
+}
+
+# Launch a named Grok Build agent. With args: headless -p; without: interactive TUI.
+cmd_agent_launch() {
+  local agent="$1"
+  shift || true
+  local grok_bin prompt
+  if ! grok_bin="$(_resolve_grok_bin)"; then
+    echo "grok not found — run: grokhunter ensure   (or: grokhunter setup)" >&2
+    return 127
+  fi
+  # Ensure agent file exists (best-effort install hint)
+  if [[ ! -f "${HOME}/.grok/agents/${agent}.md" ]] \
+     && [[ -f "${GROKHUNTER_HOME}/agents/${agent}.md" ]]; then
+    echo "WARN: agent '${agent}' not in ~/.grok/agents — run: grokhunter skills install" >&2
+  fi
+
+  if [[ $# -eq 0 ]]; then
+    # Interactive: fullscreen via grok-nethunter defaults when possible
+    if [[ -x "${HOME}/.local/bin/grok-nethunter" ]] || [[ -x "${GROKHUNTER_HOME}/bin/grok-nethunter" ]]; then
+      exec "$(_grok_launcher)" --agent "${agent}"
+    fi
+    exec "${grok_bin}" --agent "${agent}"
+  fi
+
+  prompt="$*"
+  case "${agent}" in
+    benjamin)
+      exec "${grok_bin}" --agent benjamin --permission-mode plan -p "${prompt}"
+      ;;
+    scout|review)
+      exec "${grok_bin}" --agent "${agent}" --permission-mode plan -p "${prompt}"
+      ;;
+    *)
+      exec "${grok_bin}" --agent "${agent}" -p "${prompt}"
+      ;;
+  esac
 }
 
 cmd_ensure() {
@@ -280,16 +541,11 @@ cmd_plan() {
     echo "Usage: grokhunter plan <prompt>" >&2
     exit 2
   fi
-  # Grok Build 1.0.0: built-in plan agent (read-only architect), headless -p
   export PATH="${HOME}/.grok/bin:${HOME}/.local/bin:${PATH}"
-  local grok_bin="${HOME}/.grok/bin/grok"
-  if [[ ! -x "${grok_bin}" ]]; then
-    if command -v grok >/dev/null 2>&1; then
-      grok_bin="$(command -v grok)"
-    else
-      echo "grok not found — run: grokhunter ensure" >&2
-      exit 127
-    fi
+  local grok_bin
+  if ! grok_bin="$(_resolve_grok_bin)"; then
+    echo "grok not found — run: grokhunter ensure" >&2
+    exit 127
   fi
   exec "${grok_bin}" --agent plan --permission-mode plan -p "${prompt}"
 }
@@ -376,6 +632,10 @@ main() {
       [[ -x "$doc" ]] || doc="${GROKHUNTER_HOME}/bin/grokhunter-doctor"
       exec bash "$doc"
       ;;
+    setup|sync|boot)
+      shift || true
+      cmd_setup "$@"
+      ;;
     ensure)
       shift || true
       cmd_ensure "${1:-}"
@@ -387,6 +647,18 @@ main() {
     skills)
       shift || true
       cmd_skills "$@"
+      ;;
+    agents)
+      shift || true
+      cmd_agents "$@"
+      ;;
+    team|coding-team)
+      shift || true
+      cmd_agent_launch coding-team "$@"
+      ;;
+    scout|benjamin|lucas|harper|review|fix|desktop)
+      shift || true
+      cmd_agent_launch "${sub}" "$@"
       ;;
     ai-smoke|smoke)
       shift || true
