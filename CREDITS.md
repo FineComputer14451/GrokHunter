@@ -67,11 +67,18 @@ Thank you to **jorexdeveloper** for building and maintaining rootless Linux-on-T
 
 | Surface | Attribution |
 |---------|-------------|
-| README | Credits section + links |
-| Website footer / Credits | Named credit to jorexdeveloper |
+| README | Credits section + top blurb + links |
+| Website | Hero blurb, Credits section, footer |
+| `grokhunter credits` | CLI attribution command |
+| `grokhunter doctor` | Credits section + engine cache line |
 | Installer (`install.sh`) | Header comment + engine URL |
 | Install banner | “Engine: jorexdeveloper/termux-distro” |
-| Architecture docs | Historical + supply-chain section |
+| Post-install complete | Thank-you + upstream URLs |
+| MOTD fragment | Engine credit line |
+| Kali menu | “Credits — jorexdeveloper” entry |
+| Architecture / FAQ / INSTALL | Upstream foundation |
+| Agents / skills | Do not claim affiliation; credit when discussing engine |
 | This file | Canonical credit statement |
+| GitHub About | Description mentions termux-nethunter lineage |
 
 If you fork GrokHunter, **please retain this CREDITS.md** and the README credits block.

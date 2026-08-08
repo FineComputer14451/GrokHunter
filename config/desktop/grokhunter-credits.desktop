@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Credits — jorexdeveloper
+GenericName=Upstream attribution
+Comment=Thank jorexdeveloper (termux-nethunter / termux-distro) — open CREDITS.md
+Exec=grokhunter-desktop-run credits
+Icon=help-about
+Terminal=true
+Categories=X-GrokHunter;
+Keywords=credits;jorexdeveloper;termux-nethunter;termux-distro;
+StartupNotify=false

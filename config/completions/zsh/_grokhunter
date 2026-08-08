@@ -28,6 +28,8 @@ _grokhunter() {
     'smoke:Alias for ai-smoke'
     'install:Run or re-run rootless installer'
     'plan:Plan a coding task'
+    'menu:Kali/XFCE Applications → GrokHunter submenu'
+    'credits:Upstream attribution (jorexdeveloper)'
     'help:Show help'
     'version:Print version'
   )
