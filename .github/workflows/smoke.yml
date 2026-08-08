@@ -18,13 +18,13 @@ jobs:
       - name: Syntax-check shell scripts
         run: |
           set -euo pipefail
+          # Same find shape as scripts/ci-unit.sh (avoid broken \( newline forms)
           mapfile -t files < <(
-            find . -type f \(
-              -name '*.sh' -o -path './bin/*' -o -path './scripts/*'
-            \) \
+            find . -type f \
+              \( -name '*.sh' -o -path './bin/*' -o -path './scripts/*' \) \
               ! -path './.git/*' \
               ! -name '*.md' \
-              | sort -u
+              2>/dev/null | sort -u
           )
           # Always include known entrypoints even if find misses
           extra=(
