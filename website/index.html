@@ -3,16 +3,18 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>GrokHunter — AI coding lab on unrooted Android</title>
+    <title>GrokHunter 1.0.3 — AI coding lab on unrooted Android</title>
     <meta
       name="description"
-      content="Kali NetHunter Rootless × Grok Build — AI coding & building lab for unrooted Android. No root required."
+      content="Kali NetHunter Rootless × Grok Build 1.0.0 — AI coding lab for unrooted Android. Agents, personas, roles, Aider, XFCE desktop. No root required."
     />
-    <meta property="og:title" content="GrokHunter" />
+    <meta property="og:title" content="GrokHunter 1.0.3" />
     <meta
       property="og:description"
-      content="Kali NetHunter Rootless × Grok Build — AI coding & building lab for unrooted Android."
+      content="Kali NetHunter Rootless × Grok Build 1.0.0 — AI coding lab for unrooted Android."
     />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#050506" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -36,11 +38,22 @@
         </a>
         <nav class="nav" aria-label="Primary">
           <a href="#features">Features</a>
+          <a href="#stack">Stack</a>
+          <a href="#agents">Agents</a>
           <a href="#install">Install</a>
           <a href="#cli">CLI</a>
-          <a href="#architecture">Architecture</a>
+          <a href="#upgrade">Upgrade</a>
+          <a href="#faq">FAQ</a>
         </nav>
         <div class="header-actions">
+          <a
+            class="btn btn-ghost"
+            href="https://github.com/FineComputer14451/GrokHunter/releases/tag/v1.0.3"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Release
+          </a>
           <a
             class="btn btn-ghost"
             href="https://github.com/FineComputer14451/GrokHunter"
@@ -65,13 +78,18 @@
       </div>
       <nav class="mobile-nav wrap" id="mobileNav" aria-label="Mobile">
         <a href="#features">Features</a>
+        <a href="#stack">Stack</a>
+        <a href="#agents">Agents</a>
         <a href="#install">Install</a>
         <a href="#cli">CLI</a>
+        <a href="#upgrade">Upgrade</a>
+        <a href="#faq">FAQ</a>
         <a href="#architecture">Architecture</a>
       </nav>
     </header>
 
     <main id="top">
+      <!-- HERO -->
       <section class="hero hero-wash">
         <div class="grid-fade" aria-hidden="true"></div>
         <div class="wrap hero-grid">
@@ -85,15 +103,16 @@
               </span>
               <span class="chip">No root required</span>
               <span class="chip">Grok Build 1.0.0</span>
-              <span class="chip">Coding & building</span>
+              <span class="chip">Agents · personas · roles</span>
             </div>
             <h1>
               Kali NetHunter Rootless
               <span class="accent">powered by Grok Build</span>
             </h1>
             <p class="lead">
-              Turn unrooted Android into an AI coding & building lab. Real Linux toolchains,
-              official Grok agent, and a low-latency desktop — one installer, no root.
+              Turn unrooted Android into a full AI coding lab. Real Linux toolchains, Grok Build 1.0.0
+              (TUI + headless), Coding Team multi-agents, Aider, and a low-latency desktop — one
+              installer, no root.
             </p>
             <div class="code-block">
               <div class="code-head">
@@ -112,6 +131,14 @@
               <a class="btn btn-primary" href="#install">Full install guide</a>
               <a
                 class="btn btn-ghost btn-lg"
+                href="https://github.com/FineComputer14451/GrokHunter/releases/tag/v1.0.3"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                v1.0.3 release
+              </a>
+              <a
+                class="btn btn-ghost btn-lg"
                 href="https://github.com/FineComputer14451/GrokHunter"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -120,8 +147,8 @@
               </a>
             </div>
             <p class="fineprint">
-              Not affiliated with xAI or Offensive Security. Aimed at coding, building, and
-              AI-assisted development.
+              Not affiliated with xAI or Offensive Security. Coding lab only — not for unauthorized
+              offensive activity.
             </p>
           </div>
 
@@ -131,12 +158,12 @@
                 <span class="dot r"></span>
                 <span class="dot y"></span>
                 <span class="dot g"></span>
-                <span class="terminal-title">install · rootless</span>
+                <span class="terminal-title">install · rootless · 1.0.3</span>
               </div>
               <button
                 type="button"
                 class="copy-btn"
-                data-copy="bash &lt;(curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/install.sh) --full --de xfce --browser chromium --with-grok --with-x11"
+                data-copy="bash &lt;(curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/install.sh) --full --de xfce --browser chromium --with-grok --with-x11 --with-aider --with-v9-models"
               >
                 Copy install
               </button>
@@ -146,13 +173,43 @@
         </div>
       </section>
 
+      <!-- STATS STRIP -->
+      <section class="stats-strip" aria-label="Product highlights">
+        <div class="wrap stats-grid">
+          <div class="stat">
+            <strong>1.0.3</strong>
+            <span>Product version</span>
+          </div>
+          <div class="stat">
+            <strong>1.0.0+</strong>
+            <span>Grok Build min</span>
+          </div>
+          <div class="stat">
+            <strong>8</strong>
+            <span>Runtime agents</span>
+          </div>
+          <div class="stat">
+            <strong>8</strong>
+            <span>Personas</span>
+          </div>
+          <div class="stat">
+            <strong>7</strong>
+            <span>Roles</span>
+          </div>
+          <div class="stat">
+            <strong>0</strong>
+            <span>Root required</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- WHY -->
       <section class="section alt" id="why">
         <div class="wrap">
           <p class="section-label">Why this stack</p>
           <h2>A real lab on your phone</h2>
           <p class="section-lead">
-            Perfect for learning languages, building tools, and mobile-first sessions with Grok as
-            your coding agent.
+            Learn languages, ship tools, and pair with Grok on device — without rooting Android.
           </p>
           <div class="table-wrap">
             <table>
@@ -176,12 +233,20 @@
                   <td>Grok Build 1.0.0 TUI + headless, agents, skills</td>
                 </tr>
                 <tr>
+                  <td>Multi-agent coding</td>
+                  <td>Coding Team: design → build → harden + specialists</td>
+                </tr>
+                <tr>
+                  <td>Git-native pair</td>
+                  <td>Aider via uv + managed Python 3.12 (works on Kali 3.13)</td>
+                </tr>
+                <tr>
                   <td>Desktop IDE feel</td>
-                  <td>XFCE + Termux:X11 (low latency)</td>
+                  <td>XFCE + Termux:X11 (<code>nh-x11</code>)</td>
                 </tr>
                 <tr>
                   <td>Portability</td>
-                  <td>Entire lab lives in Termux</td>
+                  <td>Entire lab lives under Termux</td>
                 </tr>
               </tbody>
             </table>
@@ -189,11 +254,14 @@
         </div>
       </section>
 
+      <!-- FEATURES -->
       <section class="section" id="features">
         <div class="wrap">
           <p class="section-label">Features</p>
           <h2>Everything for an on-device coding agent</h2>
-          <p class="section-lead">&nbsp;</p>
+          <p class="section-lead">
+            Overlay on official NetHunter — modular, idempotent, built for mobile pair sessions.
+          </p>
           <div class="feature-grid">
             <article class="card">
               <div class="card-icon">
@@ -204,21 +272,49 @@
               </div>
               <h3>Rootless first</h3>
               <p>
-                Termux + proot only. Stock Android, warranty intact — no Magisk, recovery, or
-                firmware modules.
+                Termux + proot only. Stock Android, warranty intact — no Magisk, recovery, or firmware
+                modules.
               </p>
             </article>
             <article class="card">
               <div class="card-icon">
                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z" />
-                  <path d="M5 19l.8 2.2L8 22l-2.2.8L5 25l-.8-2.2L2 22l2.2-.8L5 19z" />
                 </svg>
               </div>
-              <h3>Grok as on-device agent</h3>
+              <h3>Grok Build 1.0.0</h3>
               <p>
-                Official Grok Build 1.0.0 CLI with compact TUI, headless one-shots, Coding Team agents, and plan mode tuned
-                for mobile.
+                Official CLI with fullscreen TUI, headless <code>-p</code>, plan agent, skills, and
+                stable channel defaults via NetHunter profile.
+              </p>
+            </article>
+            <article class="card">
+              <div class="card-icon">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="5" r="2" />
+                  <circle cx="5" cy="19" r="2" />
+                  <circle cx="19" cy="19" r="2" />
+                  <line x1="12" y1="7" x2="5" y2="17" />
+                  <line x1="12" y1="7" x2="19" y2="17" />
+                </svg>
+              </div>
+              <h3>Coding Team agents</h3>
+              <p>
+                Benjamin · Lucas · Harper orchestrated with scout, review, fix, and desktop
+                specialists for Design → Build → Harden.
+              </p>
+            </article>
+            <article class="card">
+              <div class="card-icon">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                </svg>
+              </div>
+              <h3>Personas & roles</h3>
+              <p>
+                Tone overlays (mobile, design-card, …) and capability roles (architect, builder, …)
+                for Grok Build 1.0.0 subagent resolution.
               </p>
             </article>
             <article class="card">
@@ -226,14 +322,6 @@
                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <rect x="4" y="4" width="16" height="16" rx="2" />
                   <rect x="9" y="9" width="6" height="6" />
-                  <line x1="9" y1="1" x2="9" y2="4" />
-                  <line x1="15" y1="1" x2="15" y2="4" />
-                  <line x1="9" y1="20" x2="9" y2="23" />
-                  <line x1="15" y1="20" x2="15" y2="23" />
-                  <line x1="20" y1="9" x2="23" y2="9" />
-                  <line x1="20" y1="14" x2="23" y2="14" />
-                  <line x1="1" y1="9" x2="4" y2="9" />
-                  <line x1="1" y1="14" x2="4" y2="14" />
                 </svg>
               </div>
               <h3>Real Linux toolchains</h3>
@@ -249,8 +337,21 @@
               </div>
               <h3>Desktop via Termux:X11</h3>
               <p>
-                XFCE + low-latency nh-x11 helper for editors and browsers that feel like a mini
-                workstation.
+                XFCE + low-latency <code>nh-x11</code> helper for editors and browsers that feel like a
+                mini workstation.
+              </p>
+            </article>
+            <article class="card">
+              <div class="card-icon">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="16 18 22 12 16 6" />
+                  <polyline points="8 6 2 12 8 18" />
+                </svg>
+              </div>
+              <h3>Aider + xAI</h3>
+              <p>
+                <code>aider-grok</code> with secrets.env and grok-4.5. Installer uses uv + managed
+                Python 3.12 so Kali 3.13 does not break Aider.
               </p>
             </article>
             <article class="card">
@@ -261,8 +362,8 @@
               </div>
               <h3>Doctor & status</h3>
               <p>
-                grokhunter doctor checks binary, PATH, secrets, DNS, and NetHunter packages in one
-                report.
+                <code>grokhunter doctor</code> checks binary, profile, skills, agents, personas,
+                roles, PATH, secrets, and lab readiness.
               </p>
             </article>
             <article class="card">
@@ -275,21 +376,211 @@
               </div>
               <h3>Overlay, not a fork</h3>
               <p>
-                Sits on top of the official NetHunter rootfs. Idempotent install, clean uninstall,
-                modular lib/.
+                Sits on the official NetHunter rootfs. Idempotent install, clean uninstall, modular
+                <code>lib/</code>.
               </p>
             </article>
           </div>
         </div>
       </section>
 
-      <section class="section alt" id="install">
+      <!-- STACK -->
+      <section class="section alt" id="stack">
+        <div class="wrap">
+          <p class="section-label">Stack</p>
+          <h2>Four layers under ~/.grok</h2>
+          <p class="section-lead">
+            Install once with <code>grokhunter skills install</code> — skills, agents, personas, and
+            roles land where Grok Build 1.0.0 discovers them.
+          </p>
+          <div class="stack-grid">
+            <article class="stack-card">
+              <span class="stack-kicker">Skills</span>
+              <h3>~/.grok/skills</h3>
+              <p>Lab playbooks: grokhunter, pair-programming, aider-grok, x11-desktop, nethunter-recon.</p>
+              <code>skills-core=3/3</code>
+            </article>
+            <article class="stack-card">
+              <span class="stack-kicker">Agents</span>
+              <h3>~/.grok/agents</h3>
+              <p>Session types for /config-agents and spawn — Coding Team + specialists.</p>
+              <code>8 user agents</code>
+            </article>
+            <article class="stack-card">
+              <span class="stack-kicker">Personas</span>
+              <h3>~/.grok/personas</h3>
+              <p>Tone and card contracts: mobile, concise, design-card, build-card, harden-card, …</p>
+              <code>8 personas</code>
+            </article>
+            <article class="stack-card">
+              <span class="stack-kicker">Roles</span>
+              <h3>~/.grok/roles</h3>
+              <p>Capability defaults: architect, builder, reliability, mapper, surgical, …</p>
+              <code>7 roles</code>
+            </article>
+          </div>
+          <div class="callout">
+            <strong>Mental model</strong>
+            <pre class="inline-pre">agent  = who            (benjamin, lucas, scout, …)
+role   = capabilities   (architect, builder, mapper, …)
+persona = tone / cards  (mobile, design-card, concise, …)</pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- AGENTS -->
+      <section class="section" id="agents">
+        <div class="wrap">
+          <p class="section-label">Agents</p>
+          <h2>Coding Team + lab specialists</h2>
+          <p class="section-lead">
+            Runtime Grok Build agents — pick in <code>/config-agents</code> or spawn by name.
+          </p>
+
+          <h3 class="subhead">Core loop</h3>
+          <div class="flow">
+            <div class="flow-step"><span>1</span>scout (optional map)</div>
+            <div class="flow-arrow" aria-hidden="true">→</div>
+            <div class="flow-step"><span>2</span>benjamin design</div>
+            <div class="flow-arrow" aria-hidden="true">→</div>
+            <div class="flow-step"><span>3</span>lucas / fix build</div>
+            <div class="flow-arrow" aria-hidden="true">→</div>
+            <div class="flow-step"><span>4</span>harper harden</div>
+            <div class="flow-arrow" aria-hidden="true">→</div>
+            <div class="flow-step"><span>5</span>review (optional)</div>
+          </div>
+
+          <div class="table-wrap table-tight">
+            <table>
+              <thead>
+                <tr>
+                  <th>Agent</th>
+                  <th>Mode</th>
+                  <th>Role</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>coding-team</code></td>
+                  <td>full</td>
+                  <td>Orchestrator — Design → Build → Harden</td>
+                </tr>
+                <tr>
+                  <td><code>benjamin</code></td>
+                  <td>plan / read-only</td>
+                  <td>Senior architect, security, mobile constraints</td>
+                </tr>
+                <tr>
+                  <td><code>lucas</code></td>
+                  <td>full</td>
+                  <td>Rapid builder — small shippable increments</td>
+                </tr>
+                <tr>
+                  <td><code>harper</code></td>
+                  <td>full</td>
+                  <td>Reliability — tests, edge cases, harden cards</td>
+                </tr>
+                <tr>
+                  <td><code>scout</code></td>
+                  <td>read-only</td>
+                  <td>Fast codebase / install-flow map</td>
+                </tr>
+                <tr>
+                  <td><code>review</code></td>
+                  <td>read-only</td>
+                  <td>Diff / change review</td>
+                </tr>
+                <tr>
+                  <td><code>fix</code></td>
+                  <td>full</td>
+                  <td>Surgical one-bug patches</td>
+                </tr>
+                <tr>
+                  <td><code>desktop</code></td>
+                  <td>full</td>
+                  <td>Termux:X11 / nh-x11 / proot binds</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="code-block" style="margin-top: 1.5rem">
+            <div class="code-head">
+              <span class="code-label">Try headless</span>
+              <button
+                type="button"
+                class="copy-btn"
+                data-copy="grok --agent scout -p &quot;Map install_aider&quot;\ngrok --agent coding-team\ngrokhunter plan &quot;Design overlay-only repair&quot;"
+              >
+                Copy
+              </button>
+            </div>
+            <pre><code>grok --agent scout -p "Map install_aider"
+grok --agent coding-team
+grokhunter plan "Design overlay-only repair"</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- PERSONAS / ROLES -->
+      <section class="section alt" id="personas">
+        <div class="wrap">
+          <p class="section-label">Personas & roles</p>
+          <h2>Overlays for tone and capability</h2>
+          <p class="section-lead">
+            Personas inject behavioral reminders; roles set capability mode and reasoning effort.
+            Manage in TUI via <code>/personas</code> and <code>/config-agents</code>.
+          </p>
+          <div class="two-col">
+            <div class="table-wrap table-tight">
+              <table>
+                <thead>
+                  <tr>
+                    <th colspan="2">Personas</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td><code>mobile</code></td><td>NetHunter / Termux constraints</td></tr>
+                  <tr><td><code>concise</code></td><td>Short, scannable output</td></tr>
+                  <tr><td><code>shell-first</code></td><td>Scripts & lab tooling bias</td></tr>
+                  <tr><td><code>pair</code></td><td>Pair-programming tone</td></tr>
+                  <tr><td><code>security-lab</code></td><td>Secrets & installer safety</td></tr>
+                  <tr><td><code>design-card</code></td><td>Benjamin-style design card</td></tr>
+                  <tr><td><code>build-card</code></td><td>Lucas-style build card</td></tr>
+                  <tr><td><code>harden-card</code></td><td>Harper-style harden card</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-wrap table-tight">
+              <table>
+                <thead>
+                  <tr>
+                    <th colspan="2">Roles</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td><code>architect</code></td><td>read-only · high effort</td></tr>
+                  <tr><td><code>builder</code></td><td>full · medium</td></tr>
+                  <tr><td><code>reliability</code></td><td>full · high</td></tr>
+                  <tr><td><code>mapper</code></td><td>read-only · medium</td></tr>
+                  <tr><td><code>code-review</code></td><td>full · high</td></tr>
+                  <tr><td><code>surgical</code></td><td>full · medium</td></tr>
+                  <tr><td><code>x11-desktop</code></td><td>full · medium</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- INSTALL -->
+      <section class="section" id="install">
         <div class="wrap">
           <p class="section-label">Install</p>
           <h2>One command, modular stack</h2>
           <p class="section-lead">
-            Requires Termux from F-Droid or GitHub, Android 8+, aarch64 recommended, and SuperGrok /
-            X Premium+ or an XAI_API_KEY for Grok Build.
+            Requires Termux from F-Droid or GitHub (not Play Store), Android 8+, aarch64 recommended,
+            and SuperGrok / X Premium+ or an <code>XAI_API_KEY</code> for Grok Build.
           </p>
           <div class="install-grid">
             <div>
@@ -318,30 +609,47 @@
                   <button
                     type="button"
                     class="copy-btn"
-                    data-copy="bash install.sh --full --de xfce --browser chromium --with-grok --with-x11"
+                    data-copy="bash install.sh --full --de xfce --browser chromium --with-grok --with-x11 --with-aider --with-v9-models --with-completions"
                   >
                     Copy
                   </button>
                 </div>
-                <pre><code>bash install.sh --full --de xfce --browser chromium --with-grok --with-x11</code></pre>
+                <pre><code>bash install.sh --full --de xfce --browser chromium \
+  --with-grok --with-x11 --with-aider --with-v9-models</code></pre>
               </div>
               <div class="install-block">
                 <div class="code-head">
                   <div>
                     <span class="step">03</span>
-                    <span class="title">Or clone</span>
+                    <span class="title">Clone (audit-friendly)</span>
                   </div>
                   <button
                     type="button"
                     class="copy-btn"
-                    data-copy="git clone https://github.com/FineComputer14451/GrokHunter.git\ncd GrokHunter\nbash install.sh"
+                    data-copy="git clone https://github.com/FineComputer14451/GrokHunter.git\ncd GrokHunter\nbash install.sh --full --de xfce --with-grok --with-x11"
                   >
                     Copy
                   </button>
                 </div>
                 <pre><code>git clone https://github.com/FineComputer14451/GrokHunter.git
 cd GrokHunter
-bash install.sh</code></pre>
+bash install.sh --full --de xfce --with-grok --with-x11</code></pre>
+              </div>
+              <div class="install-block">
+                <div class="code-head">
+                  <div>
+                    <span class="step">04</span>
+                    <span class="title">Overlay-only (no rootfs re-download)</span>
+                  </div>
+                  <button
+                    type="button"
+                    class="copy-btn"
+                    data-copy="bash install.sh --overlay-only --with-grok --with-x11 --with-aider --with-v9-models"
+                  >
+                    Copy
+                  </button>
+                </div>
+                <pre><code>bash install.sh --overlay-only --with-grok --with-x11 --with-aider</code></pre>
               </div>
             </div>
             <div class="install-panel">
@@ -350,12 +658,14 @@ bash install.sh</code></pre>
                 <li><code>-f, --full</code><span>Full installation (includes desktop)</span></li>
                 <li><code>-m, --mini</code><span>Mini (essential packages)</span></li>
                 <li><code>-n, --nano</code><span>Nano (minimal footprint)</span></li>
-                <li><code>--de <desktop></code><span>e17 | gnome | i3 | kde | lxde | mate | xfce</span></li>
-                <li><code>--browser <name></code><span>chromium | firefox | both</span></li>
-                <li><code>--with-grok</code><span>Install native Grok Build CLI</span></li>
-                <li><code>--with-x11</code><span>Install Termux:X11 + nh-x11 helper</span></li>
-                <li><code>--with-aider / --with-v9-models</code><span>Aider helper + model pickers</span></li>
-                <li><code>--overlay-only</code><span>Optional overlays only (no rootfs re-download)</span></li>
+                <li><code>--de &lt;desktop&gt;</code><span>e17 | gnome | i3 | kde | lxde | mate | xfce</span></li>
+                <li><code>--browser &lt;name&gt;</code><span>chromium | firefox | both</span></li>
+                <li><code>--with-grok</code><span>Grok Build ≥ 1.0.0 + profile</span></li>
+                <li><code>--with-x11</code><span>Termux:X11 + nh-x11 helper</span></li>
+                <li><code>--with-aider</code><span>Aider (uv + Python 3.12)</span></li>
+                <li><code>--with-v9-models</code><span>/model chat-expert · multi · auto</span></li>
+                <li><code>--with-completions</code><span>Shell completions + profile</span></li>
+                <li><code>--overlay-only</code><span>Overlays only (no rootfs download)</span></li>
                 <li><code>--no-de / --no-grok / --no-x11</code><span>Skip those stages</span></li>
               </ul>
               <div class="after-box">
@@ -365,7 +675,8 @@ bash install.sh</code></pre>
                   <li><span class="accent">nh-x11</span> — low-latency desktop</li>
                   <li><span class="accent">grok</span> — Grok Build TUI</li>
                   <li><span class="accent">grokhunter doctor</span> — health report</li>
-                  <li><span class="accent">grokhunter models</span> — V9 / 4.5 pickers</li>
+                  <li><span class="accent">grokhunter skills install</span> — agents · personas · roles</li>
+                  <li><span class="accent">aider-grok</span> — git-native pair</li>
                 </ul>
               </div>
             </div>
@@ -373,29 +684,84 @@ bash install.sh</code></pre>
         </div>
       </section>
 
-      <section class="section" id="cli">
+      <!-- CLI -->
+      <section class="section alt" id="cli">
         <div class="wrap">
           <p class="section-label">CLI</p>
           <h2>grokhunter commands</h2>
           <p class="section-lead">
-            Also: <code style="color: var(--accent)">grok-nethunter</code> fullscreen launcher
+            Also: <code class="inline-code">grok-nethunter</code> fullscreen launcher ·
+            <code class="inline-code">grok</code> native TUI · aliases via profile (<code>gh</code>,
+            <code>ghd</code>, <code>ghp</code>, …)
           </p>
           <div class="cli-list">
-            <div class="cli-row"><code>grokhunter</code><span>Interactive TUI</span></div>
+            <div class="cli-row"><code>grokhunter</code><span>Interactive fullscreen TUI</span></div>
             <div class="cli-row"><code>grokhunter status</code><span>Short status line</span></div>
             <div class="cli-row"><code>grokhunter doctor</code><span>Full health report</span></div>
             <div class="cli-row"><code>grokhunter ensure</code><span>Grok Build ≥ 1.0.0 + NetHunter profile</span></div>
-            <div class="cli-row"><code>grokhunter skills install</code><span>Skills, agents, personas, roles</span></div>
-            <div class="cli-row"><code>grokhunter models</code><span>V9 / 4.5 model pickers (install|status)</span></div>
+            <div class="cli-row"><code>grokhunter skills install</code><span>Skills, agents, personas, roles + wrappers</span></div>
+            <div class="cli-row"><code>grokhunter skills status</code><span>Installed vs repo skills</span></div>
+            <div class="cli-row"><code>grokhunter models install</code><span>V9 / 4.5 model pickers</span></div>
+            <div class="cli-row"><code>grokhunter models status</code><span>Picker surface status</span></div>
             <div class="cli-row"><code>grokhunter ai-smoke</code><span>SpaceXAI API smoke test</span></div>
             <div class="cli-row"><code>grokhunter install [args]</code><span>Installer (supports --overlay-only)</span></div>
-            <div class="cli-row"><code>grokhunter plan "…"</code><span>Plan a coding task</span></div>
+            <div class="cli-row"><code>grokhunter plan "…"</code><span>Built-in plan agent (1.0.0)</span></div>
             <div class="cli-row"><code>grokhunter -p "…"</code><span>Headless one-shot</span></div>
+            <div class="cli-row"><code>bash scripts/install_aider.sh</code><span>Repair Aider (uv + 3.12)</span></div>
             <div class="cli-row"><code>bash scripts/ci-unit.sh</code><span>Local unit checks</span></div>
           </div>
         </div>
       </section>
 
+      <!-- UPGRADE -->
+      <section class="section" id="upgrade">
+        <div class="wrap">
+          <p class="section-label">Upgrade to 1.0.3</p>
+          <h2>From an existing lab</h2>
+          <p class="section-lead">
+            Already installed? Pull, ensure Grok Build 1.0.0+, refresh the four discovery layers.
+          </p>
+          <div class="code-block">
+            <div class="code-head">
+              <span class="code-label">Paste-ready</span>
+              <button
+                type="button"
+                class="copy-btn"
+                data-copy="cd ~/GrokHunter && git pull\ngrokhunter ensure\ngrokhunter skills install\ngrokhunter models install\ngrokhunter doctor"
+              >
+                Copy
+              </button>
+            </div>
+            <pre><code>cd ~/GrokHunter && git pull
+grokhunter ensure              # binary ≥ 1.0.0 + profile
+grokhunter skills install      # skills · agents · personas · roles
+grokhunter models install      # optional /model aliases
+grokhunter doctor</code></pre>
+          </div>
+          <div class="mini-grid">
+            <div class="mini-card">
+              <strong>Release</strong>
+              <p>
+                <a href="https://github.com/FineComputer14451/GrokHunter/releases/tag/v1.0.3" target="_blank" rel="noopener noreferrer">v1.0.3 on GitHub</a>
+              </p>
+            </div>
+            <div class="mini-card">
+              <strong>Grok Build docs</strong>
+              <p>
+                <a href="https://github.com/FineComputer14451/GrokHunter/blob/main/docs/GROK-BUILD-1.0.md" target="_blank" rel="noopener noreferrer">GROK-BUILD-1.0.md</a>
+              </p>
+            </div>
+            <div class="mini-card">
+              <strong>Coding Team</strong>
+              <p>
+                <a href="https://github.com/FineComputer14451/GrokHunter/blob/main/docs/CODING-TEAM.md" target="_blank" rel="noopener noreferrer">CODING-TEAM.md</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ARCHITECTURE -->
       <section class="section alt" id="architecture">
         <div class="wrap">
           <p class="section-label">Architecture</p>
@@ -419,7 +785,10 @@ bash install.sh</code></pre>
             </div>
             <div class="arch-layer" style="padding-left: 36px">
               <div class="arch-num">4</div>
-              <div class="arch-card"><strong>GrokHunter overlay</strong><span>Grok CLI · nh-x11 · doctor · skills</span></div>
+              <div class="arch-card">
+                <strong>GrokHunter overlay</strong>
+                <span>Grok CLI · agents · personas · roles · nh-x11 · doctor · skills</span>
+              </div>
             </div>
           </div>
           <div class="mini-grid">
@@ -450,14 +819,68 @@ bash install.sh</code></pre>
         </div>
       </section>
 
-      <section class="section">
+      <!-- FAQ -->
+      <section class="section" id="faq">
+        <div class="wrap">
+          <p class="section-label">FAQ</p>
+          <h2>Common questions</h2>
+          <div class="faq" id="faqList">
+            <details class="faq-item">
+              <summary>Do I need root?</summary>
+              <p>No. GrokHunter is rootless Termux + proot only. Use Termux from F-Droid or GitHub — not the Play Store.</p>
+            </details>
+            <details class="faq-item">
+              <summary>Which Grok Build version?</summary>
+              <p>
+                GrokHunter 1.0.3 targets <strong>Grok Build 1.0.0+</strong> (stable). Run
+                <code>grokhunter ensure</code> to upgrade and apply the NetHunter profile.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>How do I auth Grok?</summary>
+              <p>
+                SuperGrok / X Premium+ login via <code>grok</code>, or put
+                <code>XAI_API_KEY</code> in <code>~/.grok/secrets.env</code> (mode 600). Never commit
+                secrets.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>Aider failed on Kali Python 3.13?</summary>
+              <p>
+                Expected with plain pip. Use
+                <code>bash scripts/install_aider.sh</code> — uv installs managed Python 3.12 +
+                aider-chat. Then <code>aider-grok</code>.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>Black screen on nh-x11?</summary>
+              <p>
+                Try <code>NH_X11_LEGACY=1 nh-x11</code>, install the Termux:X11 APK (sharedUid with
+                GitHub Termux), and see docs/X11-PERFORMANCE.md. Or spawn the <code>desktop</code>
+                agent.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>Is this for penetration testing?</summary>
+              <p>
+                The product focus is a <strong>coding lab</strong>. Optional
+                <code>nethunter-recon</code> skill is scoped for authorized lab/CTF only — not default.
+              </p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section class="section alt">
         <div class="wrap">
           <div class="cta-band hero-wash">
             <div class="cta-band-inner">
               <div>
                 <h2>Ship code from your pocket</h2>
                 <p>
-                  Clone the repo, run the installer, open Grok. Your mobile AI coding lab is ready.
+                  Clone the repo, run the installer, open Grok. Coding Team, Aider, and a full Linux
+                  toolchain — ready on unrooted Android.
                 </p>
               </div>
               <div class="cta-row" style="margin: 0">
@@ -467,6 +890,13 @@ bash install.sh</code></pre>
                   target="_blank"
                   rel="noopener noreferrer"
                   >FineComputer14451/GrokHunter</a
+                >
+                <a
+                  class="btn btn-ghost btn-lg"
+                  href="https://github.com/FineComputer14451/GrokHunter/releases/tag/v1.0.3"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >v1.0.3 release</a
                 >
                 <a class="btn btn-ghost btn-lg" href="#install">Install commands</a>
               </div>
@@ -480,11 +910,13 @@ bash install.sh</code></pre>
       <div class="wrap footer-inner">
         <div>
           <strong>GrokHunter Rootless © 2026 FineComputer14451</strong>
-          <div>GPL-3.0 · Credits: termux-nethunter, Grok Build, Termux:X11</div>
+          <div>GPL-3.0 · Credits: termux-nethunter, Grok Build, Termux:X11 · v1.0.3</div>
         </div>
         <div class="footer-links">
-          <a href="https://github.com/FineComputer14451/GrokHunter/blob/main/docs/INSTALL.md" target="_blank" rel="noopener noreferrer">Docs</a>
+          <a href="https://github.com/FineComputer14451/GrokHunter/blob/main/docs/INSTALL.md" target="_blank" rel="noopener noreferrer">Install docs</a>
+          <a href="https://github.com/FineComputer14451/GrokHunter/blob/main/docs/CODING-TEAM.md" target="_blank" rel="noopener noreferrer">Coding Team</a>
           <a href="https://github.com/FineComputer14451/GrokHunter/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">Changelog</a>
+          <a href="https://github.com/FineComputer14451/GrokHunter/releases/tag/v1.0.3" target="_blank" rel="noopener noreferrer">Release</a>
           <a href="https://github.com/FineComputer14451/GrokHunter" target="_blank" rel="noopener noreferrer">GitHub</a>
         </div>
       </div>
