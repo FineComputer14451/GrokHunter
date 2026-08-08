@@ -10,6 +10,8 @@ fi
 BIN_DIR="${HOME}/.local/bin"
 SKILLS_DIR="${HOME}/.grok/skills"
 AGENTS_DIR="${HOME}/.grok/agents"
+PERSONAS_DIR="${HOME}/.grok/personas"
+ROLES_DIR="${HOME}/.grok/roles"
 MARKER_BEGIN="# >>> grokhunter >>>"
 MARKER_END="# <<< grokhunter <<<"
 
@@ -24,6 +26,16 @@ fi
 if [[ -f "${_GH_ROOT}/lib/agents-discover.sh" ]]; then
   # shellcheck source=lib/agents-discover.sh
   source "${_GH_ROOT}/lib/agents-discover.sh"
+fi
+# shellcheck disable=SC1091
+if [[ -f "${_GH_ROOT}/lib/personas-discover.sh" ]]; then
+  # shellcheck source=lib/personas-discover.sh
+  source "${_GH_ROOT}/lib/personas-discover.sh"
+fi
+# shellcheck disable=SC1091
+if [[ -f "${_GH_ROOT}/lib/roles-discover.sh" ]]; then
+  # shellcheck source=lib/roles-discover.sh
+  source "${_GH_ROOT}/lib/roles-discover.sh"
 fi
 
 log() { printf '[+] %s\n' "$*"; }
@@ -85,6 +97,44 @@ remove_agents() {
       log "Removed agent ${name}"
     fi
   done < <(_gh_list_agent_names "${_GH_ROOT}")
+}
+
+remove_personas() {
+  local name
+  if [[ ! -d "${_GH_ROOT}/personas" ]]; then
+    warn "No personas/ next to uninstall.sh — leaving ~/.grok/personas unchanged"
+    return 0
+  fi
+  if ! declare -F _gh_list_persona_names >/dev/null 2>&1; then
+    warn "persona discovery missing — leaving ~/.grok/personas unchanged"
+    return 0
+  fi
+  while IFS= read -r name; do
+    [[ -n "${name}" ]] || continue
+    if [[ -f "${PERSONAS_DIR}/${name}.toml" ]]; then
+      rm -f "${PERSONAS_DIR}/${name}.toml"
+      log "Removed persona ${name}"
+    fi
+  done < <(_gh_list_persona_names "${_GH_ROOT}")
+}
+
+remove_roles() {
+  local name
+  if [[ ! -d "${_GH_ROOT}/roles" ]]; then
+    warn "No roles/ next to uninstall.sh — leaving ~/.grok/roles unchanged"
+    return 0
+  fi
+  if ! declare -F _gh_list_role_names >/dev/null 2>&1; then
+    warn "role discovery missing — leaving ~/.grok/roles unchanged"
+    return 0
+  fi
+  while IFS= read -r name; do
+    [[ -n "${name}" ]] || continue
+    if [[ -f "${ROLES_DIR}/${name}.toml" ]]; then
+      rm -f "${ROLES_DIR}/${name}.toml"
+      log "Removed role ${name}"
+    fi
+  done < <(_gh_list_role_names "${_GH_ROOT}")
 }
 
 strip_shell() {
@@ -165,6 +215,8 @@ main() {
   remove_bins
   remove_skills
   remove_agents
+  remove_personas
+  remove_roles
   strip_shell
   remove_motd
   remove_meta

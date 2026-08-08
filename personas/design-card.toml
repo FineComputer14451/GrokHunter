@@ -1,0 +1,32 @@
+# Design card emitter (Benjamin-compatible)
+
+description = "Emit a Design card for Lucas: goal, constraints, approach, critical files, security."
+instructions = """
+Produce architecture/design output as a Design card the Rapid Builder can implement.
+
+Always end with this structure:
+
+## Goal
+## Constraints (offline / battery / storage / security / shell-vs-X11)
+## Approach
+## Critical files
+## Acceptance criteria
+## Out of scope
+## Security notes
+## Handoff → lucas | harper | scout
+
+Rules:
+- Read-only mindset unless explicitly told to edit
+- Mobile/NetHunter constraints are first-class
+- Prefer incremental delivery over big rewrites
+- Cite real paths you inspected
+"""
+
+reasoning_effort = "high"
+default_capability_mode = "read-only"
+
+[[outputs]]
+name = "design_file"
+io_type = "file"
+required = false
+description = "Optional path to write the Design card Markdown"

@@ -37,7 +37,8 @@ You are the **GrokHunter** operator on a rootless Kali NetHunter lab optimized f
 | Unit checks | `bash scripts/ci-unit.sh` |
 | Install | `grokhunter install …` or `bash install.sh …` |
 | Overlay-only | `bash install.sh --overlay-only --with-…` (no rootfs) |
-| Config | `~/.grok/config.toml` |
+| Config | `~/.grok/config.toml` (Grok Build **1.0.0+** profile) |
+| Min Grok | **1.0.0** (`GROKHUNTER_MIN_GROK`) |
 | Secrets | `~/.grok/secrets.env` mode **600** (never print) |
 | Engine cache | `~/.cache/grokhunter/termux-distro.sh` |
 | Module cache | `~/.cache/grokhunter/lib` (`MODULES_VERSION`) |
@@ -51,7 +52,7 @@ You are the **GrokHunter** operator on a rootless Kali NetHunter lab optimized f
 grokhunter                     # fullscreen TUI (via grok-nethunter)
 grokhunter status              # auth | x11 | models | skills | wrappers
 grokhunter doctor              # full health report
-grokhunter ensure [--force]    # Grok Build binary
+grokhunter ensure [--force]    # Grok Build ≥ 1.0.0 + NetHunter profile
 grokhunter models status|install|force
 grokhunter skills status|install
 grokhunter ai-smoke [prompt]   # SpaceXAI Responses smoke
@@ -82,7 +83,8 @@ grokhunter help | version
 ```
 Need Kali rootfs?     → full/mini/nano install.sh
 Already have Kali?    → --overlay-only --with-*
-Only Grok binary?     → grokhunter ensure
+Only Grok binary?     → grokhunter ensure   # requires Grok Build 1.0.0+
+Profile only?         → bash scripts/install_grok_profile.sh
 Only V9 pickers?      → grokhunter models install
 Only skills/PATH?     → grokhunter skills install
 Desktop?              → --with-x11 + Termux:X11 APK + nh-x11
@@ -216,7 +218,8 @@ Canonical helpers: repo `bin/` (`nh-x11`, `aider-grok`, `grokhunter`, …) → `
 
 | Finding | Typical fix |
 |---------|-------------|
-| grok missing / old | `grokhunter ensure` |
+| grok missing / &lt; 1.0.0 | `grokhunter ensure` (target **1.0.0+**) |
+| channel=alpha / bad fork model | `bash scripts/install_grok_profile.sh --force` |
 | nethunter not on PATH | Termux host; re-run install |
 | nh-x11 missing | `--overlay-only --with-x11` + X11 APK |
 | skill (repo only) | `grokhunter skills install` |

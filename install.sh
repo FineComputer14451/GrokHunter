@@ -32,7 +32,7 @@ die_with_help() {
 REPO_RAW="https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main"
 REPO_TAR="https://github.com/FineComputer14451/GrokHunter/archive/refs/heads/main.tar.gz"
 MODULES=(cli.sh actions.sh grok.sh x11.sh)
-MODULES_VERSION="2026.2.10"
+MODULES_VERSION="2026.2.11"
 
 CLEANUP_TMP=""
 WAKE_HELD=0
@@ -191,7 +191,7 @@ DISTRO_NAME="Kali NetHunter"
 PROGRAM_NAME="install.sh"
 DISTRO_REPOSITORY=termux-nethunter
 KERNEL_RELEASE=$(uname -r 2>/dev/null || echo unknown)
-VERSION_NAME="GrokHunter-Rootless-2026.2"
+VERSION_NAME="GrokHunter-Rootless-2026.2.11"
 SHASUM_CMD=sha256sum
 
 # Offline / air-gapped fallbacks (live SHA from Kali /current/ is preferred).

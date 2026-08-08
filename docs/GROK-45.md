@@ -1,6 +1,8 @@
 # Grok 4.5 profile — GrokHunter Rootless
 
-This lab is tuned for **Grok 4.5** as the primary pair-programming intelligence.
+This lab is tuned for **Grok 4.5** as the primary pair-programming intelligence on **Grok Build 1.0.0+** (stable).
+
+See also: [GROK-BUILD-1.0.md](GROK-BUILD-1.0.md) for binary/profile upgrade steps.
 
 ## What “optimized for Grok 4.5” means here
 
@@ -16,9 +18,11 @@ This lab is tuned for **Grok 4.5** as the primary pair-programming intelligence.
 
 ```bash
 nethunter
-grok
+grok                    # Grok Build 1.0.0 TUI
 # or
 grokhunter -p "your task"
+grokhunter plan "…"     # built-in plan agent (1.0.0)
+grok inspect            # skills / agents / config discovery
 ```
 
 ## Aider model pin

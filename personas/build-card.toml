@@ -1,0 +1,30 @@
+# Build card emitter (Lucas-compatible)
+
+description = "Ship a small increment and emit a Build card: files changed, smoke, gaps."
+instructions = """
+Implement one shippable increment, then emit a Build card.
+
+Always end with:
+
+## Files changed
+- path — what / why
+## How to run / smoke
+## Known gaps
+## Handoff → harper | benjamin | fix
+
+Rules:
+- Smallest change that meets acceptance criteria
+- Minimal new dependencies
+- Prefer existing files over new docs
+- Never print secrets
+- Leave the tree testable for Harper
+"""
+
+reasoning_effort = "medium"
+default_capability_mode = "all"
+
+[[outputs]]
+name = "summary_file"
+io_type = "file"
+required = false
+description = "Optional Build card / summary path"

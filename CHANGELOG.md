@@ -2,6 +2,44 @@
 
 ## Unreleased
 
+### Roles (Grok Build 1.0.0 capability defaults)
+
+- **`roles/*.toml`** — `architect`, `builder`, `reliability`, `mapper`, `code-review`, `surgical`, `x11-desktop`
+- **`lib/roles-discover.sh`** + **`install_roles`** → `~/.grok/roles/`
+- Doctor + uninstall scan-based; pairs with agents + personas
+
+### Personas (Grok Build 1.0.0 subagent overlays)
+
+- **`personas/*.toml`** — `mobile`, `concise`, `shell-first`, `pair`, `security-lab`, `design-card`, `build-card`, `harden-card`
+- **`lib/personas-discover.sh`** + **`install_personas`** → `~/.grok/personas/` (via `grokhunter skills install`)
+- Doctor + uninstall scan-based; user-only personas preserved
+- Docs: `personas/README.md`, `docs/CODING-TEAM.md`
+
+### Agents expanded (Coding Team + lab specialists)
+
+- **Core deepened** for Grok Build 1.0.0: `benjamin`, `lucas`, `harper`, `coding-team` (tools posture, required cards, handoff tables)
+- **New agents:** `scout` (read-only map), `review` (read-only review), `fix` (surgical patches), `desktop` (Termux:X11 / nh-x11)
+- **Docs:** `docs/CODING-TEAM.md`, `agents/README.md` roster + CLI examples
+- Install: `grokhunter skills install` → `~/.grok/agents/`
+
+### Grok Build 1.0.0 compatibility (GrokHunter 1.0.3)
+
+- **Min version** raised to **1.0.0** (`GROKHUNTER_MIN_GROK`, doctor, ensure)
+- **`config/grok-build.nethunter.toml`** — stable channel, `default`/`web_search`/`fork_secondary_model` = `grok-4.5`, subagents on, 1.0.0 UI keys
+- **`scripts/install_grok_profile.sh`** — merges NetHunter profile into `~/.grok/config.toml` without wiping `[model.*]`
+- **`scripts/ensure_grok.sh`** — upgrades when &lt; 1.0.0, prefers `grok update`, applies profile after install
+- **`grokhunter plan`** — uses `grok --agent plan --permission-mode plan -p` (1.0.0 built-in plan agent)
+- **Doctor** — channel/profile/models checks for 1.0.0
+- **Docs:** `docs/GROK-BUILD-1.0.md`
+
+### Aider install fix (Python 3.13 / Kali)
+
+- **Root cause:** `aider-chat` requires Python `>=3.10,<3.13`; Kali ships 3.13, and plain `python3 -m venv` often lacks `ensurepip`. Old installer silently failed.
+- **`scripts/install_aider.sh`** — shared installer: **uv tool install + managed Python 3.12** (primary), then official `aider.chat/install.sh`, then `aider-install` package, then classic venv only on 3.10–3.12.
+- **`lib/grok.sh` `install_aider()`** — runs the shared script inside NetHunter (copies into rootfs `/tmp` so host binds are not required); host fallback; always installs `aider-grok` helper.
+- **`bin/aider-grok`** — discovers uv-tool and venv installs under `~/.local/bin` and `/home/kali`.
+- Docs/skill/troubleshooting updated. Repair: `GROKHUNTER_FORCE_AIDER=1 bash scripts/install_aider.sh`.
+
 ### Skills discovery
 
 - **`lib/skills-discover.sh`** — single source for skill list + core set (`GH_CORE_SKILLS`)

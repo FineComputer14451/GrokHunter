@@ -1,11 +1,16 @@
-# GrokHunter Rootless — pair-programming optimized Grok Build profile
-# Merged carefully by install (does not wipe custom [model.*] blocks).
+# GrokHunter Rootless — Grok Build 1.0.0+ pair-programming profile
+# Applied by scripts/install_grok_profile.sh (does not wipe custom [model.*] blocks).
+# Docs: https://docs.x.ai/build/settings · changelog: https://x.ai/build/changelog
 
 [hints]
 worktree_tip_dismissed = true
 
 [features]
 telemetry = false
+feedback = true
+codebase_indexing = true
+remote_fetch = true
+lsp_tools = false
 
 [telemetry]
 trace_upload = false
@@ -17,26 +22,38 @@ otel_logs_exporter = "none"
 installer = "internal"
 auto_update = true
 show_tips = true
-channel = "alpha"
+# Grok Build 1.0.0 ships as stable (was alpha during 0.2.x)
+channel = "stable"
 
 [ui]
-# Mobile + coding: compact fullscreen, fast approval, pair-friendly
+# Mobile + coding: fullscreen TUI, compact chrome, fast approvals
 screen_mode = "fullscreen"
 max_thoughts_width = 100
-fork_secondary_model = "grok-build"
+# Secondary model for forks / side tasks (must be a real catalog id)
+fork_secondary_model = "grok-4.5"
 yolo = false
 compact_mode = true
 permission_mode = "always-approve"
-theme = "groknight"
+theme = "auto"
 combine_queued_prompts = true
+show_thinking_blocks = true
+group_tool_verbs = true
+page_flip_on_send = true
 
 [ui.display_refresh]
 auto_cadence_enabled = true
 
 [models]
-# Prefer strong reasoning for code quality on device
+# Grok Build 1.0.0 defaults: coding on grok-4.5 (catalog id)
 default = "grok-4.5"
+web_search = "grok-4.5"
 default_reasoning_effort = "high"
 
-# Pair-programming defaults (when supported by the client)
-# Keep edits small, explain intent, prefer reversible changes
+[subagents]
+# Workflows + Coding Team agents (benjamin/lucas/harper) need subagents on
+enabled = true
+
+# Pair-programming defaults for the lab:
+# - Keep edits small and reversible on rootless NetHunter
+# - Prefer grok inspect / doctor for environment checks
+# - Skills: ~/.grok/skills  · Agents: ~/.grok/agents

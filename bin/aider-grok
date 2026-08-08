@@ -10,6 +10,13 @@ if [[ -r "${HOME}/.grok/secrets.env" ]]; then
   source "${HOME}/.grok/secrets.env"
   set +a
 fi
+# Also check kali home when helper is invoked as root
+if [[ -r /home/kali/.grok/secrets.env && -z "${XAI_API_KEY:-}" ]]; then
+  set -a
+  # shellcheck disable=SC1091
+  source /home/kali/.grok/secrets.env
+  set +a
+fi
 
 # xAI OpenAI-compatible endpoint
 export OPENAI_API_BASE="${OPENAI_API_BASE:-https://api.x.ai/v1}"
@@ -20,20 +27,47 @@ fi
 # Prefer Grok 4.5-class coding model (override with AIDER_MODEL if needed)
 export AIDER_MODEL="${AIDER_MODEL:-grok-4.5}"
 
-# Prefer the NetHunter / lab venv if present
-if [[ -x "${HOME}/venv-aider/bin/aider" ]]; then
-  # shellcheck disable=SC1091
-  source "${HOME}/venv-aider/bin/activate"
-elif [[ -x "/home/kali/venv-aider/bin/aider" ]]; then
-  # shellcheck disable=SC1091
-  source "/home/kali/venv-aider/bin/activate"
-fi
+# Prefer uv-tool / venv installs (order: local PATH, uv bin, classic venv)
+_activate_aider() {
+  local c
+  local -a candidates=(
+    "${HOME}/.local/bin/aider"
+    "${HOME}/venv-aider/bin/aider"
+    "/home/kali/.local/bin/aider"
+    "/home/kali/venv-aider/bin/aider"
+  )
+  # Already on PATH
+  if command -v aider >/dev/null 2>&1; then
+    return 0
+  fi
+  for c in "${candidates[@]}"; do
+    if [[ -x "${c}" ]]; then
+      export PATH="$(dirname "${c}"):${PATH}"
+      return 0
+    fi
+  done
+  # Activate classic venv if present (adds bin/ to PATH)
+  if [[ -f "${HOME}/venv-aider/bin/activate" ]]; then
+    # shellcheck disable=SC1091
+    source "${HOME}/venv-aider/bin/activate"
+    return 0
+  fi
+  if [[ -f "/home/kali/venv-aider/bin/activate" ]]; then
+    # shellcheck disable=SC1091
+    source "/home/kali/venv-aider/bin/activate"
+    return 0
+  fi
+  return 1
+}
+
+_activate_aider || true
 
 if ! command -v aider >/dev/null 2>&1; then
   echo "[aider-grok] aider not found." >&2
-  echo "  Inside nethunter:  source ~/venv-aider/bin/activate" >&2
-  echo "  Or re-run:         bash install.sh --with-aider" >&2
-  echo "  Manual:            docs/EDITORS.md" >&2
+  echo "  Install (preferred):  bash ~/GrokHunter/scripts/install_aider.sh" >&2
+  echo "  Or overlay:           bash install.sh --overlay-only --with-aider" >&2
+  echo "  Manual:               curl -LsSf https://aider.chat/install.sh | sh" >&2
+  echo "  Docs:                 docs/EDITORS.md" >&2
   exit 1
 fi
 
