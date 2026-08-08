@@ -7,3 +7,6 @@
   ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝  ╚═╝
 
         Kali NetHunter  ×  Grok Build  —  AI-agent mobile lab
+
+  Built on termux-nethunter / termux-distro by jorexdeveloper
+  https://github.com/jorexdeveloper  ·  see CREDITS.md

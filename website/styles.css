@@ -984,6 +984,22 @@ td:last-child {
   color: var(--accent);
 }
 
+.footer a {
+  color: var(--fg-muted);
+}
+
+.footer a:hover {
+  color: var(--accent);
+}
+
+.table-wrap a {
+  color: var(--accent);
+}
+
+.table-wrap a:hover {
+  text-decoration: underline;
+}
+
 .icon {
   width: 1rem;
   height: 1rem;

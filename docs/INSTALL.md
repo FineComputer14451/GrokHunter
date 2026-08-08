@@ -77,7 +77,7 @@ Helpers (`nh-x11`, `aider-grok`, `grokhunter`, …) are installed from repo `bin
 | Variable | Purpose |
 |----------|---------|
 | `GROKHUNTER_REFRESH=1` | Bypass module + engine cache |
-| `GROKHUNTER_DISTRO_ENGINE_URL` | Pin/fork of `termux-distro.sh` (default: jorexdeveloper main) |
+| `GROKHUNTER_DISTRO_ENGINE_URL` | Pin/fork of `termux-distro.sh` (default: **jorexdeveloper/termux-distro** main) |
 | `GROKHUNTER_GROK_INSTALLER` | `auto` \| `official` \| `termux-native` |
 | `GROKHUNTER_FORCE_GROK=1` | Reinstall Grok even if present |
 | `GROKHUNTER_MIN_GROK` | Min Grok Build version (default **1.0.0**) |
@@ -85,6 +85,8 @@ Helpers (`nh-x11`, `aider-grok`, `grokhunter`, …) are installed from repo `bin
 | `NH_X11_SESSION` | Desktop start command for `nh-x11` (e.g. `startlxde`) |
 
 **Engine resolution order:** vendored `./termux-distro.sh` next to `install.sh` → `~/.cache/grokhunter/termux-distro.sh` → download into that cache (never CWD).
+
+**Upstream credit:** the install engine is **[jorexdeveloper/termux-distro](https://github.com/jorexdeveloper/termux-distro)** (GPL-3.0), used for the [termux-nethunter](https://github.com/jorexdeveloper/termux-nethunter) rootless model. Full attribution: [CREDITS.md](../CREDITS.md).
 
 ## Chromium under proot
 

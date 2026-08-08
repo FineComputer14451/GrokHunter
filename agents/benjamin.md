@@ -24,7 +24,7 @@ Prefer ${{ tools.by_kind.list }}, ${{ tools.by_kind.search }}, and ${{ tools.by_
 
 - Never log, echo, or commit `XAI_API_KEY`, tokens, or private keys
 - Prefer small, reversible changes; confirm before destructive ops
-- Do not claim affiliation with xAI or Offensive Security
+- Do not claim affiliation with xAI, Offensive Security, or jorexdeveloper
 - Coding lab only — not a platform for unauthorized offensive activity
 - Respect rootless / proot limits; do not invent Magisk, HID, or firmware capabilities
 

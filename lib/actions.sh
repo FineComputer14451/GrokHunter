@@ -1,6 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 # GrokHunter Rootless install/config/complete action hooks
-# These functions are called by the upstream termux-distro engine.
+# These functions are called by the upstream termux-distro engine
+# (jorexdeveloper/termux-distro — see CREDITS.md).
 
 pre_check_actions() {
   P=${W-}; S=${B-}; T=${M-}
@@ -12,6 +13,7 @@ distro_banner() {
   msg -a "${spaces}${S}${P}${DISTRO_NAME}${S}"
   msg -a "${spaces}${S}${T}${VERSION_NAME}${S}"
   msg -a "${spaces}${T}GrokHunter Rootless • coding lab • proot${S}"
+  msg -a "${spaces}${T}Engine: jorexdeveloper/termux-distro · CREDITS.md${S}"
 }
 
 post_check_actions() { return; }

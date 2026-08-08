@@ -4,6 +4,17 @@
 
 A **rootless** Kali NetHunter lab on Termux, optimized for **coding and building**, with Grok Build as the on-device pair programmer. No root, no custom kernel.
 
+## Who built the NetHunter install engine?
+
+**Primary credit: [jorexdeveloper](https://github.com/jorexdeveloper).**
+
+GrokHunter hooks the install engine from:
+
+- [termux-nethunter](https://github.com/jorexdeveloper/termux-nethunter) — Kali NetHunter Rootless on Android  
+- [termux-distro](https://github.com/jorexdeveloper/termux-distro) — shared `termux-distro.sh` engine  
+
+GrokHunter is an **overlay** (Grok Build, skills, agents, desktop helpers). It does not replace or re-claim authorship of those projects. Full statement: [CREDITS.md](../CREDITS.md).
+
 ## Does it require root?
 
 **No.** It uses Termux + proot only.
