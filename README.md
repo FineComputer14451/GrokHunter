@@ -11,7 +11,7 @@ Turn Termux + proot Kali into a Linux development environment on your phone, wit
 > Not affiliated with xAI or Offensive Security.
 
 **Product site:** [finecomputer14451.github.io/GrokHunter](https://finecomputer14451.github.io/GrokHunter/)  
-**Release:** [v1.0.4](https://github.com/FineComputer14451/GrokHunter/releases/tag/v1.0.4) · Grok Build **1.0.0+**
+**Release:** [v1.0.4](https://github.com/FineComputer14451/GrokHunter/releases/tag/v1.0.5) · Grok Build **1.0.0+**
 
 Source: [`website/`](website/) · deploy: push `website/**` or **Actions → Deploy website**.
 
@@ -97,7 +97,10 @@ grok                   # Interactive Grok session
 grokhunter             # Primary CLI / TUI
 grokhunter status      # auth / x11 / v9 quick line
 grokhunter doctor      # Full health report
+grokhunter setup       # One-shot: ensure + skills + doctor
 grokhunter ensure      # Grok Build ≥ 1.0.0 + NetHunter profile
+grokhunter team        # Coding Team multi-agent
+grokhunter scout "…"   # Fast map agent (headless when prompt given)
 grokhunter models      # Install or status V9 model pickers
 grokhunter ai-smoke    # SpaceXAI API smoke (needs XAI_API_KEY)
 grokhunter plan "…"    # Plan agent (Grok Build 1.0.0)

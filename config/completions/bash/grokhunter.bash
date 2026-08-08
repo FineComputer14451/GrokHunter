@@ -7,9 +7,11 @@ _grokhunter_completions() {
   cur="${COMP_WORDS[COMP_CWORD]}"
   prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-  local cmds="status doctor ensure models skills ai-smoke smoke install plan help version"
+  local cmds="status doctor setup sync boot ensure models skills agents team coding-team scout benjamin lucas harper review fix desktop ai-smoke smoke install plan help version"
   local model_sub="install status force --force help"
   local skills_sub="install status help"
+  local agents_sub="status list help"
+  local setup_opts="--force-grok --with-models --with-aider --no-doctor --yes --help"
   local install_opts="--full --mini --nano --de --browser --no-de --with-grok --no-grok --with-x11 --no-x11 --with-aider --no-aider --with-v9-models --no-v9-models --with-completions --no-completions --overlay-only --help"
 
   if [[ ${COMP_CWORD} -eq 1 ]]; then
@@ -24,6 +26,12 @@ _grokhunter_completions() {
     skills)
       COMPREPLY=( $(compgen -W "${skills_sub}" -- "${cur}") )
       ;;
+    agents)
+      COMPREPLY=( $(compgen -W "${agents_sub}" -- "${cur}") )
+      ;;
+    setup|sync|boot)
+      COMPREPLY=( $(compgen -W "${setup_opts}" -- "${cur}") )
+      ;;
     install)
       if [[ "${prev}" == "--de" ]]; then
         COMPREPLY=( $(compgen -W "xfce mate lxde kde gnome i3 e17" -- "${cur}") )
@@ -36,7 +44,7 @@ _grokhunter_completions() {
     ensure)
       COMPREPLY=( $(compgen -W "--force" -- "${cur}") )
       ;;
-    ai-smoke|smoke)
+    ai-smoke|smoke|team|coding-team|scout|benjamin|lucas|harper|review|fix|desktop|plan)
       # free-form prompt
       ;;
   esac

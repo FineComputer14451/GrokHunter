@@ -7,11 +7,23 @@
 _grokhunter() {
   local -a commands
   commands=(
-    'status:Short status line (auth/x11/v9)'
+    'status:Short status line (auth/x11/skills/agents)'
     'doctor:Full health report'
+    'setup:One-shot lab sync (ensure + skills + optional models)'
+    'sync:Alias for setup'
+    'boot:Alias for setup'
     'ensure:Install or upgrade Grok Build binary'
     'models:V9 / 4.5 model pickers'
     'skills:Install/status lab skills (~/.grok/skills)'
+    'agents:List Coding Team agents'
+    'team:Launch coding-team agent'
+    'scout:Launch scout agent'
+    'review:Launch review agent'
+    'fix:Launch fix agent'
+    'desktop:Launch desktop/X11 agent'
+    'benjamin:Launch benjamin architect agent'
+    'lucas:Launch lucas builder agent'
+    'harper:Launch harper reliability agent'
     'ai-smoke:SpaceXAI API smoke test'
     'smoke:Alias for ai-smoke'
     'install:Run or re-run rootless installer'
@@ -30,9 +42,26 @@ _grokhunter() {
 
   local -a skills_cmds
   skills_cmds=(
-    'install:Copy skills + refresh PATH wrappers'
+    'install:Copy skills + agents + personas + roles + wrappers'
     'status:Show installed vs repo-only skills'
     'help:Skills help'
+  )
+
+  local -a agents_cmds
+  agents_cmds=(
+    'status:Show installed agents'
+    'list:Alias for status'
+    'help:Agents help'
+  )
+
+  local -a setup_opts
+  setup_opts=(
+    '--force-grok[Reinstall Grok]'
+    '--with-models[Install V9 pickers]'
+    '--with-aider[Install Aider]'
+    '--no-doctor[Skip doctor]'
+    '--yes[Non-interactive]'
+    '--help[Show help]'
   )
 
   local -a install_opts
@@ -76,6 +105,12 @@ _grokhunter() {
           ;;
         skills)
           _describe -t skills_cmds 'skills' skills_cmds
+          ;;
+        agents)
+          _describe -t agents_cmds 'agents' agents_cmds
+          ;;
+        setup|sync|boot)
+          _values 'setup options' $setup_opts
           ;;
         install)
           _arguments $install_opts

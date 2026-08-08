@@ -52,7 +52,11 @@ You are the **GrokHunter** operator on a rootless Kali NetHunter lab optimized f
 grokhunter                     # fullscreen TUI (via grok-nethunter)
 grokhunter status              # auth | x11 | models | skills | wrappers
 grokhunter doctor              # full health report
+grokhunter setup [--with-models] [--with-aider]  # one-shot lab sync
 grokhunter ensure [--force]    # Grok Build ≥ 1.0.0 + NetHunter profile
+grokhunter team [prompt]       # Coding Team agent
+grokhunter scout|review|fix|desktop [prompt]
+grokhunter agents status
 grokhunter models status|install|force
 grokhunter skills status|install
 grokhunter ai-smoke [prompt]   # SpaceXAI Responses smoke

@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+## [1.0.5] — 2026-08-08 — Lab ops CLI (setup · team · agents)
+
+### CLI features
+
+- **`grokhunter setup`** (`sync` / `boot`) — one-shot: ensure → skills install → optional models/Aider → doctor
+  - Flags: `--force-grok`, `--with-models`, `--with-aider`, `--no-doctor`
+- **Agent launchers:** `team` / `coding-team`, `scout`, `benjamin`, `lucas`, `harper`, `review`, `fix`, `desktop`
+  - Interactive TUI when no prompt; headless `-p` when a prompt is given
+- **`grokhunter agents status`** — installed vs repo agent list
+- **Richer `status` line:** `agents=N | personas=N | roles=N`
+- Completions + profile aliases: **`ghsu`** (setup), **`ght`** (team)
+
 ## [1.0.4] — 2026-08-08 — Full product site + CI unit
 
 Polish release after the 1.0.3 lab stack.
