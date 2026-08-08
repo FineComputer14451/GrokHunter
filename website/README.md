@@ -1,6 +1,25 @@
 # GrokHunter website
 
-Static product landing page for [GrokHunter](https://github.com/FineComputer14451/GrokHunter).
+Static product landing page for [GrokHunter](https://github.com/FineComputer14451/GrokHunter) **v1.0.3**.
+
+**Live:** https://finecomputer14451.github.io/GrokHunter/
+
+## Sections
+
+| Section | Content |
+|---------|---------|
+| Hero | Quick install + animated terminal (1.0.3 stack) |
+| Stats | Version / Grok min / agents / personas / roles |
+| Why | Comparison table |
+| Features | 9 feature cards (Grok 1.0.0, agents, Aider, …) |
+| Stack | skills · agents · personas · roles |
+| Agents | Coding Team loop + roster table |
+| Personas & roles | Full product lists |
+| Install | One-liner, full, clone, overlay-only + flags |
+| CLI | Full `grokhunter` command list |
+| Upgrade | Paste-ready 1.0.3 upgrade path |
+| Architecture | Overlay layers |
+| FAQ | Rootless, auth, Aider 3.13, X11, scope |
 
 ## Open locally
 
@@ -11,23 +30,12 @@ python3 -m http.server 8080 -d website
 
 Or open `index.html` directly in a browser.
 
-## Deploy with GitHub Actions (recommended)
+## Deploy
 
 Workflow: [`.github/workflows/deploy-website.yml`](../.github/workflows/deploy-website.yml)
 
-1. **Settings → Pages**
-2. **Build and deployment → Source:** GitHub Actions  
-   (not “Deploy from a branch”)
-3. Push to `main` (changes under `website/`) **or** run the workflow manually:  
-   **Actions → Deploy website → Run workflow**
-4. Site URL (after first success):  
-   `https://finecomputer14451.github.io/GrokHunter/`
+1. Pages source: **GitHub Actions** (already enabled for this repo)
+2. Push `website/**` to `main` **or** **Actions → Deploy website → Run workflow**
+3. URL: https://finecomputer14451.github.io/GrokHunter/
 
-The workflow copies `website/` into a Pages artifact (no Node/npm build). Brand tokens live in `styles.css`.
-
-### Manual / branch deploy (optional)
-
-If you prefer branch deploy instead of Actions:
-
-1. Settings → Pages → Source: **Deploy from a branch**
-2. Branch: `main` · folder: `/website`
+No Node/npm build — pure static HTML/CSS/JS. Brand tokens: `styles.css`.
