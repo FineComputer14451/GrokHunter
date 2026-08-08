@@ -8,5 +8,9 @@
 
         Kali NetHunter  ×  Grok Build  —  AI-agent mobile lab
 
-  Built on termux-nethunter / termux-distro by jorexdeveloper
-  https://github.com/jorexdeveloper  ·  see CREDITS.md
+  Built on open work — please support:
+    jorexdeveloper  termux-nethunter / termux-distro
+    Termux team     termux.dev  ·  Termux:X11
+    Kali / OffSec   NetHunter rootfs  ·  kali.org
+    xAI             Grok Build  ·  x.ai/cli
+  Full attribution: CREDITS.md  ·  grokhunter credits

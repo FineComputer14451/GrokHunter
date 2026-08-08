@@ -13,7 +13,8 @@ distro_banner() {
   msg -a "${spaces}${S}${P}${DISTRO_NAME}${S}"
   msg -a "${spaces}${S}${T}${VERSION_NAME}${S}"
   msg -a "${spaces}${T}GrokHunter Rootless • coding lab • proot${S}"
-  msg -a "${spaces}${T}Engine: jorexdeveloper/termux-distro · CREDITS.md${S}"
+  msg -a "${spaces}${T}Engine: jorexdeveloper/termux-distro · host: Termux · guest: Kali NH${S}"
+  msg -a "${spaces}${T}Agent: xAI Grok Build · CREDITS.md · grokhunter credits${S}"
 }
 
 post_check_actions() { return; }
@@ -181,10 +182,16 @@ post_complete_actions() {
   msg -a "  ${T}Auth:${S}  export XAI_API_KEY=xai-...  or put it in ~/.grok/secrets.env"
   msg -a "  ${T}Docs:${S}   docs/EDITORS.md  docs/GROK-45.md  docs/X11-PERFORMANCE.md"
   echo
-  msg -a "  ${T}Credits:${S} Rootless install engine by ${P}jorexdeveloper${S}"
-  msg -a "    termux-nethunter  https://github.com/jorexdeveloper/termux-nethunter"
-  msg -a "    termux-distro     https://github.com/jorexdeveloper/termux-distro"
-  msg -a "    Full attribution: CREDITS.md  ·  Thank you jorexdeveloper"
+  msg -a "  ${T}Credits${S} (not affiliated — thank you):"
+  msg -a "    ${P}jorexdeveloper${S}  termux-nethunter · termux-distro (install engine)"
+  msg -a "      https://github.com/jorexdeveloper"
+  msg -a "    ${P}Termux${S}           host + packages + Termux:X11"
+  msg -a "      https://termux.dev  ·  https://github.com/termux"
+  msg -a "    ${P}Kali / OffSec${S}     NetHunter rootfs images"
+  msg -a "      https://www.kali.org  ·  https://www.offsec.com"
+  msg -a "    ${P}xAI${S}               Grok Build + Grok models"
+  msg -a "      https://x.ai/cli  ·  https://docs.x.ai"
+  msg -a "    Full attribution:  CREDITS.md  ·  grokhunter credits"
 }
 
 set_up_de() {

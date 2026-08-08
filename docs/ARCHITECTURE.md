@@ -49,16 +49,18 @@ GrokHunter does **not** require Magisk, custom recovery, HID, or firmware module
 
 ## Upstream foundation (required credit)
 
-GrokHunter does **not** reimplement rootfs download or proot launcher plumbing from scratch. It **hooks** the install engine from:
+GrokHunter does **not** reimplement the full stack from scratch. Required recognition:
 
-| Project | Author | Role |
-|---------|--------|------|
-| [termux-distro](https://github.com/jorexdeveloper/termux-distro) | **jorexdeveloper** | `termux-distro.sh` lifecycle engine |
-| [termux-nethunter](https://github.com/jorexdeveloper/termux-nethunter) | **jorexdeveloper** | NetHunter rootless product / install model |
+| Layer | Who | Role |
+|-------|-----|------|
+| Install engine | **[jorexdeveloper](https://github.com/jorexdeveloper)** — [termux-distro](https://github.com/jorexdeveloper/termux-distro), [termux-nethunter](https://github.com/jorexdeveloper/termux-nethunter) | `termux-distro.sh` + NetHunter rootless model |
+| Host | **[Termux](https://github.com/termux)** | Termux app, packages, proot host, [Termux:X11](https://github.com/termux/termux-x11) |
+| Guest images | **[Kali](https://www.kali.org/) / [Offensive Security](https://www.offsec.com/)** | Official NetHunter rootfs (`kali.download/nethunter-images`) |
+| AI agent | **[xAI](https://x.ai)** | [Grok Build](https://x.ai/cli), models / API |
 
 Default engine URL: `https://raw.githubusercontent.com/jorexdeveloper/termux-distro/main/termux-distro.sh`  
 
-See **[CREDITS.md](../CREDITS.md)** for the full attribution statement. Please star and support the upstream repositories.
+See **[CREDITS.md](../CREDITS.md)** · `grokhunter credits`. Not affiliated — please support upstream.
 
 ## Historical precursor
 

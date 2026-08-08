@@ -597,37 +597,43 @@ cmd_plan() {
 
 cmd_credits() {
   local f="${GROKHUNTER_HOME}/CREDITS.md"
-  cat <<EOF
+  cat <<'EOF'
 GrokHunter Rootless — credits
 =============================
+Not affiliated with the projects below — we build on them with thanks.
 
-Primary upstream (required recognition)
-  Developer:  jorexdeveloper
-  Profile:    https://github.com/jorexdeveloper
+1) jorexdeveloper — install engine (primary)
+   https://github.com/jorexdeveloper
+   termux-nethunter  https://github.com/jorexdeveloper/termux-nethunter
+   termux-distro     https://github.com/jorexdeveloper/termux-distro
+   GPL-3.0 · NetHunter rootless install + termux-distro.sh engine
 
-  termux-nethunter  Install Kali NetHunter Rootless on Android
-    https://github.com/jorexdeveloper/termux-nethunter
+2) Termux team — host platform
+   https://github.com/termux  ·  https://termux.dev
+   Termux app, packages, proot host
+   Termux:X11  https://github.com/termux/termux-x11
 
-  termux-distro     Shared install engine (termux-distro.sh)
-    https://github.com/jorexdeveloper/termux-distro
+3) Kali Linux / Offensive Security — NetHunter rootfs
+   https://www.kali.org/  ·  https://www.offsec.com/
+   Official NetHunter rootfs images (kali.download/nethunter-images)
+   Coding-lab use of Kali packages — not an OffSec product
 
-GrokHunter is an overlay for an AI coding lab (Grok Build, skills, agents).
-It does NOT claim authorship of the NetHunter rootless install engine.
+4) xAI — Grok Build & models
+   https://x.ai  ·  https://x.ai/cli  ·  https://docs.x.ai
+   Grok Build agent (1.0.0+), Grok models / API
+   Auth: SuperGrok / X Premium+ or XAI_API_KEY
 
-Thank you, jorexdeveloper — please star and support the projects above.
+Also: Aider (aider.chat) · uv (astral.sh) when using --with-aider
 
+GrokHunter is an overlay (CLI, skills, agents, desktop helpers).
+It does NOT re-claim authorship of the above.
+
+Thank you — please support those projects directly.
 EOF
+  echo
   if [[ -f "${f}" ]]; then
     echo "Full statement: ${f}"
-    echo
-    # Print the primary section without dumping entire file twice
-    if command -v sed >/dev/null 2>&1; then
-      sed -n '1,50p' "${f}"
-      echo
-      echo "… (see CREDITS.md for complete file)"
-    else
-      cat "${f}"
-    fi
+    echo "Online: https://github.com/FineComputer14451/GrokHunter/blob/main/CREDITS.md"
   else
     echo "CREDITS.md not found under ${GROKHUNTER_HOME}"
     echo "Online: https://github.com/FineComputer14451/GrokHunter/blob/main/CREDITS.md"

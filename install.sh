@@ -5,12 +5,17 @@
 #
 # https://github.com/FineComputer14451/GrokHunter
 #
-# BUILT ON (primary credit — please support upstream):
+# BUILT ON (please support upstream — see CREDITS.md):
 #   jorexdeveloper — termux-nethunter & termux-distro (GPL-3.0)
-#   https://github.com/jorexdeveloper/termux-nethunter
-#   https://github.com/jorexdeveloper/termux-distro
-#   Default engine URL: raw.githubusercontent.com/jorexdeveloper/termux-distro
-#   See CREDITS.md in this repository.
+#     https://github.com/jorexdeveloper/termux-nethunter
+#     https://github.com/jorexdeveloper/termux-distro
+#   Termux team — host platform, packages, Termux:X11
+#     https://termux.dev  ·  https://github.com/termux
+#   Kali Linux / Offensive Security — NetHunter rootfs images
+#     https://www.kali.org  ·  https://kali.download/nethunter-images/
+#   xAI — Grok Build CLI & Grok models
+#     https://x.ai/cli  ·  https://docs.x.ai
+# Not affiliated with the above; we build upon their work with attribution.
 ################################################################################
 set -euo pipefail
 

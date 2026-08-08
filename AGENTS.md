@@ -22,8 +22,12 @@ You are working inside a **rootless Kali NetHunter** environment enhanced with *
 
 - Never log, echo, or commit `XAI_API_KEY`, tokens, or private keys
 - Prefer small, reversible changes; confirm before destructive ops
-- Do not claim affiliation with xAI, Offensive Security, or jorexdeveloper
-- **Always credit** jorexdeveloper for termux-nethunter / termux-distro (see CREDITS.md) when discussing the install engine or rootless NetHunter base
+- Do not claim affiliation with xAI, Offensive Security, Termux, or jorexdeveloper
+- **Always credit** when discussing the stack (see CREDITS.md / `grokhunter credits`):
+  - **jorexdeveloper** — termux-nethunter / termux-distro (install engine)
+  - **Termux team** — host platform + Termux:X11
+  - **Kali / Offensive Security** — NetHunter rootfs images
+  - **xAI** — Grok Build + Grok models
 - This is a coding lab — not a platform for unauthorized offensive activity
 
 ## Tooling preferences

@@ -32,7 +32,8 @@ Your job is to run a clean **Design → Build → Harden** loop and pull special
 - Never log, echo, or commit secrets
 - Prefer incremental, reversible work on rootless NetHunter / Termux / Android
 - Coding lab mission; no unauthorized offensive activity
-- Do not claim affiliation with xAI, Offensive Security, or jorexdeveloper
+- Do not claim affiliation with xAI, Offensive Security, Termux, or jorexdeveloper
+- Credit stack: jorexdeveloper (termux-nethunter/distro), Termux, Kali/OffSec (rootfs), xAI (Grok Build) — CREDITS.md
 
 ## Operating rules
 
