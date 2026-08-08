@@ -2,15 +2,20 @@
 
 ## Unreleased
 
+## [1.0.4] — 2026-08-08 — Full product site + CI unit
+
+Polish release after the 1.0.3 lab stack.
+
 ### Site
 
 - **Full product landing page** — stats, stack layers, Coding Team agents, personas/roles, overlay install, CLI, upgrade, FAQ
 - GitHub Pages live: https://finecomputer14451.github.io/GrokHunter/
 - Terminal demo covers Grok 1.0.0, Aider uv, skills install
+- README badges (release / smoke / site) + repo homepage metadata
 
 ### CI
 
-- Smoke workflow runs full `scripts/ci-unit.sh` after bash -n
+- Smoke workflow runs full **`scripts/ci-unit.sh`** after bash -n (skills/agents/personas/roles install, engine guards)
 
 ## [1.0.3] — 2026-08-08 — Grok Build 1.0.0 lab stack
 
