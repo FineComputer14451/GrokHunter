@@ -104,6 +104,49 @@ save_x11_session() {
     printf '%s\n' "${session_cmd}" \
       > "${TERMUX_FILES_DIR}/home/.config/grokhunter/x11-session" 2>/dev/null || true
   fi
+  # Also Termux home when running inside Kali proot with different HOME
+  if [[ -d /data/data/com.termux/files/home ]]; then
+    mkdir -p /data/data/com.termux/files/home/.config/grokhunter 2>/dev/null || true
+    printf '%s\n' "${session_cmd}" \
+      > /data/data/com.termux/files/home/.config/grokhunter/x11-session 2>/dev/null || true
+  fi
+}
+
+# Probe rootfs / PATH for a desktop session binary (same order as nh-x11).
+_detect_x11_session() {
+  local rootfs="${ROOTFS_DIRECTORY:-${NH_ROOTFS:-/data/data/com.termux/files/kali}}"
+  local c
+  for c in startxfce4 startlxde mate-session i3 startplasma-x11 enlightenment_start gnome-session; do
+    if [[ -x "/usr/bin/${c}" || -x "/bin/${c}" || -x "/usr/bin/X11/${c}" ]]; then
+      printf '%s\n' "${c}"
+      return 0
+    fi
+    if [[ -n "${rootfs}" && -d "${rootfs}" ]]; then
+      if [[ -x "${rootfs}/usr/bin/${c}" || -x "${rootfs}/bin/${c}" || -x "${rootfs}/usr/bin/X11/${c}" ]]; then
+        printf '%s\n' "${c}"
+        return 0
+      fi
+    fi
+  done
+  # Default preferred for GrokHunter full installs
+  printf '%s\n' "startxfce4"
+}
+
+# Write ~/.config/grokhunter/x11-session if missing (or when force=1).
+# Usage: ensure_x11_session [session_cmd] [force]
+ensure_x11_session() {
+  local session="${1:-}"
+  local force="${2:-0}"
+  local cfg="${HOME}/.config/grokhunter/x11-session"
+  if [[ -z "${session}" ]]; then
+    session="$(_detect_x11_session)"
+  fi
+  if [[ "${force}" != "1" && -r "${cfg}" ]]; then
+    # already present
+    return 0
+  fi
+  save_x11_session "${session}"
+  return 0
 }
 
 # Canonical nh-x11 lives in bin/nh-x11 (install copies; no heredoc drift).
@@ -161,6 +204,13 @@ setup_termux_x11() {
     msg -ts "Installed helper: nh-x11 (from repo bin/nh-x11)"
   else
     msg -tw "Could not install nh-x11 — clone repo or ensure bin/nh-x11 is present"
+  fi
+  # Persist preferred DE session for nh-x11 (doctor checks this file)
+  local sess
+  sess="$(_detect_x11_session)"
+  ensure_x11_session "${sess}" 0
+  if [[ -r "${HOME}/.config/grokhunter/x11-session" ]]; then
+    msg -ts "X11 session: $(tr -d '[:space:]' < "${HOME}/.config/grokhunter/x11-session")"
   fi
   msg -a "  Session: NH_X11_SESSION or ~/.config/grokhunter/x11-session"
   optimize_proot_binds 2>/dev/null || true
