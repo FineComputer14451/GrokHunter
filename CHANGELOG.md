@@ -2,11 +2,15 @@
 
 ## Unreleased
 
-### Site & CI
+### Site
 
-- Website badge/copy → **v1.0.3** / Grok Build 1.0.0; CLI rows for `ensure` + `skills install`
-- GitHub Pages enabled; product site live
-- Smoke + `ci-unit` in Actions: local branch `ci/unit-in-smoke` (needs `workflow` token scope to push)
+- **Full product landing page** — stats, stack layers, Coding Team agents, personas/roles, overlay install, CLI, upgrade, FAQ
+- GitHub Pages live: https://finecomputer14451.github.io/GrokHunter/
+- Terminal demo covers Grok 1.0.0, Aider uv, skills install
+
+### CI (pending push)
+
+- Local branch **`ci/unit-in-smoke`**: Smoke workflow + `scripts/ci-unit.sh` — needs `gh auth refresh -s workflow` to push
 
 ## [1.0.3] — 2026-08-08 — Grok Build 1.0.0 lab stack
 
