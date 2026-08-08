@@ -176,6 +176,7 @@ Keep API keys in `~/.grok/secrets.env` (mode `600`).
 | [INSTALL.md](docs/INSTALL.md) | Step-by-step install |
 | [GROK-45.md](docs/GROK-45.md) | Grok 4.5 profile + V9 pickers |
 | [GROK-BUILD-1.0.md](docs/GROK-BUILD-1.0.md) | Grok Build **1.0.0** compatibility |
+| [CODING-TEAM.md](docs/CODING-TEAM.md) | Agents · personas · roles |
 | [X11-PERFORMANCE.md](docs/X11-PERFORMANCE.md) | Termux:X11 tuning |
 | [EDITORS.md](docs/EDITORS.md) | Aider / editors |
 | [PROOT.md](docs/PROOT.md) | proot binds & storage |
