@@ -65,3 +65,8 @@ jobs:
             exit 1
           fi
           echo "No placeholder markers"
+
+      - name: Unit checks (scripts/ci-unit.sh)
+        run: |
+          set -euo pipefail
+          bash scripts/ci-unit.sh
