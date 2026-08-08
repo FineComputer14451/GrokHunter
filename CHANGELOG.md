@@ -2,27 +2,11 @@
 
 ## Unreleased
 
-### Roles (Grok Build 1.0.0 capability defaults)
+## [1.0.3] — 2026-08-08 — Grok Build 1.0.0 lab stack
 
-- **`roles/*.toml`** — `architect`, `builder`, `reliability`, `mapper`, `code-review`, `surgical`, `x11-desktop`
-- **`lib/roles-discover.sh`** + **`install_roles`** → `~/.grok/roles/`
-- Doctor + uninstall scan-based; pairs with agents + personas
+Full alignment with **Grok Build 1.0.0** (stable), plus Aider reliability, expanded Coding Team, personas, and roles.
 
-### Personas (Grok Build 1.0.0 subagent overlays)
-
-- **`personas/*.toml`** — `mobile`, `concise`, `shell-first`, `pair`, `security-lab`, `design-card`, `build-card`, `harden-card`
-- **`lib/personas-discover.sh`** + **`install_personas`** → `~/.grok/personas/` (via `grokhunter skills install`)
-- Doctor + uninstall scan-based; user-only personas preserved
-- Docs: `personas/README.md`, `docs/CODING-TEAM.md`
-
-### Agents expanded (Coding Team + lab specialists)
-
-- **Core deepened** for Grok Build 1.0.0: `benjamin`, `lucas`, `harper`, `coding-team` (tools posture, required cards, handoff tables)
-- **New agents:** `scout` (read-only map), `review` (read-only review), `fix` (surgical patches), `desktop` (Termux:X11 / nh-x11)
-- **Docs:** `docs/CODING-TEAM.md`, `agents/README.md` roster + CLI examples
-- Install: `grokhunter skills install` → `~/.grok/agents/`
-
-### Grok Build 1.0.0 compatibility (GrokHunter 1.0.3)
+### Grok Build 1.0.0 compatibility
 
 - **Min version** raised to **1.0.0** (`GROKHUNTER_MIN_GROK`, doctor, ensure)
 - **`config/grok-build.nethunter.toml`** — stable channel, `default`/`web_search`/`fork_secondary_model` = `grok-4.5`, subagents on, 1.0.0 UI keys
@@ -34,25 +18,31 @@
 
 ### Aider install fix (Python 3.13 / Kali)
 
-- **Root cause:** `aider-chat` requires Python `>=3.10,<3.13`; Kali ships 3.13, and plain `python3 -m venv` often lacks `ensurepip`. Old installer silently failed.
-- **`scripts/install_aider.sh`** — shared installer: **uv tool install + managed Python 3.12** (primary), then official `aider.chat/install.sh`, then `aider-install` package, then classic venv only on 3.10–3.12.
-- **`lib/grok.sh` `install_aider()`** — runs the shared script inside NetHunter (copies into rootfs `/tmp` so host binds are not required); host fallback; always installs `aider-grok` helper.
-- **`bin/aider-grok`** — discovers uv-tool and venv installs under `~/.local/bin` and `/home/kali`.
-- Docs/skill/troubleshooting updated. Repair: `GROKHUNTER_FORCE_AIDER=1 bash scripts/install_aider.sh`.
+- **Root cause:** `aider-chat` requires Python `>=3.10,<3.13`; Kali ships 3.13; plain venv often lacks `ensurepip`
+- **`scripts/install_aider.sh`** — **uv + managed Python 3.12** primary path; official installer / venv fallbacks
+- **`lib/grok.sh` `install_aider()`** — runs shared script in NetHunter (rootfs `/tmp` copy); host fallback; `aider-grok` helper
+- Repair: `GROKHUNTER_FORCE_AIDER=1 bash scripts/install_aider.sh`
 
-### Skills discovery
+### Agents expanded
 
-- **`lib/skills-discover.sh`** — single source for skill list + core set (`GH_CORE_SKILLS`)
-- **status / doctor / uninstall / install** all use the same discover helpers
-- Uninstall no longer guesses historical skill names when `skills/` is missing
-- `cmd_skills_status` drops dead `missing:` branch; ci-unit asserts full scan + user-only preserve
+- Core deepened: `benjamin`, `lucas`, `harper`, `coding-team`
+- New: `scout`, `review`, `fix`, `desktop`
+- Install: `grokhunter skills install` → `~/.grok/agents/`
 
-### Coding Team agents (runtime multi-agent)
+### Personas
 
-- **`agents/`** — Grok Build agent defs: `benjamin` (plan), `lucas`, `harper`, `coding-team`
-- **`lib/agents-discover.sh`** + **`install_agents`** → `~/.grok/agents/` (loaded by Grok at runtime)
-- Doctor optional Agents section; uninstall removes product agent files only
-- Docs: `docs/CODING-TEAM.md`
+- `mobile`, `concise`, `shell-first`, `pair`, `security-lab`, `design-card`, `build-card`, `harden-card`
+- → `~/.grok/personas/` via skills install
+
+### Roles
+
+- `architect`, `builder`, `reliability`, `mapper`, `code-review`, `surgical`, `x11-desktop`
+- → `~/.grok/roles/` via skills install
+
+### Also included
+
+- Skills discovery single-source (`lib/skills-discover.sh`) from earlier unreleased work
+- Coding Team agent runtime wiring from earlier unreleased work
 
 ## [1.0.2] — 2026-08-06 — Complete Aider integration
 
