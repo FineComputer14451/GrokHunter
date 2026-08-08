@@ -17,7 +17,7 @@ if [[ -r "${HOME}/.grok/secrets.env" ]]; then
 fi
 
 export GROKHUNTER_HOME="${GROKHUNTER_HOME:-${HOME}/GrokHunter}"
-export GROKHUNTER_VERSION="${GROKHUNTER_VERSION:-1.0.4}"
+export GROKHUNTER_VERSION="${GROKHUNTER_VERSION:-1.0.5}"
 if [[ -d "${GROKHUNTER_HOME}/bin" ]]; then
   export PATH="${GROKHUNTER_HOME}/bin:${PATH}"
 fi
@@ -34,6 +34,8 @@ if [[ -n "${ZSH_VERSION:-}" ]]; then
   (( ${+aliases[ghn]} )) || alias ghn='grok-nethunter'
   (( ${+aliases[ghd]} )) || alias ghd='grokhunter doctor'
   (( ${+aliases[ghs]} )) || alias ghs='grokhunter status'
+  (( ${+aliases[ghsu]} )) || alias ghsu='grokhunter setup'
+  (( ${+aliases[ght]} )) || alias ght='grokhunter team'
   (( ${+aliases[ghp]} )) || alias ghp='grokhunter plan'
   (( ${+aliases[ghm]} )) || alias ghm='grokhunter models'
   (( ${+aliases[ghk]} )) || alias ghk='grokhunter skills'
@@ -56,6 +58,8 @@ if [[ -n "${BASH_VERSION:-}" ]]; then
   alias ghn='grok-nethunter' 2>/dev/null || true
   alias ghd='grokhunter doctor' 2>/dev/null || true
   alias ghs='grokhunter status' 2>/dev/null || true
+  alias ghsu='grokhunter setup' 2>/dev/null || true
+  alias ght='grokhunter team' 2>/dev/null || true
   alias ghp='grokhunter plan' 2>/dev/null || true
   alias ghm='grokhunter models' 2>/dev/null || true
   alias ghk='grokhunter skills' 2>/dev/null || true
