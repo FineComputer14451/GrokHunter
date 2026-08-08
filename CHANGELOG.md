@@ -8,6 +8,11 @@
 - Works in non-interactive shells / Termux where bash aliases are disabled
 - Does **not** install `gh` (avoids clobbering GitHub CLI)
 
+### X11 session preference auto-heal
+
+- **`ensure_x11_session`** probes DE binaries and writes `~/.config/grokhunter/x11-session` when missing
+- Doctor auto-creates it; `setup` / `setup_termux_x11` also ensure it (default often `startxfce4`)
+
 ## [1.0.5] — 2026-08-08 — Lab ops CLI (setup · team · agents)
 
 ### CLI features

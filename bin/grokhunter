@@ -277,6 +277,17 @@ EOF
 
   echo "→ [2/4] skills + agents + personas + roles…"
   cmd_skills_install
+  # Ensure desktop session preference exists for nh-x11 / doctor
+  if [[ -f "${GROKHUNTER_HOME}/lib/x11.sh" ]]; then
+    # shellcheck disable=SC1091
+    source "${GROKHUNTER_HOME}/lib/x11.sh" 2>/dev/null || true
+    if declare -F ensure_x11_session >/dev/null 2>&1; then
+      ensure_x11_session "" 0 2>/dev/null || true
+      if [[ -r "${HOME}/.config/grokhunter/x11-session" ]]; then
+        echo "  x11-session: $(tr -d '[:space:]' < "${HOME}/.config/grokhunter/x11-session")"
+      fi
+    fi
+  fi
   echo
 
   if [[ "${with_models}" -eq 1 ]]; then

@@ -192,7 +192,20 @@ fi
 if [[ -r "${HOME}/.config/grokhunter/x11-session" ]]; then
   ok "X11 session preference: $(tr -d '[:space:]' < "${HOME}/.config/grokhunter/x11-session")"
 else
-  warn "No ~/.config/grokhunter/x11-session (nh-x11 will auto-detect DE)"
+  # Auto-heal: write a detected/default session so doctor is clean next run
+  if [[ -f "${GROKHUNTER_HOME}/lib/x11.sh" ]]; then
+    # shellcheck disable=SC1091
+    source "${GROKHUNTER_HOME}/lib/x11.sh" 2>/dev/null || true
+    if declare -F ensure_x11_session >/dev/null 2>&1; then
+      ensure_x11_session "" 0 2>/dev/null || true
+    fi
+  fi
+  if [[ -r "${HOME}/.config/grokhunter/x11-session" ]]; then
+    ok "X11 session preference: $(tr -d '[:space:]' < "${HOME}/.config/grokhunter/x11-session") (auto-created)"
+  else
+    warn "No ~/.config/grokhunter/x11-session — create with: echo startxfce4 > ~/.config/grokhunter/x11-session"
+    WARN=1
+  fi
 fi
 if command -v termux-x11 >/dev/null 2>&1; then
   ok "termux-x11 binary available"
