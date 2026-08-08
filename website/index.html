@@ -48,7 +48,7 @@
         </nav>
         <div class="header-actions">
           <a
-            class="btn btn-ghost"
+            class="btn btn-ghost btn-hide-sm"
             href="https://github.com/FineComputer14451/GrokHunter/releases/tag/v1.0.6"
             target="_blank"
             rel="noopener noreferrer"
@@ -60,6 +60,7 @@
             href="https://github.com/FineComputer14451/GrokHunter"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="GitHub repository"
           >
             <svg class="icon-sm" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path
@@ -68,8 +69,15 @@
             </svg>
             <span class="gh-label">GitHub</span>
           </a>
-          <button type="button" class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <button
+            type="button"
+            class="menu-btn"
+            id="menuBtn"
+            aria-label="Open menu"
+            aria-expanded="false"
+            aria-controls="mobileNav"
+          >
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <line x1="4" y1="7" x2="20" y2="7" />
               <line x1="4" y1="12" x2="20" y2="12" />
               <line x1="4" y1="17" x2="20" y2="17" />
@@ -77,7 +85,7 @@
           </button>
         </div>
       </div>
-      <nav class="mobile-nav wrap" id="mobileNav" aria-label="Mobile">
+      <nav class="mobile-nav wrap" id="mobileNav" aria-label="Mobile" hidden>
         <a href="#features">Features</a>
         <a href="#stack">Stack</a>
         <a href="#agents">Agents</a>
@@ -87,6 +95,23 @@
         <a href="#faq">FAQ</a>
         <a href="#credits">Credits</a>
         <a href="#architecture">Architecture</a>
+        <div class="mobile-nav-divider" role="separator"></div>
+        <a
+          class="mobile-ext"
+          href="https://github.com/FineComputer14451/GrokHunter/releases/tag/v1.0.6"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Release <span>v1.0.6</span>
+        </a>
+        <a
+          class="mobile-ext"
+          href="https://github.com/FineComputer14451/GrokHunter"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          GitHub <span>repo</span>
+        </a>
       </nav>
     </header>
 
