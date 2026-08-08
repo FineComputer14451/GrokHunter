@@ -36,6 +36,7 @@
 html {
   color-scheme: dark;
   scroll-behavior: smooth;
+  overflow-x: clip;
 }
 
 body {
@@ -47,6 +48,12 @@ body {
   font-size: 1rem;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+body.menu-open {
+  overflow: hidden;
+  touch-action: none;
 }
 
 a {
@@ -70,14 +77,15 @@ button {
 .wrap {
   max-width: 72rem;
   margin: 0 auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding-left: max(1rem, env(safe-area-inset-left, 0px));
+  padding-right: max(1rem, env(safe-area-inset-right, 0px));
+  width: 100%;
 }
 
 @media (min-width: 640px) {
   .wrap {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+    padding-left: max(1.5rem, env(safe-area-inset-left, 0px));
+    padding-right: max(1.5rem, env(safe-area-inset-right, 0px));
   }
 }
 
@@ -89,22 +97,34 @@ button {
   border-bottom: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
   background: color-mix(in oklab, var(--bg) 88%, transparent);
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .header-inner {
   display: flex;
+  min-height: 3.5rem;
   height: 3.5rem;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0.5rem;
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.5rem;
+  min-width: 0;
+  flex-shrink: 1;
   font-weight: 600;
   letter-spacing: -0.02em;
+  font-size: 0.95rem;
+}
+
+@media (min-width: 640px) {
+  .brand {
+    gap: 0.65rem;
+    font-size: 1rem;
+  }
 }
 
 .brand-mark {
@@ -146,10 +166,13 @@ button {
 .nav {
   display: none;
   align-items: center;
-  gap: 0.15rem;
+  gap: 0.05rem;
+  flex-shrink: 1;
+  min-width: 0;
 }
 
-@media (min-width: 768px) {
+/* Desktop nav only when there is room for 8 links + brand + actions */
+@media (min-width: 1100px) {
   .nav {
     display: flex;
   }
@@ -157,10 +180,18 @@ button {
 
 .nav a {
   border-radius: var(--radius-sm);
-  padding: 0.5rem 0.75rem;
-  font-size: 0.875rem;
+  padding: 0.45rem 0.55rem;
+  font-size: 0.8125rem;
+  white-space: nowrap;
   color: var(--fg-muted);
   transition: color 0.15s, background 0.15s;
+}
+
+@media (min-width: 1280px) {
+  .nav a {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
 }
 
 .nav a:hover {
@@ -176,7 +207,29 @@ button {
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+/* Compact header CTAs on narrow / mid widths — full set lives in mobile menu */
+.header-actions .btn-hide-sm {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .header-actions .btn-hide-sm {
+    display: inline-flex;
+  }
+}
+
+.header-actions .gh-label {
+  display: none;
+}
+
+@media (min-width: 480px) {
+  .header-actions .gh-label {
+    display: inline;
+  }
 }
 
 .btn {
@@ -226,16 +279,22 @@ button {
 
 .menu-btn {
   display: inline-flex;
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2.5rem;
+  height: 2.5rem;
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-strong);
   background: var(--bg-elevated);
+  touch-action: manipulation;
 }
 
-@media (min-width: 768px) {
+.menu-btn[aria-expanded="true"] {
+  border-color: color-mix(in oklab, var(--accent) 40%, var(--border-strong));
+  color: var(--accent);
+}
+
+@media (min-width: 1100px) {
   .menu-btn {
     display: none;
   }
@@ -245,31 +304,72 @@ button {
   display: none;
   border-top: 1px solid var(--border);
   background: var(--bg-elevated);
-  padding: 0.75rem 1rem 1rem;
+  padding: 0.5rem 0 calc(0.75rem + env(safe-area-inset-bottom, 0px));
+  max-height: min(70dvh, 28rem);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-.mobile-nav.open {
+.mobile-nav.open,
+.mobile-nav.open[hidden] {
   display: block;
+  /* hidden attr removed by JS; keep fallback if only class is toggled */
+}
+
+.mobile-nav.open[hidden] {
+  display: block !important;
 }
 
 .mobile-nav a {
   display: block;
   border-radius: var(--radius-sm);
-  padding: 0.65rem 0.75rem;
-  font-size: 0.875rem;
+  padding: 0.8rem 0.85rem;
+  font-size: 0.95rem;
   color: var(--fg-muted);
+  min-height: 2.75rem;
 }
 
-.mobile-nav a:hover {
+.mobile-nav a:hover,
+.mobile-nav a:focus-visible {
   background: var(--bg-subtle);
   color: var(--fg);
+  outline: none;
+}
+
+.mobile-nav a:active {
+  background: color-mix(in oklab, var(--accent) 10%, var(--bg-subtle));
+  color: var(--accent);
+}
+
+.mobile-nav-divider {
+  height: 1px;
+  margin: 0.4rem 0.85rem;
+  background: var(--border);
+}
+
+.mobile-nav .mobile-ext {
+  color: var(--fg);
+  font-weight: 500;
+}
+
+.mobile-nav .mobile-ext span {
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  margin-left: 0.35rem;
 }
 
 /* Hero */
 .hero {
   position: relative;
   overflow: hidden;
-  padding: 3rem 0 4rem;
+  padding: 2rem 0 2.5rem;
+}
+
+@media (min-width: 640px) {
+  .hero {
+    padding: 3rem 0 4rem;
+  }
 }
 
 @media (min-width: 1024px) {
@@ -355,11 +455,12 @@ button {
 
 h1 {
   margin: 0 0 1rem;
-  font-size: clamp(2rem, 4vw, 3.25rem);
+  font-size: clamp(1.65rem, 6.5vw, 3.25rem);
   font-weight: 600;
   letter-spacing: -0.03em;
-  line-height: 1.1;
+  line-height: 1.12;
   text-wrap: balance;
+  overflow-wrap: anywhere;
 }
 
 h1 .accent {
@@ -368,10 +469,17 @@ h1 .accent {
 }
 
 .lead {
-  margin: 0 0 1.5rem;
+  margin: 0 0 1.25rem;
   max-width: 36rem;
-  font-size: 1.05rem;
+  font-size: 0.98rem;
   color: var(--fg-muted);
+}
+
+@media (min-width: 640px) {
+  .lead {
+    margin-bottom: 1.5rem;
+    font-size: 1.05rem;
+  }
 }
 
 .code-block {
@@ -381,6 +489,7 @@ h1 .accent {
   background: var(--bg-elevated);
   box-shadow: var(--shadow-panel);
   margin-bottom: 0.75rem;
+  max-width: 100%;
 }
 
 .code-head {
@@ -398,16 +507,31 @@ h1 .accent {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--fg-subtle);
+  min-width: 0;
 }
 
 .code-block pre {
   margin: 0;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   padding: 0.85rem;
   font-family: var(--font-mono);
-  font-size: 12.5px;
+  font-size: 12px;
   line-height: 1.55;
   color: var(--accent);
+  max-width: 100%;
+}
+
+.code-block pre code {
+  white-space: pre;
+  word-break: normal;
+}
+
+@media (max-width: 479px) {
+  .code-block pre {
+    font-size: 11px;
+    padding: 0.75rem;
+  }
 }
 
 .copy-btn {
@@ -437,10 +561,34 @@ h1 .accent {
   margin-bottom: 1rem;
 }
 
+.cta-row .btn {
+  flex: 1 1 auto;
+  min-width: min(100%, 10rem);
+}
+
+@media (max-width: 479px) {
+  .cta-row {
+    flex-direction: column;
+  }
+
+  .cta-row .btn {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
 .fineprint {
   margin: 0;
   font-size: 0.75rem;
   color: var(--fg-subtle);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.fineprint a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 /* Terminal */
@@ -458,9 +606,18 @@ h1 .accent {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.75rem;
+  gap: 0.5rem;
   border-bottom: 1px solid var(--border);
-  padding: 0.6rem 1rem;
+  padding: 0.6rem 0.75rem;
+  flex-wrap: wrap;
+}
+
+@media (min-width: 480px) {
+  .terminal-bar {
+    padding: 0.6rem 1rem;
+    gap: 0.75rem;
+    flex-wrap: nowrap;
+  }
 }
 
 .dots {
@@ -493,12 +650,22 @@ h1 .accent {
 }
 
 .terminal-body {
-  max-height: 320px;
+  max-height: min(280px, 50dvh);
   overflow: auto;
-  padding: 1rem;
+  -webkit-overflow-scrolling: touch;
+  padding: 0.85rem;
   font-family: var(--font-mono);
-  font-size: 12.5px;
+  font-size: 11.5px;
   line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 640px) {
+  .terminal-body {
+    max-height: 320px;
+    padding: 1rem;
+    font-size: 12.5px;
+  }
 }
 
 .t-prompt {
@@ -537,7 +704,19 @@ h1 .accent {
 /* Sections */
 .section {
   border-top: 1px solid var(--border);
-  padding: 4rem 0;
+  padding: 2.5rem 0;
+}
+
+@media (min-width: 640px) {
+  .section {
+    padding: 3.5rem 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section {
+    padding: 4rem 0;
+  }
 }
 
 .section.alt {
@@ -568,30 +747,72 @@ h1 .accent {
 
 /* Table */
 .table-wrap {
-  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   border-radius: var(--radius-xl);
   border: 1px solid var(--border);
   background: var(--bg-panel);
+  max-width: 100%;
+  /* keep rounded corners while scrolling */
+  mask-image: linear-gradient(#000 0 0);
 }
 
 table {
   width: 100%;
+  min-width: 28rem;
   border-collapse: collapse;
   text-align: left;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
+}
+
+@media (min-width: 640px) {
+  table {
+    font-size: 0.875rem;
+  }
+}
+
+/* Compact 2-col tables can stay fluid on narrow screens */
+.table-wrap.table-tight table,
+.table-wrap.table-fluid table {
+  min-width: 0;
+}
+
+@media (max-width: 479px) {
+  .table-wrap.table-tight table {
+    font-size: 0.78rem;
+  }
+
+  .table-wrap.table-tight th,
+  .table-wrap.table-tight td {
+    padding: 0.6rem 0.7rem;
+  }
 }
 
 th {
-  padding: 0.75rem 1.25rem;
+  padding: 0.65rem 0.85rem;
   font-weight: 500;
   color: var(--fg-muted);
   background: color-mix(in oklab, var(--bg-subtle) 70%, transparent);
   border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+@media (min-width: 640px) {
+  th {
+    padding: 0.75rem 1.25rem;
+  }
 }
 
 td {
-  padding: 0.9rem 1.25rem;
+  padding: 0.75rem 0.85rem;
   border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+@media (min-width: 640px) {
+  td {
+    padding: 0.9rem 1.25rem;
+  }
 }
 
 tr:last-child td {
@@ -679,7 +900,13 @@ td:last-child {
   border-radius: var(--radius-xl);
   border: 1px solid var(--border);
   background: var(--bg-panel);
-  padding: 1.25rem 1.5rem;
+  padding: 1rem 1.1rem;
+}
+
+@media (min-width: 640px) {
+  .install-panel {
+    padding: 1.25rem 1.5rem;
+  }
 }
 
 .install-panel h3 {
@@ -811,8 +1038,10 @@ td:last-child {
 
 .cli-row code {
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: 12.5px;
   color: var(--accent);
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .cli-row span {
@@ -911,12 +1140,26 @@ td:last-child {
   border-radius: 1rem;
   border: 1px solid var(--border-strong);
   background: var(--bg-panel);
-  padding: 2.5rem 1.5rem;
+  padding: 1.75rem 1.15rem;
 }
 
 @media (min-width: 640px) {
   .cta-band {
     padding: 3rem 2.5rem;
+  }
+}
+
+.cta-band .cta-row .btn {
+  flex: 1 1 auto;
+}
+
+@media (max-width: 479px) {
+  .cta-band .cta-row {
+    flex-direction: column;
+  }
+
+  .cta-band .cta-row .btn {
+    width: 100%;
   }
 }
 
@@ -1143,11 +1386,19 @@ td:last-child {
 .inline-pre {
   margin: 0;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   font-family: var(--font-mono);
-  font-size: 12.5px;
+  font-size: 12px;
   line-height: 1.55;
   color: var(--fg-muted);
   white-space: pre;
+  max-width: 100%;
+}
+
+@media (min-width: 640px) {
+  .inline-pre {
+    font-size: 12.5px;
+  }
 }
 
 .inline-code {
@@ -1296,9 +1547,64 @@ td code {
   text-decoration: underline;
 }
 
-@media (max-width: 767px) {
-  .nav a[href="#upgrade"],
-  .nav a[href="#faq"] {
-    /* keep mobile nav for these */
+/* —— Mobile / narrow polish —— */
+@media (max-width: 1099px) {
+  /* tablet: keep actions compact when hamburger is visible */
+  .header-actions .btn {
+    height: 2.35rem;
+    padding: 0 0.7rem;
+    font-size: 0.8125rem;
+  }
+}
+
+@media (max-width: 639px) {
+  .card {
+    padding: 1.05rem;
+  }
+
+  .arch-layer {
+    gap: 0.65rem;
+  }
+
+  .arch-card {
+    padding: 0.8rem 1rem;
+  }
+
+  .callout {
+    padding: 1rem;
+  }
+
+  .faq-item summary {
+    padding: 0.85rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .faq-item p {
+    padding: 0 1rem 0.9rem;
+  }
+
+  .stat strong {
+    font-size: 1.2rem;
+  }
+
+  .footer {
+    padding: 1.5rem 0 calc(1.5rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* Very small phones */
+@media (max-width: 359px) {
+  .brand-mark {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
+  h1 {
+    font-size: 1.45rem;
+  }
+
+  .chip {
+    font-size: 10px;
+    padding: 0.2rem 0.5rem;
   }
 }

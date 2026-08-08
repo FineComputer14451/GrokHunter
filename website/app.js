@@ -2,18 +2,51 @@
   // Mobile menu
   const menuBtn = document.getElementById("menuBtn");
   const mobileNav = document.getElementById("mobileNav");
+
+  function setMenuOpen(open) {
+    if (!menuBtn || !mobileNav) return;
+    mobileNav.classList.toggle("open", open);
+    if (open) {
+      mobileNav.removeAttribute("hidden");
+    } else {
+      mobileNav.setAttribute("hidden", "");
+    }
+    menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+    menuBtn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+    document.body.classList.toggle("menu-open", open);
+  }
+
   if (menuBtn && mobileNav) {
-    menuBtn.addEventListener("click", () => {
-      const open = mobileNav.classList.toggle("open");
-      menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
-      menuBtn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+    // closed by default (hidden attribute in HTML)
+    setMenuOpen(false);
+
+    menuBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const open = !mobileNav.classList.contains("open");
+      setMenuOpen(open);
     });
+
     mobileNav.querySelectorAll("a").forEach((a) => {
-      a.addEventListener("click", () => {
-        mobileNav.classList.remove("open");
-        menuBtn.setAttribute("aria-expanded", "false");
-      });
+      a.addEventListener("click", () => setMenuOpen(false));
     });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") setMenuOpen(false);
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!mobileNav.classList.contains("open")) return;
+      if (mobileNav.contains(e.target) || menuBtn.contains(e.target)) return;
+      setMenuOpen(false);
+    });
+
+    // Close hamburger when viewport grows to desktop nav
+    const mql = window.matchMedia("(min-width: 1100px)");
+    const onBp = () => {
+      if (mql.matches) setMenuOpen(false);
+    };
+    if (mql.addEventListener) mql.addEventListener("change", onBp);
+    else if (mql.addListener) mql.addListener(onBp);
   }
 
   async function copyText(text) {
