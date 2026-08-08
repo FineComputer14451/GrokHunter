@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+## [1.0.7] — 2026-08-08 — Credits, Kali menu, mobile site
+
+Desktop polish, full upstream attribution, product-site mobile layout, and greener CI.
+
+### Kali menu integration
+
+- **Applications → GrokHunter** submenu (XFCE / freedesktop): Grok Build, Coding Team, Scout, Aider, Doctor, Setup, Credits
+- `config/desktop/*.desktop` + `grokhunter.menu` / `grokhunter.directory`
+- `scripts/install_kali_menu.sh` · `grokhunter menu [install|remove]`
+- Wired into `skills install` / X11 setup; doctor checks menu presence
+
 ### Credits — full upstream recognition
 
 - **[CREDITS.md](CREDITS.md)** expanded for four pillars:
@@ -10,14 +21,16 @@
   - **Kali / Offensive Security** — NetHunter rootfs
   - **xAI** — Grok Build + models
 - `grokhunter credits`, doctor Credits section, post-install, MOTD, Kali menu, website, README, FAQ, ARCHITECTURE, agents/skills
-- GitHub About names all four lineages
 
-### Kali menu integration
+### Product site
 
-- **Applications → GrokHunter** submenu (XFCE / freedesktop): Grok Build, Coding Team, Scout, Aider, Doctor, Setup
-- `config/desktop/*.desktop` + `grokhunter.menu` / `grokhunter.directory`
-- `scripts/install_kali_menu.sh` · `grokhunter menu [install|remove]`
-- Wired into `skills install` / X11 setup; doctor checks menu presence
+- **Mobile layout** — compact sticky header, hamburger until 1100px, scrollable tables, full-width CTAs, safe-area insets
+- No horizontal overflow on narrow phones
+
+### CI
+
+- Smoke: capture help/credits before `grep` (avoid pipefail + SIGPIPE false fails)
+- Smoke `find` expression aligned with `ci-unit.sh`
 
 ## [1.0.6] — 2026-08-08 — Doctor & desktop polish
 
