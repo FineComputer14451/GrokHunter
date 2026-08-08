@@ -17,7 +17,7 @@ if [[ -r "${HOME}/.grok/secrets.env" ]]; then
 fi
 
 export GROKHUNTER_HOME="${GROKHUNTER_HOME:-${HOME}/GrokHunter}"
-export GROKHUNTER_VERSION="${GROKHUNTER_VERSION:-1.0.3}"
+export GROKHUNTER_VERSION="${GROKHUNTER_VERSION:-1.0.4}"
 if [[ -d "${GROKHUNTER_HOME}/bin" ]]; then
   export PATH="${GROKHUNTER_HOME}/bin:${PATH}"
 fi
