@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## [1.0.8] — 2026-08-22 — Overlay extract, Grok 4.6, install hardening
+
+One-liner now installs the full overlay. Default model is **grok-4.6**; min Grok Build is **1.0.5**. Install/uninstall edges from the 1.0.7 review are closed.
+
 ### Install hardening
 
 - Pin Termux-native Grok installer to a GitHub commit (`TERMUX_NATIVE_PIN`), not floating `main`

@@ -1,6 +1,6 @@
 # Grok Build 1.0.5 compatibility — GrokHunter Rootless
 
-GrokHunter **1.0.7+** targets **[Grok Build 1.0.5](https://x.ai/build/changelog)** (stable, 2026-08-15) with **Grok 4.6** as the default coding model.
+GrokHunter **1.0.8+** targets **[Grok Build 1.0.5](https://x.ai/build/changelog)** (stable, 2026-08-15) with **Grok 4.6** as the default coding model.
 
 ## What 1.0.5 means for this lab
 
