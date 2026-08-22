@@ -240,8 +240,9 @@ cmd_status() {
   fi
   local models="no"
   local cfg="${GROK_CONFIG:-${HOME}/.grok/config.toml}"
-  local marker="# --- Grok Imagine Cinematic Studio: v9-4p5 specialist models"
-  if [[ -f "${cfg}" ]] && grep -qF "${marker}" "${cfg}" 2>/dev/null; then
+  local marker="# --- GrokHunter: v9 specialist models"
+  local marker_legacy="# --- Grok Imagine Cinematic Studio: v9-4p5 specialist models"
+  if [[ -f "${cfg}" ]] && { grep -qF "${marker}" "${cfg}" 2>/dev/null || grep -qF "${marker_legacy}" "${cfg}" 2>/dev/null; }; then
     models="yes"
   fi
   local skills core_n
@@ -862,8 +863,8 @@ main() {
       cmd_status
       ;;
     doctor)
-      local doc="${HOME}/.local/bin/grokhunter-doctor"
-      [[ -x "$doc" ]] || doc="${GROKHUNTER_HOME}/bin/grokhunter-doctor"
+      local doc="${GROKHUNTER_HOME}/bin/grokhunter-doctor"
+      [[ -f "$doc" ]] || doc="${HOME}/.local/bin/grokhunter-doctor"
       exec bash "$doc"
       ;;
     setup|sync|boot)

@@ -28,6 +28,8 @@ extra=(
   lib/actions.sh
   lib/grok.sh
   lib/x11.sh
+  lib/https-probe.sh
+  lib/os-identity.sh
   scripts/install_v9_grok_models.sh
   scripts/install_aider.sh
   scripts/install_grok_profile.sh
@@ -199,6 +201,61 @@ info "git identity OK"
 bash bin/grokhunter git-identity help | grep -q set || die "git-identity help missing set"
 info "git-identity help OK"
 
+# ---------- doctor HTTPS probe (Cloudflare 403 is not offline) ----------
+# curl -f treats https://x.ai 403 as failure even when TLS works.
+if grep -E 'curl[[:space:]]+-[A-Za-z0-9]*f' bin/grokhunter-doctor | grep -qE 'x\.ai'; then
+  die "doctor x.ai probe still uses curl -f (Cloudflare 403 looks offline)"
+fi
+grep -q 'api.x.ai/v1/models' bin/grokhunter-doctor || die "doctor should probe api.x.ai/v1/models"
+[[ -f lib/https-probe.sh ]] || die "missing lib/https-probe.sh"
+# shellcheck disable=SC1091
+source lib/https-probe.sh
+_gh_http_code_means_reachable 401 || die "401 (unauthenticated API) should count as reachable"
+_gh_http_code_means_reachable 403 || die "403 (Cloudflare challenge) should count as reachable"
+_gh_http_code_means_reachable 421 || die "421 should count as reachable"
+_gh_http_code_means_reachable 200 || die "200 should count as reachable"
+if _gh_http_code_means_reachable 000; then die "000 (connect fail) should not count as reachable"; fi
+if _gh_http_code_means_reachable ""; then die "empty http_code should not count as reachable"; fi
+info "doctor https probe OK"
+
+# ---------- doctor os-release (missing file is not a hard fail) ----------
+if grep -A2 'No /etc/os-release' bin/grokhunter-doctor | grep -q 'FAIL=1'; then
+  die "missing os-release should warn, not FAIL doctor"
+fi
+[[ -f lib/os-identity.sh ]] || die "missing lib/os-identity.sh"
+# shellcheck disable=SC1091
+source lib/os-identity.sh
+_os_tmp="$(mktemp -d)"
+mkdir -p "${_os_tmp}/usr/lib" "${_os_tmp}/etc"
+printf 'ID=kali\nVERSION=2026.2\n' > "${_os_tmp}/usr/lib/os-release"
+GROKHUNTER_OS_ROOT="${_os_tmp}"
+got="$(_gh_os_release_file)"
+[[ "${got}" == "${_os_tmp}/usr/lib/os-release" ]] || die "should fall back to usr/lib/os-release, got ${got:-empty}"
+printf 'ID=kali\n' > "${_os_tmp}/etc/os-release"
+got="$(_gh_os_release_file)"
+[[ "${got}" == "${_os_tmp}/etc/os-release" ]] || die "should prefer /etc/os-release, got ${got:-empty}"
+rm -rf "${_os_tmp}"
+_os_empty="$(mktemp -d)"
+_os_prefix_save="${PREFIX-}"
+GROKHUNTER_OS_ROOT="${_os_empty}"
+PREFIX=""
+if _gh_os_release_file >/dev/null; then
+  PREFIX="${_os_prefix_save}"
+  die "empty root should have no os-release"
+fi
+PREFIX="${_os_prefix_save}"
+rm -rf "${_os_empty}"
+unset GROKHUNTER_OS_ROOT
+info "doctor os-release OK"
+
+# ---------- doctor clone-only cache is informational ----------
+if grep -E "warn .*No module cache yet" bin/grokhunter-doctor >/dev/null; then
+  die "clone-only module cache should be ok, not warn"
+fi
+if grep -E "warn .*No termux-distro engine cache" bin/grokhunter-doctor >/dev/null; then
+  die "missing engine cache should be ok, not warn"
+fi
+info "doctor clone-only cache OK"
 
 # ---------- status line fields ----------
 st="$(bash bin/grokhunter status)"
@@ -209,6 +266,23 @@ echo "${st}" | grep -q 'personas=' || die "status missing personas="
 echo "${st}" | grep -q 'roles=' || die "status missing roles="
 echo "${st}" | grep -q 'wrappers=' || die "status missing wrappers="
 info "status line OK"
+
+# ---------- status models= follows current + legacy V9 markers ----------
+_status_models() {
+  local cfg st
+  cfg="$(mktemp)"
+  printf '%s\n' "$1" > "${cfg}"
+  st="$(GROK_CONFIG="${cfg}" bash bin/grokhunter status)"
+  rm -f "${cfg}"
+  printf '%s\n' "${st}"
+}
+echo "$(_status_models '# --- GrokHunter: v9 specialist models (test) ---')" \
+  | grep -q 'models=yes' || die "status should treat current V9 marker as models=yes"
+echo "$(_status_models '# --- Grok Imagine Cinematic Studio: v9-4p5 specialist models')" \
+  | grep -q 'models=yes' || die "status should treat legacy V9 marker as models=yes"
+echo "$(_status_models '# no pickers')" \
+  | grep -q 'models=no' || die "status should report models=no without a V9 marker"
+info "status models marker OK"
 
 # ---------- ai-smoke missing-key path (no network) ----------
 # Unset key for this subshell only; do not touch secrets files.

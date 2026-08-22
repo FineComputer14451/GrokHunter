@@ -170,7 +170,36 @@ aider --version
 
 See [EDITORS.md](EDITORS.md).
 
+## Environment
+
+### Doctor says “No /etc/os-release”
+
+Warning only — the coding lab still works. Termux host Android often has no `/etc/os-release`; Kali proot should have `/etc/os-release` → `/usr/lib/os-release`.
+
+Doctor also looks at `/usr/lib/os-release` and `$PREFIX/etc/os-release`. Inside Kali:
+
+```bash
+ls -l /etc/os-release /usr/lib/os-release
+```
+
+If both are missing, identification is skipped; Grok / PATH checks are the ones that matter.
+
 ## Network
+
+### Doctor says “Offline or no route to x.ai”
+
+That line is a **warning**, not a hard fail. Pair-programming still works offline.
+
+Doctor probes `https://api.x.ai/v1/models` (then `https://x.ai`). **HTTP 401 / 403 counts as reachable** — Cloudflare often challenges `curl` on the marketing site, and the API returns 401 without a key.
+
+Only treat it as a real outage when the probe gets no HTTP status (`000` / timeout):
+
+```bash
+curl -sS -o /dev/null -w '%{http_code}\n' --max-time 5 https://api.x.ai/v1/models
+# 401 = online (no key). 000 = no route / DNS / TLS failed.
+```
+
+If DNS is empty, see below. Otherwise: phone data/Wi-Fi, VPN, or wait; the lab is still OK for local coding.
 
 ### DNS problems inside rootfs
 

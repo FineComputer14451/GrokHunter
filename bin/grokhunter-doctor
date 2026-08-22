@@ -40,6 +40,16 @@ if [[ -f "${GROKHUNTER_HOME}/lib/git-identity.sh" ]]; then
   # shellcheck source=lib/git-identity.sh
   source "${GROKHUNTER_HOME}/lib/git-identity.sh"
 fi
+# shellcheck disable=SC1091
+if [[ -f "${GROKHUNTER_HOME}/lib/https-probe.sh" ]]; then
+  # shellcheck source=lib/https-probe.sh
+  source "${GROKHUNTER_HOME}/lib/https-probe.sh"
+fi
+# shellcheck disable=SC1091
+if [[ -f "${GROKHUNTER_HOME}/lib/os-identity.sh" ]]; then
+  # shellcheck source=lib/os-identity.sh
+  source "${GROKHUNTER_HOME}/lib/os-identity.sh"
+fi
 
 RED=$'\033[0;31m'
 GREEN=$'\033[0;32m'
@@ -87,9 +97,17 @@ elif [[ -d /data/data/com.termux ]]; then
   ROOTLESS="termux-host"
 fi
 
-if [[ -r /etc/os-release ]]; then
-  # shellcheck disable=SC1091
-  . /etc/os-release
+_osrel=""
+if declare -F _gh_os_release_file >/dev/null 2>&1; then
+  _osrel="$(_gh_os_release_file || true)"
+elif [[ -r /etc/os-release ]]; then
+  _osrel="/etc/os-release"
+elif [[ -r /usr/lib/os-release ]]; then
+  _osrel="/usr/lib/os-release"
+fi
+if [[ -n "${_osrel}" ]]; then
+  # shellcheck disable=SC1090
+  . "${_osrel}"
   if [[ "${ID:-}" == "kali" ]]; then
     ok "Kali ${VERSION:-?} (${VERSION_CODENAME:-rolling})"
     if [[ "$ROOTLESS" == "termux-host" ]] || [[ -d /data/data/com.termux ]]; then
@@ -101,9 +119,10 @@ if [[ -r /etc/os-release ]]; then
     WARN=1
   fi
 else
-  bad "No /etc/os-release"
-  FAIL=1
+  warn "No os-release (/etc/os-release, /usr/lib/os-release) — identification skipped; lab still usable"
+  WARN=1
 fi
+unset _osrel
 
 if command -v proot >/dev/null 2>&1 || [[ -n "${PROOT_TMPDIR:-}" ]] || grep -q proot /proc/1/cmdline 2>/dev/null; then
   ok "proot signals present (rootless)"
@@ -473,10 +492,10 @@ if [[ -d "${HOME}/.cache/grokhunter" ]]; then
   if [[ -f "${HOME}/.cache/grokhunter/termux-distro.sh" ]]; then
     ok "termux-distro engine cached (jorexdeveloper/termux-distro · not in CWD)"
   else
-    warn "No termux-distro engine cache yet (fetched from jorexdeveloper on install)"
+    ok "No termux-distro engine cache yet (fetched from jorexdeveloper on install)"
   fi
 else
-  warn "No module cache yet (normal for clone-only installs)"
+  ok "No module cache yet (normal for clone-only installs)"
 fi
 
 # ---------- Credits ----------
@@ -500,8 +519,9 @@ else
   warn "DNS may be incomplete (check resolv.conf)"
   WARN=1
 fi
-if curl -fsS --max-time 5 -o /dev/null -w '' https://x.ai 2>/dev/null \
-  || curl -fsS --max-time 5 -o /dev/null https://api.x.ai 2>/dev/null; then
+if declare -F _gh_https_got_response >/dev/null 2>&1 \
+  && { _gh_https_got_response https://api.x.ai/v1/models \
+    || _gh_https_got_response https://x.ai; }; then
   ok "HTTPS to x.ai reachable"
 else
   warn "Offline or no route to x.ai (HTTPS probe failed — normal when offline)"

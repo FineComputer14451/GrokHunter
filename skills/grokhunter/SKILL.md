@@ -224,6 +224,7 @@ Canonical helpers: repo `bin/` (`nh-x11`, `aider-grok`, `grokhunter`, …) → `
 
 | Finding | Typical fix |
 |---------|-------------|
+| No /etc/os-release | Warning only. Check `/usr/lib/os-release`; Termux host often has none. Not a lab blocker. |
 | grok missing / &lt; 1.0.5 | `grokhunter ensure` (target **1.0.5+**) |
 | channel=alpha / bad fork model | `bash scripts/install_grok_profile.sh --force` |
 | nethunter not on PATH | Termux host; re-run install |
@@ -232,7 +233,7 @@ Canonical helpers: repo `bin/` (`nh-x11`, `aider-grok`, `grokhunter`, …) → `
 | V9 pickers missing | `grokhunter models install` |
 | wrapper not on PATH | `source ~/.grok/profile.sh` or fix PATH |
 | no secrets / key | write `~/.grok/secrets.env` mode 600 |
-| x.ai unreachable | network / DNS; offline lab still OK for non-API work |
+| x.ai unreachable | real outage only if probe gets no HTTP status (`000`); Cloudflare 403 / API 401 are reachable. Offline lab still OK for non-API work |
 
 ## Response style
 

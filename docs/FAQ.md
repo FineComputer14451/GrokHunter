@@ -50,6 +50,14 @@ Only if you want a graphical desktop. Shell + `grok` is enough for most pair-pro
 
 Yes. Larger screens work well with `nh-x11` + XFCE.
 
+## Why does doctor say “No /etc/os-release”?
+
+That used to be a hard fail. It is now a **warning**. Termux’s Android host often has no `/etc/os-release`. Kali NetHunter should have it (or `/usr/lib/os-release`). Coding still works either way.
+
+## Why does doctor warn “Offline or no route to x.ai”?
+
+Usually a **false alarm**. Cloudflare often returns 403 to `curl` on `https://x.ai`, and `https://api.x.ai/v1/models` returns 401 without a key. Both mean the network works. Doctor now treats those as reachable. A real outage is `http_code=000` / timeout.
+
 ## Why do GitHub commits show `invalid-email-address`?
 
 The lab often runs as `root` inside proot, so git defaults to `root@localhost.localdomain`. GitHub cannot map that to a user.

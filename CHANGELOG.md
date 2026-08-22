@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+### Status / doctor follow-ups
+
+- `grokhunter status` treats current **and** legacy V9 config markers as `models=yes`
+- Clone-only installer cache is informational (`ok`), not a yellow warning
+
+### Doctor environment
+
+- Missing `/etc/os-release` is a warning, not a hard fail (Termux host / incomplete rootfs)
+- OS probe also reads `/usr/lib/os-release` and `$PREFIX/etc/os-release`
+
+### Doctor network probe
+
+- HTTPS check no longer uses `curl -f` against `https://x.ai` (Cloudflare 403 looked “offline” on a working lab)
+- Probe `https://api.x.ai/v1/models` first; any HTTP 1xx–5xx counts as reachable (401 unauthenticated is OK)
+
 ### GitHub identity
 
 - History rewrite: `root <root@localhost.localdomain>` commits and tags now attribute to **Fine_Computer_4451** (`119702188+FineComputer14451@users.noreply.github.com`)
