@@ -39,7 +39,7 @@ GrokHunter Rootless (coding lab) for Termux
 Usage: install.sh [OPTIONS]
 
 Options:
-  -f, --full              Full installation (includes desktop environment)
+  -f, --full              Full installation (desktop-capable rootfs; pass --de/--browser to configure)
   -m, --mini              Mini installation (essential packages only)
   -n, --nano              Nano installation (minimal footprint)
   --de <desktop>          Desktop environment (e17|gnome|i3|kde|lxde|mate|xfce)
@@ -53,7 +53,7 @@ Options:
   --no-aider              Skip Aider installation
   --with-v9-models        Install Grok V9 / 4.5 model pickers into config.toml
   --no-v9-models          Skip V9 model pickers
-  --with-completions      Install zsh/bash completions + profile snippet
+  --with-completions      Copy completions + ~/.grok/profile.sh (does not edit .zshrc/.bashrc)
   --no-completions        Skip shell completions
   --overlay-only          Skip rootfs / termux-distro; only run optional overlays
                           (use with --with-grok / --with-x11 / --with-aider / …)

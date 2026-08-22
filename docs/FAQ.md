@@ -52,12 +52,18 @@ Yes. Larger screens work well with `nh-x11` + XFCE.
 
 ## How do I update?
 
-Re-run the installer (idempotent) or:
+Use **overlay-only** so you do not re-enter the termux-distro / rootfs path:
 
 ```bash
+# Clone:
 cd ~/GrokHunter && git pull
-GROKHUNTER_REFRESH=1 bash install.sh --with-grok   # refresh modules + Grok
-grokhunter ensure             # Grok binary only (shared ensure_grok.sh)
+bash install.sh --overlay-only --with-completions
+grokhunter ensure
+grokhunter skills install
+
+# One-liner (no git):
+GROKHUNTER_REFRESH=1 bash <(curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/install.sh) \
+  --overlay-only --with-completions
 ```
 
 ## Can I add features without re-downloading Kali?

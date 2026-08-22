@@ -44,7 +44,14 @@ die_with_help() {
 REPO_RAW="https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main"
 REPO_TAR="https://github.com/FineComputer14451/GrokHunter/archive/refs/heads/main.tar.gz"
 MODULES=(cli.sh actions.sh grok.sh x11.sh)
-MODULES_VERSION="2026.2.11"
+DISCOVER_MODULES=(skills-discover.sh agents-discover.sh personas-discover.sh roles-discover.sh)
+MODULES_VERSION="2026.2.12"
+OVERLAY_ITEMS=(
+  install.sh uninstall.sh VERSION LICENSE CREDITS.md AGENTS.md README.md CHANGELOG.md
+)
+OVERLAY_DIRS=(
+  bin lib scripts skills agents personas roles config templates branding docs
+)
 
 CLEANUP_TMP=""
 WAKE_HELD=0
@@ -109,7 +116,23 @@ if [[ -n "${BASH_SOURCE[0]:-}" && -f "${BASH_SOURCE[0]}" ]]; then
   SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" || SCRIPT_DIR=""
 else SCRIPT_DIR=""; fi
 
+# Process substitution (`bash <(curl …)`) yields /dev/fd or /proc/self/fd — not a real overlay.
+_gh_is_ephemeral_dir() {
+  local d="${1:-}"
+  [[ -z "$d" ]] && return 0
+  case "$d" in
+    /dev/fd|/dev/fd/*|/proc/self/fd|/proc/self/fd/*|/proc/*/fd|/proc/*/fd/*) return 0 ;;
+  esac
+  [[ "$d" == /dev/fd* || "$d" == /proc/*/fd* ]] && return 0
+  return 1
+}
+
+if _gh_is_ephemeral_dir "${SCRIPT_DIR}" || [[ ! -f "${SCRIPT_DIR}/install.sh" ]]; then
+  SCRIPT_DIR=""
+fi
+
 LIB_DIR=""
+OVERLAY_ROOT=""
 CACHE_DIR="${HOME}/.cache/grokhunter"
 REFRESH="${GROKHUNTER_REFRESH:-0}"
 
@@ -120,67 +143,171 @@ validate_module() {
   return 0
 }
 
-fetch_modules() {
-  local dest="$1"
-  mkdir -p "${dest}/lib" || die "cannot create ${dest}/lib"
-  local m fail=0
-  for m in "${MODULES[@]}"; do
-    if ! curl -fsSL --connect-timeout 12 --max-time 60 --retry 3 --retry-delay 1 \
-         "${REPO_RAW}/lib/${m}" -o "${dest}/lib/${m}"; then
-      warn "Failed to fetch lib/${m}"; fail=1; break
-    fi
-    if ! validate_module "${dest}/lib/${m}"; then
-      warn "Downloaded lib/${m} looks invalid"; fail=1; break
-    fi
-  done
-  [[ $fail -eq 0 ]]
+_gh_overlay_complete() {
+  local dir="${1:-}"
+  [[ -n "${dir}" && -d "${dir}" ]] || return 1
+  [[ -f "${dir}/install.sh" ]] || return 1
+  [[ -f "${dir}/lib/grok.sh" ]] || return 1
+  [[ -f "${dir}/lib/skills-discover.sh" ]] || return 1
+  [[ -f "${dir}/lib/agents-discover.sh" ]] || return 1
+  [[ -f "${dir}/lib/personas-discover.sh" ]] || return 1
+  [[ -f "${dir}/lib/roles-discover.sh" ]] || return 1
+  [[ -f "${dir}/bin/grokhunter" ]] || return 1
+  [[ -f "${dir}/scripts/install-completions.sh" ]] || return 1
+  [[ -f "${dir}/scripts/ensure_grok.sh" ]] || return 1
+  [[ -d "${dir}/skills" ]] || return 1
+  return 0
 }
 
-if [[ -n "${SCRIPT_DIR}" && -d "${SCRIPT_DIR}/lib" && "${REFRESH}" != "1" ]]; then
-  LIB_DIR="${SCRIPT_DIR}/lib"; info "Using local modules: ${LIB_DIR}"
-else
-  info "Termux one-liner bootstrap..."
-  mkdir -p "${CACHE_DIR}" || die "cannot create cache ${CACHE_DIR}"
-  cache_ok=0
-  if [[ "${REFRESH}" != "1" \
-     && -f "${CACHE_DIR}/lib/cli.sh" && -f "${CACHE_DIR}/lib/actions.sh" \
-     && -f "${CACHE_DIR}/lib/grok.sh" && -f "${CACHE_DIR}/lib/x11.sh" \
-     && -f "${CACHE_DIR}/MODULES_VERSION" ]] \
-     && [[ "$(cat "${CACHE_DIR}/MODULES_VERSION" 2>/dev/null)" == "${MODULES_VERSION}" ]]; then
-    cache_ok=1
-  fi
-  if [[ "${cache_ok}" -eq 1 ]]; then
-    info "Cache hit → ${CACHE_DIR}/lib (v${MODULES_VERSION})"; LIB_DIR="${CACHE_DIR}/lib"
-  else
-    [[ "${REFRESH}" == "1" ]] && info "Refreshing module cache..."
-    if fetch_modules "${CACHE_DIR}"; then
-      printf '%s\n' "${MODULES_VERSION}" > "${CACHE_DIR}/MODULES_VERSION"
-      info "Modules ready in ${CACHE_DIR}"; LIB_DIR="${CACHE_DIR}/lib"
-    else
-      info "Falling back to full tarball..."
-      CLEANUP_TMP="$(mktemp -d "${TMPDIR}/grokhunter.XXXXXX")" || die "mktemp failed"
-      if curl -fsSL --connect-timeout 20 --max-time 180 --retry 2 \
-           "${REPO_TAR}" | tar -xz -C "${CLEANUP_TMP}" --strip-components=1 2>/dev/null \
-         && [[ -d "${CLEANUP_TMP}/lib" ]]; then
-        rm -rf "${CACHE_DIR}/lib"; mkdir -p "${CACHE_DIR}"
-        cp -a "${CLEANUP_TMP}/lib" "${CACHE_DIR}/" || die "failed to copy modules"
-        LIB_DIR="${CACHE_DIR}/lib"
-        printf '%s\n' "${MODULES_VERSION}" > "${CACHE_DIR}/MODULES_VERSION"
-        info "Modules from tarball"
-      else
-        die_with_help "Failed to download installer modules from GitHub." \
-          "Check your internet connection" \
-          "Force a clean re-download:  GROKHUNTER_REFRESH=1 bash <(curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/install.sh)" \
-          "Or clone and run locally:  git clone https://github.com/FineComputer14451/GrokHunter.git && cd GrokHunter && bash install.sh"
-      fi
+# Clone / GROKHUNTER_HOME / ~/GrokHunter / cache src (never a foreign non-empty dir).
+_gh_pick_overlay_dest() {
+  local home_dest="${HOME}/GrokHunter"
+  local cache_src="${CACHE_DIR}/src"
+
+  if [[ -n "${SCRIPT_DIR}" ]] && ! _gh_is_ephemeral_dir "${SCRIPT_DIR}" \
+     && [[ -f "${SCRIPT_DIR}/install.sh" ]]; then
+    if _gh_overlay_complete "${SCRIPT_DIR}" || [[ -d "${SCRIPT_DIR}/.git" ]]; then
+      printf '%s\n' "${SCRIPT_DIR}"
+      return 0
     fi
   fi
-fi
+
+  if [[ -n "${GROKHUNTER_HOME:-}" ]] && ! _gh_is_ephemeral_dir "${GROKHUNTER_HOME}" \
+     && [[ -f "${GROKHUNTER_HOME}/install.sh" ]]; then
+    printf '%s\n' "${GROKHUNTER_HOME}"
+    return 0
+  fi
+
+  if [[ ! -e "${home_dest}" ]]; then
+    printf '%s\n' "${home_dest}"
+    return 0
+  fi
+  if [[ -d "${home_dest}" ]]; then
+    if [[ -z "$(ls -A "${home_dest}" 2>/dev/null)" ]]; then
+      printf '%s\n' "${home_dest}"
+      return 0
+    fi
+    if [[ -f "${home_dest}/install.sh" ]]; then
+      printf '%s\n' "${home_dest}"
+      return 0
+    fi
+  fi
+  printf '%s\n' "${cache_src}"
+}
+
+_gh_stamp_overlay() {
+  mkdir -p "${CACHE_DIR}" || true
+  printf '%s\n' "${MODULES_VERSION}" > "${CACHE_DIR}/MODULES_VERSION"
+  printf '%s\n' "${OVERLAY_ROOT}" > "${CACHE_DIR}/OVERLAY_ROOT"
+  if [[ -n "${LIB_DIR}" && -d "${LIB_DIR}" ]]; then
+    rm -rf "${CACHE_DIR}/lib"
+    cp -a "${LIB_DIR}" "${CACHE_DIR}/" 2>/dev/null || true
+  fi
+}
+
+_gh_fetch_repo_tarball() {
+  CLEANUP_TMP="$(mktemp -d "${TMPDIR}/grokhunter.XXXXXX")" || die "mktemp failed"
+  info "Fetching GrokHunter overlay (tarball)…"
+  if curl -fsSL --connect-timeout 20 --max-time 180 --retry 2 \
+       "${REPO_TAR}" | tar -xz -C "${CLEANUP_TMP}" --strip-components=1 2>/dev/null \
+     && [[ -d "${CLEANUP_TMP}/lib" && -f "${CLEANUP_TMP}/install.sh" ]]; then
+    return 0
+  fi
+  die_with_help "Failed to download GrokHunter overlay from GitHub." \
+    "Check your internet connection" \
+    "Force a clean re-download:  GROKHUNTER_REFRESH=1 bash <(curl -fsSL ${REPO_RAW}/install.sh) --overlay-only --with-completions" \
+    "Or clone and run locally:  git clone https://github.com/FineComputer14451/GrokHunter.git && cd GrokHunter && bash install.sh"
+}
+
+_gh_install_overlay_from_tmp() {
+  local dest="$1"
+  local item
+  [[ -n "${CLEANUP_TMP}" && -d "${CLEANUP_TMP}" ]] || die "overlay tmp missing"
+  mkdir -p "${dest}" || die "cannot create overlay dest ${dest}"
+  for item in "${OVERLAY_ITEMS[@]}"; do
+    if [[ -e "${CLEANUP_TMP}/${item}" ]]; then
+      cp -a "${CLEANUP_TMP}/${item}" "${dest}/" || die "failed to copy ${item}"
+    fi
+  done
+  for item in "${OVERLAY_DIRS[@]}"; do
+    if [[ -d "${CLEANUP_TMP}/${item}" ]]; then
+      rm -rf "${dest}/${item}"
+      cp -a "${CLEANUP_TMP}/${item}" "${dest}/" || die "failed to copy ${item}/"
+    fi
+  done
+}
+
+# One-liner: extract full overlay (bin/scripts/skills). Clone: local tree always wins.
+ensure_overlay_tree() {
+  mkdir -p "${CACHE_DIR}" || die "cannot create cache ${CACHE_DIR}"
+  local dest
+  dest="$(_gh_pick_overlay_dest)"
+
+  # Git clone: local tree always wins (including REFRESH=1). Never tar onto .git.
+  if [[ -n "${SCRIPT_DIR}" && "${dest}" == "${SCRIPT_DIR}" && -d "${SCRIPT_DIR}/.git" ]]; then
+    if ! _gh_overlay_complete "${SCRIPT_DIR}"; then
+      die_with_help "Git clone overlay is incomplete (missing bin/scripts/skills)." \
+        "Run:  git pull" \
+        "Or clone a fresh copy:  git clone https://github.com/FineComputer14451/GrokHunter.git"
+    fi
+    OVERLAY_ROOT="${SCRIPT_DIR}"
+    LIB_DIR="${SCRIPT_DIR}/lib"
+    export GROKHUNTER_HOME="${OVERLAY_ROOT}"
+    info "Using local overlay: ${OVERLAY_ROOT}"
+    _gh_stamp_overlay
+    return 0
+  fi
+
+  # Extracted (non-git) tree: use local when complete unless REFRESH=1.
+  # Incomplete trees fall through so the tarball can repair them.
+  if [[ -n "${SCRIPT_DIR}" && "${dest}" == "${SCRIPT_DIR}" && -d "${SCRIPT_DIR}/lib" ]] \
+     && [[ "${REFRESH}" != "1" ]] && _gh_overlay_complete "${SCRIPT_DIR}"; then
+    OVERLAY_ROOT="${SCRIPT_DIR}"
+    LIB_DIR="${SCRIPT_DIR}/lib"
+    export GROKHUNTER_HOME="${OVERLAY_ROOT}"
+    info "Using local overlay: ${OVERLAY_ROOT}"
+    _gh_stamp_overlay
+    return 0
+  fi
+
+  if [[ "${REFRESH}" != "1" ]] && _gh_overlay_complete "${dest}" \
+     && [[ "$(cat "${CACHE_DIR}/MODULES_VERSION" 2>/dev/null || true)" == "${MODULES_VERSION}" ]]; then
+    OVERLAY_ROOT="${dest}"
+    LIB_DIR="${dest}/lib"
+    SCRIPT_DIR="${dest}"
+    export GROKHUNTER_HOME="${dest}"
+    info "Cache hit → overlay ${OVERLAY_ROOT} (v${MODULES_VERSION})"
+    _gh_stamp_overlay
+    return 0
+  fi
+
+  if [[ -d "${dest}/.git" ]]; then
+    die_with_help "Refusing to extract tarball onto git clone: ${dest}" \
+      "cd ${dest} && git pull" \
+      "Or:  GROKHUNTER_HOME=${HOME}/GrokHunter bash install.sh --overlay-only --with-completions"
+  fi
+
+  [[ "${REFRESH}" == "1" ]] && info "Refreshing overlay from GitHub tarball..."
+  info "Termux one-liner bootstrap (full overlay)…"
+  _gh_fetch_repo_tarball
+  _gh_install_overlay_from_tmp "${dest}"
+  _gh_overlay_complete "${dest}" || die_with_help "Extracted overlay looks incomplete: ${dest}" \
+    "Force a clean re-download:  GROKHUNTER_REFRESH=1 bash <(curl -fsSL ${REPO_RAW}/install.sh) --overlay-only --with-completions" \
+    "Or clone:  git clone https://github.com/FineComputer14451/GrokHunter.git && cd GrokHunter && bash install.sh"
+  OVERLAY_ROOT="${dest}"
+  LIB_DIR="${dest}/lib"
+  SCRIPT_DIR="${dest}"
+  export GROKHUNTER_HOME="${dest}"
+  _gh_stamp_overlay
+  info "Overlay ready → ${OVERLAY_ROOT}"
+}
+
+ensure_overlay_tree
 
 [[ -n "${LIB_DIR}" && -d "${LIB_DIR}" ]] || die "LIB_DIR not set"
-for m in "${MODULES[@]}"; do
+for m in "${MODULES[@]}" "${DISCOVER_MODULES[@]}"; do
   validate_module "${LIB_DIR}/${m}" || die_with_help "Missing or invalid module: ${LIB_DIR}/${m}" \
-    "Force a clean re-download:  GROKHUNTER_REFRESH=1 bash install.sh" \
+    "Force a clean re-download:  GROKHUNTER_REFRESH=1 bash install.sh --overlay-only --with-completions" \
     "Or clone a fresh copy of the repository and run bash install.sh"
 done
 
@@ -203,7 +330,7 @@ DISTRO_NAME="Kali NetHunter"
 PROGRAM_NAME="install.sh"
 DISTRO_REPOSITORY=termux-nethunter
 KERNEL_RELEASE=$(uname -r 2>/dev/null || echo unknown)
-VERSION_NAME="GrokHunter-Rootless-2026.2.11"
+VERSION_NAME="GrokHunter-Rootless-2026.2.12"
 SHASUM_CMD=sha256sum
 
 # Offline / air-gapped fallbacks (live SHA from Kali /current/ is preferred).
@@ -248,7 +375,12 @@ if [[ "${OVERLAY_ONLY:-0}" -eq 1 ]]; then
   : "${TERMUX_FILES_DIR:=/data/data/com.termux/files}"
   : "${P:=}" "${S:=}" "${T:=}" "${W:=}" "${B:=}" "${M:=}"
   _ensure_msg_stubs
-  export GROKHUNTER_HOME="${GROKHUNTER_HOME:-${SCRIPT_DIR:-${HOME}/GrokHunter}}"
+  if [[ -z "${GROKHUNTER_HOME:-}" ]] || _gh_is_ephemeral_dir "${GROKHUNTER_HOME}"; then
+    export GROKHUNTER_HOME="${OVERLAY_ROOT:-${SCRIPT_DIR:-${HOME}/GrokHunter}}"
+  fi
+  if _gh_is_ephemeral_dir "${GROKHUNTER_HOME}"; then
+    export GROKHUNTER_HOME="${HOME}/GrokHunter"
+  fi
   # Default: if user passed only --overlay-only with no --with-*, nothing runs.
   # Require at least one explicit yes feature, or warn.
   if [[ "${FEATURE_GROK}" == "auto" && "${FEATURE_X11}" == "auto" \
@@ -300,13 +432,15 @@ validate_distro_engine() {
   grep -qE '^[a-zA-Z_][a-zA-Z0-9_]*\s*\(\)' "$f" 2>/dev/null
 }
 
-# Prefer vendored → cached → download into ~/.cache (never pollute CWD).
-# Override URL: GROKHUNTER_DISTRO_ENGINE_URL
+# Prefer vendored → cached (same URL stamp) → download into ~/.cache (never pollute CWD).
+# Override URL: GROKHUNTER_DISTRO_ENGINE_URL  (honored even when cache exists)
 resolve_distro_engine() {
   local default_url="https://raw.githubusercontent.com/jorexdeveloper/termux-distro/main/termux-distro.sh"
   local url="${GROKHUNTER_DISTRO_ENGINE_URL:-${default_url}}"
   local cache_file="${CACHE_DIR}/termux-distro.sh"
+  local stamp_file="${CACHE_DIR}/termux-distro.url"
   local dest=""
+  local stamp=""
 
   if [[ -n "${SCRIPT_DIR}" && -f "${SCRIPT_DIR}/termux-distro.sh" ]]; then
     if validate_distro_engine "${SCRIPT_DIR}/termux-distro.sh"; then
@@ -316,10 +450,21 @@ resolve_distro_engine() {
     warn "Vendored termux-distro.sh failed validation — trying cache/download"
   fi
 
+  stamp="$(cat "${stamp_file}" 2>/dev/null || true)"
+
   if [[ "${REFRESH}" != "1" ]] && validate_distro_engine "${cache_file}"; then
-    info "Using cached termux-distro engine → ${cache_file}"
-    printf '%s\n' "${cache_file}"
-    return 0
+    if [[ "${stamp}" == "${url}" ]]; then
+      info "Using cached termux-distro engine → ${cache_file}"
+      printf '%s\n' "${cache_file}"
+      return 0
+    fi
+    # Pre-stamp caches (no .url file) are treated as the default engine.
+    if [[ -z "${GROKHUNTER_DISTRO_ENGINE_URL:-}" && -z "${stamp}" ]]; then
+      info "Using cached termux-distro engine → ${cache_file}"
+      printf '%s\n' "${cache_file}"
+      return 0
+    fi
+    info "Engine URL stamp mismatch — fetching ${url}"
   fi
 
   mkdir -p "${CACHE_DIR}" || die "cannot create cache ${CACHE_DIR}"
@@ -341,6 +486,7 @@ resolve_distro_engine() {
       "Or clone the repo and vendor termux-distro.sh"
   fi
   mv -f "${dest}" "${cache_file}" || die "failed to install engine cache at ${cache_file}"
+  printf '%s\n' "${url}" > "${stamp_file}" || true
   info "Engine cached at ${cache_file}"
   printf '%s\n' "${cache_file}"
 }

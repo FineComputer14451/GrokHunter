@@ -42,7 +42,7 @@ bash install.sh --full --de xfce --with-grok --with-x11
 ## CLI flags
 
 ```
--f, --full              Full installation (desktop-oriented)
+-f, --full              Full installation (desktop-capable rootfs; pass --de/--browser to configure)
 -m, --mini              Mini (essential packages)
 -n, --nano              Nano (minimal)
 --de <desktop>          e17 | gnome | i3 | kde | lxde | mate | xfce
@@ -54,6 +54,11 @@ bash install.sh --full --de xfce --with-grok --with-x11
 --no-x11                Skip Termux:X11
 --with-aider            Install Aider (venv + xAI helper)
 --no-aider              Skip Aider
+--with-v9-models        Install Grok V9 / 4.5 model pickers into config.toml
+--no-v9-models          Skip V9 model pickers
+--with-completions      Copy completions + ~/.grok/profile.sh (does not edit .zshrc/.bashrc)
+--no-completions        Skip shell completions
+--overlay-only          Skip rootfs / termux-distro; only run optional overlays
 -h, --help              Show help
 ```
 
@@ -70,7 +75,9 @@ grokhunter install --overlay-only --with-v9-models
 
 Requires at least one `--with-*` flag. Does **not** install DE/browser or pull a new rootfs.
 
-Helpers (`nh-x11`, `aider-grok`, `grokhunter`, …) are installed from repo `bin/` into **`~/.local/bin`** (and Termux `PREFIX/bin` when available). Ensure `PATH` includes `~/.local/bin` (see `~/.grok/profile.sh`).
+This is also the **update path** for an existing lab (avoids re-downloading Kali).
+
+Helpers (`nh-x11`, `aider-grok`, `grokhunter`, …) are installed from repo `bin/` into **`~/.local/bin`** (and Termux `PREFIX/bin` when available). Ensure `PATH` includes `~/.local/bin` (see `~/.grok/profile.sh`). The one-liner extracts the full overlay to `~/GrokHunter` (or `~/.cache/grokhunter/src` if that directory is already occupied).
 
 ## Environment overrides
 
@@ -84,7 +91,7 @@ Helpers (`nh-x11`, `aider-grok`, `grokhunter`, …) are installed from repo `bin
 | `GROKHUNTER_SKIP_PROFILE=1` | Skip NetHunter `config.toml` profile merge |
 | `NH_X11_SESSION` | Desktop start command for `nh-x11` (e.g. `startlxde`) |
 
-**Engine resolution order:** vendored `./termux-distro.sh` next to `install.sh` → `~/.cache/grokhunter/termux-distro.sh` → download into that cache (never CWD).
+**Engine resolution order:** vendored `./termux-distro.sh` next to `install.sh` → cached engine **if** its URL stamp matches the resolved URL (`GROKHUNTER_DISTRO_ENGINE_URL` or the jorexdeveloper default; a missing stamp is treated as default) → download into that cache (never CWD). Pinning a fork no longer requires `GROKHUNTER_REFRESH=1`. Unsetting a pin refetches the default instead of keeping a foreign cache.
 
 **Upstream credit:** the install engine is **[jorexdeveloper/termux-distro](https://github.com/jorexdeveloper/termux-distro)** (GPL-3.0), used for the [termux-nethunter](https://github.com/jorexdeveloper/termux-nethunter) rootless model. Full attribution: [CREDITS.md](../CREDITS.md).
 

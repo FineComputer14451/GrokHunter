@@ -75,7 +75,6 @@ grokhunter help | version
 
 | Alias | Expands to |
 |-------|------------|
-| `gh` | `grokhunter` |
 | `ghn` | `grok-nethunter` |
 | `ghd` | `doctor` |
 | `ghs` | `status` |
@@ -107,7 +106,7 @@ Broken PATH?          → export PATH + skills install / doctor
 ```bash
 cd ~/GrokHunter && bash install.sh --full --de xfce \
   --with-grok --with-x11 --with-aider --with-v9-models --with-completions
-source ~/.zshrc 2>/dev/null || source ~/.bashrc 2>/dev/null || true
+source ~/.grok/profile.sh 2>/dev/null || true
 grokhunter doctor
 printf 'export XAI_API_KEY=%q\n' "xai-..." > ~/.grok/secrets.env && chmod 600 ~/.grok/secrets.env
 grokhunter skills status
@@ -157,10 +156,10 @@ GROKHUNTER_FORCE_GROK=1 GROKHUNTER_GROK_INSTALLER=official grokhunter ensure --f
 # modes: auto | official | termux-native
 ```
 
-### Refresh installer modules (one-liner cache)
+### Refresh installer overlay (one-liner cache)
 
 ```bash
-GROKHUNTER_REFRESH=1 bash install.sh --help
+GROKHUNTER_REFRESH=1 bash install.sh --overlay-only --with-completions
 # pin engine fork:
 # GROKHUNTER_DISTRO_ENGINE_URL=https://… bash install.sh …
 ```
@@ -216,7 +215,7 @@ bash ~/GrokHunter/uninstall.sh --purge-grok
 | `--with-x11` / `--no-x11` | Termux:X11 + `nh-x11` |
 | `--with-aider` / `--no-aider` | Aider venv + helper |
 | `--with-v9-models` / `--no-v9-models` | Model pickers |
-| `--with-completions` / `--no-completions` | Shell profile + wrappers/skills |
+| `--with-completions` / `--no-completions` | Completions + `~/.grok/profile.sh` (does not edit rc files) |
 | `--overlay-only` | No rootfs/engine; overlays only |
 
 Canonical helpers: repo `bin/` (`nh-x11`, `aider-grok`, `grokhunter`, …) → `~/.local/bin`.

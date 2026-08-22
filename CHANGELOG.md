@@ -2,6 +2,35 @@
 
 ## Unreleased
 
+### One-liner overlay extract
+
+- Advertised `bash <(curl …/install.sh)` now extracts the **full** overlay (`bin/`, `scripts/`, `skills/`, …) to `~/GrokHunter` (or `~/.cache/grokhunter/src` if that directory is already occupied)
+- Process-substitution `/dev/fd` is never used as `SCRIPT_DIR` / `GROKHUNTER_HOME`
+- Git clones are never overwritten; local `lib/` always wins (including `GROKHUNTER_REFRESH=1`)
+- Tarball is the only network source for modules+overlay (no 4-file lib fetch)
+- `MODULES_VERSION` / banner → `2026.2.12`
+
+### `--full --de` / `--browser`
+
+- Explicit `--de` / `--browser` run even on `--full` (Chromium + proot `--no-sandbox` patch)
+- `--full` alone still skips DE/browser (rootfs already ships a desktop)
+
+### Uninstall / profile
+
+- `uninstall.sh` removes shortcut bins (`ghsu`, `ght`, `ghd`, `ghs`, `ghp`, `ghm`, `ghk`, `ghai`, `ghn`)
+- `strip_shell` uses awk (no python3); unclosed markers leave the rc file unchanged; later uninstall steps always run
+- Profile no longer aliases `gh` (GitHub CLI stays unshadowed)
+
+### Engine pin vs cache
+
+- `GROKHUNTER_DISTRO_ENGINE_URL` is stamped in `~/.cache/grokhunter/termux-distro.url`; a new pin fetches without `GROKHUNTER_REFRESH=1`
+- Unsetting a pin no longer reuses a foreign stamped cache (legacy unstamped cache still counts as the default engine)
+- `GROKHUNTER_REFRESH=1` re-extracts a non-git overlay; incomplete non-git trees self-repair; git clones still never receive a tarball
+
+### Docs
+
+- Completions do **not** edit `.zshrc`/`.bashrc`; FAQ/update path uses `--overlay-only`
+
 ## [1.0.7] — 2026-08-08 — Credits, Kali menu, mobile site
 
 Desktop polish, full upstream attribution, product-site mobile layout, and greener CI.

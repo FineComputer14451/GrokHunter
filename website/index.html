@@ -722,8 +722,8 @@ bash install.sh --full --de xfce --with-grok --with-x11</code></pre>
           <h2>grokhunter commands</h2>
           <p class="section-lead">
             Also: <code class="inline-code">grok-nethunter</code> fullscreen launcher ·
-            <code class="inline-code">grok</code> native TUI · aliases via profile (<code>gh</code>,
-            <code>ghd</code>, <code>ghp</code>, …)
+            <code class="inline-code">grok</code> native TUI · aliases via profile (<code>ghd</code>,
+            <code>ghp</code>, <code>ghsu</code>, …)
           </p>
           <div class="cli-list">
             <div class="cli-row"><code>grokhunter</code><span>Interactive fullscreen TUI</span></div>
@@ -760,12 +760,13 @@ bash install.sh --full --de xfce --with-grok --with-x11</code></pre>
               <button
                 type="button"
                 class="copy-btn"
-                data-copy="cd ~/GrokHunter && git pull\ngrokhunter ensure\ngrokhunter skills install\ngrokhunter menu install\ngrokhunter models install\ngrokhunter doctor\ngrokhunter credits"
+                data-copy="cd ~/GrokHunter && git pull\nbash install.sh --overlay-only --with-completions\ngrokhunter ensure\ngrokhunter skills install\ngrokhunter menu install\ngrokhunter models install\ngrokhunter doctor\ngrokhunter credits"
               >
                 Copy
               </button>
             </div>
             <pre><code>cd ~/GrokHunter && git pull
+bash install.sh --overlay-only --with-completions
 grokhunter ensure              # binary ≥ 1.0.0 + profile
 grokhunter skills install      # skills · agents · personas · roles
 grokhunter menu install        # Applications → GrokHunter (XFCE)

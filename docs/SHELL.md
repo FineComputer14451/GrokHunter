@@ -11,6 +11,8 @@ cd ~/GrokHunter   # or your clone path
 bash scripts/install-completions.sh
 ```
 
+The installer copies `~/.grok/profile.sh` and completions; it does **not** modify `.zshrc` or `.bashrc`. Add the source line yourself:
+
 Add to `~/.zshrc`:
 
 ```zsh
@@ -31,7 +33,6 @@ grokhunter <TAB>
 grokhunter models <TAB>
 grokhunter ai-smoke <TAB>
 grokhunter install --de <TAB>
-gh <TAB>          # alias
 ```
 
 ## Bash
@@ -46,7 +47,7 @@ Same installer. In `~/.bashrc`:
 
 | Path | Purpose |
 |------|----------|
-| `~/.grok/completions/zsh/_grokhunter` | zsh completion for `grokhunter` / `gh` |
+| `~/.grok/completions/zsh/_grokhunter` | zsh completion for `grokhunter` |
 | `~/.grok/completions/zsh/_nh-x11` | zsh hints for `nh-x11` |
 | `~/.grok/completions/bash/grokhunter.bash` | bash completion |
 | `~/.grok/profile.sh` | PATH, secrets, fpath, aliases |
@@ -55,15 +56,18 @@ Same installer. In `~/.bashrc`:
 
 | Alias | Expands to |
 |-------|------------|
-| `gh` | `grokhunter` |
 | `ghn` | `grok-nethunter` |
 | `ghd` | `grokhunter doctor` |
 | `ghs` | `grokhunter status` |
+| `ghsu` | `grokhunter setup` |
+| `ght` | `grokhunter team` |
 | `ghp` | `grokhunter plan` |
 | `ghm` | `grokhunter models` |
 | `ghk` | `grokhunter skills` |
 | `ghai` | `grokhunter ai-smoke` |
 | `ghh "…"` | `grokhunter -p "…"` |
+
+`gh` is **not** aliased (leaves GitHub CLI unshadowed).
 
 ## Termux tip
 
