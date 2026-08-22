@@ -199,7 +199,24 @@ bash -c '
 info "git identity OK"
 
 bash bin/grokhunter git-identity help | grep -q set || die "git-identity help missing set"
+bash bin/grokhunter git-identity help | grep -q origin || die "git-identity help missing origin fallback"
 info "git-identity help OK"
+
+bash -c '
+  set -euo pipefail
+  source lib/git-identity.sh
+  [[ "$(_gh_git_identity_github_login_from_url "https://github.com/FineComputer14451/GrokHunter.git")" == FineComputer14451 ]]
+  [[ "$(_gh_git_identity_github_login_from_url "git@github.com:FineComputer14451/GrokHunter.git")" == FineComputer14451 ]]
+  [[ "$(_gh_git_identity_github_login_from_url "ssh://git@github.com/FineComputer14451/GrokHunter")" == FineComputer14451 ]]
+  if _gh_git_identity_github_login_from_url "https://gitlab.com/foo/bar.git"; then
+    exit 1
+  fi
+  pair="$(_gh_git_identity_pair_from_user_json "{\"login\":\"FineComputer14451\",\"id\":119702188,\"name\":\"Fine_Computer_4451\"}")"
+  [[ "$pair" == "$(printf "Fine_Computer_4451\t119702188+FineComputer14451@users.noreply.github.com")" ]]
+  pair="$(_gh_git_identity_pair_from_user_json "{\"login\":\"onlylogin\",\"id\":1,\"name\":null}")"
+  [[ "$pair" == "$(printf "onlylogin\t1+onlylogin@users.noreply.github.com")" ]]
+'
+info "git identity origin/json OK"
 
 # ---------- doctor HTTPS probe (Cloudflare 403 is not offline) ----------
 # curl -f treats https://x.ai 403 as failure even when TLS works.

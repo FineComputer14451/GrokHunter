@@ -280,7 +280,8 @@ Usage: grokhunter setup [options]
     1. grokhunter ensure   (Grok Build ≥ 1.0.5 + NetHunter profile)
     2. grokhunter skills install
     3. optional: models install / Aider install
-    4. grokhunter doctor   (unless --no-doctor)
+    4. git-identity set    (if still placeholder)
+    5. grokhunter doctor   (unless --no-doctor)
 
 Options:
   --force-grok     Reinstall Grok even if present
@@ -350,6 +351,18 @@ EOF
     fi
     echo
   fi
+
+  echo "→ git identity…"
+  if declare -F _gh_git_identity_is_placeholder >/dev/null 2>&1; then
+    if _gh_git_identity_is_placeholder "$(_gh_git_identity_name)" "$(_gh_git_identity_email)"; then
+      cmd_git_identity set || echo "  WARN: placeholder git identity — grokhunter git-identity set --name NAME --email EMAIL" >&2
+    else
+      cmd_git_identity show || true
+    fi
+  else
+    echo "  WARN: lib/git-identity.sh not loaded" >&2
+  fi
+  echo
 
   if [[ "${no_doctor}" -eq 0 ]]; then
     echo "→ [4/4] doctor…"
@@ -765,12 +778,15 @@ Usage: grokhunter git-identity [show|set|help]
 set sources (first match wins):
   --name NAME --email EMAIL
   GROKHUNTER_GIT_NAME / GROKHUNTER_GIT_EMAIL
-  gh api user  →  display name + ID+login@users.noreply.github.com
+  gh api user
+  GH_TOKEN / GITHUB_TOKEN → api.github.com/user
+  origin github.com/OWNER → public /users/OWNER
 
   --local    Write repo-local config instead of --global
 
-Kali/Termux often default to root <root@localhost.localdomain>.
-GitHub cannot map that address and shows invalid-email-address.
+Kali/Termux often default to root <root@localhost.localdomain>
+(or an empty ident that becomes kali@localhost). GitHub cannot map
+those addresses and shows invalid-email-address.
 Use the GitHub noreply from https://github.com/settings/emails :
   git config --global user.email 'ID+LOGIN@users.noreply.github.com'
 EOF
@@ -813,15 +829,15 @@ EOF
         esac
       done
       if [[ -z "${name}" || -z "${email}" ]]; then
-        if pair="$(_gh_git_identity_from_gh)"; then
+        if pair="$(_gh_git_identity_resolve)"; then
           [[ -n "${name}" ]] || name="$(printf '%s' "${pair}" | awk -F'\t' '{print $1}')"
           [[ -n "${email}" ]] || email="$(printf '%s' "${pair}" | awk -F'\t' '{print $2}')"
         fi
       fi
       if [[ -z "${name}" || -z "${email}" ]]; then
-        echo "Could not resolve git identity." >&2
+        echo "Could not resolve git identity (no gh, token, or GitHub origin)." >&2
         echo "Pass --name and --email, set GROKHUNTER_GIT_NAME / GROKHUNTER_GIT_EMAIL," >&2
-        echo "or authenticate GitHub CLI (gh auth status)." >&2
+        echo "authenticate GitHub CLI (gh auth login), or export GH_TOKEN." >&2
         return 1
       fi
       if [[ "${scope}" == "local" ]] && ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
