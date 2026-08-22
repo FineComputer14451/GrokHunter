@@ -97,6 +97,18 @@ bash -c '
 '
 info "maybe_install OK"
 
+# ---------- storage pre-check: POSIX df, integer GiB only ----------
+bash -c '
+  set -euo pipefail
+  eval "$(sed -n "/^_gh_df_avail_gb()/,/^}/p" lib/actions.sh)"
+  n="$(_gh_df_avail_gb / || true)"
+  [[ "$n" =~ ^[0-9]+$ ]]
+  if _gh_df_avail_gb /no/such/grokhunter-df-path 2>/dev/null; then
+    exit 1
+  fi
+'
+info "df avail gb OK"
+
 # ---------- pure-bash bind patch ----------
 bash -c '
   set -euo pipefail
@@ -426,7 +438,7 @@ info "overlay root skips /dev/fd OK"
 # ---------- dest picker: foreign ~/GrokHunter → cache src ----------
 bash -c '
   set -euo pipefail
-  eval "$(sed -n "/^_gh_is_ephemeral_dir()/,/^}/p; /^_gh_overlay_complete()/,/^}/p; /^_gh_pick_overlay_dest()/,/^}/p" install.sh)"
+  eval "$(sed -n "/^_gh_is_ephemeral_dir()/,/^}/p; /^_gh_overlay_complete()/,/^}/p; /^_gh_managed_overlay()/,/^}/p; /^_gh_pick_overlay_dest()/,/^}/p" install.sh)"
   HOME=$(mktemp -d)
   CACHE_DIR="$HOME/.cache/grokhunter"
   mkdir -p "$CACHE_DIR"
@@ -436,6 +448,10 @@ bash -c '
   echo "not-gh" > "$HOME/GrokHunter/notes.txt"
   dest="$(_gh_pick_overlay_dest)"
   [[ "$dest" == "$CACHE_DIR/src" ]]
+  # stray install.sh is not enough to claim ~/GrokHunter
+  echo "#!/bin/bash" > "$HOME/GrokHunter/install.sh"
+  dest_stray="$(_gh_pick_overlay_dest)"
+  [[ "$dest_stray" == "$CACHE_DIR/src" ]]
   # empty home dest
   rm -rf "$HOME/GrokHunter"
   dest2="$(_gh_pick_overlay_dest)"
@@ -446,6 +462,13 @@ bash -c '
   SCRIPT_DIR="$HOME/clone"
   dest3="$(_gh_pick_overlay_dest)"
   [[ "$dest3" == "$HOME/clone" ]]
+  # GROKHUNTER_HOME with only install.sh is not managed
+  SCRIPT_DIR=""
+  mkdir -p "$HOME/other"
+  echo "install" > "$HOME/other/install.sh"
+  GROKHUNTER_HOME="$HOME/other"
+  dest4="$(_gh_pick_overlay_dest)"
+  [[ "$dest4" == "$HOME/GrokHunter" || "$dest4" == "$CACHE_DIR/src" ]]
   rm -rf "$HOME"
 '
 info "overlay dest picker OK"
@@ -488,6 +511,7 @@ bash -c '
   eval "$(sed -n "
     /^_gh_is_ephemeral_dir()/,/^}/p
     /^_gh_overlay_complete()/,/^}/p
+    /^_gh_managed_overlay()/,/^}/p
     /^_gh_pick_overlay_dest()/,/^}/p
     /^_gh_stamp_overlay()/,/^}/p
     /^ensure_overlay_tree()/,/^}/p

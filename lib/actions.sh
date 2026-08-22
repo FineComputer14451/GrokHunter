@@ -3,6 +3,15 @@
 # These functions are called by the upstream termux-distro engine
 # (jorexdeveloper/termux-distro — see CREDITS.md).
 
+# Free space in whole GiB (1024^3 bytes) via POSIX df -Pk. Empty/fail → caller skips.
+_gh_df_avail_gb() {
+  local path="${1:-.}"
+  local kb
+  kb=$(df -Pk "${path}" 2>/dev/null | awk 'NR==2 {print $4}')
+  [[ "${kb}" =~ ^[0-9]+$ ]] || return 1
+  printf '%s\n' "$((kb / 1024 / 1024))"
+}
+
 pre_check_actions() {
   P=${W-}; S=${B-}; T=${M-}
 }
@@ -51,9 +60,9 @@ pre_install_actions() {
 
     # Storage pre-check (from Grok-Build-2026.2 precursor)
     local available required=2
-    available=$(df -BG "${TERMUX_FILES_DIR:-/data/data/com.termux/files}" 2>/dev/null | awk 'NR==2 {gsub(/G/,"",$4); print $4}')
+    available="$(_gh_df_avail_gb "${TERMUX_FILES_DIR:-/data/data/com.termux/files}" || true)"
     [[ ${SELECTED_INSTALLATION} == full ]] && required=6
-    if [[ -n ${available} && ${available} -lt ${required} ]]; then
+    if [[ "${available}" =~ ^[0-9]+$ ]] && (( available < required )); then
       msg -tw "Low storage: ${available}GB free (need ~${required}GB+ for ${SELECTED_INSTALLATION})"
       if [[ ${NON_INTERACTIVE} -eq 0 ]]; then
         if ! ask -y -- -t "Continue with limited space?"; then

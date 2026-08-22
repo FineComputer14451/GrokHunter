@@ -6,6 +6,8 @@
 
 - Pin Termux-native Grok installer to a GitHub commit (`TERMUX_NATIVE_PIN`), not floating `main`
 - Proot extra binds skip missing host paths (`/sdcard`, `storage/downloads`) so `nethunter` still starts before `termux-setup-storage`
+- Overlay dest requires a complete tree or a git clone — a stray `install.sh` in `~/GrokHunter` no longer claims the overlay
+- Storage pre-check uses POSIX `df -Pk` and integer GiB only (skip if unreadable; no `df -BG` / decimal `-lt`)
 
 ### Grok 4.6 + Grok Build 1.0.5
 

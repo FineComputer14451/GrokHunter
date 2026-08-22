@@ -159,21 +159,31 @@ _gh_overlay_complete() {
   return 0
 }
 
+# True if dir is a real GrokHunter overlay (complete tree or git clone), not a stray install.sh.
+_gh_managed_overlay() {
+  local dir="${1:-}"
+  [[ -n "${dir}" && -d "${dir}" ]] || return 1
+  _gh_is_ephemeral_dir "${dir}" && return 1
+  if _gh_overlay_complete "${dir}"; then
+    return 0
+  fi
+  if [[ -f "${dir}/install.sh" && -d "${dir}/.git" ]]; then
+    return 0
+  fi
+  return 1
+}
+
 # Clone / GROKHUNTER_HOME / ~/GrokHunter / cache src (never a foreign non-empty dir).
 _gh_pick_overlay_dest() {
   local home_dest="${HOME}/GrokHunter"
   local cache_src="${CACHE_DIR}/src"
 
-  if [[ -n "${SCRIPT_DIR}" ]] && ! _gh_is_ephemeral_dir "${SCRIPT_DIR}" \
-     && [[ -f "${SCRIPT_DIR}/install.sh" ]]; then
-    if _gh_overlay_complete "${SCRIPT_DIR}" || [[ -d "${SCRIPT_DIR}/.git" ]]; then
-      printf '%s\n' "${SCRIPT_DIR}"
-      return 0
-    fi
+  if [[ -n "${SCRIPT_DIR}" ]] && _gh_managed_overlay "${SCRIPT_DIR}"; then
+    printf '%s\n' "${SCRIPT_DIR}"
+    return 0
   fi
 
-  if [[ -n "${GROKHUNTER_HOME:-}" ]] && ! _gh_is_ephemeral_dir "${GROKHUNTER_HOME}" \
-     && [[ -f "${GROKHUNTER_HOME}/install.sh" ]]; then
+  if [[ -n "${GROKHUNTER_HOME:-}" ]] && _gh_managed_overlay "${GROKHUNTER_HOME}"; then
     printf '%s\n' "${GROKHUNTER_HOME}"
     return 0
   fi
@@ -187,7 +197,7 @@ _gh_pick_overlay_dest() {
       printf '%s\n' "${home_dest}"
       return 0
     fi
-    if [[ -f "${home_dest}/install.sh" ]]; then
+    if _gh_managed_overlay "${home_dest}"; then
       printf '%s\n' "${home_dest}"
       return 0
     fi
