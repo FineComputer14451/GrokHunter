@@ -1,49 +1,25 @@
 name: once-identity-cli
+
 on:
   workflow_dispatch:
+
 permissions:
   contents: write
+
 jobs:
   apply:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Apply remaining identity CLI patches
+      - name: Apply patch, commit, push, remove one-shot files
         run: |
           set -euo pipefail
-          python3 - <<'PY'
-          from pathlib import Path
-
-          gh = Path('bin/grokhunter').read_text()
-          old_help = '''    3. optional: models install / Aider install\n    4. grokhunter doctor   (unless --no-doctor)'''
-          new_help = '''    3. optional: models install / Aider install\n    4. git-identity set    (if still placeholder)\n    5. grokhunter doctor   (unless --no-doctor)'''
-          if old_help not in gh:
-              raise SystemExit('grokhunter setup help hunk missing')
-          gh = gh.replace(old_help, new_help, 1)
-
-          old_setup = '''    echo\n  fi\n\n  if [[ "${no_doctor}" -eq 0 ]]; then\n    echo "\u2192 [4/4] doctor\u2026"'''
-          new_setup = '''    echo\n  fi\n\n  echo "\u2192 git identity\u2026"\n  if declare -F _gh_git_identity_is_placeholder >/dev/null 2>&1; then\n    if _gh_git_identity_is_placeholder "$(_gh_git_identity_name)" "$(_gh_git_identity_email)"; then\n      cmd_git_identity set || echo "  WARN: placeholder git identity \u2014 grokhunter git-identity set --name NAME --email EMAIL" >&2\n    else\n      cmd_git_identity show || true\n    fi\n  else\n    echo "  WARN: lib/git-identity.sh not loaded" >&2\n  fi\n  echo\n\n  if [[ "${no_doctor}" -eq 0 ]]; then\n    echo "\u2192 [4/4] doctor\u2026"'''
-          if old_setup not in gh:
-              raise SystemExit('grokhunter setup identity hunk missing')
-          gh = gh.replace(old_setup, new_setup, 1)
-
-          gh = gh.replace(\n              '  gh api user  \u2192  display name + ID+login@users.noreply.github.com',\n              '  gh api user\\n  GH_TOKEN / GITHUB_TOKEN \u2192 api.github.com/user\\n  origin github.com/OWNER \u2192 public /users/OWNER',\n              1)\n          gh = gh.replace(\n              'Kali/Termux often default to root <root@localhost.localdomain>.\\nGitHub cannot map that address and shows invalid-email-address.',\n              'Kali/Termux often default to root <root@localhost.localdomain>\\n(or an empty ident that becomes kali@localhost). GitHub cannot map\\nthose addresses and shows invalid-email-address.',\n              1)\n          gh = gh.replace(\n              '        if pair="$(_gh_git_identity_from_gh)"; then',\n              '        if pair="$(_gh_git_identity_resolve)"; then',\n              1)\n          gh = gh.replace(\n              '        echo "Could not resolve git identity." >&2\\n        echo "Pass --name and --email, set GROKHUNTER_GIT_NAME / GROKHUNTER_GIT_EMAIL," >&2\\n        echo "or authenticate GitHub CLI (gh auth status)." >&2',\n              '        echo "Could not resolve git identity (no gh, token, or GitHub origin)." >&2\\n        echo "Pass --name and --email, set GROKHUNTER_GIT_NAME / GROKHUNTER_GIT_EMAIL," >&2\\n        echo "authenticate GitHub CLI (gh auth login), or export GH_TOKEN." >&2',\n              1)\n          Path('bin/grokhunter').write_text(gh)
-
-          ci = Path('scripts/ci-unit.sh').read_text()
-          old = '''bash bin/grokhunter git-identity help | grep -q set || die "git-identity help missing set"\ninfo "git-identity help OK"\n'''
-          new = '''bash bin/grokhunter git-identity help | grep -q set || die "git-identity help missing set"\nbash bin/grokhunter git-identity help | grep -q origin || die "git-identity help missing origin fallback"\ninfo "git-identity help OK"\n\nbash -c '\n  set -euo pipefail\n  source lib/git-identity.sh\n  [[ "$(_gh_git_identity_github_login_from_url "https://github.com/FineComputer14451/GrokHunter.git")" == FineComputer14451 ]]\n  [[ "$(_gh_git_identity_github_login_from_url "git@github.com:FineComputer14451/GrokHunter.git")" == FineComputer14451 ]]\n  [[ "$(_gh_git_identity_github_login_from_url "ssh://git@github.com/FineComputer14451/GrokHunter")" == FineComputer14451 ]]\n  if _gh_git_identity_github_login_from_url "https://gitlab.com/foo/bar.git"; then\n    exit 1\n  fi\n  pair="$(_gh_git_identity_pair_from_user_json "{\\"login\\":\\"FineComputer14451\\",\\"id\\":119702188,\\"name\\":\\"Fine_Computer_4451\\"}")"\n  [[ "$pair" == "$(printf "Fine_Computer_4451\\t119702188+FineComputer14451@users.noreply.github.com")" ]]\n  pair="$(_gh_git_identity_pair_from_user_json "{\\"login\\":\\"onlylogin\\",\\"id\\":1,\\"name\\":null}")"\n  [[ "$pair" == "$(printf "onlylogin\\t1+onlylogin@users.noreply.github.com")" ]]\n'\ninfo "git identity origin/json OK"\n'''
-          if old not in ci:
-              raise SystemExit('ci-unit identity hunk missing')
-          Path('scripts/ci-unit.sh').write_text(ci.replace(old, new, 1))
-          print('patched ok')
-          PY
-      - name: Commit and push
-        run: |
-          set -euo pipefail
+          git apply --check scripts/_once_identity_cli.patch
+          git apply scripts/_once_identity_cli.patch
           git config user.name "Fine_Computer_4451"
           git config user.email "119702188+FineComputer14451@users.noreply.github.com"
           git add bin/grokhunter scripts/ci-unit.sh
-          git diff --cached --stat
+          git rm -f .github/workflows/_once_identity_cli.yml scripts/_once_identity_cli.patch
           git commit -m "$(cat <<'EOF'
           fix(git): wire identity resolve into CLI and tests
 
@@ -51,6 +27,4 @@ jobs:
           placeholder identity. Unit tests cover URL and JSON parsing.
           EOF
           )"
-          git rm -f .github/workflows/_once_identity_cli.yml
-          git commit --amend --no-edit || true
           git push
