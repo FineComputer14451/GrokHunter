@@ -1,16 +1,18 @@
-# GrokHunter Rootless
-
 <p align="center">
-  <img src="branding/logo-horizontal.png" alt="GrokHunter Rootless" width="520">
+  <img src="branding/icon.png" alt="GrokHunter" width="160" height="160">
 </p>
+
+<h1 align="center">GrokHunter</h1>
 
 <p align="center"><strong>Ship code from your pocket.</strong></p>
 
-**Kali NetHunter (rootless) × Grok Build — AI coding lab for unrooted Android**
+<p align="center">Kali NetHunter (rootless) × Grok Build — AI coding lab for unrooted Android</p>
 
-[![Release](https://img.shields.io/github/v/release/FineComputer14451/GrokHunter?label=release)](https://github.com/FineComputer14451/GrokHunter/releases/latest)
-[![Smoke](https://img.shields.io/github/actions/workflow/status/FineComputer14451/GrokHunter/smoke.yml?branch=main&label=smoke)](https://github.com/FineComputer14451/GrokHunter/actions/workflows/smoke.yml)
-[![Pages](https://img.shields.io/badge/site-live-00E5C7)](https://finecomputer14451.github.io/GrokHunter/)
+<p align="center">
+  <a href="https://github.com/FineComputer14451/GrokHunter/releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/FineComputer14451/GrokHunter?label=release&color=00E5C7&labelColor=0D1117"></a>
+  <a href="https://github.com/FineComputer14451/GrokHunter/actions/workflows/smoke.yml"><img alt="Smoke" src="https://img.shields.io/github/actions/workflow/status/FineComputer14451/GrokHunter/smoke.yml?branch=main&label=smoke&labelColor=0D1117"></a>
+  <a href="https://finecomputer14451.github.io/GrokHunter/"><img alt="Pages" src="https://img.shields.io/badge/site-live-00E5C7?labelColor=0D1117"></a>
+</p>
 
 Turn Termux + proot Kali into a Linux development environment on your phone, with [Grok](https://x.ai/cli) as an on-device pair programmer. **No root required.**
 
