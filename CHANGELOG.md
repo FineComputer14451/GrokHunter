@@ -21,7 +21,9 @@
 
 - History rewrite: `root <root@localhost.localdomain>` commits and tags now attribute to **Fine_Computer_4451** (`119702188+FineComputer14451@users.noreply.github.com`)
 - **`grokhunter git-identity`** — `show` / `set` (from `gh api user`, `--name/--email`, or `GROKHUNTER_GIT_NAME` / `GROKHUNTER_GIT_EMAIL`)
-- Doctor warns on placeholder identity (`root`, `@localhost`) so GitHub stops showing `invalid-email-address`
+- `git-identity set` also resolves from `GH_TOKEN` / `GITHUB_TOKEN` or the GitHub `origin` owner (no `gh` CLI required)
+- `grokhunter setup` auto-sets a placeholder identity when one of those sources works
+- Doctor warns on placeholder identity (`root`, `@localhost`, empty) so GitHub stops showing `invalid-email-address`
 - `.mailmap` maps leftover `root@localhost` locally
 
 ## [1.0.8] — 2026-08-22 — Overlay extract, Grok 4.6, install hardening
@@ -155,7 +157,7 @@ Full alignment with **Grok Build 1.0.0** (stable), plus Aider reliability, expan
 - **Min version** raised to **1.0.0** (`GROKHUNTER_MIN_GROK`, doctor, ensure)
 - **`config/grok-build.nethunter.toml`** — stable channel, `default`/`web_search`/`fork_secondary_model` = `grok-4.5`, subagents on, 1.0.0 UI keys
 - **`scripts/install_grok_profile.sh`** — merges NetHunter profile into `~/.grok/config.toml` without wiping `[model.*]`
-- **`scripts/ensure_grok.sh`** — upgrades when &lt; 1.0.0, prefers `grok update`, applies profile after install
+- **`scripts/ensure_grok.sh`** — upgrades when < 1.0.0, prefers `grok update`, applies profile after install
 - **`grokhunter plan`** — uses `grok --agent plan --permission-mode plan -p` (1.0.0 built-in plan agent)
 - **Doctor** — channel/profile/models checks for 1.0.0
 - **Docs:** `docs/GROK-BUILD-1.0.md`
