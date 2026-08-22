@@ -1,0 +1,205 @@
+--- a/install.sh
++++ b/install.sh
+@@ -442,8 +442,15 @@
+   grep -qE '^[a-zA-Z_][a-zA-Z0-9_]*\s*\(\)' "$f" 2>/dev/null
+ }
+ 
+-# Prefer vendored → cached (same URL stamp) → download into ~/.cache (never pollute CWD).
++# Prefer vendor/ → ./termux-distro.sh → cached (same URL stamp) → download.
+ # Override URL: GROKHUNTER_DISTRO_ENGINE_URL  (honored even when cache exists)
++# Optional integrity: GROKHUNTER_DISTRO_ENGINE_SHA256=<hex>
++#
++# Priority:
++#   1. vendor/termux-distro.sh          (recommended for reproducibility)
++#   2. ./termux-distro.sh               (next to install.sh)
++#   3. ~/.cache/grokhunter/termux-distro.sh (URL stamp match)
++#   4. Fresh download
+ resolve_distro_engine() {
+   local default_url="https://raw.githubusercontent.com/jorexdeveloper/termux-distro/main/termux-distro.sh"
+   local url="${GROKHUNTER_DISTRO_ENGINE_URL:-${default_url}}"
+@@ -451,30 +458,65 @@
+   local stamp_file="${CACHE_DIR}/termux-distro.url"
+   local dest=""
+   local stamp=""
+-
+-  if [[ -n "${SCRIPT_DIR}" && -f "${SCRIPT_DIR}/termux-distro.sh" ]]; then
+-    if validate_distro_engine "${SCRIPT_DIR}/termux-distro.sh"; then
+-      printf '%s\n' "${SCRIPT_DIR}/termux-distro.sh"
+-      return 0
+-    fi
+-    warn "Vendored termux-distro.sh failed validation — trying cache/download"
+-  fi
++  local expected_sha="${GROKHUNTER_DISTRO_ENGINE_SHA256:-}"
++  local candidate=""
++  local got=""
++
++  # --- 1 + 2: Vendored copies (highest priority) ---
++  for candidate in \
++    "${SCRIPT_DIR}/vendor/termux-distro.sh" \
++    "${SCRIPT_DIR}/termux-distro.sh"
++  do
++    if [[ -n "${SCRIPT_DIR}" && -f "${candidate}" ]]; then
++      if validate_distro_engine "${candidate}"; then
++        if [[ -n "${expected_sha}" ]]; then
++          got=$(sha256sum "${candidate}" 2>/dev/null | awk '{print $1}')
++          if [[ "${got}" != "${expected_sha}" ]]; then
++            warn "Vendored engine SHA mismatch: ${candidate}"
++            warn "  expected ${expected_sha}"
++            warn "  got      ${got:-<unreadable>}"
++            warn "  Ignoring vendored copy — falling through to cache/download"
++            continue
++          fi
++          info "Vendored engine SHA verified → ${candidate}"
++        else
++          info "Using vendored termux-distro engine → ${candidate}"
++        fi
++        printf '%s\n' "${candidate}"
++        return 0
++      fi
++      warn "Vendored ${candidate} failed validation — trying next source"
++    fi
++  done
+ 
+   stamp="$(cat "${stamp_file}" 2>/dev/null || true)"
+ 
+   if [[ "${REFRESH}" != "1" ]] && validate_distro_engine "${cache_file}"; then
+-    if [[ "${stamp}" == "${url}" ]]; then
+-      info "Using cached termux-distro engine → ${cache_file}"
+-      printf '%s\n' "${cache_file}"
+-      return 0
+-    fi
+-    # Pre-stamp caches (no .url file) are treated as the default engine.
+-    if [[ -z "${GROKHUNTER_DISTRO_ENGINE_URL:-}" && -z "${stamp}" ]]; then
+-      info "Using cached termux-distro engine → ${cache_file}"
+-      printf '%s\n' "${cache_file}"
+-      return 0
++    local cache_ok=0
++    if [[ "${stamp}" == "${url}" ]]; then
++      cache_ok=1
++    elif [[ -z "${GROKHUNTER_DISTRO_ENGINE_URL:-}" && -z "${stamp}" ]]; then
++      # Pre-stamp caches (no .url file) are treated as the default engine.
++      cache_ok=1
++    fi
++    if [[ "${cache_ok}" -eq 1 ]]; then
++      if [[ -n "${expected_sha}" ]]; then
++        got=$(sha256sum "${cache_file}" 2>/dev/null | awk '{print $1}')
++        if [[ "${got}" != "${expected_sha}" ]]; then
++          warn "Cached engine SHA mismatch — will re-download"
++        else
++          info "Using cached termux-distro engine (SHA verified) → ${cache_file}"
++          printf '%s\n' "${cache_file}"
++          return 0
++        fi
++      else
++        info "Using cached termux-distro engine → ${cache_file}"
++        printf '%s\n' "${cache_file}"
++        return 0
++      fi
++    else
++      info "Engine URL stamp mismatch — fetching ${url}"
+     fi
+-    info "Engine URL stamp mismatch — fetching ${url}"
+   fi
+ 
+   mkdir -p "${CACHE_DIR}" || die "cannot create cache ${CACHE_DIR}"
+@@ -483,20 +525,32 @@
+     rm -f "${dest}"
+     die_with_help "Could not download the termux-distro engine." \
+       "Check your internet connection / DNS" \
+       "Pin a fork:  GROKHUNTER_DISTRO_ENGINE_URL=https://… bash install.sh" \
+-      "Or vendor termux-distro.sh next to install.sh"
++      "Or vendor termux-distro.sh under vendor/ or next to install.sh"
+   fi
+   if ! validate_distro_engine "${dest}"; then
+     rm -f "${dest}"
+     die_with_help "Downloaded termux-distro engine looks invalid (empty or HTML)." \
+       "Check GROKHUNTER_DISTRO_ENGINE_URL if set" \
+       "Force refresh:  GROKHUNTER_REFRESH=1 bash install.sh" \
+       "Or clone the repo and vendor termux-distro.sh"
+   fi
++  if [[ -n "${expected_sha}" ]]; then
++    got=$(sha256sum "${dest}" 2>/dev/null | awk '{print $1}')
++    if [[ "${got}" != "${expected_sha}" ]]; then
++      rm -f "${dest}"
++      die_with_help "Downloaded engine SHA mismatch." \
++        "expected: ${expected_sha}" \
++        "got:      ${got:-<unreadable>}" \
++        "Check GROKHUNTER_DISTRO_ENGINE_URL / GROKHUNTER_DISTRO_ENGINE_SHA256" \
++        "Or vendor a known-good copy under vendor/termux-distro.sh"
++    fi
++    info "Downloaded engine SHA verified"
++  fi
+   mv -f "${dest}" "${cache_file}" || die "failed to install engine cache at ${cache_file}"
+   printf '%s\n' "${url}" > "${stamp_file}" || true
+   info "Engine cached at ${cache_file}"
+   printf '%s\n' "${cache_file}"
+ }
+--- a/lib/grok.sh
++++ b/lib/grok.sh
+@@ -141,8 +141,20 @@
+     msg -ts "Installed ${installed} wrapper(s) under ${dest_dir}"
+     msg -a "  Ensure PATH includes ~/.local/bin (profile snippet does this)"
+   else
+-    msg -tw "No CLI wrappers installed — clone full repo with bin/"
++    msg -tw "No CLI wrappers installed — full repo tree (bin/) not found"
++    msg -a "  Fix:  git clone https://github.com/FineComputer14451/GrokHunter.git ~/GrokHunter"
++    msg -a "        cd ~/GrokHunter && bash install.sh --overlay-only --with-completions"
++  fi
++
++  # Detect and warn if skills/agents trees are missing
++  local root
++  root="$(_gh_overlay_root || true)"
++  if [[ -z "${root}" || ! -d "${root}/skills" || ! -d "${root}/agents" ]]; then
++    msg -tw "Full overlay (skills/ + agents/) not present"
++    msg -a "  One-liner installs core only. For Coding Team + skills:"
++    msg -a "    git clone … ~/GrokHunter && grokhunter skills install"
+   fi
+ 
+   # Short commands as real bins (work outside interactive shells; not bash aliases only)
+--- a/bin/grokhunter-doctor
++++ b/bin/grokhunter-doctor
+@@ -410,6 +410,34 @@
+   ok "roles: (no roles-discover.sh)"
+ fi
+ 
++# ---------- Overlay completeness ----------
++hdr "Overlay completeness"
++
++FULL_TREE=0
++if [[ -d "${GROKHUNTER_HOME}/bin" && -d "${GROKHUNTER_HOME}/skills" && -d "${GROKHUNTER_HOME}/agents" ]]; then
++  ok "Full overlay tree present (${GROKHUNTER_HOME})"
++  FULL_TREE=1
++else
++  warn "Full overlay tree missing (one-liner only?)"
++  warn "  Clone + install skills for agents / personas / menu:"
++  warn "  git clone https://github.com/FineComputer14451/GrokHunter.git ~/GrokHunter"
++  warn "  cd ~/GrokHunter && grokhunter skills install"
++  WARN=1
++fi
++
++# Count how many core skills are actually installed
++if declare -F _gh_count_core_installed >/dev/null 2>&1; then
++  CORE_INSTALLED="$(_gh_count_core_installed 2>/dev/null || echo 0)"
++  CORE_N="${#GH_CORE_SKILLS[@]}"
++  [[ "${CORE_N}" -gt 0 ]] || CORE_N=3
++  if [[ "${CORE_INSTALLED}" -ge "${CORE_N}" ]]; then
++    ok "Core skills installed (${CORE_INSTALLED}/${CORE_N})"
++  else
++    warn "Core skills incomplete (${CORE_INSTALLED}/${CORE_N}) — run: grokhunter skills install"
++    WARN=1
++  fi
++fi
++
+ # ---------- Config / models ----------
+ hdr "Config"
+ if [[ -f "${HOME}/.grok/config.toml" ]]; then
+@@ -491,6 +519,9 @@
+   exit 0
+ elif [[ "$FAIL" -eq 0 ]]; then
+   printf "${YELLOW}Doctor: PASS with warnings${NC} — core OK; optional items above\n"
++  if [[ "${FULL_TREE:-0}" -eq 0 ]]; then
++    printf "  ${YELLOW}Tip:${NC} clone the repo + run ${CYAN}grokhunter skills install${NC} for full agents/menu\n"
++  fi
+   printf "  Start pair session:  ${CYAN}grok${NC}\n"
+   exit 0
+ else
