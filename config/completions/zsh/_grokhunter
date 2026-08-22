@@ -1,4 +1,4 @@
-#compdef grokhunter gh
+#compdef grokhunter
 
 # GrokHunter zsh completion
 # Install: bash scripts/install-completions.sh

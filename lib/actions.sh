@@ -155,11 +155,21 @@ run_optional_features() {
 }
 
 pre_complete_actions() {
-  if [[ ${SKIP_DE} -eq 0 && ! ${DE_INSTALLED} && ${SELECTED_INSTALLATION} != full ]]; then
-    if [[ ${NON_INTERACTIVE} -eq 1 && -n ${SELECTED_DE} ]]; then
-      set_up_de && { DE_INSTALLED=1; [[ -n ${SELECTED_BROWSER} ]] && set_up_browser; }
-    else
-      set_up_de && { DE_INSTALLED=1; set_up_browser; }
+  # --full already sets DE_INSTALLED=1 (rootfs ships a DE). Honor explicit
+  # --de / --browser so advertised `--full --de xfce --browser chromium` actually
+  # apt-installs Chromium and applies the proot --no-sandbox desktop patch.
+  if [[ ${SKIP_DE} -eq 0 ]]; then
+    if [[ -n "${SELECTED_DE}" ]]; then
+      set_up_de && DE_INSTALLED=1
+      [[ -n "${SELECTED_BROWSER}" ]] && set_up_browser
+    elif [[ -n "${SELECTED_BROWSER}" ]]; then
+      set_up_browser
+    elif [[ ! ${DE_INSTALLED} && ${SELECTED_INSTALLATION} != full ]]; then
+      if [[ ${NON_INTERACTIVE} -eq 1 && -n ${SELECTED_DE} ]]; then
+        set_up_de && { DE_INSTALLED=1; [[ -n ${SELECTED_BROWSER} ]] && set_up_browser; }
+      else
+        set_up_de && { DE_INSTALLED=1; set_up_browser; }
+      fi
     fi
   fi
 

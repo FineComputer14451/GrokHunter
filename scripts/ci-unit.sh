@@ -325,6 +325,42 @@ captured="$(resolve_distro_engine 2>/dev/null)"
 # Must be exactly the cache path (not a multi-line log+path blob)
 [[ "$captured" == "$CACHE/termux-distro.sh" ]]
 [[ -f "$captured" ]]
+
+# Pin ≠ stamp must not reuse cache (stub curl writes a valid engine)
+printf '%s\n' 'https://example.invalid/old.sh' > "$CACHE/termux-distro.url"
+curl() {
+  local out=""
+  while [[ $# -gt 0 ]]; do
+    if [[ "$1" == -o ]]; then out="$2"; shift 2; continue; fi
+    shift
+  done
+  [[ -n "$out" ]] || return 1
+  printf '%s\n' '#!/usr/bin/env bash' 'termux_distro_probe() { :; }' > "$out"
+}
+GROKHUNTER_DISTRO_ENGINE_URL="https://example.invalid/pinned.sh"
+captured2="$(resolve_distro_engine 2>/dev/null)"
+[[ "$captured2" == "$CACHE/termux-distro.sh" ]]
+[[ "$(cat "$CACHE/termux-distro.url")" == "https://example.invalid/pinned.sh" ]]
+# Same pin now hits cache (curl must not be required)
+unset -f curl
+captured3="$(resolve_distro_engine 2>/dev/null)"
+[[ "$captured3" == "$CACHE/termux-distro.sh" ]]
+
+# Unset pin must not keep a foreign stamp (false cache hit)
+unset GROKHUNTER_DISTRO_ENGINE_URL
+printf '%s\n' 'https://example.invalid/old-pin.sh' > "$CACHE/termux-distro.url"
+curl() {
+  local out=""
+  while [[ $# -gt 0 ]]; do
+    if [[ "$1" == -o ]]; then out="$2"; shift 2; continue; fi
+    shift
+  done
+  [[ -n "$out" ]] || return 1
+  printf '%s\n' '#!/usr/bin/env bash' 'termux_distro_probe() { :; }' > "$out"
+}
+captured4="$(resolve_distro_engine 2>/dev/null)"
+[[ "$captured4" == "$CACHE/termux-distro.sh" ]]
+[[ "$(cat "$CACHE/termux-distro.url")" == "https://raw.githubusercontent.com/jorexdeveloper/termux-distro/main/termux-distro.sh" ]]
 TEST_RESOLVE
 info "resolve_distro_engine capture OK"
 
@@ -337,5 +373,244 @@ fi
 grep -qE '_source_termux_distro[[:space:]]+"\$\{DISTRO_ENGINE\}"' install.sh \
   || die "install.sh missing _source_termux_distro DISTRO_ENGINE call"
 info "engine argv isolation OK"
+
+# ---------- ephemeral /dev/fd is not an overlay root ----------
+bash -c '
+  set -euo pipefail
+  eval "$(sed -n "/^_gh_is_ephemeral_dir()/,/^}/p" install.sh)"
+  _gh_is_ephemeral_dir ""
+  _gh_is_ephemeral_dir /dev/fd
+  _gh_is_ephemeral_dir /dev/fd/63
+  _gh_is_ephemeral_dir /proc/self/fd
+  _gh_is_ephemeral_dir /proc/self/fd/63
+  _gh_is_ephemeral_dir /home/kali/GrokHunter && exit 1 || true
+'
+info "ephemeral dir OK"
+
+bash -c '
+  set -euo pipefail
+  SCRIPT_DIR="/dev/fd"
+  export SCRIPT_DIR
+  export GROKHUNTER_HOME="/dev/fd/63"
+  export HOME
+  HOME=$(mktemp -d)
+  mkdir -p "$HOME/GrokHunter"
+  printf "%s\n" "#!/bin/bash" > "$HOME/GrokHunter/install.sh"
+  source lib/grok.sh
+  msg() { :; }
+  root="$(_gh_overlay_root)"
+  [[ "$root" == "$HOME/GrokHunter" ]]
+  [[ "$root" != /dev/fd* ]]
+  rm -rf "$HOME"
+'
+info "overlay root skips /dev/fd OK"
+
+# ---------- dest picker: foreign ~/GrokHunter → cache src ----------
+bash -c '
+  set -euo pipefail
+  eval "$(sed -n "/^_gh_is_ephemeral_dir()/,/^}/p; /^_gh_overlay_complete()/,/^}/p; /^_gh_pick_overlay_dest()/,/^}/p" install.sh)"
+  HOME=$(mktemp -d)
+  CACHE_DIR="$HOME/.cache/grokhunter"
+  mkdir -p "$CACHE_DIR"
+  SCRIPT_DIR=""
+  GROKHUNTER_HOME=""
+  mkdir -p "$HOME/GrokHunter"
+  echo "not-gh" > "$HOME/GrokHunter/notes.txt"
+  dest="$(_gh_pick_overlay_dest)"
+  [[ "$dest" == "$CACHE_DIR/src" ]]
+  # empty home dest
+  rm -rf "$HOME/GrokHunter"
+  dest2="$(_gh_pick_overlay_dest)"
+  [[ "$dest2" == "$HOME/GrokHunter" ]]
+  # git clone at SCRIPT_DIR always wins dest picker
+  mkdir -p "$HOME/clone/.git"
+  echo "install" > "$HOME/clone/install.sh"
+  SCRIPT_DIR="$HOME/clone"
+  dest3="$(_gh_pick_overlay_dest)"
+  [[ "$dest3" == "$HOME/clone" ]]
+  rm -rf "$HOME"
+'
+info "overlay dest picker OK"
+
+# ---------- overlay copy from handmade tarball tree ----------
+bash -c '
+  set -euo pipefail
+  eval "$(sed -n "
+    /^OVERLAY_ITEMS=(/,/^)/p
+    /^OVERLAY_DIRS=(/,/^)/p
+    /^_gh_overlay_complete()/,/^}/p
+    /^_gh_install_overlay_from_tmp()/,/^}/p
+  " install.sh)"
+  die() { echo "$*" >&2; exit 1; }
+  CLEANUP_TMP=$(mktemp -d)
+  dest=$(mktemp -d)
+  mkdir -p "$CLEANUP_TMP"/{bin,lib,scripts,skills,agents,personas,roles,config,templates,branding,docs}
+  printf "%s\n" "#!/bin/bash" "ok() { :; }" > "$CLEANUP_TMP/install.sh"
+  printf "%s\n" "#!/bin/bash" "ok() { :; }" > "$CLEANUP_TMP/lib/grok.sh"
+  printf "%s\n" "#!/bin/bash" "ok() { :; }" > "$CLEANUP_TMP/lib/skills-discover.sh"
+  printf "%s\n" "#!/bin/bash" "ok() { :; }" > "$CLEANUP_TMP/lib/agents-discover.sh"
+  printf "%s\n" "#!/bin/bash" "ok() { :; }" > "$CLEANUP_TMP/lib/personas-discover.sh"
+  printf "%s\n" "#!/bin/bash" "ok() { :; }" > "$CLEANUP_TMP/lib/roles-discover.sh"
+  printf "%s\n" "#!/bin/bash" > "$CLEANUP_TMP/bin/grokhunter"
+  printf "%s\n" "#!/bin/bash" > "$CLEANUP_TMP/scripts/install-completions.sh"
+  printf "%s\n" "#!/bin/bash" > "$CLEANUP_TMP/scripts/ensure_grok.sh"
+  mkdir -p "$CLEANUP_TMP/skills/demo"
+  echo "skill" > "$CLEANUP_TMP/skills/demo/SKILL.md"
+  echo "keep-me" > "$dest/user-notes.txt"
+  _gh_install_overlay_from_tmp "$dest"
+  _gh_overlay_complete "$dest"
+  [[ -f "$dest/user-notes.txt" ]]
+  rm -rf "$CLEANUP_TMP" "$dest"
+'
+info "overlay extract copy OK"
+
+# ---------- ensure_overlay_tree: git never tarred; REFRESH repairs non-git ----------
+bash -c '
+  set -euo pipefail
+  eval "$(sed -n "
+    /^_gh_is_ephemeral_dir()/,/^}/p
+    /^_gh_overlay_complete()/,/^}/p
+    /^_gh_pick_overlay_dest()/,/^}/p
+    /^_gh_stamp_overlay()/,/^}/p
+    /^ensure_overlay_tree()/,/^}/p
+  " install.sh)"
+  info() { :; }
+  warn() { :; }
+  die() { echo "DIE:$*" >&2; exit 9; }
+  die_with_help() { echo "DIE:$1" >&2; exit 9; }
+  _gh_fetch_repo_tarball() { echo FETCHED >&2; exit 8; }
+  _gh_install_overlay_from_tmp() { echo INSTALLED >&2; exit 8; }
+  MODULES_VERSION="2026.2.12"
+  make_complete() {
+    local d="$1"
+    mkdir -p "$d"/{bin,lib,scripts,skills}
+    : > "$d/install.sh"
+    : > "$d/lib/grok.sh"
+    : > "$d/lib/skills-discover.sh"
+    : > "$d/lib/agents-discover.sh"
+    : > "$d/lib/personas-discover.sh"
+    : > "$d/lib/roles-discover.sh"
+    : > "$d/bin/grokhunter"
+    : > "$d/scripts/install-completions.sh"
+    : > "$d/scripts/ensure_grok.sh"
+  }
+  HOME=$(mktemp -d)
+  CACHE_DIR="$HOME/.cache/grokhunter"
+  mkdir -p "$CACHE_DIR"
+  GROKHUNTER_HOME=""
+
+  # Complete git clone + REFRESH=1 must use local (never fetch)
+  src="$HOME/GrokHunter"
+  make_complete "$src"
+  mkdir -p "$src/.git"
+  SCRIPT_DIR="$src"
+  REFRESH=1
+  OVERLAY_ROOT=""
+  LIB_DIR=""
+  ensure_overlay_tree
+  [[ "$OVERLAY_ROOT" == "$src" ]]
+  [[ "$LIB_DIR" == "$src/lib" ]]
+
+  # Incomplete git clone must die (9), not tar/fetch (8)
+  rm -f "$src/bin/grokhunter"
+  ec=0
+  (ensure_overlay_tree) 2>/dev/null || ec=$?
+  [[ "$ec" -eq 9 ]]
+  make_complete "$src"
+  mkdir -p "$src/.git"
+
+  # One-liner (empty SCRIPT_DIR) + git dest + REFRESH=1 must refuse tar
+  SCRIPT_DIR=""
+  REFRESH=1
+  ec=0
+  (ensure_overlay_tree) 2>/dev/null || ec=$?
+  [[ "$ec" -eq 9 ]]
+
+  # Incomplete non-git SCRIPT_DIR must fall through to fetch (not silent local win)
+  rm -rf "$src/.git" "$src/bin/grokhunter"
+  mkdir -p "$src/lib"
+  : > "$src/install.sh"
+  SCRIPT_DIR="$src"
+  REFRESH=0
+  ec=0
+  (ensure_overlay_tree) 2>/dev/null || ec=$?
+  [[ "$ec" -eq 8 ]]
+
+  rm -rf "$HOME"
+'
+info "overlay git/refresh guards OK"
+
+# ---------- --full --de/--browser vs --full alone ----------
+bash -c '
+  set -euo pipefail
+  source lib/cli.sh
+  source lib/actions.sh
+  SKIP_DE=0
+  NON_INTERACTIVE=1
+  SELECTED_INSTALLATION=full
+  DE_INSTALLED=1
+  called=""
+  set_up_de() { called="${called}de "; }
+  set_up_browser() { called="${called}browser "; }
+  run_optional_features() { called="${called}opt "; }
+  SELECTED_DE=xfce
+  SELECTED_BROWSER=chromium
+  pre_complete_actions
+  [[ "$called" == "de browser opt " ]] || { echo "got: [$called]"; exit 1; }
+  called=""
+  SELECTED_DE=""
+  SELECTED_BROWSER=""
+  DE_INSTALLED=1
+  pre_complete_actions
+  [[ "$called" == "opt " ]] || { echo "full-alone got: [$called]"; exit 1; }
+'
+info "pre_complete_actions --full --de OK"
+
+# ---------- uninstall shortcuts + strip_shell without python3 ----------
+grep -qE 'ghsu ght ghd ghs ghp ghm ghk ghai ghn' uninstall.sh \
+  || die "uninstall.sh remove_bins must list shortcut bins"
+if grep -qE 'alias gh=' config/profile.d/grokhunter.sh; then
+  die "profile must not alias gh (GitHub CLI)"
+fi
+if grep -qE 'python3' uninstall.sh; then
+  die "uninstall.sh must not require python3"
+fi
+info "uninstall shortcuts + no gh alias OK"
+
+bash -c '
+  set -euo pipefail
+  ROOT="$(pwd)"
+  HOME=$(mktemp -d)
+  export HOME
+  mkdir -p "$HOME/.local/bin" "$HOME/.cache/grokhunter" "$HOME/.grok/skills"
+  for b in grokhunter ghsu ght ghd ghs ghp ghm ghk ghai ghn; do
+    printf "#!/bin/sh\n" > "$HOME/.local/bin/$b"
+    chmod +x "$HOME/.local/bin/$b"
+  done
+  printf "%s\n" "keep-before" "# >>> grokhunter >>>" "alias gh=bad" "# <<< grokhunter <<<" "keep-after" \
+    > "$HOME/.zshrc"
+  # Unclosed block must not wipe keep-after (and must not abort later steps)
+  printf "%s\n" "bash-before" "# >>> grokhunter >>>" "alias x=1" "bash-after" \
+    > "$HOME/.bashrc"
+  PREFIX="$HOME/prefix"
+  mkdir -p "$PREFIX/bin"
+  export PREFIX
+  # Shadow python3 so strip_shell cannot fall back to it
+  fake=$(mktemp -d)
+  printf "%s\n" "#!/bin/sh" "exit 127" > "$fake/python3"
+  chmod +x "$fake/python3"
+  PATH="$fake:$PATH" bash "$ROOT/uninstall.sh" >/dev/null
+  [[ ! -f "$HOME/.local/bin/ghsu" ]]
+  [[ ! -f "$HOME/.local/bin/grokhunter" ]]
+  grep -q keep-before "$HOME/.zshrc"
+  grep -q keep-after "$HOME/.zshrc"
+  if grep -q "alias gh=bad" "$HOME/.zshrc"; then exit 1; fi
+  if grep -q ">>> grokhunter >>>" "$HOME/.zshrc"; then exit 1; fi
+  grep -q bash-before "$HOME/.bashrc"
+  grep -q bash-after "$HOME/.bashrc"
+  grep -q ">>> grokhunter >>>" "$HOME/.bashrc"
+  rm -rf "$HOME" "$fake"
+'
+info "uninstall strip_shell + shortcuts OK"
 
 info "ALL OK"

@@ -4,16 +4,44 @@ set -euo pipefail
 
 export PATH="${HOME}/.grok/bin:${HOME}/.local/bin:${PATH}"
 
-# Resolve overlay root (clone → ~/GrokHunter → script dir)
+# Resolve overlay root (clone → GROKHUNTER_HOME → ~/GrokHunter → cache stamp)
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-if [[ -f "${HERE}/../install.sh" ]]; then
-  ROOT="$(cd "${HERE}/.." && pwd)"
-elif [[ -d "${HOME}/GrokHunter" ]]; then
-  ROOT="${HOME}/GrokHunter"
-else
-  ROOT="${HERE}"
-fi
+_gh_cli_root() {
+  local d stamp
+  if [[ -f "${HERE}/../install.sh" ]]; then
+    cd "${HERE}/.." && pwd
+    return 0
+  fi
+  for d in "${GROKHUNTER_HOME:-}" "${HOME}/GrokHunter"; do
+    [[ -n "${d}" ]] || continue
+    case "${d}" in
+      /dev/fd|/dev/fd/*|/proc/self/fd|/proc/self/fd/*) continue ;;
+    esac
+    if [[ -f "${d}/install.sh" ]]; then
+      printf '%s\n' "${d}"
+      return 0
+    fi
+  done
+  stamp="${HOME}/.cache/grokhunter/OVERLAY_ROOT"
+  if [[ -r "${stamp}" ]]; then
+    d="$(tr -d '[:space:]' < "${stamp}" 2>/dev/null || true)"
+    if [[ -n "${d}" && -f "${d}/install.sh" ]]; then
+      printf '%s\n' "${d}"
+      return 0
+    fi
+  fi
+  if [[ -f "${HOME}/.cache/grokhunter/src/install.sh" ]]; then
+    printf '%s\n' "${HOME}/.cache/grokhunter/src"
+    return 0
+  fi
+  printf '%s\n' "${HERE}"
+}
+ROOT="$(_gh_cli_root)"
 export GROKHUNTER_HOME="${GROKHUNTER_HOME:-$ROOT}"
+case "${GROKHUNTER_HOME}" in
+  /dev/fd|/dev/fd/*|/proc/self/fd|/proc/self/fd/*)
+    export GROKHUNTER_HOME="${ROOT}" ;;
+esac
 
 # Discovery helpers (skills / agents / personas / roles)
 # shellcheck disable=SC1091
@@ -162,7 +190,6 @@ Exit codes:
   2  usage error
 
 Aliases (after profile install):
-  gh   → grokhunter
   ghn  → grok-nethunter
   ghd  → doctor
   ghsu → setup

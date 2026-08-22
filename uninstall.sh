@@ -42,13 +42,15 @@ log() { printf '[+] %s\n' "$*"; }
 warn() { printf '[!] %s\n' "$*"; }
 
 remove_bins() {
-  for b in grokhunter grok-nethunter grokhunter-doctor aider-grok nh-x11; do
+  local b
+  for b in grokhunter grok-nethunter grokhunter-doctor aider-grok nh-x11 \
+           ghsu ght ghd ghs ghp ghm ghk ghai ghn; do
     if [[ -f "${BIN_DIR}/${b}" ]]; then
       rm -f "${BIN_DIR}/${b}"
       log "Removed ${BIN_DIR}/${b}"
     fi
   done
-  # Termux PREFIX copies (if present)
+  # Termux PREFIX copies (if present) — shortcuts are ~/.local/bin only
   local prefix_bin="${PREFIX:-}/bin"
   if [[ -n "${PREFIX:-}" && -d "${prefix_bin}" ]]; then
     for b in grokhunter grok-nethunter grokhunter-doctor; do
@@ -138,21 +140,63 @@ remove_roles() {
 }
 
 strip_shell() {
+  local target tmp skip line ec=0
   for target in "${HOME}/.zshrc" "${HOME}/.bashrc"; do
     [[ -f "$target" ]] || continue
     if grep -qF "$MARKER_BEGIN" "$target" 2>/dev/null; then
-      python3 -c '
-import re, sys
-path = sys.argv[1]
-text = open(path, encoding="utf-8").read()
-begin, end = "# >>> grokhunter >>>", "# <<< grokhunter <<<"
-pat = re.compile(r"\n?" + re.escape(begin) + r".*?" + re.escape(end) + r"\n?", re.S)
-text2 = pat.sub("\n", text)
-open(path, "w", encoding="utf-8").write(text2)
-' "$target"
-      log "Stripped markers from $target"
+      tmp="${target}.grokhunter.strip.$$"
+      if command -v awk >/dev/null 2>&1; then
+        if awk -v b="$MARKER_BEGIN" -v e="$MARKER_END" '
+          BEGIN { skip=0 }
+          $0==b { skip=1; next }
+          $0==e { if (skip) { skip=0; next } }
+          !skip { print }
+          END { if (skip) exit 2 }
+        ' "$target" > "$tmp"; then
+          if mv -f "$tmp" "$target"; then
+            log "Stripped markers from $target"
+          else
+            rm -f "$tmp"
+            warn "Could not replace $target after strip"
+            ec=1
+            continue
+          fi
+        else
+          rm -f "$tmp"
+          warn "Unclosed or unreadable grokhunter markers in $target — left unchanged"
+          ec=1
+          continue
+        fi
+      else
+        skip=0
+        : > "$tmp" || { warn "Could not strip markers from $target"; ec=1; continue; }
+        while IFS= read -r line || [[ -n "$line" ]]; do
+          if [[ "$line" == "$MARKER_BEGIN" ]]; then skip=1; continue; fi
+          if [[ "$line" == "$MARKER_END" ]]; then
+            if [[ "$skip" -eq 1 ]]; then skip=0; continue; fi
+          fi
+          if [[ "$skip" -eq 0 ]]; then
+            printf '%s\n' "$line" >> "$tmp"
+          fi
+        done < "$target"
+        if [[ "$skip" -eq 1 ]]; then
+          rm -f "$tmp"
+          warn "Unclosed grokhunter markers in $target — left unchanged"
+          ec=1
+          continue
+        fi
+        if mv -f "$tmp" "$target"; then
+          log "Stripped markers from $target"
+        else
+          rm -f "$tmp"
+          warn "Could not replace $target after strip"
+          ec=1
+          continue
+        fi
+      fi
     fi
   done
+  return "$ec"
 }
 
 remove_motd() {
@@ -221,7 +265,7 @@ main() {
   if [[ -f "${_GH_ROOT}/scripts/install_kali_menu.sh" ]]; then
     bash "${_GH_ROOT}/scripts/install_kali_menu.sh" --remove 2>/dev/null || true
   fi
-  strip_shell
+  strip_shell || warn "Could not strip shell markers"
   remove_motd
   remove_meta
   remove_cache

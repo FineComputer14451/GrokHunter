@@ -57,9 +57,24 @@ unset _GH_DISCOVER _GH_AGENTS_DISCOVER _GH_PERSONAS_DISCOVER _GH_ROLES_DISCOVER
 # Path helpers (single resolution path for scripts / bins)
 # ---------------------------------------------------------------------------
 _gh_overlay_root() {
-  local d
+  local d stamp
+  local -a candidates=()
   for d in "${SCRIPT_DIR:-}" "${GROKHUNTER_HOME:-}" "${HOME}/GrokHunter"; do
-    if [[ -n "${d}" && -d "${d}" && ( -f "${d}/install.sh" || -d "${d}/bin" || -d "${d}/scripts" ) ]]; then
+    candidates+=("${d}")
+  done
+  stamp="${HOME}/.cache/grokhunter/OVERLAY_ROOT"
+  if [[ -r "${stamp}" ]]; then
+    d="$(tr -d '[:space:]' < "${stamp}" 2>/dev/null || true)"
+    [[ -n "${d}" ]] && candidates+=("${d}")
+  fi
+  candidates+=("${HOME}/.cache/grokhunter/src")
+
+  for d in "${candidates[@]}"; do
+    [[ -n "${d}" ]] || continue
+    case "${d}" in
+      /dev/fd|/dev/fd/*|/proc/self/fd|/proc/self/fd/*|/proc/*/fd|/proc/*/fd/*) continue ;;
+    esac
+    if [[ -d "${d}" && -f "${d}/install.sh" ]]; then
       printf '%s\n' "${d}"
       return 0
     fi

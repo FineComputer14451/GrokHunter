@@ -51,4 +51,3 @@ _grokhunter_completions() {
 }
 
 complete -F _grokhunter_completions grokhunter
-complete -F _grokhunter_completions gh

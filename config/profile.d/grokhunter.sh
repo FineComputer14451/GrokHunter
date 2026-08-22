@@ -17,6 +17,10 @@ if [[ -r "${HOME}/.grok/secrets.env" ]]; then
 fi
 
 export GROKHUNTER_HOME="${GROKHUNTER_HOME:-${HOME}/GrokHunter}"
+case "${GROKHUNTER_HOME}" in
+  /dev/fd|/dev/fd/*|/proc/self/fd|/proc/self/fd/*)
+    export GROKHUNTER_HOME="${HOME}/GrokHunter" ;;
+esac
 export GROKHUNTER_VERSION="${GROKHUNTER_VERSION:-1.0.7}"
 if [[ -d "${GROKHUNTER_HOME}/bin" ]]; then
   export PATH="${GROKHUNTER_HOME}/bin:${PATH}"
@@ -30,7 +34,6 @@ if [[ -n "${ZSH_VERSION:-}" ]]; then
   if [[ -d "${GROKHUNTER_HOME}/config/completions/zsh" ]]; then
     fpath=("${GROKHUNTER_HOME}/config/completions/zsh" ${fpath[@]})
   fi
-  (( ${+aliases[gh]} ))  || alias gh='grokhunter'
   (( ${+aliases[ghn]} )) || alias ghn='grok-nethunter'
   (( ${+aliases[ghd]} )) || alias ghd='grokhunter doctor'
   (( ${+aliases[ghs]} )) || alias ghs='grokhunter status'
@@ -54,7 +57,6 @@ if [[ -n "${BASH_VERSION:-}" ]]; then
     # shellcheck disable=SC1091
     source "${GROKHUNTER_HOME}/config/completions/bash/grokhunter.bash"
   fi
-  alias gh='grokhunter' 2>/dev/null || true
   alias ghn='grok-nethunter' 2>/dev/null || true
   alias ghd='grokhunter doctor' 2>/dev/null || true
   alias ghs='grokhunter status' 2>/dev/null || true

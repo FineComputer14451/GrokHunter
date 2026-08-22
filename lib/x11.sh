@@ -152,9 +152,24 @@ ensure_x11_session() {
 # Canonical nh-x11 lives in bin/nh-x11 (install copies; no heredoc drift).
 _resolve_overlay_file() {
   local rel="$1"
-  local d
+  local d stamp
+  local -a candidates=()
   for d in "${SCRIPT_DIR:-}" "${GROKHUNTER_HOME:-}" "${HOME}/GrokHunter"; do
-    if [[ -n "${d}" && -f "${d}/${rel}" ]]; then
+    candidates+=("${d}")
+  done
+  stamp="${HOME}/.cache/grokhunter/OVERLAY_ROOT"
+  if [[ -r "${stamp}" ]]; then
+    d="$(tr -d '[:space:]' < "${stamp}" 2>/dev/null || true)"
+    [[ -n "${d}" ]] && candidates+=("${d}")
+  fi
+  candidates+=("${HOME}/.cache/grokhunter/src")
+
+  for d in "${candidates[@]}"; do
+    [[ -n "${d}" ]] || continue
+    case "${d}" in
+      /dev/fd|/dev/fd/*|/proc/self/fd|/proc/self/fd/*|/proc/*/fd|/proc/*/fd/*) continue ;;
+    esac
+    if [[ -f "${d}/${rel}" ]]; then
       printf '%s\n' "${d}/${rel}"
       return 0
     fi

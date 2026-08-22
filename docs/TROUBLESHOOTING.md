@@ -21,10 +21,10 @@ cd GrokHunter
 bash install.sh --full --with-grok --with-x11
 ```
 
-Force cache refresh after an upgrade:
+Force overlay refresh after an upgrade (no rootfs re-download):
 
 ```bash
-GROKHUNTER_REFRESH=1 bash install.sh --with-grok
+GROKHUNTER_REFRESH=1 bash install.sh --overlay-only --with-completions
 ```
 
 ### Low storage
@@ -51,7 +51,7 @@ grokhunter ensure
 # force reinstall / switch installer mode:
 GROKHUNTER_FORCE_GROK=1 GROKHUNTER_GROK_INSTALLER=official grokhunter ensure --force
 # or
-bash install.sh --with-grok
+bash install.sh --overlay-only --with-grok
 # shared script:
 bash ~/GrokHunter/scripts/ensure_grok.sh
 ```
@@ -114,7 +114,8 @@ bash install.sh --with-x11
 
 ```bash
 export PATH="$HOME/.grok/bin:$HOME/.local/bin:$PATH"
-# Add to ~/.bashrc or ~/.zshrc if needed — installer markers: # >>> grokhunter >>>
+# Installer does not edit .bashrc/.zshrc. Add:
+#   [[ -r ~/.grok/profile.sh ]] && source ~/.grok/profile.sh
 ```
 
 ### `nethunter` not found

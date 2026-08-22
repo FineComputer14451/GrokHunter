@@ -38,14 +38,14 @@ GrokHunter does **not** require Magisk, custom recovery, HID, or firmware module
 ## Install flow
 
 1. Detect Termux + architecture  
-2. Load `lib/*` (local clone or versioned cache; never leave engines in CWD)  
-3. Load `termux-distro` engine (vendored next to `install.sh` → `~/.cache/grokhunter/termux-distro.sh` → download into cache; override with `GROKHUNTER_DISTRO_ENGINE_URL`)  
+2. Materialize overlay: clone `lib/` always wins; one-liner extracts GitHub tarball to `~/GrokHunter` (or `~/.cache/grokhunter/src` if that dir is occupied). Never `/dev/fd`.  
+3. Load `termux-distro` engine (vendored next to `install.sh` → cached `termux-distro.sh` if URL stamp matches `GROKHUNTER_DISTRO_ENGINE_URL` → download into cache; never CWD)  
 4. Pull latest NetHunter rootfs (`/current/`, live SHA256) + storage pre-check  
-5. Optional: desktop + browser (session name saved for `nh-x11`; Chromium gets `--no-sandbox`)  
+5. Optional: desktop + browser (`--de` / `--browser` honored even on `--full`; Chromium gets `--no-sandbox`)  
 6. Optional: Grok Build via `scripts/ensure_grok.sh`  
 7. Optional: Termux:X11 + `nh-x11` + `/tmp` bind  
-8. Optional: Aider (`--with-aider` → `~/venv-aider` + `aider-grok`)  
-9. Optional: V9 / 4.5 model pickers + shell completions  
+8. Optional: Aider (`--with-aider` → uv + Python 3.12, `aider-grok`)  
+9. Optional: V9 / 4.5 model pickers + shell completions (`~/.grok/profile.sh`; does not edit rc files)  
 
 ## Upstream foundation (required credit)
 
@@ -81,10 +81,10 @@ One-liner installs **download and execute** remote scripts (this repo’s module
 | Control | How |
 |---------|-----|
 | Prefer clone | `git clone` + `bash install.sh` audits files first |
-| Module version | `MODULES_VERSION` invalidates stale cache |
-| Engine cache | `termux-distro.sh` under `~/.cache/grokhunter`, not CWD |
-| Override URLs | `GROKHUNTER_DISTRO_ENGINE_URL`, `GROKHUNTER_GROK_*_URL` |
-| Refresh | `GROKHUNTER_REFRESH=1 bash install.sh …` |
+| Module version | `MODULES_VERSION` invalidates stale overlay cache |
+| Engine cache | `termux-distro.sh` + `termux-distro.url` stamp under `~/.cache/grokhunter`, not CWD |
+| Override URLs | `GROKHUNTER_DISTRO_ENGINE_URL` (honored vs cache stamp), `GROKHUNTER_GROK_*_URL` |
+| Refresh | `GROKHUNTER_REFRESH=1 bash install.sh --overlay-only --with-completions` |
 | Pin later | Vendor `termux-distro.sh` next to `install.sh` |
 
 Remote `curl | bash` remains a residual risk shared with most CLI installers.
