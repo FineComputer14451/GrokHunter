@@ -35,7 +35,7 @@ jobs:
           # Canonical brand files from branding/ (overwrite if present)
           if [[ -d branding ]]; then
             cp -f branding/favicon.png branding/logo-horizontal.png branding/icon.png _site/assets/ 2>/dev/null || true
-            cp -f branding/social-preview.jpg _site/assets/ 2>/dev/null || true
+            cp -f branding/og.jpg branding/social-preview.jpg branding/x-banner.jpg _site/assets/ 2>/dev/null || true
           fi
           # Avoid Jekyll processing on Pages
           touch _site/.nojekyll

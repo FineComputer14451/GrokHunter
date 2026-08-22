@@ -9,7 +9,9 @@ Canonical artwork for README, GitHub Pages, and the XFCE menu.
 | `favicon.png` | Site tab icon (cyan GH monogram) |
 | `logo-horizontal.png` | README + site hero lockup |
 | `logo-terminal.png` | Docs / CLI-adjacent lockup |
-| `social-preview.jpg` | Open Graph / Twitter card (1200×630) |
+| `og.jpg` | Open Graph / Twitter link preview (1200×630) |
+| `social-preview.jpg` | Same art as `og.jpg` (alias) |
+| `x-banner.jpg` | X feed card (50:11, 1200×264) |
 | `banner.txt` | ASCII banner (installer / MOTD companion) |
 
 Product site copies live under `website/assets/` (GitHub Pages root).
