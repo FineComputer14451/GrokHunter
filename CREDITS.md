@@ -74,8 +74,8 @@ Support: [kali.org](https://www.kali.org/) · [offsec.com](https://www.offsec.co
 | Resource | URL | Role in GrokHunter |
 |----------|-----|--------------------|
 | **Grok Build** | [x.ai/cli](https://x.ai/cli) · [x.ai/build](https://x.ai/build) | Official coding agent binary, TUI, headless `-p`, skills runtime |
-| **API** | [api.x.ai](https://api.x.ai) · [docs.x.ai](https://docs.x.ai) | Model inference (e.g. `grok-4.5`), OpenAI-compatible endpoints |
-| **Changelog** | [x.ai/build/changelog](https://x.ai/build/changelog) | Product versioning (lab targets Grok Build **1.0.0+**) |
+| **API** | [api.x.ai](https://api.x.ai) · [docs.x.ai](https://docs.x.ai) | Model inference (e.g. `grok-4.6`), OpenAI-compatible endpoints |
+| **Changelog** | [x.ai/build/changelog](https://x.ai/build/changelog) | Product versioning (lab targets Grok Build **1.0.5+**) |
 
 **What we reuse:** Official installers (`x.ai/cli/install.sh` and related), `~/.grok` layout, config/models/skills discovery, and API access via SuperGrok / X Premium+ session or `XAI_API_KEY`.
 

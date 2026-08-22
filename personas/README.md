@@ -1,4 +1,4 @@
-# GrokHunter personas (Grok Build 1.0.0+)
+# GrokHunter personas (Grok Build 1.0.5+)
 
 Personas are **behavioral overlays** for subagents. They do not replace agent types (`benjamin`, `lucas`, …). Grok injects persona instructions as a system reminder when a role/resolution selects them.
 

@@ -12,7 +12,7 @@ Turn Termux + proot Kali into a Linux development environment on your phone, wit
 > Not affiliated with xAI, Offensive Security, or jorexdeveloper — we credit and depend on their work. See [CREDITS.md](CREDITS.md).
 
 **Product site:** [finecomputer14451.github.io/GrokHunter](https://finecomputer14451.github.io/GrokHunter/)  
-**Release:** [v1.0.7](https://github.com/FineComputer14451/GrokHunter/releases/tag/v1.0.7) · Grok Build **1.0.0+**
+**Release:** [v1.0.7](https://github.com/FineComputer14451/GrokHunter/releases/tag/v1.0.7) · Grok Build **1.0.5+** · Grok **4.6**
 
 Source: [`website/`](website/) · deploy: push `website/**` or **Actions → Deploy website**.
 
@@ -41,7 +41,7 @@ bash install.sh --full --de xfce --browser chromium \
 |-----------|----------------|
 | Kali rootfs | Latest NetHunter **rootless** image (proot) |
 | Desktop | XFCE (or other DE) + Chromium |
-| Grok Build | **1.0.0+** TUI / headless pair programmer |
+| Grok Build | **1.0.5+** TUI / headless pair programmer (default model **grok-4.6**) |
 | Termux:X11 | Low-latency GUI + `nh-x11` helper |
 | Aider | Optional git-native pair (uv + Python 3.12) |
 | Agents / personas / roles | Coding Team + lab specialists (`skills install`) |
@@ -99,26 +99,26 @@ grokhunter             # Primary CLI / TUI
 grokhunter status      # auth / x11 / v9 quick line
 grokhunter doctor      # Full health report
 grokhunter setup       # One-shot: ensure + skills + doctor
-grokhunter ensure      # Grok Build ≥ 1.0.0 + NetHunter profile
+grokhunter ensure      # Grok Build ≥ 1.0.5 + NetHunter profile
 grokhunter team        # Coding Team multi-agent
 grokhunter scout "…"   # Fast map agent (headless when prompt given)
 grokhunter models      # Install or status V9 model pickers
 grokhunter ai-smoke    # SpaceXAI API smoke (needs XAI_API_KEY)
-grokhunter plan "…"    # Plan agent (Grok Build 1.0.0)
+grokhunter plan "…"    # Plan agent (Grok Build 1.0.5)
 grokhunter -p "…"      # Headless one-shot
 ```
 
-### Grok Build 1.0.0 + Grok 4.5
+### Grok Build 1.0.5 + Grok 4.6
 
 ```bash
-grokhunter ensure                  # binary ≥ 1.0.0 + stable profile
+grokhunter ensure                  # binary ≥ 1.0.5 + stable profile
 bash scripts/install_grok_profile.sh --force
-grokhunter models install          # optional /model aliases → grok-4.5
+grokhunter models install          # optional /model aliases → grok-4.6
 grokhunter models status
 ```
 
 In-session: `/model chat-expert` · `/model multi` · `/model auto` · `/model grok-v9`  
-Base model remains **grok-4.5**. See [docs/GROK-45.md](docs/GROK-45.md) and [docs/GROK-BUILD-1.0.md](docs/GROK-BUILD-1.0.md).
+Base model is **grok-4.6**. See [docs/GROK-46.md](docs/GROK-46.md) and [docs/GROK-BUILD-1.0.md](docs/GROK-BUILD-1.0.md).
 
 ### Termux:X11
 
@@ -160,7 +160,7 @@ skills/                    grokhunter · pair-programming · aider-grok · x11-d
                            (install scans skills/*/SKILL.md → ~/.grok/skills)
 agents/                    benjamin · lucas · harper · coding-team
                            (install → ~/.grok/agents; Grok runtime /config-agents)
-docs/                      INSTALL, FAQ, X11, PROOT, EDITORS, GROK-45
+docs/                      INSTALL, FAQ, X11, PROOT, EDITORS, GROK-46
 ```
 
 ---
@@ -182,8 +182,8 @@ Keep API keys in `~/.grok/secrets.env` (mode `600`).
 | Doc | Topic |
 |-----|--------|
 | [INSTALL.md](docs/INSTALL.md) | Step-by-step install |
-| [GROK-45.md](docs/GROK-45.md) | Grok 4.5 profile + V9 pickers |
-| [GROK-BUILD-1.0.md](docs/GROK-BUILD-1.0.md) | Grok Build **1.0.0** compatibility |
+| [GROK-46.md](docs/GROK-46.md) | Grok 4.6 profile + V9 pickers |
+| [GROK-BUILD-1.0.md](docs/GROK-BUILD-1.0.md) | Grok Build **1.0.5** compatibility |
 | [CODING-TEAM.md](docs/CODING-TEAM.md) | Agents · personas · roles |
 | [X11-PERFORMANCE.md](docs/X11-PERFORMANCE.md) | Termux:X11 tuning |
 | [EDITORS.md](docs/EDITORS.md) | Aider / editors |

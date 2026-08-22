@@ -1,20 +1,20 @@
 # Editors & Pair Programmers on GrokHunter Rootless
 
-**Default intelligence: Grok 4.5** via Grok Build (`grok` / `grokhunter`).  
+**Default intelligence: Grok 4.6** via Grok Build (`grok` / `grokhunter`).  
 This doc covers optional tools that complement it.
 
 ## Default path (`--with-grok`)
 
 ```bash
-grok                       # interactive pair session (Grok 4.5-class)
+grok                       # interactive pair session (Grok 4.6-class)
 grokhunter -p "…"          # headless one-shot
 grokhunter plan "…"        # plan larger changes first
 nh-x11                     # XFCE desktop for editors (if --with-x11)
 ```
 
-See also: [GROK-45.md](GROK-45.md).
+See also: [GROK-46.md](GROK-46.md).
 
-## Aider + Grok 4.5 (recommended optional)
+## Aider + Grok 4.6 (recommended optional)
 
 [Aider](https://aider.chat) is a terminal pair-programmer that works well inside the Kali proot. Use the same xAI key.
 
@@ -44,16 +44,16 @@ curl -LsSf https://aider.chat/install.sh | sh
 
 The installer also places the `aider-grok` helper in `~/.local/bin` and (when possible) inside the rootfs.
 
-### Configure for Grok / xAI (Grok 4.5 tier)
+### Configure for Grok / xAI (Grok 4.6 tier)
 
 ```bash
 [[ -f ~/.grok/secrets.env ]] && source ~/.grok/secrets.env
 export OPENAI_API_BASE=https://api.x.ai/v1
 export OPENAI_API_KEY="${XAI_API_KEY}"
 
-# Default in aider-grok is already grok-4.5
+# Default in aider-grok is already grok-4.6
 # Override only if your account exposes a different coding id:
-# export AIDER_MODEL=grok-4.5
+# export AIDER_MODEL=grok-4.6
 ```
 
 ### Usage
@@ -62,7 +62,7 @@ export OPENAI_API_KEY="${XAI_API_KEY}"
 cd /path/to/your/project
 aider-grok                 # recommended helper (auto model + secrets)
 # or (uv tool install puts aider on PATH)
-aider --model "${AIDER_MODEL:-grok-4.5}"
+aider --model "${AIDER_MODEL:-grok-4.6}"
 aider-grok main.py utils.py   # limit to specific files
 ```
 
@@ -86,6 +86,6 @@ sudo apt install -y neovim micro
 
 ## Recommendation
 
-1. **Default:** `grok` / `grokhunter` optimized for **Grok 4.5**.  
+1. **Default:** `grok` / `grokhunter` optimized for **Grok 4.6**.  
 2. **Aider** (`aider-grok`) when you want git-native auto-commit pairs on the same key.  
 3. **Desktop:** `nh-x11` when you need a visual editor.

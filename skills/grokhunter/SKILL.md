@@ -39,8 +39,8 @@ Default mission is a **coding lab**, not offensive ops (see optional `nethunter-
 | Unit checks | `bash scripts/ci-unit.sh` |
 | Install | `grokhunter install …` or `bash install.sh …` |
 | Overlay-only | `bash install.sh --overlay-only --with-…` (no rootfs) |
-| Config | `~/.grok/config.toml` (Grok Build **1.0.0+** profile) |
-| Min Grok | **1.0.0** (`GROKHUNTER_MIN_GROK`) |
+| Config | `~/.grok/config.toml` (Grok Build **1.0.5+** profile, default **grok-4.6**) |
+| Min Grok | **1.0.5** (`GROKHUNTER_MIN_GROK`) |
 | Secrets | `~/.grok/secrets.env` mode **600** (never print) |
 | Engine cache | `~/.cache/grokhunter/termux-distro.sh` (upstream: **jorexdeveloper/termux-distro**) |
 | Credits | `grokhunter credits` · repo `CREDITS.md` |
@@ -56,7 +56,7 @@ grokhunter                     # fullscreen TUI (via grok-nethunter)
 grokhunter status              # auth | x11 | models | skills | wrappers
 grokhunter doctor              # full health report
 grokhunter setup [--with-models] [--with-aider]  # one-shot lab sync
-grokhunter ensure [--force]    # Grok Build ≥ 1.0.0 + NetHunter profile
+grokhunter ensure [--force]    # Grok Build ≥ 1.0.5 + NetHunter profile
 grokhunter team [prompt]       # Coding Team agent
 grokhunter scout|review|fix|desktop [prompt]
 grokhunter agents status
@@ -89,7 +89,7 @@ grokhunter help | version
 ```
 Need Kali rootfs?     → full/mini/nano install.sh
 Already have Kali?    → --overlay-only --with-*
-Only Grok binary?     → grokhunter ensure   # requires Grok Build 1.0.0+
+Only Grok binary?     → grokhunter ensure   # requires Grok Build 1.0.5+
 Profile only?         → bash scripts/install_grok_profile.sh
 Only V9 pickers?      → grokhunter models install
 Only skills/PATH?     → grokhunter skills install
@@ -139,7 +139,7 @@ grokhunter doctor
 grokhunter status
 ```
 
-### V9 / 4.5 model pickers
+### V9 / 4.6 model pickers
 
 ```bash
 grokhunter models status
@@ -188,7 +188,7 @@ grokhunter ai-smoke
 # or: python3 ~/GrokHunter/templates/spacexai_hello.py
 ```
 
-Anchors: `XAI_API_KEY`, base `https://api.x.ai/v1`, model **`grok-4.5`**. Never invent `SPACEXAI_*` API hosts.
+Anchors: `XAI_API_KEY`, base `https://api.x.ai/v1`, model **`grok-4.6`**. Never invent `SPACEXAI_*` API hosts.
 
 ### Local unit checks
 
@@ -224,7 +224,7 @@ Canonical helpers: repo `bin/` (`nh-x11`, `aider-grok`, `grokhunter`, …) → `
 
 | Finding | Typical fix |
 |---------|-------------|
-| grok missing / &lt; 1.0.0 | `grokhunter ensure` (target **1.0.0+**) |
+| grok missing / &lt; 1.0.5 | `grokhunter ensure` (target **1.0.5+**) |
 | channel=alpha / bad fork model | `bash scripts/install_grok_profile.sh --force` |
 | nethunter not on PATH | Termux host; re-run install |
 | nh-x11 missing | `--overlay-only --with-x11` + X11 APK |

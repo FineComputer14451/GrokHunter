@@ -155,7 +155,7 @@ Usage:
   grokhunter setup [opts]     One-shot lab sync (ensure + skills + optional models)
   grokhunter menu [install|remove]  Kali/XFCE Applications → GrokHunter submenu
   grokhunter ensure           Install/upgrade Grok Build binary
-  grokhunter models [cmd]     V9 / 4.5 model pickers (install|status|force)
+  grokhunter models [cmd]     V9 / 4.6 model pickers (install|status|force)
   grokhunter skills [cmd]     Install/status lab skills under ~/.grok/skills
   grokhunter agents [cmd]     List/status Coding Team agents
   grokhunter team [prompt]    Launch coding-team agent (TUI or -p headless)
@@ -204,7 +204,7 @@ Env:
   XAI_API_KEY                 API auth
   GROK_NETHUNTER_FLAGS        Extra default flags for launcher
   GROKHUNTER_HOME             Overlay root (default ~/GrokHunter)
-  GROKHUNTER_MIN_GROK         Min binary version (default 1.0.0)
+  GROKHUNTER_MIN_GROK         Min binary version (default 1.0.5)
   GROKHUNTER_GROK_INSTALLER   auto|official|termux-native (ensure)
   GROKHUNTER_FORCE_GROK=1     Reinstall Grok even if present
   GROKHUNTER_SKIP_PROFILE=1   Skip NetHunter config.toml profile merge
@@ -270,7 +270,7 @@ cmd_setup() {
 Usage: grokhunter setup [options]
 
   One-shot lab sync for an existing clone / overlay:
-    1. grokhunter ensure   (Grok Build ≥ 1.0.0 + NetHunter profile)
+    1. grokhunter ensure   (Grok Build ≥ 1.0.5 + NetHunter profile)
     2. grokhunter skills install
     3. optional: models install / Aider install
     4. grokhunter doctor   (unless --no-doctor)
@@ -451,18 +451,18 @@ cmd_agent_launch() {
 }
 
 cmd_ensure() {
-  local min="${GROKHUNTER_MIN_GROK:-1.0.0}"
+  local min="${GROKHUNTER_MIN_GROK:-1.0.5}"
   if [[ "${1:-}" == "--force" ]]; then
     export GROKHUNTER_FORCE_GROK=1
   fi
 
-  # ensure_grok.sh enforces min version, prefers `grok update`, applies 1.0.0 profile
+  # ensure_grok.sh enforces min version, prefers `grok update`, applies 1.0.5 profile
   local ensure="${GROKHUNTER_HOME}/scripts/ensure_grok.sh"
   if [[ ! -f "$ensure" ]]; then
     ensure="${HERE}/../scripts/ensure_grok.sh"
   fi
   if [[ -f "$ensure" ]]; then
-    echo "Ensuring Grok Build ≥ ${min} (1.0.0+ profile)…"
+    echo "Ensuring Grok Build ≥ ${min} (1.0.5+ profile)…"
     bash "$ensure"
   else
     echo "scripts/ensure_grok.sh not found — falling back to official installer…"
@@ -647,7 +647,7 @@ Not affiliated with the projects below — we build on them with thanks.
 
 4) xAI — Grok Build & models
    https://x.ai  ·  https://x.ai/cli  ·  https://docs.x.ai
-   Grok Build agent (1.0.0+), Grok models / API
+   Grok Build agent (1.0.5+), Grok models / API
    Auth: SuperGrok / X Premium+ or XAI_API_KEY
 
 Also: Aider (aider.chat) · uv (astral.sh) when using --with-aider
@@ -669,15 +669,16 @@ EOF
 
 cmd_models_status() {
   local cfg="${GROK_CONFIG:-${HOME}/.grok/config.toml}"
-  local marker="# --- Grok Imagine Cinematic Studio: v9-4p5 specialist models"
+  local marker="# --- GrokHunter: v9 specialist models"
+  local marker_legacy="# --- Grok Imagine Cinematic Studio: v9-4p5 specialist models"
   echo "config: ${cfg}"
   if [[ ! -f "${cfg}" ]]; then
     echo "status: missing (no config.toml — run grok once, then: grokhunter models install)"
     return 1
   fi
-  if grep -qF "${marker}" "${cfg}" 2>/dev/null \
+  if { grep -qF "${marker}" "${cfg}" 2>/dev/null || grep -qF "${marker_legacy}" "${cfg}" 2>/dev/null; } \
     && grep -qE '^\[model\.(chat-expert|multi|auto|"chat-expert")' "${cfg}" 2>/dev/null; then
-    echo "status: installed (V9 / 4.5 picker surface present)"
+    echo "status: installed (V9 / 4.6 picker surface present)"
     echo "  switch: /model chat-expert · multi · auto · grok-v9"
     return 0
   fi
@@ -695,7 +696,7 @@ cmd_models() {
       cat <<'EOF'
 Usage: grokhunter models [install|status|force]
 
-  install   Write V9 / 4.5 model pickers into ~/.grok/config.toml
+  install   Write V9 / 4.6 model pickers into ~/.grok/config.toml
   status    Report whether pickers are present (default)
   force     Re-install pickers even if already complete
 

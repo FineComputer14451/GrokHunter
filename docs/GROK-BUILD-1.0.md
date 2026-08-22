@@ -1,42 +1,46 @@
-# Grok Build 1.0.0 compatibility — GrokHunter Rootless
+# Grok Build 1.0.5 compatibility — GrokHunter Rootless
 
-GrokHunter **1.0.3+** targets **[Grok Build 1.0.0](https://x.ai/build/changelog)** (stable, 2026-08-07).
+GrokHunter **1.0.7+** targets **[Grok Build 1.0.5](https://x.ai/build/changelog)** (stable, 2026-08-15) with **Grok 4.6** as the default coding model.
 
-## What 1.0.0 means for this lab
+## What 1.0.5 means for this lab
 
 | Area | GrokHunter behavior |
 |------|---------------------|
-| Min binary | `GROKHUNTER_MIN_GROK=1.0.0` (doctor / ensure) |
+| Min binary | `GROKHUNTER_MIN_GROK=1.0.5` (doctor / ensure) |
 | Channel | `stable` (not `alpha`) |
-| Default model | `grok-4.5` |
-| Web search model | `grok-4.5` |
-| Fork secondary | `grok-4.5` (not the invalid `grok-build` slug) |
+| Default model | `grok-4.6` |
+| Web search model | `grok-4.6` |
+| Fork secondary | `grok-4.6` (not the invalid `grok-build` slug) |
 | Profile | `config/grok-build.nethunter.toml` → merged by `scripts/install_grok_profile.sh` |
 | Plan | `grokhunter plan` → `grok --agent plan --permission-mode plan -p …` |
 | Skills | `~/.grok/skills/` (and project `.grok/skills/`) |
 | Agents | `~/.grok/agents/` Coding Team + builtins (`plan`, `explore`, …) |
 | Subagents | enabled in profile for workflows / Coding Team |
 
+1.0.5 adds launcher config overlays (`GROK_CONFIG` / `GROK_CONFIG_PATH`), safer worktree reclaim, hook-block messaging, and image/video call limits. Changelog: https://x.ai/build/changelog
+
 ## Upgrade path
 
 ```bash
-# 1) Binary ≥ 1.0.0 + NetHunter profile
+# 1) Binary ≥ 1.0.5 + NetHunter profile
 grokhunter ensure
 # or force reinstall:
 GROKHUNTER_FORCE_GROK=1 grokhunter ensure --force
 
-# 2) Profile only (if binary already 1.0.0)
+# 2) Profile only (if binary already 1.0.5)
 bash ~/GrokHunter/scripts/install_grok_profile.sh --force
 
 # 3) Lab skills + Coding Team agents
 grokhunter skills install
 
-# 4) Optional V9 /model aliases (still map to grok-4.5)
+# 4) Optional V9 /model aliases (map to grok-4.6)
 grokhunter models install
+# or force refresh from 4.5 pickers:
+grokhunter models force
 
 # 5) Health
 grokhunter doctor
-grok --version    # expect 1.0.0+
+grok --version    # expect 1.0.5+
 grok inspect      # skills / agents / config
 grok models
 ```
@@ -45,7 +49,7 @@ grok models
 
 ```bash
 grok --version
-# grok 1.0.0 (…) [stable]
+# grok 1.0.5 (…) [stable]
 
 grok inspect
 # Skills: grokhunter, pair-programming, aider-grok, … (user)
@@ -53,7 +57,7 @@ grok inspect
 
 cat ~/.grok/config.toml | head -40
 # channel = "stable"
-# default = "grok-4.5"
+# default = "grok-4.6"
 ```
 
 ## Official references
@@ -61,10 +65,11 @@ cat ~/.grok/config.toml | head -40
 - Install: `curl -fsSL https://x.ai/cli/install.sh | bash`
 - Changelog: https://x.ai/build/changelog
 - Settings: https://docs.x.ai/build/settings
+- Models: https://docs.x.ai/developers/models · https://docs.x.ai/developers/grok-4-6
 - Custom models: https://docs.x.ai/build (user guide in `~/.grok/docs/`)
 
 ## Notes
 
 - Session auth (SuperGrok / X Premium+) and `XAI_API_KEY` both work; prefer secrets in `~/.grok/secrets.env`.
-- V9 picker aliases are **local** `[model.*]` names that still call **grok-4.5**.
-- `grok-build` as a **model id** is not in the 1.0.0 catalog for this lab — use `grok-4.5` (agent type `plan` is separate from model id).
+- V9 picker aliases are **local** `[model.*]` names that still call **grok-4.6**. Former 4.5 picker IDs remain as compat aliases.
+- `grok-build` as a **model id** is not the lab default — use `grok-4.6` (agent type `plan` is separate from model id).

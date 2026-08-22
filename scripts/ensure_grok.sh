@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # Shared Grok Build installer — used by install (lib/grok.sh) and `grokhunter ensure`.
-# Targets Grok Build 1.0.0+ (stable).
+# Targets Grok Build 1.0.5+ (stable).
 #
 # Env:
 #   GROKHUNTER_GROK_INSTALLER  official | termux-native | auto (default: auto)
 #   GROKHUNTER_FORCE_GROK=1    reinstall even if grok is already on PATH
-#   GROKHUNTER_MIN_GROK        minimum version (default: 1.0.0)
+#   GROKHUNTER_MIN_GROK        minimum version (default: 1.0.5)
 #   GROKHUNTER_SKIP_PROFILE=1  skip NetHunter config profile merge
 #
 # Exit: 0 on success (grok on PATH, version ≥ min), 1 on failure.
@@ -13,7 +13,7 @@ set -euo pipefail
 
 OFFICIAL_URL="${GROKHUNTER_GROK_OFFICIAL_URL:-https://x.ai/cli/install.sh}"
 TERMUX_NATIVE_URL="${GROKHUNTER_GROK_TERMUX_URL:-https://raw.githubusercontent.com/Thr45hx/grok-cli-termux-native/main/install.sh}"
-MIN_VER="${GROKHUNTER_MIN_GROK:-1.0.0}"
+MIN_VER="${GROKHUNTER_MIN_GROK:-1.0.5}"
 
 info() { echo "[ensure_grok] $*"; }
 warn() { echo "[ensure_grok] WARN: $*" >&2; }
@@ -48,7 +48,7 @@ _grok_ok() {
 }
 
 _grok_version() {
-  # Parse first semver from `grok --version` (e.g. "grok 1.0.0 (…)")
+  # Parse first semver from `grok --version` (e.g. "grok 1.0.5 (…)")
   grok --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1 || true
 }
 
@@ -96,7 +96,7 @@ _apply_profile() {
   root="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")/.." && pwd 2>/dev/null || true)"
   script="${root}/scripts/install_grok_profile.sh"
   if [[ -f "${script}" ]]; then
-    info "Applying GrokHunter 1.0.0 NetHunter profile…"
+    info "Applying GrokHunter 1.0.5 NetHunter profile…"
     bash "${script}" || warn "profile merge had issues (non-fatal)"
   fi
 }

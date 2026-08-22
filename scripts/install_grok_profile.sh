@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Merge GrokHunter NetHunter profile into ~/.grok/config.toml for Grok Build 1.0.0+.
+# Merge GrokHunter NetHunter profile into ~/.grok/config.toml for Grok Build 1.0.5+.
 #
 # - Does NOT delete custom [model.*] blocks or unrelated user keys
 # - Overwrites known profile sections/keys from config/grok-build.nethunter.toml
@@ -18,7 +18,7 @@ die()  { echo "[install_grok_profile] ERROR: $*" >&2; exit 1; }
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")/.." && pwd)" || die "cannot resolve repo root"
 SRC="${GROKHUNTER_PROFILE_SRC:-$ROOT/config/grok-build.nethunter.toml}"
 CFG="${GROK_CONFIG:-${HOME:?HOME not set}/.grok/config.toml}"
-MARKER="# --- GrokHunter NetHunter profile (Grok Build 1.0.0+) ---"
+MARKER="# --- GrokHunter NetHunter profile (Grok Build 1.0.5+) ---"
 FORCE=0
 
 for arg in "$@"; do
@@ -89,13 +89,19 @@ cfg_text = cfg_path.read_text(encoding="utf-8")
 
 # Already applied? (skip unless --force)
 if marker in cfg_text and not force:
-    # Still ensure critical 1.0.0 keys if missing/stale
+    # Still ensure critical 1.0.5 keys if missing/stale
     need = False
     if re.search(r'(?m)^channel\s*=\s*"alpha"', cfg_text):
         need = True
     if re.search(r'(?m)^fork_secondary_model\s*=\s*"grok-build"', cfg_text):
         need = True
     if not re.search(r'(?m)^\[models\]', cfg_text):
+        need = True
+    if re.search(r'(?m)^default\s*=\s*"grok-4\.5"', cfg_text):
+        need = True
+    if re.search(r'(?m)^fork_secondary_model\s*=\s*"grok-4\.5"', cfg_text):
+        need = True
+    if re.search(r'(?m)^web_search\s*=\s*"grok-4\.5"', cfg_text):
         need = True
     if not need:
         print("profile already present (use --force to refresh)")
@@ -136,7 +142,7 @@ base = strip_owned_sections(cfg_text)
 # Build owned sections from SRC only
 parts = [base.rstrip(), "", marker]
 # Preserve template comments header lightly
-parts.append("# Managed keys for Grok Build 1.0.0+ (safe to re-run install_grok_profile.sh)")
+parts.append("# Managed keys for Grok Build 1.0.5+ (safe to re-run install_grok_profile.sh)")
 
 order = ["hints", "features", "telemetry", "cli", "ui", "ui.display_refresh", "models", "subagents"]
 for sec in order:

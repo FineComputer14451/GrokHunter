@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SpaceXAI (xAI) API smoke test — Responses API with grok-4.5
+# SpaceXAI (xAI) API smoke test — Responses API with grok-4.6
 # Usage:
 #   bash scripts/spacexai_smoke.sh
 #   bash scripts/spacexai_smoke.sh "your prompt"
@@ -20,7 +20,7 @@ if [[ -z "${XAI_API_KEY:-}" ]]; then
   printf 'export XAI_API_KEY=%q\\n' \"xai-...\" > ~/.grok/secrets.env && chmod 600 ~/.grok/secrets.env"
 fi
 
-MODEL="${SPACEXAI_MODEL:-${AIDER_MODEL:-grok-4.5}}"
+MODEL="${SPACEXAI_MODEL:-${AIDER_MODEL:-grok-4.6}}"
 BASE="${OPENAI_API_BASE:-https://api.x.ai/v1}"
 PROMPT="${1:-Say hello from GrokHunter in one short sentence.}"
 

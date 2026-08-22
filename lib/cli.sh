@@ -51,7 +51,7 @@ Options:
   --no-x11                Skip Termux:X11 setup
   --with-aider            Install Aider pair-programmer (venv + xAI-ready)
   --no-aider              Skip Aider installation
-  --with-v9-models        Install Grok V9 / 4.5 model pickers into config.toml
+  --with-v9-models        Install Grok V9 / 4.6 model pickers into config.toml
   --no-v9-models          Skip V9 model pickers
   --with-completions      Copy completions + ~/.grok/profile.sh (does not edit .zshrc/.bashrc)
   --no-completions        Skip shell completions

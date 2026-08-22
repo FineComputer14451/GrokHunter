@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# aider-grok — GrokHunter helper: Aider + xAI / Grok 4.5
+# aider-grok — GrokHunter helper: Aider + xAI / Grok 4.6
 # Sources ~/.grok/secrets.env, sets OpenAI-compatible base, launches aider.
 set -euo pipefail
 
@@ -24,8 +24,8 @@ if [[ -n "${XAI_API_KEY:-}" ]]; then
   export OPENAI_API_KEY="${XAI_API_KEY}"
 fi
 
-# Prefer Grok 4.5-class coding model (override with AIDER_MODEL if needed)
-export AIDER_MODEL="${AIDER_MODEL:-grok-4.5}"
+# Prefer Grok 4.6-class coding model (override with AIDER_MODEL if needed)
+export AIDER_MODEL="${AIDER_MODEL:-grok-4.6}"
 
 # Prefer uv-tool / venv installs (order: local PATH, uv bin, classic venv)
 _activate_aider() {

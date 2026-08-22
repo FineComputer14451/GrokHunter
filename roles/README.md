@@ -1,4 +1,4 @@
-# GrokHunter roles (Grok Build 1.0.0+)
+# GrokHunter roles (Grok Build 1.0.5+)
 
 **Roles** set capability mode, reasoning effort, and related defaults for subagent resolution.  
 They pair with **agents** (session type) and **personas** (tone/output).

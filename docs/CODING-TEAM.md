@@ -2,7 +2,7 @@
 
 GrokHunter ships **Grok Build agent definitions** under `agents/`. They are system prompts for agent types, loaded when selected or spawned—not AGENTS.md project rules.
 
-Compatible with **Grok Build 1.0.0+** (`~/.grok/agents/`, `/config-agents`, `spawn_subagent`).
+Compatible with **Grok Build 1.0.5+** (`~/.grok/agents/`, `/config-agents`, `spawn_subagent`).
 
 ## Roster
 
@@ -168,7 +168,7 @@ role   = capabilities (architect, builder, …)
 persona = tone/cards  (mobile, design-card, …)
 ```
 
-## CLI examples (1.0.0)
+## CLI examples (1.0.5)
 
 ```bash
 grok --agent coding-team

@@ -5,7 +5,7 @@
 1. **Rootless first** — unrooted Android via Termux + proot only.
 2. **Coding & building focus** — real Linux toolchains + Grok as on-device agent.
 3. **Overlay, not fork** — never rebuild Kali rootfs or kernels.
-4. **Grok binary** — shared installer (`scripts/ensure_grok.sh`): requires **Grok Build ≥ 1.0.0**, Termux-native first on Android, official xAI installer as fallback; merges NetHunter profile via `scripts/install_grok_profile.sh`.
+4. **Grok binary** — shared installer (`scripts/ensure_grok.sh`): requires **Grok Build ≥ 1.0.5**, Termux-native first on Android, official xAI installer as fallback; merges NetHunter profile via `scripts/install_grok_profile.sh`. Default model **grok-4.6**.
 5. **Idempotent install** — safe to re-run; modules/engine cached under `~/.cache/grokhunter`.
 6. **Mobile-first UX** — compact TUI, short aliases, desktop via Termux:X11.
 
@@ -45,7 +45,7 @@ GrokHunter does **not** require Magisk, custom recovery, HID, or firmware module
 6. Optional: Grok Build via `scripts/ensure_grok.sh`  
 7. Optional: Termux:X11 + `nh-x11` + `/tmp` bind  
 8. Optional: Aider (`--with-aider` → uv + Python 3.12, `aider-grok`)  
-9. Optional: V9 / 4.5 model pickers + shell completions (`~/.grok/profile.sh`; does not edit rc files)  
+9. Optional: V9 / 4.6 model pickers + shell completions (`~/.grok/profile.sh`; does not edit rc files)  
 
 ## Upstream foundation (required credit)
 

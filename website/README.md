@@ -11,7 +11,7 @@ Static product landing page for [GrokHunter](https://github.com/FineComputer1445
 | Hero | Quick install + animated terminal (1.0.3 stack) |
 | Stats | Version / Grok min / agents / personas / roles |
 | Why | Comparison table |
-| Features | 9 feature cards (Grok 1.0.0, agents, Aider, …) |
+| Features | 9 feature cards (Grok Build 1.0.5, Grok 4.6, agents, Aider, …) |
 | Stack | skills · agents · personas · roles |
 | Agents | Coding Team loop + roster table |
 | Personas & roles | Full product lists |

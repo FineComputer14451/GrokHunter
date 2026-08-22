@@ -25,7 +25,7 @@ if not api_key:
     sys.exit(1)
 
 client = OpenAI(api_key=api_key, base_url="https://api.x.ai/v1")
-model = os.environ.get("SPACEXAI_MODEL", "grok-4.5")
+model = os.environ.get("SPACEXAI_MODEL", "grok-4.6")
 prompt = " ".join(sys.argv[1:]) if len(sys.argv) > 1 else "Say hello from GrokHunter in one short sentence."
 
 resp = client.responses.create(model=model, input=prompt)

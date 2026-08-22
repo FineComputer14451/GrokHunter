@@ -54,7 +54,7 @@ bash install.sh --full --de xfce --with-grok --with-x11
 --no-x11                Skip Termux:X11
 --with-aider            Install Aider (venv + xAI helper)
 --no-aider              Skip Aider
---with-v9-models        Install Grok V9 / 4.5 model pickers into config.toml
+--with-v9-models        Install Grok V9 / 4.6 model pickers into config.toml
 --no-v9-models          Skip V9 model pickers
 --with-completions      Copy completions + ~/.grok/profile.sh (does not edit .zshrc/.bashrc)
 --no-completions        Skip shell completions
@@ -87,7 +87,7 @@ Helpers (`nh-x11`, `aider-grok`, `grokhunter`, …) are installed from repo `bin
 | `GROKHUNTER_DISTRO_ENGINE_URL` | Pin/fork of `termux-distro.sh` (default: **jorexdeveloper/termux-distro** main) |
 | `GROKHUNTER_GROK_INSTALLER` | `auto` \| `official` \| `termux-native` |
 | `GROKHUNTER_FORCE_GROK=1` | Reinstall Grok even if present |
-| `GROKHUNTER_MIN_GROK` | Min Grok Build version (default **1.0.0**) |
+| `GROKHUNTER_MIN_GROK` | Min Grok Build version (default **1.0.5**) |
 | `GROKHUNTER_SKIP_PROFILE=1` | Skip NetHunter `config.toml` profile merge |
 | `NH_X11_SESSION` | Desktop start command for `nh-x11` (e.g. `startlxde`) |
 
