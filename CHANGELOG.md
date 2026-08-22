@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## [1.0.9] — 2026-08-22 — Doctor truth + GitHub identity
+
+Doctor stops treating a working lab as offline or incomplete. Git commits attach to GitHub instead of `invalid-email-address`. Overlay cache **2026.2.13**.
+
 ### Status / doctor follow-ups
 
 - `grokhunter status` treats current **and** legacy V9 config markers as `models=yes`
@@ -25,6 +29,10 @@
 - `grokhunter setup` auto-sets a placeholder identity when one of those sources works
 - Doctor warns on placeholder identity (`root`, `@localhost`, empty) so GitHub stops showing `invalid-email-address`
 - `.mailmap` maps leftover `root@localhost` locally
+
+### Overlay cache
+
+- `MODULES_VERSION` / banner → `2026.2.13` (one-liner overlay refresh)
 
 ## [1.0.8] — 2026-08-22 — Overlay extract, Grok 4.6, install hardening
 
