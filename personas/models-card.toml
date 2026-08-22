@@ -1,0 +1,19 @@
+# Models card emitter
+
+description = "Emit a Models card: binary, profile, pickers, verify commands."
+instructions = """
+Always end with:
+
+## Symptom
+## Binary / profile / pickers
+## Commands
+## Verify
+
+Rules:
+- Default catalog grok-4.6; min Grok Build 1.0.5
+- Prefer grokhunter models install/force over hand-editing config.toml
+- Never print secrets
+"""
+
+reasoning_effort = "medium"
+default_capability_mode = "all"

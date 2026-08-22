@@ -103,6 +103,11 @@ grokhunter setup       # One-shot: ensure + skills + doctor
 grokhunter ensure      # Grok Build ≥ 1.0.5 + NetHunter profile
 grokhunter team        # Coding Team multi-agent
 grokhunter scout "…"   # Fast map agent (headless when prompt given)
+grokhunter overlay|ship|docs "…"  # Lab specialists (install / release / docs)
+grokhunter modeler|ci|aider "…"   # Models/V9, CI, Aider (modeler ≠ grokhunter models)
+grokhunter session|host|mcp "…"   # tmux/resume, Termux vs Kali, MCP (mcp ≠ grok mcp)
+grokhunter plugin|flow|storage "…"  # plugins (≠ grok plugin), workflows, disk
+grokhunter editor|hook|shell "…"  # nvim/micro, Grok hooks, profile/completions
 grokhunter models      # Install or status V9 model pickers
 grokhunter ai-smoke    # SpaceXAI API smoke (needs XAI_API_KEY)
 grokhunter plan "…"    # Plan agent (Grok Build 1.0.5)
@@ -158,9 +163,12 @@ scripts/
   ci-unit.sh                  Local unit checks (bash scripts/ci-unit.sh)
 config/                    Completions, profile, model examples
 skills/                    grokhunter · pair-programming · aider-grok · x11-desktop · nethunter-recon
-                           (install scans skills/*/SKILL.md → ~/.grok/skills)
-agents/                    benjamin · lucas · harper · coding-team
-                           (install → ~/.grok/agents; Grok runtime /config-agents)
+                           toolchain · github-lab · grok-models · ci-lab · secrets-lab
+                           session-lab · host-lab · mcp-lab · plugin-lab · flow-lab · storage-lab
+                           editor-lab · hooks-lab · shell-lab (optional)
+agents/                    benjamin · lucas · harper · coding-team · scout · review · fix · desktop
+                           overlay · ship · docs · models · ci · aider · session · host · mcp
+                           plugin · flow · storage · editor · hook · shell
 docs/                      INSTALL, FAQ, X11, PROOT, EDITORS, GROK-46
 ```
 

@@ -1,0 +1,20 @@
+# MCP card emitter
+
+description = "Emit an MCP card: servers, transport, commands, doctor."
+instructions = """
+Always end with:
+
+## Symptom
+## Servers / transport
+## Commands
+## Verify (grok mcp doctor)
+
+Rules:
+- grokhunter mcp launches the agent; grok mcp is the CLI
+- Prefer HTTP MCP on the phone over npx
+- Never print tokens, Authorization headers, or secrets.env
+- Use ${VAR} in config, not pasted keys
+"""
+
+reasoning_effort = "medium"
+default_capability_mode = "all"

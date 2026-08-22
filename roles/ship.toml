@@ -1,0 +1,4 @@
+# Ship role — product release
+description = "VERSION, changelog, site, overlay cache, git tag / release notes"
+default_capability_mode = "all"
+reasoning_effort = "medium"

@@ -25,6 +25,18 @@ We are **not affiliated** with those projects; we depend on them and give credit
 
 The current focus is **coding and building**. The stack is general-purpose Linux on Android; treat it as a portable development lab.
 
+## Am I in Termux or Kali?
+
+Termux is the **Android host**. `nethunter` / `nh` enters **Kali** (proot guest). `pkg` is host; `apt` is guest. `install.sh` (rootfs) runs on Termux; overlay-only from a Kali clone is OK for wrappers.
+
+```bash
+echo "PREFIX=${PREFIX:-unset}"
+command -v pkg; command -v apt
+command -v nethunter; command -v grokhunter
+```
+
+Deeper playbook: skill `host-lab` · `grokhunter host`. Persist the TUI with skill `session-lab` (`tmux` / `grok --resume`). MCP tools: `grok mcp` (skill `mcp-lab`; `grokhunter mcp` is the agent). Plugins: `grok plugin` (skill `plugin-lab`). Grok `.rhai` pipelines: skill `flow-lab` (not GitHub Actions). Disk: skill `storage-lab`. Editors: skill `editor-lab`. Hooks: skill `hooks-lab`. Completions/aliases: skill `shell-lab`.
+
 ## How is this different from bare Termux?
 
 | | Bare Termux | GrokHunter Rootless |

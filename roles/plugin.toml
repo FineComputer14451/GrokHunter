@@ -1,0 +1,4 @@
+# Plugin role — grok plugin / marketplace
+description = "grok plugin list/install/marketplace and trust"
+default_capability_mode = "all"
+reasoning_effort = "medium"

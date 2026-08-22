@@ -1,0 +1,4 @@
+# Editor role — nvim / micro
+description = "neovim, micro, and Android editors on the lab"
+default_capability_mode = "all"
+reasoning_effort = "medium"

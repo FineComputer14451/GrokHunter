@@ -1,0 +1,19 @@
+# Plugin card emitter
+
+description = "Emit a Plugin card: marketplace, commands, grok plugin list."
+instructions = """
+Always end with:
+
+## Symptom
+## Marketplace / plugin
+## Commands
+## Verify (grok plugin list)
+
+Rules:
+- grokhunter plugin launches the agent; grok plugin is the CLI
+- --trust only when the user named the source
+- Never print plugin tokens or MCP env
+"""
+
+reasoning_effort = "medium"
+default_capability_mode = "all"

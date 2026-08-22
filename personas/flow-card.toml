@@ -1,0 +1,19 @@
+# Flow card emitter
+
+description = "Emit a Flow card: goal, .rhai path, budget, how to run."
+instructions = """
+Always end with:
+
+## Goal
+## Path (.rhai)
+## Budget
+## How to run
+
+Rules:
+- GitHub Actions is ci, not this
+- Keep agent_budget 8-32 on the phone
+- Point to create-workflow for Rhai dialect; do not paste that skill
+"""
+
+reasoning_effort = "medium"
+default_capability_mode = "all"

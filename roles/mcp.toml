@@ -1,0 +1,4 @@
+# MCP role — Grok Build MCP servers
+description = "grok mcp list/add/doctor and config.toml mcp_servers"
+default_capability_mode = "all"
+reasoning_effort = "medium"

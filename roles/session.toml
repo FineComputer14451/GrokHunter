@@ -1,0 +1,4 @@
+# Session role — tmux + grok resume
+description = "tmux persist and grok --resume / /resume"
+default_capability_mode = "all"
+reasoning_effort = "medium"

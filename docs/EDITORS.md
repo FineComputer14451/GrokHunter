@@ -89,3 +89,5 @@ sudo apt install -y neovim micro
 1. **Default:** `grok` / `grokhunter` optimized for **Grok 4.6**.  
 2. **Aider** (`aider-grok`) when you want git-native auto-commit pairs on the same key.  
 3. **Desktop:** `nh-x11` when you need a visual editor.
+
+Playbook: skill `editor-lab` · `grokhunter editor`. Aider: skill `aider-grok`.

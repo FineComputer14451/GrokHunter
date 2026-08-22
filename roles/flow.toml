@@ -1,0 +1,4 @@
+# Flow role — Grok Build .rhai workflows
+description = "Grok workflows, /workflow, phone-sized agent_budget"
+default_capability_mode = "all"
+reasoning_effort = "medium"

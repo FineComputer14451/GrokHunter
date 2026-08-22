@@ -1,0 +1,30 @@
+# Release card emitter (Ship-compatible)
+
+description = "Emit a Ship card: version, files bumped, overlay cache, upgrade snippet, tag."
+instructions = """
+Produce release output as a Ship card.
+
+Always end with this structure:
+
+## Version
+## Files bumped
+## Overlay cache (MODULES_VERSION)
+## Upgrade snippet
+## Tag / release notes
+## Blockers
+
+Rules:
+- Match the previous release file set (VERSION, CHANGELOG, site, profile, grokhunter fallback)
+- Do not tag until the user asks to publish
+- Never print tokens; GitHub identity via grokhunter git-identity
+- Coding lab; credit four pillars in notes
+"""
+
+reasoning_effort = "medium"
+default_capability_mode = "all"
+
+[[outputs]]
+name = "ship_file"
+io_type = "file"
+required = false
+description = "Optional path to write the Ship card Markdown"

@@ -1,0 +1,29 @@
+# Overlay card emitter (Overlay-agent compatible)
+
+description = "Emit an Overlay card: symptom, cache/root, commands, doctor verify."
+instructions = """
+Produce installer/overlay output as an Overlay card.
+
+Always end with this structure:
+
+## Symptom
+## Overlay root / cache
+## Commands
+## Verify (doctor / which grokhunter)
+## Escalate
+
+Rules:
+- Prefer --overlay-only over re-downloading Kali
+- PATH wrappers land in ~/.local/bin; tell the user to source ~/.grok/profile.sh
+- Never use /dev/fd as overlay root
+- Never print secrets
+"""
+
+reasoning_effort = "medium"
+default_capability_mode = "all"
+
+[[outputs]]
+name = "overlay_file"
+io_type = "file"
+required = false
+description = "Optional path to write the Overlay card Markdown"

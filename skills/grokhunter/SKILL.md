@@ -27,7 +27,7 @@ Default mission is a **coding lab**, not offensive ops (see optional `nethunter-
 
 | Item | Value |
 |------|-------|
-| Version | See repo `VERSION` (product site tracks major.minor) |
+| Version | **1.0.9** (repo `VERSION`; overlay cache **2026.2.18**) |
 | Overlay | `~/GrokHunter` or `$GROKHUNTER_HOME` |
 | Launch | `grokhunter` / `grok` (wrappers in `~/.local/bin`) |
 | Doctor | `grokhunter doctor` |
@@ -46,8 +46,9 @@ Default mission is a **coding lab**, not offensive ops (see optional `nethunter-
 | Credits | `grokhunter credits` · repo `CREDITS.md` |
 | Module cache | `~/.cache/grokhunter/lib` (`MODULES_VERSION`) |
 | Skills install dir | `~/.grok/skills/{name}/SKILL.md` |
-| Related skills | `pair-programming`, `aider-grok` (coding); `x11-desktop` (X11 fix/tune); `nethunter-recon` (legacy/scoped) |
-| Coding Team agents | `benjamin` · `lucas` · `harper` · `coding-team` in `~/.grok/agents/` after install — runtime `/config-agents` |
+| Git identity | `grokhunter git-identity` [`show` \| `set`] — flags, env, gh, `GH_TOKEN`, or GitHub origin |
+| Related skills | coding: `pair-programming`, `aider-grok`; optional lab skills (toolchain…shell-lab, x11-desktop); scoped: `nethunter-recon` |
+| Coding Team agents | core + specialists (overlay…shell) → `~/.grok/agents/` |
 
 ## CLI map
 
@@ -59,6 +60,12 @@ grokhunter setup [--with-models] [--with-aider]  # one-shot lab sync
 grokhunter ensure [--force]    # Grok Build ≥ 1.0.5 + NetHunter profile
 grokhunter team [prompt]       # Coding Team agent
 grokhunter scout|review|fix|desktop [prompt]
+grokhunter overlay|ship|docs [prompt]
+grokhunter modeler|ci|aider [prompt]
+grokhunter session|host|mcp [prompt]
+grokhunter plugin|flow|storage [prompt]
+grokhunter editor|hook|shell [prompt]
+grokhunter git-identity [show|set]
 grokhunter agents status
 grokhunter models status|install|force
 grokhunter skills status|install
@@ -78,6 +85,7 @@ grokhunter help | version
 | `ghn` | `grok-nethunter` |
 | `ghd` | `doctor` |
 | `ghs` | `status` |
+| `ghsu` | `setup` |
 | `ghp` | `plan` |
 | `ghm` | `models` |
 | `ghk` | `skills` |
@@ -96,7 +104,18 @@ Only skills/PATH?     → grokhunter skills install
 Desktop?              → --with-x11 + Termux:X11 APK + nh-x11
 X11 black/lag/tune?   → skill x11-desktop (docs/X11-PERFORMANCE.md)
 API key check?        → grokhunter ai-smoke
-Broken PATH?          → export PATH + skills install / doctor
+GitHub invalid-email? → grokhunter git-identity set  (skill github-lab)
+Compilers / Aider?    → skill toolchain
+Termux vs Kali?       → skill host-lab
+TUI died / resume?    → skill session-lab
+MCP tools missing?    → skill mcp-lab (`grok mcp`; agent `mcp`)
+Plugin missing?       → skill plugin-lab (`grok plugin`; agent `plugin`)
+Grok workflow .rhai?  → skill flow-lab (agent `flow`; Actions = ci-lab)
+Disk / SD full?       → skill storage-lab
+nvim / micro?         → skill editor-lab
+Grok hook missing?    → skill hooks-lab (TUI /hooks; agent `hook`)
+TAB / ghd missing?    → skill shell-lab
+Broken PATH?          → export PATH + skills install / doctor; source ~/.grok/profile.sh
 ```
 
 ## Playbooks
@@ -126,6 +145,16 @@ grokhunter skills install    # wrappers + ~/.grok/skills
 ```
 
 Requires at least one `--with-*`. Overlay complete always runs `install_cli_bins` (PATH wrappers + skills).
+
+### Git identity (GitHub attribution)
+
+```bash
+grokhunter git-identity          # show
+grokhunter git-identity set      # gh, GH_TOKEN, or GitHub origin owner
+# doctor warns if placeholder (root, @localhost, empty)
+```
+
+Resolution order lives in `lib/git-identity.sh`. Deeper playbook: skill `github-lab`.
 
 ### Repair PATH / wrappers / skills
 
@@ -227,14 +256,15 @@ Canonical helpers: repo `bin/` (`nh-x11`, `aider-grok`, `grokhunter`, …) → `
 | No /etc/os-release | Warning only. Check `/usr/lib/os-release`; Termux host often has none. Not a lab blocker. |
 | grok missing / &lt; 1.0.5 | `grokhunter ensure` (target **1.0.5+**) |
 | channel=alpha / bad fork model | `bash scripts/install_grok_profile.sh --force` |
-| nethunter not on PATH | Termux host; re-run install |
+| nethunter not on PATH | Termux host; re-run install (skill `host-lab`) |
 | nh-x11 missing | `--overlay-only --with-x11` + X11 APK |
 | skill (repo only) | `grokhunter skills install` |
 | V9 pickers missing | `grokhunter models install` |
-| wrapper not on PATH | `source ~/.grok/profile.sh` or fix PATH |
+| wrapper not on PATH | overlay-only installs to `~/.local/bin`; `source ~/.grok/profile.sh` or new shell; skill `host-lab` if Termux vs Kali |
+| git identity placeholder | `grokhunter git-identity set` |
 | no secrets / key | write `~/.grok/secrets.env` mode 600 |
 | x.ai unreachable | real outage only if probe gets no HTTP status (`000`); Cloudflare 403 / API 401 are reachable. Offline lab still OK for non-API work |
 
 ## Response style
 
-Short commands, mobile-friendly, never print secrets. Prefer paste-ready lines over essays. Cross-link `pair-programming` for coding sessions and `aider-grok` for git-native pair.
+Short commands, mobile-friendly, never print secrets. Prefer paste-ready lines over essays. Cross-link `pair-programming` / `aider-grok` for coding, optional lab skills (`shell-lab`, `editor-lab`, `hooks-lab`, `host-lab`, `session-lab`, `storage-lab`, `toolchain`) for the phone environment.

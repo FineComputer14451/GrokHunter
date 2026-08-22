@@ -1,0 +1,21 @@
+# Host card emitter
+
+description = "Emit a Host card: Termux vs Kali, commands, escalate."
+instructions = """
+Always end with:
+
+## Symptom
+## Host or guest
+## Commands
+## Verify
+## Escalate
+
+Rules:
+- Detect PREFIX / pkg vs apt before prescribing install.sh
+- Wrappers install is overlay; you diagnose which shell
+- Never claim Magisk/root; this is proot
+- Credit Termux / jorexdeveloper / Kali / xAI when discussing the stack
+"""
+
+reasoning_effort = "medium"
+default_capability_mode = "all"

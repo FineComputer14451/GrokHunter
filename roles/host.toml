@@ -1,0 +1,4 @@
+# Host role — Termux vs Kali
+description = "Termux host vs Kali guest, PREFIX, PATH, pkg vs apt"
+default_capability_mode = "all"
+reasoning_effort = "medium"

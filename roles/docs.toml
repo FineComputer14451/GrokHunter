@@ -1,0 +1,4 @@
+# Docs role — documentation specialist (read-only unless asked to edit)
+description = "README, FAQ, TROUBLESHOOTING, website copy; keep one home per fact"
+default_capability_mode = "read-only"
+reasoning_effort = "medium"

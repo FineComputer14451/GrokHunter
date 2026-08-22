@@ -1,0 +1,4 @@
+# Overlay role — install.sh / cache / PATH wrappers
+description = "Installer overlay, MODULES_VERSION cache, overlay-only, PATH wrappers"
+default_capability_mode = "all"
+reasoning_effort = "medium"

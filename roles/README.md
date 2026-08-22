@@ -20,6 +20,21 @@ Discovered from:
 | `code-review.toml` | `code-review` | all | review |
 | `surgical.toml` | `surgical` | all | fix |
 | `x11-desktop.toml` | `x11-desktop` | all | desktop |
+| `overlay.toml` | `overlay` | all | overlay |
+| `ship.toml` | `ship` | all | ship |
+| `docs.toml` | `docs` | read-only | docs |
+| `models.toml` | `models` | all | models |
+| `ci.toml` | `ci` | all | ci |
+| `aider.toml` | `aider` | all | aider |
+| `session.toml` | `session` | all | session |
+| `host.toml` | `host` | all | host |
+| `mcp.toml` | `mcp` | all | mcp |
+| `plugin.toml` | `plugin` | all | plugin |
+| `flow.toml` | `flow` | all | flow |
+| `storage.toml` | `storage` | all | storage |
+| `editor.toml` | `editor` | all | editor |
+| `hook.toml` | `hook` | all | hook |
+| `shell.toml` | `shell` | all | shell |
 
 ## Install
 

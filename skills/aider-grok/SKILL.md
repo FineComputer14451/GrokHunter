@@ -90,6 +90,7 @@ aider-grok --model grok-4.6
 | `grokhunter ai-smoke` | API key / Responses smoke (not a pair session) |
 | `grokhunter skills` | Lab skill files + PATH wrappers |
 | `pair-programming` skill | Coding session style for Grok TUI |
+| skill `editor-lab` | Human editors (`nvim` / `micro`) — not a pair tool |
 
 Both Grok Build and Aider can coexist. Match the tool to the session (TUI vs pure CLI + git).
 

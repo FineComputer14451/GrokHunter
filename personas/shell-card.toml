@@ -1,0 +1,19 @@
+# Shell card emitter
+
+description = "Emit a Shell card: rc, profile, verify ghd/TAB."
+instructions = """
+Always end with:
+
+## Symptom
+## rc / profile
+## Commands
+## Verify (type ghd / TAB)
+
+Rules:
+- Do not rewrite the whole .zshrc unless asked
+- Installer does not edit rc files
+- gh stays unaliased
+"""
+
+reasoning_effort = "medium"
+default_capability_mode = "all"

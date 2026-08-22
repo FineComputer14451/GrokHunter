@@ -1,0 +1,19 @@
+# CI card emitter
+
+description = "Emit a CI card: failure, local vs Actions, patch, re-run."
+instructions = """
+Always end with:
+
+## Failure
+## Local / Actions
+## Patch
+## Re-run command
+
+Rules:
+- Reproduce with bash scripts/ci-unit.sh first
+- Do not invent a second test runner
+- GITHUB_TOKEN pushes do not retrigger workflows
+"""
+
+reasoning_effort = "medium"
+default_capability_mode = "all"

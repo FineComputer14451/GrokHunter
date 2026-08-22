@@ -168,6 +168,21 @@ Usage:
   grokhunter review [prompt]  Launch review agent
   grokhunter fix [prompt]     Launch fix agent
   grokhunter desktop [prompt] Launch desktop (X11) agent
+  grokhunter overlay [prompt] Launch overlay/install agent
+  grokhunter ship [prompt]    Launch release/ship agent
+  grokhunter docs [prompt]    Launch docs agent
+  grokhunter modeler [prompt] Launch models/V9 agent (grok --agent models)
+  grokhunter ci [prompt]      Launch CI agent
+  grokhunter aider [prompt]   Launch aider-grok agent
+  grokhunter session [prompt] Launch tmux / grok-resume agent
+  grokhunter host [prompt]    Launch Termux-vs-Kali agent
+  grokhunter mcp [prompt]     Launch MCP agent (CLI is grok mcp)
+  grokhunter plugin [prompt]  Launch plugin agent (CLI is grok plugin)
+  grokhunter flow [prompt]    Launch workflow agent
+  grokhunter storage [prompt] Launch disk/cache agent
+  grokhunter editor [prompt]  Launch nvim/micro agent
+  grokhunter hook [prompt]    Launch Grok hooks agent
+  grokhunter shell [prompt]   Launch profile/completions agent
   grokhunter ai-smoke [prompt] SpaceXAI API smoke (scripts/spacexai_smoke.sh)
   grokhunter smoke [prompt]   Alias for ai-smoke
   grokhunter install [args]   Run / re-run installer (supports --overlay-only)
@@ -400,7 +415,7 @@ cmd_agents_status() {
     fi
   done < <(_gh_list_agent_names "${GROKHUNTER_HOME}")
   echo "installed: ${n}"
-  echo "launch:    grokhunter team | scout | review | fix | desktop"
+  echo "launch:    grokhunter team | scout | review | fix | desktop | overlay | ship | docs | modeler | ci | aider | session | host | mcp | plugin | flow | storage | editor | hook | shell"
   echo "tui:       /config-agents"
   [[ "${n}" -gt 0 ]]
 }
@@ -417,7 +432,7 @@ Usage: grokhunter agents [status|list|help]
   help          This help
 
 Install agents:  grokhunter skills install
-Launch:          grokhunter team | scout | review | fix | desktop
+Launch:          grokhunter team | scout | review | fix | desktop | overlay | ship | docs | modeler | ci | aider | session | host | mcp | plugin | flow | storage | editor | hook | shell
 EOF
       return 0
       ;;
@@ -911,9 +926,13 @@ main() {
       shift || true
       cmd_agent_launch coding-team "$@"
       ;;
-    scout|benjamin|lucas|harper|review|fix|desktop)
+    scout|benjamin|lucas|harper|review|fix|desktop|overlay|ship|docs|ci|aider|session|host|mcp|plugin|flow|storage|editor|hook|shell)
       shift || true
       cmd_agent_launch "${sub}" "$@"
+      ;;
+    modeler)
+      shift || true
+      cmd_agent_launch models "$@"
       ;;
     ai-smoke|smoke)
       shift || true

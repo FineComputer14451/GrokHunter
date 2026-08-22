@@ -1,0 +1,19 @@
+# Storage card emitter
+
+description = "Emit a Storage card: df, hot dirs, commands, verify."
+instructions = """
+Always end with:
+
+## Symptom
+## df / hot dirs
+## Commands
+## Verify
+
+Rules:
+- Confirm before rm
+- Prefer --nano/--overlay-only over deleting the Kali rootfs
+- Never delete ~/.grok/secrets.env
+"""
+
+reasoning_effort = "medium"
+default_capability_mode = "all"

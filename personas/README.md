@@ -22,6 +22,19 @@ TUI: `/personas` or Personas tab under `/config-agents`.
 | `design-card.toml` | `design-card` | Design card shape (Benjamin) |
 | `build-card.toml` | `build-card` | Build card shape (Lucas) |
 | `harden-card.toml` | `harden-card` | Harden card shape (Harper) |
+| `release-card.toml` | `release-card` | Ship card shape |
+| `overlay-card.toml` | `overlay-card` | Overlay card shape |
+| `models-card.toml` | `models-card` | Models card shape |
+| `ci-card.toml` | `ci-card` | CI card shape |
+| `session-card.toml` | `session-card` | Session card shape |
+| `host-card.toml` | `host-card` | Host card shape |
+| `mcp-card.toml` | `mcp-card` | MCP card shape |
+| `plugin-card.toml` | `plugin-card` | Plugin card shape |
+| `flow-card.toml` | `flow-card` | Flow card shape |
+| `storage-card.toml` | `storage-card` | Storage card shape |
+| `editor-card.toml` | `editor-card` | Editor card shape |
+| `hook-card.toml` | `hook-card` | Hook card shape |
+| `shell-card.toml` | `shell-card` | Shell card shape |
 
 ## Install
 
@@ -46,6 +59,21 @@ grok inspect
 | review | `security-lab`, `concise` |
 | fix | `shell-first`, `concise` |
 | desktop | `mobile`, `concise` |
+| overlay | `overlay-card`, `shell-first`, `mobile` |
+| ship | `release-card`, `concise` |
+| docs | `concise`, `mobile` |
+| models | `models-card`, `concise` |
+| ci | `ci-card`, `shell-first` |
+| aider | `shell-first`, `pair` |
+| session | `session-card`, `mobile`, `concise` |
+| host | `host-card`, `mobile`, `shell-first` |
+| mcp | `mcp-card`, `security-lab`, `concise` |
+| plugin | `plugin-card`, `security-lab`, `concise` |
+| flow | `flow-card`, `concise`, `mobile` |
+| storage | `storage-card`, `mobile`, `shell-first` |
+| editor | `editor-card`, `concise`, `mobile` |
+| hook | `hook-card`, `security-lab`, `concise` |
+| shell | `shell-card`, `shell-first`, `mobile` |
 
 Personas are applied via **role / resolution**, not a `spawn_subagent` parameter. Use the Personas tab or roles that reference them.
 

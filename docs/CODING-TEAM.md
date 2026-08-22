@@ -23,6 +23,21 @@ Compatible with **Grok Build 1.0.5+** (`~/.grok/agents/`, `/config-agents`, `spa
 | `review` | plan / read-only | Diff and change review |
 | `fix` | full | One-bug surgical patches |
 | `desktop` | full | Termux:X11, nh-x11, proot binds |
+| `overlay` | full | install.sh, overlay-only, cache, PATH wrappers |
+| `ship` | full | VERSION, changelog, site, tag / release notes |
+| `docs` | plan / read-only | README, FAQ, website copy |
+| `models` | full | grok-4.6 / V9 pickers (`grokhunter modeler`) |
+| `ci` | full | ci-unit.sh / Smoke |
+| `aider` | full | aider-grok install / uv 3.12 |
+| `session` | full | tmux persist / grok resume |
+| `host` | full | Termux host vs Kali guest |
+| `mcp` | full | grok mcp list / add / doctor |
+| `plugin` | full | grok plugin / marketplace |
+| `flow` | full | Grok .rhai workflows (`grokhunter flow`) |
+| `storage` | full | df / cache / --mini |
+| `editor` | full | nvim / micro |
+| `hook` | full | Grok ~/.grok/hooks / /hooks |
+| `shell` | full | profile.sh / completions |
 
 Built-ins still available: `plan`, `explore`, `general-purpose`.
 
@@ -30,7 +45,7 @@ Built-ins still available: `plan`, `explore`, `general-purpose`.
 
 ```bash
 grokhunter skills install
-# → ~/.grok/agents/{benjamin,lucas,harper,coding-team,scout,review,fix,desktop}.md
+# → ~/.grok/agents/ (core + specialists; grokhunter skills install)
 ```
 
 Project-local: copy the same files under `.grok/agents/`.
@@ -59,7 +74,7 @@ Clarify goal + constraints
       done
 ```
 
-Desktop-only issues can go straight to **`desktop`**.
+Desktop-only issues can go straight to **`desktop`**. Installer/PATH/cache → **`overlay`**. Version/tag → **`ship`**. Doc-only → **`docs`**. Pickers/profile → **`models`**. ci-unit/Smoke → **`ci`**. Aider install → **`aider`**. tmux / grok resume → **`session`**. Termux vs Kali → **`host`**. MCP servers → **`mcp`**. Plugins → **`plugin`**. Grok `.rhai` workflows → **`flow`**. Disk/SD → **`storage`**. nvim/micro → **`editor`**. Grok hooks → **`hook`**. profile/completions → **`shell`**.
 
 ## Mobile constraints checklist
 
@@ -126,6 +141,117 @@ Desktop-only issues can go straight to **`desktop`**.
 ## Smoke
 ```
 
+### Overlay card (overlay)
+
+```markdown
+## Symptom
+## Overlay root / cache
+## Commands
+## Verify
+## Escalate
+```
+
+### Ship card (ship)
+
+```markdown
+## Version
+## Files bumped
+## Overlay cache
+## Upgrade snippet
+## Tag / release notes
+```
+
+### Docs card (docs)
+
+```markdown
+## Question / drift
+## Canonical home
+## Files to change
+## Suggested copy
+```
+
+### Session card (session)
+
+```markdown
+## Symptom
+## Host / guest / tmux
+## Commands
+## Verify
+```
+
+### Host card (host)
+
+```markdown
+## Symptom
+## Host or guest
+## Commands
+## Verify
+## Escalate
+```
+
+### MCP card (mcp)
+
+```markdown
+## Symptom
+## Servers / transport
+## Commands
+## Verify (grok mcp doctor)
+```
+
+### Plugin card (plugin)
+
+```markdown
+## Symptom
+## Marketplace / plugin
+## Commands
+## Verify (grok plugin list)
+```
+
+### Flow card (flow)
+
+```markdown
+## Goal
+## Path (.rhai)
+## Budget
+## How to run
+```
+
+### Storage card (storage)
+
+```markdown
+## Symptom
+## df / hot dirs
+## Commands
+## Verify
+```
+
+### Editor card (editor)
+
+```markdown
+## Symptom
+## Tool
+## Commands
+## Verify
+```
+
+### Hook card (hook)
+
+```markdown
+## Symptom
+## Scope (user / project)
+## Commands
+## Verify (/hooks)
+```
+
+### Shell card (shell)
+
+```markdown
+## Symptom
+## rc / profile
+## Commands
+## Verify (type ghd / TAB)
+```
+
 ## Personas (subagent overlays)
 
 Personas shape **tone and output contracts** without changing agent type.  
@@ -141,6 +267,19 @@ Product files: `personas/*.toml` → `~/.grok/personas/` via `grokhunter skills 
 | `design-card` | Design card structure |
 | `build-card` | Build card structure |
 | `harden-card` | Harden card structure |
+| `release-card` | Ship card structure |
+| `overlay-card` | Overlay card structure |
+| `models-card` | Models card structure |
+| `ci-card` | CI card structure |
+| `session-card` | Session card structure |
+| `host-card` | Host card structure |
+| `mcp-card` | MCP card structure |
+| `plugin-card` | Plugin card structure |
+| `flow-card` | Flow card structure |
+| `storage-card` | Storage card structure |
+| `editor-card` | Editor card structure |
+| `hook-card` | Hook card structure |
+| `shell-card` | Shell card structure |
 
 TUI: `/personas` (or Personas tab under `/config-agents`).  
 Details: [personas/README.md](../personas/README.md).
@@ -158,6 +297,21 @@ Roles set **capability mode** and **reasoning effort** for subagent resolution.
 | `code-review` | all | review |
 | `surgical` | all | fix |
 | `x11-desktop` | all | desktop |
+| `overlay` | all | overlay |
+| `ship` | all | ship |
+| `docs` | read-only | docs |
+| `models` | all | models |
+| `ci` | all | ci |
+| `aider` | all | aider |
+| `session` | all | session |
+| `host` | all | host |
+| `mcp` | all | mcp |
+| `plugin` | all | plugin |
+| `flow` | all | flow |
+| `storage` | all | storage |
+| `editor` | all | editor |
+| `hook` | all | hook |
+| `shell` | all | shell |
 
 Install: `personas/` + `roles/` both via `grokhunter skills install` → `~/.grok/roles/`.  
 Details: [roles/README.md](../roles/README.md).
@@ -177,6 +331,15 @@ grok --agent scout -p "Map install_aider and ensure_grok"
 grok --agent review -p "Review uncommitted changes"
 grok --agent fix -p "ci-unit fails on bind-patch"
 grok --agent desktop -p "nh-x11 black screen"
+grok --agent session -p "Termux killed grok, resume tmux"
+grok --agent host -p "grokhunter missing inside nethunter"
+grok --agent mcp -p "grok mcp doctor red for github"
+grok --agent plugin -p "list installed plugins"
+grok --agent flow -p "small review workflow for this repo"
+grok --agent storage -p "df full after overlay-only"
+grok --agent editor -p "install nvim in Kali"
+grok --agent hook -p "SessionStart hook did not fire"
+grok --agent shell -p "ghd not found in new zsh"
 ```
 
 In TUI: `/config-agents` or `/agents` · personas: `/personas`.

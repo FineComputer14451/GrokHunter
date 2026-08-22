@@ -1,0 +1,4 @@
+# Aider role — aider-grok install/repair
+description = "uv + Python 3.12 Aider helper on GrokHunter"
+default_capability_mode = "all"
+reasoning_effort = "medium"

@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+### Lab specialists
+
+- Optional skills **`toolchain`** (apt / Aider Python 3.12 / storage) and **`github-lab`** (`git-identity` playbook)
+- Agents **`overlay`**, **`ship`**, **`docs`** plus roles/personas and Coding Team routing
+- `grokhunter overlay|ship|docs` launchers + completions
+- `grokhunter` skill refreshed for 1.0.9 (identity, doctor, PATH)
+- Wave 2: skills **`grok-models`**, **`ci-lab`**, **`secrets-lab`**; agents **`models`**, **`ci`**, **`aider`** (`grokhunter modeler` so it does not collide with `grokhunter models`)
+- Wave 3: skills **`session-lab`**, **`host-lab`**, **`mcp-lab`**; agents **`session`**, **`host`**, **`mcp`** (`grokhunter mcp` launches the agent; CLI is `grok mcp`)
+- Wave 4: skills **`plugin-lab`**, **`flow-lab`**, **`storage-lab`**; agents **`plugin`**, **`flow`**, **`storage`** (`grokhunter plugin` launches the agent; CLI is `grok plugin`)
+- Wave 5: skills **`editor-lab`**, **`hooks-lab`**, **`shell-lab`**; agents **`editor`**, **`hook`**, **`shell`**
+- Overlay cache **2026.2.18**
+
 ## [1.0.9] — 2026-08-22 — Doctor truth + GitHub identity
 
 Doctor stops treating a working lab as offline or incomplete. Git commits attach to GitHub instead of `invalid-email-address`. Overlay cache **2026.2.13**.

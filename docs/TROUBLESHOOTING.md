@@ -33,7 +33,11 @@ Full + desktop needs several GB free. Use `--mini` or `--nano` if space is tight
 
 ```bash
 bash install.sh --mini --with-grok --no-de
+df -h
+du -sh ~/.cache/grokhunter ~/.grok/sessions 2>/dev/null
 ```
+
+Skill `storage-lab` · `grokhunter storage`. Confirm before deleting caches. Prefer `--overlay-only` over re-downloading Kali.
 
 ### SHA256 / rootfs download errors
 
@@ -42,6 +46,20 @@ Usually network or Kali mirror issues. Retry later or check:
 https://kali.download/nethunter-images/current/rootfs/
 
 ## Grok / auth
+
+### `grokhunter: command not found`
+
+You may be in the **wrong shell** (Termux host vs Kali guest) or PATH was not sourced after overlay-only.
+
+```bash
+echo "PREFIX=${PREFIX:-unset}"   # Termux host has com.termux
+command -v pkg; command -v apt
+export PATH="$HOME/.grok/bin:$HOME/.local/bin:$PATH"
+source ~/.grok/profile.sh 2>/dev/null || true
+grokhunter skills install
+```
+
+Skill `host-lab` · `grokhunter host`. If wrappers are missing, agent `overlay`. Tab-complete / `ghd` missing: skill `shell-lab` (source `~/.grok/profile.sh`; installer does not edit rc).
 
 ### `grok: command not found`
 

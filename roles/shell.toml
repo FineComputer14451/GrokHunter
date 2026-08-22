@@ -1,0 +1,4 @@
+# Shell role — profile and completions
+description = "profile.sh, zsh/bash completions, grokhunter aliases"
+default_capability_mode = "all"
+reasoning_effort = "medium"

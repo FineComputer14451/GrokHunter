@@ -77,3 +77,5 @@ chsh -s zsh    # if available; or set terminal command to zsh
 ```
 
 Keep `install.sh` runs in bash; use zsh for interactive coding sessions.
+
+Playbook: skill `shell-lab` · `grokhunter shell`.

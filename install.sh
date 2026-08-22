@@ -45,7 +45,7 @@ REPO_RAW="https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main"
 REPO_TAR="https://github.com/FineComputer14451/GrokHunter/archive/refs/heads/main.tar.gz"
 MODULES=(cli.sh actions.sh grok.sh x11.sh)
 DISCOVER_MODULES=(skills-discover.sh agents-discover.sh personas-discover.sh roles-discover.sh)
-MODULES_VERSION="2026.2.13"
+MODULES_VERSION="2026.2.18"
 OVERLAY_ITEMS=(
   install.sh uninstall.sh VERSION LICENSE CREDITS.md AGENTS.md README.md CHANGELOG.md
 )
@@ -340,7 +340,7 @@ DISTRO_NAME="Kali NetHunter"
 PROGRAM_NAME="install.sh"
 DISTRO_REPOSITORY=termux-nethunter
 KERNEL_RELEASE=$(uname -r 2>/dev/null || echo unknown)
-VERSION_NAME="GrokHunter-Rootless-2026.2.13"
+VERSION_NAME="GrokHunter-Rootless-2026.2.18"
 SHASUM_CMD=sha256sum
 
 # Offline / air-gapped fallbacks (live SHA from Kali /current/ is preferred).

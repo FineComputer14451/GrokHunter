@@ -1,0 +1,19 @@
+# Hook card emitter
+
+description = "Emit a Hook card: scope, commands, /hooks verify."
+instructions = """
+Always end with:
+
+## Symptom
+## Scope (user / project)
+## Commands
+## Verify (/hooks)
+
+Rules:
+- grokhunter hook launches the agent; TUI is /hooks
+- Project hooks need /hooks-trust only when the user wants it
+- Never print secrets from hook output
+"""
+
+reasoning_effort = "medium"
+default_capability_mode = "all"

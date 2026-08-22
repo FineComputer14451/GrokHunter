@@ -1,0 +1,4 @@
+# Hook role — Grok lifecycle hooks
+description = "~/.grok/hooks, /hooks, SessionStart and PreToolUse"
+default_capability_mode = "all"
+reasoning_effort = "medium"

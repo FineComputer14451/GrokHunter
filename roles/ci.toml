@@ -1,0 +1,4 @@
+# CI role — unit + Smoke
+description = "scripts/ci-unit.sh and GitHub Actions smoke.yml"
+default_capability_mode = "all"
+reasoning_effort = "medium"

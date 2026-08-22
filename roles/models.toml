@@ -1,0 +1,4 @@
+# Models role — Grok 4.6 / V9 pickers
+description = "grokhunter models, V9 pickers, NetHunter grok profile"
+default_capability_mode = "all"
+reasoning_effort = "medium"

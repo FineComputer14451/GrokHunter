@@ -1,0 +1,4 @@
+# Storage role — disk / cache on Android
+description = "df, overlay cache, --mini/--nano, session cleanup"
+default_capability_mode = "all"
+reasoning_effort = "medium"
