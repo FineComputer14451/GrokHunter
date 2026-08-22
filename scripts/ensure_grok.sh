@@ -12,7 +12,10 @@
 set -euo pipefail
 
 OFFICIAL_URL="${GROKHUNTER_GROK_OFFICIAL_URL:-https://x.ai/cli/install.sh}"
-TERMUX_NATIVE_URL="${GROKHUNTER_GROK_TERMUX_URL:-https://raw.githubusercontent.com/Thr45hx/grok-cli-termux-native/main/install.sh}"
+# Pin Thr45hx termux-native installer to a commit (not floating main).
+# Override: GROKHUNTER_GROK_TERMUX_URL=https://raw.githubusercontent.com/…/<sha>/install.sh
+TERMUX_NATIVE_PIN="7d17945ee0baa499df66852dce956d614ba685b1"
+TERMUX_NATIVE_URL="${GROKHUNTER_GROK_TERMUX_URL:-https://raw.githubusercontent.com/Thr45hx/grok-cli-termux-native/${TERMUX_NATIVE_PIN}/install.sh}"
 MIN_VER="${GROKHUNTER_MIN_GROK:-1.0.5}"
 
 info() { echo "[ensure_grok] $*"; }
