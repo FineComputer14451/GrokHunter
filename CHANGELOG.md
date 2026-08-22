@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### GitHub identity
+
+- History rewrite: `root <root@localhost.localdomain>` commits and tags now attribute to **Fine_Computer_4451** (`119702188+FineComputer14451@users.noreply.github.com`)
+- **`grokhunter git-identity`** — `show` / `set` (from `gh api user`, `--name/--email`, or `GROKHUNTER_GIT_NAME` / `GROKHUNTER_GIT_EMAIL`)
+- Doctor warns on placeholder identity (`root`, `@localhost`) so GitHub stops showing `invalid-email-address`
+- `.mailmap` maps leftover `root@localhost` locally
+
 ## [1.0.8] — 2026-08-22 — Overlay extract, Grok 4.6, install hardening
 
 One-liner now installs the full overlay. Default model is **grok-4.6**; min Grok Build is **1.0.5**. Install/uninstall edges from the 1.0.7 review are closed.

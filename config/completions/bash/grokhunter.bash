@@ -7,10 +7,11 @@ _grokhunter_completions() {
   cur="${COMP_WORDS[COMP_CWORD]}"
   prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-  local cmds="status doctor setup sync boot ensure models skills agents team coding-team scout benjamin lucas harper review fix desktop menu credits ai-smoke smoke install plan help version"
+  local cmds="status doctor setup sync boot ensure models skills agents team coding-team scout benjamin lucas harper review fix desktop menu git-identity credits ai-smoke smoke install plan help version"
   local model_sub="install status force --force help"
   local skills_sub="install status help"
   local agents_sub="status list help"
+  local identity_sub="show set help --name --email --local --global"
   local setup_opts="--force-grok --with-models --with-aider --no-doctor --yes --help"
   local install_opts="--full --mini --nano --de --browser --no-de --with-grok --no-grok --with-x11 --no-x11 --with-aider --no-aider --with-v9-models --no-v9-models --with-completions --no-completions --overlay-only --help"
 
@@ -28,6 +29,9 @@ _grokhunter_completions() {
       ;;
     agents)
       COMPREPLY=( $(compgen -W "${agents_sub}" -- "${cur}") )
+      ;;
+    git-identity|git_identity|identity)
+      COMPREPLY=( $(compgen -W "${identity_sub}" -- "${cur}") )
       ;;
     setup|sync|boot)
       COMPREPLY=( $(compgen -W "${setup_opts}" -- "${cur}") )

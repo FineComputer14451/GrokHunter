@@ -155,6 +155,7 @@ echo "${_help}" | grep -q setup || die "help missing setup"
 echo "${_help}" | grep -q team || die "help missing team"
 echo "${_help}" | grep -q menu || die "help missing menu"
 echo "${_help}" | grep -q credits || die "help missing credits"
+echo "${_help}" | grep -q git-identity || die "help missing git-identity"
 echo "${_help}" | grep -q scout || die "help missing scout"
 bash bin/grokhunter menu help | grep -q install || die "menu help missing install"
 _credits="$(bash bin/grokhunter credits)"
@@ -167,6 +168,37 @@ bash bin/grokhunter skills help | grep -q install || die "skills help missing in
 bash bin/grokhunter setup --help | grep -q with-models || die "setup help missing --with-models"
 bash bin/grokhunter agents help | grep -q status || die "agents help missing status"
 info "cli help OK"
+
+# ---------- git identity helpers ----------
+bash -c '
+  set -euo pipefail
+  source lib/git-identity.sh
+  _gh_git_identity_is_placeholder root "root@localhost.localdomain"
+  _gh_git_identity_is_placeholder "" ""
+  _gh_git_identity_is_placeholder root "root@localhost"
+  if _gh_git_identity_is_placeholder Fine_Computer_4451 "119702188+FineComputer14451@users.noreply.github.com"; then
+    exit 1
+  fi
+  HOME=$(mktemp -d)
+  export HOME
+  git config --global user.name root
+  git config --global user.email root@localhost.localdomain
+  name="$(_gh_git_identity_name)"
+  email="$(_gh_git_identity_email)"
+  _gh_git_identity_is_placeholder "$name" "$email"
+  _gh_git_identity_set "Fine_Computer_4451" "119702188+FineComputer14451@users.noreply.github.com" global
+  [[ "$(_gh_git_identity_name)" == "Fine_Computer_4451" ]]
+  [[ "$(_gh_git_identity_email)" == "119702188+FineComputer14451@users.noreply.github.com" ]]
+  if _gh_git_identity_is_placeholder "$(_gh_git_identity_name)" "$(_gh_git_identity_email)"; then
+    exit 1
+  fi
+  rm -rf "$HOME"
+'
+info "git identity OK"
+
+bash bin/grokhunter git-identity help | grep -q set || die "git-identity help missing set"
+info "git-identity help OK"
+
 
 # ---------- status line fields ----------
 st="$(bash bin/grokhunter status)"

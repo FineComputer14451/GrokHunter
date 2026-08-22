@@ -29,6 +29,7 @@ _grokhunter() {
     'install:Run or re-run rootless installer'
     'plan:Plan a coding task'
     'menu:Kali/XFCE Applications → GrokHunter submenu'
+    'git-identity:Show or set git user.name / user.email'
     'credits:Upstream attribution (jorexdeveloper)'
     'help:Show help'
     'version:Print version'
@@ -54,6 +55,13 @@ _grokhunter() {
     'status:Show installed agents'
     'list:Alias for status'
     'help:Agents help'
+  )
+
+  local -a identity_cmds
+  identity_cmds=(
+    'show:Print git user.name / user.email'
+    'set:Write git identity from gh / flags / env'
+    'help:Identity help'
   )
 
   local -a setup_opts
@@ -110,6 +118,9 @@ _grokhunter() {
           ;;
         agents)
           _describe -t agents_cmds 'agents' agents_cmds
+          ;;
+        git-identity)
+          _describe -t identity_cmds 'git-identity' identity_cmds
           ;;
         setup|sync|boot)
           _values 'setup options' $setup_opts

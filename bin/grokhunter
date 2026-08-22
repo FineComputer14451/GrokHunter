@@ -64,6 +64,11 @@ if [[ -f "${GROKHUNTER_HOME}/lib/roles-discover.sh" ]]; then
   # shellcheck source=lib/roles-discover.sh
   source "${GROKHUNTER_HOME}/lib/roles-discover.sh"
 fi
+# shellcheck disable=SC1091
+if [[ -f "${GROKHUNTER_HOME}/lib/git-identity.sh" ]]; then
+  # shellcheck source=lib/git-identity.sh
+  source "${GROKHUNTER_HOME}/lib/git-identity.sh"
+fi
 
 # Prefer repo bin/ when not installed to PATH (doctor/dev clone)
 export PATH="${GROKHUNTER_HOME}/bin:${PATH}"
@@ -169,6 +174,7 @@ Usage:
   grokhunter plan <prompt>    Plan mode (built-in plan agent)
   grokhunter -p <prompt>      Headless / one-shot
   grokhunter -- <grok args>   Pass-through to grok
+  grokhunter git-identity     Show/set git user.name + email (GitHub attribution)
   grokhunter credits          Upstream attribution (jorexdeveloper · CREDITS.md)
   grokhunter help             This help
   grokhunter version          Print version
@@ -730,6 +736,109 @@ EOF
   esac
 }
 
+
+cmd_git_identity() {
+  local sub="${1:-show}"
+  shift || true
+  if ! declare -F _gh_git_identity_is_placeholder >/dev/null 2>&1; then
+    if [[ -f "${GROKHUNTER_HOME}/lib/git-identity.sh" ]]; then
+      # shellcheck disable=SC1091
+      source "${GROKHUNTER_HOME}/lib/git-identity.sh"
+    else
+      echo "lib/git-identity.sh missing under ${GROKHUNTER_HOME}" >&2
+      return 1
+    fi
+  fi
+  if ! command -v git >/dev/null 2>&1; then
+    echo "git not found — sudo apt install -y git" >&2
+    return 1
+  fi
+  case "${sub}" in
+    help|-h|--help)
+      cat <<'EOF'
+Usage: grokhunter git-identity [show|set|help]
+
+  show   Print git user.name / user.email (default)
+  set    Write identity so GitHub can attach commits to your account
+
+set sources (first match wins):
+  --name NAME --email EMAIL
+  GROKHUNTER_GIT_NAME / GROKHUNTER_GIT_EMAIL
+  gh api user  →  display name + ID+login@users.noreply.github.com
+
+  --local    Write repo-local config instead of --global
+
+Kali/Termux often default to root <root@localhost.localdomain>.
+GitHub cannot map that address and shows invalid-email-address.
+Use the GitHub noreply from https://github.com/settings/emails :
+  git config --global user.email 'ID+LOGIN@users.noreply.github.com'
+EOF
+      return 0
+      ;;
+    show|status|"")
+      local name email
+      name="$(_gh_git_identity_name)"
+      email="$(_gh_git_identity_email)"
+      if [[ -z "${name}" && -z "${email}" ]]; then
+        echo "git identity: unset"
+      else
+        echo "git identity: ${name:-unset} <${email:-unset}>"
+      fi
+      if _gh_git_identity_is_placeholder "${name}" "${email}"; then
+        echo "status: placeholder (GitHub will show invalid-email-address)"
+        echo "fix:    grokhunter git-identity set"
+        return 1
+      fi
+      echo "status: ok"
+      return 0
+      ;;
+    set|--set)
+      local name="${GROKHUNTER_GIT_NAME:-}" email="${GROKHUNTER_GIT_EMAIL:-}" scope="global" pair
+      while [[ $# -gt 0 ]]; do
+        case "$1" in
+          --name) name="${2:-}"; shift 2 ;;
+          --email) email="${2:-}"; shift 2 ;;
+          --local) scope="local"; shift ;;
+          --global) scope="global"; shift ;;
+          -h|--help)
+            cmd_git_identity help
+            return 0
+            ;;
+          *)
+            echo "Unknown git-identity set option: $1" >&2
+            echo "Try: grokhunter git-identity help" >&2
+            return 2
+            ;;
+        esac
+      done
+      if [[ -z "${name}" || -z "${email}" ]]; then
+        if pair="$(_gh_git_identity_from_gh)"; then
+          [[ -n "${name}" ]] || name="$(printf '%s' "${pair}" | awk -F'\t' '{print $1}')"
+          [[ -n "${email}" ]] || email="$(printf '%s' "${pair}" | awk -F'\t' '{print $2}')"
+        fi
+      fi
+      if [[ -z "${name}" || -z "${email}" ]]; then
+        echo "Could not resolve git identity." >&2
+        echo "Pass --name and --email, set GROKHUNTER_GIT_NAME / GROKHUNTER_GIT_EMAIL," >&2
+        echo "or authenticate GitHub CLI (gh auth status)." >&2
+        return 1
+      fi
+      if [[ "${scope}" == "local" ]] && ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+        echo "--local requires a git working tree" >&2
+        return 1
+      fi
+      _gh_git_identity_set "${name}" "${email}" "${scope}"
+      echo "git identity (${scope}): ${name} <${email}>"
+      return 0
+      ;;
+    *)
+      echo "Unknown git-identity subcommand: ${sub}" >&2
+      echo "Usage: grokhunter git-identity [show|set|help]" >&2
+      return 2
+      ;;
+  esac
+}
+
 main() {
   local sub="${1:-}"
   case "$sub" in
@@ -741,6 +850,10 @@ main() {
       ;;
     version|-V|--version)
       echo "GrokHunter ${VERSION}"
+      ;;
+    git-identity|git_identity|identity)
+      shift || true
+      cmd_git_identity "$@"
       ;;
     credits|credit|attribution|thanks)
       cmd_credits

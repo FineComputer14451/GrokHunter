@@ -122,6 +122,22 @@ export PATH="$HOME/.grok/bin:$HOME/.local/bin:$PATH"
 
 Re-run install or open a new Termux session after install completes.
 
+## Git / GitHub identity
+
+### Commits show as `invalid-email-address` / `root`
+
+Kali and Termux often default to `root <root@localhost.localdomain>`. GitHub cannot attach that address to an account.
+
+```bash
+grokhunter git-identity          # show
+grokhunter git-identity set      # from `gh` if logged in
+# or explicitly:
+git config --global user.name "Your GitHub name"
+git config --global user.email "ID+LOGIN@users.noreply.github.com"
+```
+
+Your noreply address is on https://github.com/settings/emails (format `ID+LOGIN@users.noreply.github.com`). Then `grokhunter doctor` should report a real identity.
+
 ## Coding tools
 
 ### No git / python / gcc

@@ -50,6 +50,21 @@ Only if you want a graphical desktop. Shell + `grok` is enough for most pair-pro
 
 Yes. Larger screens work well with `nh-x11` + XFCE.
 
+## Why do GitHub commits show `invalid-email-address`?
+
+The lab often runs as `root` inside proot, so git defaults to `root@localhost.localdomain`. GitHub cannot map that to a user.
+
+```bash
+grokhunter git-identity set
+```
+
+Or set the GitHub noreply from [settings/emails](https://github.com/settings/emails):
+
+```bash
+git config --global user.name "Your GitHub name"
+git config --global user.email "ID+LOGIN@users.noreply.github.com"
+```
+
 ## How do I update?
 
 Use **overlay-only** so you do not re-enter the termux-distro / rootfs path:

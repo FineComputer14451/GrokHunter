@@ -35,6 +35,11 @@ if [[ -f "${GROKHUNTER_HOME}/lib/roles-discover.sh" ]]; then
   # shellcheck source=lib/roles-discover.sh
   source "${GROKHUNTER_HOME}/lib/roles-discover.sh"
 fi
+# shellcheck disable=SC1091
+if [[ -f "${GROKHUNTER_HOME}/lib/git-identity.sh" ]]; then
+  # shellcheck source=lib/git-identity.sh
+  source "${GROKHUNTER_HOME}/lib/git-identity.sh"
+fi
 
 RED=$'\033[0;31m'
 GREEN=$'\033[0;32m'
@@ -305,6 +310,27 @@ if command -v node >/dev/null 2>&1 || command -v nodejs >/dev/null 2>&1; then
   ok "Node.js present"
 else
   warn "Node.js optional — sudo apt install -y nodejs npm"
+fi
+
+# ---------- Git identity ----------
+hdr "Git identity"
+if ! command -v git >/dev/null 2>&1; then
+  warn "git missing — skip identity check"
+  WARN=1
+elif ! declare -F _gh_git_identity_is_placeholder >/dev/null 2>&1; then
+  warn "lib/git-identity.sh missing — skip identity check"
+  WARN=1
+else
+  _gn="$(_gh_git_identity_name)"
+  _ge="$(_gh_git_identity_email)"
+  if _gh_git_identity_is_placeholder "${_gn}" "${_ge}"; then
+    warn "git identity is placeholder: ${_gn:-unset} <${_ge:-unset}>"
+    warn "GitHub will show invalid-email-address — run: grokhunter git-identity set"
+    WARN=1
+  else
+    ok "git identity: ${_gn} <${_ge}>"
+  fi
+  unset _gn _ge
 fi
 
 # ---------- Optional Aider ----------

@@ -98,6 +98,7 @@ grok                   # Interactive Grok session
 grokhunter             # Primary CLI / TUI
 grokhunter status      # auth / x11 / v9 quick line
 grokhunter doctor      # Full health report
+grokhunter git-identity  # GitHub-attributable git user.name / email
 grokhunter setup       # One-shot: ensure + skills + doctor
 grokhunter ensure      # Grok Build ≥ 1.0.5 + NetHunter profile
 grokhunter team        # Coding Team multi-agent
