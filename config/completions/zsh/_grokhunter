@@ -60,7 +60,7 @@ _grokhunter() {
   local -a identity_cmds
   identity_cmds=(
     'show:Print git user.name / user.email'
-    'set:Write git identity from gh / flags / env'
+    'set:Write git identity from gh / token / origin / flags'
     'help:Identity help'
   )
 
