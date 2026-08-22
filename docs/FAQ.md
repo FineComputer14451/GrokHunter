@@ -60,13 +60,13 @@ Usually a **false alarm**. Cloudflare often returns 403 to `curl` on `https://x.
 
 ## Why do GitHub commits show `invalid-email-address`?
 
-The lab often runs as `root` inside proot, so git defaults to `root@localhost.localdomain`. GitHub cannot map that to a user.
+The lab often runs as `root` inside proot, so git defaults to `root@localhost.localdomain` (or an empty ident that becomes `kali@localhost`). GitHub cannot map that to a user.
 
 ```bash
 grokhunter git-identity set
 ```
 
-Or set the GitHub noreply from [settings/emails](https://github.com/settings/emails):
+That uses `gh` if logged in, else `GH_TOKEN` / `GITHUB_TOKEN`, else the GitHub `origin` owner on this clone. Or set the GitHub noreply from [settings/emails](https://github.com/settings/emails):
 
 ```bash
 git config --global user.name "Your GitHub name"
