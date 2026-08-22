@@ -86,6 +86,7 @@ Helpers (`nh-x11`, `aider-grok`, `grokhunter`, …) are installed from repo `bin
 | `GROKHUNTER_REFRESH=1` | Bypass module + engine cache |
 | `GROKHUNTER_DISTRO_ENGINE_URL` | Pin/fork of `termux-distro.sh` (default: **jorexdeveloper/termux-distro** main) |
 | `GROKHUNTER_GROK_INSTALLER` | `auto` \| `official` \| `termux-native` |
+| `GROKHUNTER_GROK_TERMUX_URL` | Override Termux-native installer URL (default: pinned commit, not `main`) |
 | `GROKHUNTER_FORCE_GROK=1` | Reinstall Grok even if present |
 | `GROKHUNTER_MIN_GROK` | Min Grok Build version (default **1.0.5**) |
 | `GROKHUNTER_SKIP_PROFILE=1` | Skip NetHunter `config.toml` profile merge |

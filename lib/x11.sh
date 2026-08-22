@@ -9,16 +9,35 @@ GROK_WORKSPACE="${TERMUX_HOME}/grok-workspace"
 
 # Recommended extra binds for GrokHunter Rootless
 # (core /dev /proc /sys are assumed to already exist in the launcher)
-_GROKHUNTER_EXTRA_BINDS=(
-  "-b ${TERMUX_TMP}:/tmp"
-  "-b /sdcard"
-  "-b ${TERMUX_HOME}/storage/downloads:/downloads"
-  "-b ${TERMUX_HOME}:/termux-home"
-  "-b ${GROK_WORKSPACE}:/workspace"
-)
-
 _ensure_workspace() {
   mkdir -p "${GROK_WORKSPACE}" 2>/dev/null || true
+  mkdir -p "${TERMUX_TMP}" 2>/dev/null || true
+}
+
+# Extra -b lines whose host path exists (missing /sdcard must not break nethunter).
+_gh_extra_bind_lines() {
+  local -a lines=()
+  _ensure_workspace
+  if [[ -d "${TERMUX_TMP}" ]]; then
+    lines+=("-b ${TERMUX_TMP}:/tmp")
+  fi
+  if [[ -e /sdcard ]]; then
+    lines+=("-b /sdcard")
+  elif [[ -d /storage/emulated/0 ]]; then
+    lines+=("-b /storage/emulated/0:/sdcard")
+  fi
+  if [[ -d "${TERMUX_HOME}/storage/downloads" ]]; then
+    lines+=("-b ${TERMUX_HOME}/storage/downloads:/downloads")
+  fi
+  if [[ -d "${TERMUX_HOME}" ]]; then
+    lines+=("-b ${TERMUX_HOME}:/termux-home")
+  fi
+  if [[ -d "${GROK_WORKSPACE}" ]]; then
+    lines+=("-b ${GROK_WORKSPACE}:/workspace")
+  fi
+  if [[ ${#lines[@]} -gt 0 ]]; then
+    printf '%s\n' "${lines[@]}"
+  fi
 }
 
 # Pure-bash atomic patch: insert extra proot binds after the first "-b /dev" line.
@@ -47,12 +66,16 @@ _patch_launcher_binds() {
 
   _ensure_workspace
 
+  local -a extra=()
+  mapfile -t extra < <(_gh_extra_bind_lines)
+
   while IFS= read -r line || [[ -n "${line}" ]]; do
     out+=("${line}")
     if [[ ${found} -eq 0 && "${line}" == *"-b /dev"* ]]; then
       found=1
       out+=("${GROKHUNTER_BINDS_MARK}")
-      for b in "${_GROKHUNTER_EXTRA_BINDS[@]}"; do
+      for b in "${extra[@]}"; do
+        [[ -n "${b}" ]] || continue
         out+=("        ${b} \\")
       done
     fi
@@ -87,10 +110,12 @@ _patch_launcher_binds() {
 
   msg -tw "Could not auto-patch ${f##*/}"
   msg -a "  Backup: ${f}.grokhunter.bak (if created)"
-  msg -a "  Manually add after '-b /dev':"
-  for b in "${_GROKHUNTER_EXTRA_BINDS[@]}"; do
+  msg -a "  Manually add after '-b /dev' (only if the host path exists):"
+  local b
+  while IFS= read -r b; do
+    [[ -n "${b}" ]] || continue
     msg -a "    ${b} \\"
-  done
+  done < <(_gh_extra_bind_lines)
   return 1
 }
 
@@ -254,6 +279,6 @@ optimize_proot_binds() {
   for f in "${launcher}" "${shortcut}"; do
     _patch_launcher_binds "${f}" || true
   done
-  msg -a "  Binds: /tmp, /sdcard, /downloads, /termux-home, /workspace"
+  msg -a "  Binds (existing host paths only): /tmp, /sdcard, /downloads, /termux-home, /workspace"
   msg -a "  Tip: keep rootfs on internal storage; see docs/PROOT.md"
 }

@@ -100,19 +100,37 @@ info "maybe_install OK"
 # ---------- pure-bash bind patch ----------
 bash -c '
   set -euo pipefail
+  d=$(mktemp -d)
+  export TERMUX_FILES_DIR="$d/tf"
+  mkdir -p "$TERMUX_FILES_DIR/usr/tmp" "$TERMUX_FILES_DIR/home"
   source lib/x11.sh
   msg() { :; }
-  d=$(mktemp -d)
   f="$d/nethunter"
   printf "%s\n" "proot \\" "        -b /dev \\" "        -b /proc \\" > "$f"
   _patch_launcher_binds "$f"
   grep -q "grokhunter-optimized-binds" "$f"
   grep -q "/workspace" "$f"
+  grep -q "/tmp" "$f"
+  grep -q "/termux-home" "$f"
+  if grep -q -- "-b /sdcard" "$f" || grep -q "storage/emulated/0:/sdcard" "$f"; then
+    [[ -e /sdcard || -d /storage/emulated/0 ]]
+  fi
+  if grep -q "/downloads" "$f"; then
+    [[ -d "$TERMUX_FILES_DIR/home/storage/downloads" ]]
+  fi
   _patch_launcher_binds "$f"
   [[ "$(grep -c grokhunter-optimized-binds "$f")" -eq 1 ]]
   rm -rf "$d"
 '
 info "bind-patch OK"
+
+# Termux-native grok installer default must be a commit pin, not floating main
+grep -qE 'TERMUX_NATIVE_PIN="[0-9a-f]{40}"' scripts/ensure_grok.sh \
+  || die "ensure_grok.sh TERMUX_NATIVE_PIN must be a 40-char commit"
+if grep -qE 'grok-cli-termux-native/main/install.sh' scripts/ensure_grok.sh; then
+  die "ensure_grok.sh must not default to floating termux-native main"
+fi
+info "termux-native grok pin OK"
 
 # ---------- CLI help surfaces ----------
 # Capture full command output before grepping. Piping long help/credits into

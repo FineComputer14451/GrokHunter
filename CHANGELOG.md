@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Install hardening
+
+- Pin Termux-native Grok installer to a GitHub commit (`TERMUX_NATIVE_PIN`), not floating `main`
+- Proot extra binds skip missing host paths (`/sdcard`, `storage/downloads`) so `nethunter` still starts before `termux-setup-storage`
+
 ### Grok 4.6 + Grok Build 1.0.5
 
 - Default catalog model **`grok-4.6`** (profile, Aider, SpaceXAI smoke, V9 pickers)

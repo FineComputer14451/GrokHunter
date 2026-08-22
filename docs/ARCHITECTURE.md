@@ -84,6 +84,7 @@ One-liner installs **download and execute** remote scripts (this repo’s module
 | Module version | `MODULES_VERSION` invalidates stale overlay cache |
 | Engine cache | `termux-distro.sh` + `termux-distro.url` stamp under `~/.cache/grokhunter`, not CWD |
 | Override URLs | `GROKHUNTER_DISTRO_ENGINE_URL` (honored vs cache stamp), `GROKHUNTER_GROK_*_URL` |
+| Termux-native Grok | `scripts/ensure_grok.sh` pins `Thr45hx/grok-cli-termux-native` to a commit SHA |
 | Refresh | `GROKHUNTER_REFRESH=1 bash install.sh --overlay-only --with-completions` |
 | Pin later | Vendor `termux-distro.sh` next to `install.sh` |
 
