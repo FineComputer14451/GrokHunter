@@ -17,7 +17,8 @@ info() { echo "[install_v9_grok_models] $*"; }
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")/.." && pwd)" || die "cannot resolve repo root"
 SRC="$ROOT/config/grok-build-v9-models.example.toml"
 CFG="${GROK_CONFIG:-${HOME:?HOME not set}/.grok/config.toml}"
-MARKER_BEGIN="# --- Grok Imagine Cinematic Studio: v9-4p5 specialist models"
+MARKER_BEGIN="# --- GrokHunter: v9 specialist models"
+MARKER_BEGIN_LEGACY="# --- Grok Imagine Cinematic Studio: v9-4p5 specialist models"
 FORCE=0
 BACKUP=""
 TMP_OUT=""
@@ -28,10 +29,13 @@ cleanup() {
 trap cleanup EXIT
 
 OWNED_MODELS=(
-  grok-v9-4p5-chat-expert grok-v9 grok-v9-4p5 v9 v9-4p5
-  chat-expert v9-4p5-chat-expert 4p5-expert grok-4.5-expert
-  grok-v9-4p5-multi multi v9-4p5-multi 4p5-multi grok-4.5-multi
+  grok-v9-4p6-chat-expert grok-v9 grok-v9-4p6 v9 v9-4p6
+  chat-expert v9-4p6-chat-expert 4p6-expert grok-4.6-expert
+  grok-v9-4p6-multi multi v9-4p6-multi 4p6-multi grok-4.6-multi
   grok-4-auto auto 4-auto grok-auto
+  grok-v9-4p5-chat-expert grok-v9-4p5 v9-4p5
+  v9-4p5-chat-expert 4p5-expert grok-4.5-expert
+  grok-v9-4p5-multi v9-4p5-multi 4p5-multi grok-4.5-multi
 )
 
 for arg in "$@"; do
@@ -124,7 +128,7 @@ else
   _backup_cfg
   blocks="$(_v9_model_blocks)"
   TMP_OUT="$(mktemp "${CFG_DIR}/.grok-v9.XXXXXX")" || die "mktemp failed in $CFG_DIR"
-  if ! python3 - "$CFG" "$TMP_OUT" "$MARKER_BEGIN" "${OWNED_MODELS[@]}" <<'PY'
+  if ! python3 - "$CFG" "$TMP_OUT" "$MARKER_BEGIN" "$MARKER_BEGIN_LEGACY" "${OWNED_MODELS[@]}" <<'PY'
 from pathlib import Path
 import re
 import sys
@@ -132,16 +136,18 @@ import sys
 cfg_path = Path(sys.argv[1])
 out_path = Path(sys.argv[2])
 marker = sys.argv[3]
-owned = sys.argv[4:]
+legacy = sys.argv[4]
+owned = sys.argv[5:]
 try:
     text = cfg_path.read_text(encoding="utf-8")
 except OSError as e:
     print(f"read failed: {e}", file=sys.stderr)
     sys.exit(1)
 
-idx = text.find(marker)
-if idx != -1:
-    text = text[:idx].rstrip() + "\n"
+for m in (marker, legacy):
+    idx = text.find(m)
+    if idx != -1:
+        text = text[:idx].rstrip() + "\n"
 for name in owned:
     pat = re.compile(
         rf"(?ms)^\[model\.(?:\"{re.escape(name)}\"|{re.escape(name)})\]\n.*?(?=^\[|\Z)"
@@ -155,11 +161,11 @@ PY
   {
     cat "$TMP_OUT" || die "cannot read temp base"
     echo ""
-    echo "${MARKER_BEGIN} (Model Layer v4.5 · full alias surface) ---"
-    echo "# Session-auth via cli-chat-proxy (SuperGrok). Base model: grok-4.5."
-    echo "# Native API IDs grok-v9-4p5-* / grok-4-auto are not public product slugs."
+    echo "${MARKER_BEGIN} (Model Layer v4.6 · full alias surface) ---"
+    echo "# Session-auth via cli-chat-proxy (SuperGrok). Base model: grok-4.6."
+    echo "# Native API IDs grok-v9-4p6-* / grok-4-auto are picker names, not public product slugs."
     echo "# Family shorts + chat-expert / multi / auto aliases all registered as pickers."
-    echo "# GrokHunter: coding lab default remains grok-4.5 ([models] default)."
+    echo "# GrokHunter: coding lab default remains grok-4.6 ([models] default)."
     printf '%s\n' "$blocks"
   } > "${TMP_OUT}.new" || die "failed writing merged temp"
   grep -q "$MARKER_BEGIN" "${TMP_OUT}.new" || die "temp config missing marker"
@@ -175,4 +181,4 @@ fi
 echo ""
 echo "Verify with:  grok models"
 echo "Switch with:  /model grok-v9 · /model chat-expert · /model multi · /model auto"
-echo "Default coding model remains grok-4.5. Imagine uses grok-imagine-* separately."
+echo "Default coding model remains grok-4.6. Imagine uses grok-imagine-* separately."

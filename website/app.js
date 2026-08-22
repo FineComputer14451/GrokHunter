@@ -116,8 +116,8 @@
     { kind: "out", text: "[grokhunter] detecting Termux + aarch64 … ok" },
     { kind: "out", text: "[grokhunter] pulling Kali NetHunter rootfs (current) …" },
     { kind: "out", text: "[grokhunter] installing XFCE + desktop session …" },
-    { kind: "out", text: "[grokhunter] ensure Grok Build ≥ 1.0.0 … grok 1.0.0 [stable]" },
-    { kind: "out", text: "[grokhunter] NetHunter profile → channel=stable · grok-4.5" },
+    { kind: "out", text: "[grokhunter] ensure Grok Build ≥ 1.0.5 … grok 1.0.5 [stable]" },
+    { kind: "out", text: "[grokhunter] NetHunter profile → channel=stable · grok-4.6" },
     { kind: "out", text: "[grokhunter] Aider via uv + Python 3.12 … aider 0.86.2" },
     { kind: "out", text: "[grokhunter] wiring Termux:X11 + nh-x11 … done" },
     {
@@ -129,7 +129,7 @@
     { kind: "cmd", prompt: "kali $ ", text: "grokhunter doctor" },
     {
       kind: "ok",
-      text: "✓ grok 1.0.0  ✓ profile  ✓ skills-core 3/3  ✓ agents  ✓ personas  ✓ roles",
+      text: "✓ grok 1.0.5  ✓ profile  ✓ skills-core 3/3  ✓ agents  ✓ personas  ✓ roles",
     },
   ];
 

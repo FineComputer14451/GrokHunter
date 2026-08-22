@@ -143,34 +143,34 @@ fi
 unset _nh_path _nh_host
 
 # ---------- Grok Build ----------
-hdr "Grok Build (pair programmer · 1.0.0+)"
-MIN_VER="${GROKHUNTER_MIN_GROK:-1.0.0}"
+hdr "Grok Build (pair programmer · 1.0.5+)"
+MIN_VER="${GROKHUNTER_MIN_GROK:-1.0.5}"
 if command -v grok >/dev/null 2>&1; then
   GVER_LINE=$(grok --version 2>/dev/null | head -1 || true)
   ok "Found: ${GVER_LINE:-grok} @ $(command -v grok)"
   GVER=$(echo "$GVER_LINE" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1 || true)
   if [[ -n "$GVER" ]]; then
     if printf '%s\n%s\n' "$MIN_VER" "$GVER" | sort -V | head -1 | grep -qx "$MIN_VER"; then
-      ok "Version ≥ ${MIN_VER} (Grok Build 1.0.0 target)"
+      ok "Version ≥ ${MIN_VER} (Grok Build 1.0.5 target)"
     else
       bad "Version ${GVER} < min ${MIN_VER} — run: grokhunter ensure"
       FAIL=1
     fi
   fi
-  # Channel / profile hints for 1.0.0
+  # Channel / profile hints for 1.0.5
   CFG="${GROK_CONFIG:-${HOME}/.grok/config.toml}"
   if [[ -f "${CFG}" ]]; then
     if grep -qE 'channel\s*=\s*"alpha"' "${CFG}" 2>/dev/null; then
-      warn "config channel=alpha — prefer stable on 1.0.0 (run: bash scripts/install_grok_profile.sh)"
+      warn "config channel=alpha — prefer stable on 1.0.5 (run: bash scripts/install_grok_profile.sh)"
       WARN=1
     fi
     if grep -qE 'fork_secondary_model\s*=\s*"grok-build"' "${CFG}" 2>/dev/null; then
-      warn "fork_secondary_model=grok-build may be invalid — set grok-4.5 via install_grok_profile.sh"
+      warn "fork_secondary_model=grok-build may be invalid — set grok-4.6 via install_grok_profile.sh"
       WARN=1
     fi
-    if grep -qF "GrokHunter NetHunter profile (Grok Build 1.0.0" "${CFG}" 2>/dev/null \
+    if grep -qF "GrokHunter NetHunter profile (Grok Build 1.0" "${CFG}" 2>/dev/null \
       || grep -qF "GrokHunter NetHunter profile" "${CFG}" 2>/dev/null; then
-      ok "NetHunter 1.0.0 profile marker present"
+      ok "NetHunter 1.0.5 profile marker present"
     else
       warn "NetHunter profile not merged — bash ${GROKHUNTER_HOME}/scripts/install_grok_profile.sh"
       WARN=1
@@ -419,9 +419,11 @@ if [[ -f "${HOME}/.grok/config.toml" ]]; then
   else
     warn "compact_mode not true (optional UX)"
   fi
-  v9_marker="# --- Grok Imagine Cinematic Studio: v9-4p5 specialist models"
-  if grep -qF "${v9_marker}" "${HOME}/.grok/config.toml" 2>/dev/null; then
-    ok "V9 / 4.5 model pickers present (grokhunter models status)"
+  v9_marker="# --- GrokHunter: v9 specialist models"
+  v9_legacy="# --- Grok Imagine Cinematic Studio: v9-4p5 specialist models"
+  if grep -qF "${v9_marker}" "${HOME}/.grok/config.toml" 2>/dev/null \
+     || grep -qF "${v9_legacy}" "${HOME}/.grok/config.toml" 2>/dev/null; then
+    ok "V9 / 4.6 model pickers present (grokhunter models status)"
   else
     warn "V9 pickers not installed — grokhunter models install"
     WARN=1

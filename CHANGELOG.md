@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### Grok 4.6 + Grok Build 1.0.5
+
+- Default catalog model **`grok-4.6`** (profile, Aider, SpaceXAI smoke, V9 pickers)
+- Min Grok Build **`1.0.5`** (`GROKHUNTER_MIN_GROK`, doctor, ensure)
+- V9 pickers add 4p6 aliases; former 4.5 picker IDs remain as compat wrappers → `grok-4.6`
+- Docs: `docs/GROK-46.md` ( `docs/GROK-45.md` points here)
+
 ### One-liner overlay extract
 
 - Advertised `bash <(curl …/install.sh)` now extracts the **full** overlay (`bin/`, `scripts/`, `skills/`, …) to `~/GrokHunter` (or `~/.cache/grokhunter/src` if that directory is already occupied)

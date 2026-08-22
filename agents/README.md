@@ -1,4 +1,4 @@
-# GrokHunter agents (Grok Build 1.0.0+)
+# GrokHunter agents (Grok Build 1.0.5+)
 
 These are **Grok Build agent definitions**. Grok loads the matching file as the agent system prompt when you:
 

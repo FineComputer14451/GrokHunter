@@ -48,7 +48,7 @@ Your job is to run a clean **Design → Build → Harden** loop and pull special
 9. Do not let large implementation start without design clarity.
 10. Do not treat work as finished without a reliability pass when quality matters.
 
-## How to run specialists (Grok Build 1.0.0+)
+## How to run specialists (Grok Build 1.0.5+)
 
 - Prefer **spawning subagents** with `subagent_type` = one of:
   `benjamin` | `lucas` | `harper` | `scout` | `review` | `fix` | `desktop`

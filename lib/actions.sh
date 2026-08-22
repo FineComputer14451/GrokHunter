@@ -146,7 +146,7 @@ run_optional_features() {
     "Also install Aider (git-native pair-programmer)?" \
     install_aider
   maybe_install "${FEATURE_V9:-auto}" \
-    "Also install Grok V9 / 4.5 model pickers (/model chat-expert, multi, auto)?" \
+    "Also install Grok V9 / 4.6 model pickers (/model chat-expert, multi, auto)?" \
     install_v9_models
   maybe_install "$(_completions_want)" \
     "Install zsh/bash completions for grokhunter (recommended)?" \
@@ -185,12 +185,12 @@ post_complete_actions() {
   msg -a "    nh-x11                 # desktop (if configured)"
   msg -a "    grok / grokhunter      # pair programming"
   msg -a "    aider-grok             # git-native pair (if --with-aider)"
-  msg -a "    grokhunter models      # V9 / 4.5 pickers"
+  msg -a "    grokhunter models      # V9 / 4.6 pickers"
   msg -a "    grokhunter doctor      # health report"
   msg -a "    source ~/.grok/profile.sh  # zsh/bash completions"
   echo
   msg -a "  ${T}Auth:${S}  export XAI_API_KEY=xai-...  or put it in ~/.grok/secrets.env"
-  msg -a "  ${T}Docs:${S}   docs/EDITORS.md  docs/GROK-45.md  docs/X11-PERFORMANCE.md"
+  msg -a "  ${T}Docs:${S}   docs/EDITORS.md  docs/GROK-46.md  docs/X11-PERFORMANCE.md"
   echo
   msg -a "  ${T}Credits${S} (not affiliated — thank you):"
   msg -a "    ${P}jorexdeveloper${S}  termux-nethunter · termux-distro (install engine)"

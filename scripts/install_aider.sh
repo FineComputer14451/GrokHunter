@@ -317,7 +317,7 @@ main() {
 
   if [[ "${ok}" -eq 1 ]] && _aider_ok; then
     _report_aider
-    info "Hint: run via aider-grok (sources ~/.grok/secrets.env, model grok-4.5)"
+    info "Hint: run via aider-grok (sources ~/.grok/secrets.env, model grok-4.6)"
     return 0
   fi
 

@@ -1,113 +1,174 @@
-# GrokHunter / Cinematic Studio — V9 Model Layer v4.5 picker surface
-# Compatible with Grok Build 1.0.0+ (stable).
-# All aliases route to base model grok-4.5 (cli-chat-proxy / SuperGrok).
+# GrokHunter / Cinematic Studio — V9 Model Layer picker surface
+# Compatible with Grok Build 1.0.5+ (stable).
+# All aliases route to base model grok-4.6 (catalog id).
 # Native product slugs may differ; these are picker IDs for /model …
-# See: docs.x.ai/build · grok models · /model <alias>
+# See: docs.x.ai/developers/models · grok models · /model <alias>
 
-[model.grok-v9-4p5-chat-expert]
-name = "Grok V9 4.5 Chat Expert"
-model = "grok-4.5"
+[model.grok-v9-4p6-chat-expert]
+name = "Grok V9 4.6 Chat Expert"
+model = "grok-4.6"
 temperature = 0.7
-description = "Chat-expert profile on grok-4.5"
+description = "Chat-expert profile on grok-4.6"
 
 [model.grok-v9]
 name = "Grok V9"
-model = "grok-4.5"
+model = "grok-4.6"
 temperature = 0.7
-description = "V9 family alias → grok-4.5"
+description = "V9 family alias → grok-4.6"
 
-[model.grok-v9-4p5]
-name = "Grok V9 4.5"
-model = "grok-4.5"
+[model.grok-v9-4p6]
+name = "Grok V9 4.6"
+model = "grok-4.6"
 temperature = 0.7
-description = "V9 family alias → grok-4.5"
+description = "V9 family alias → grok-4.6"
 
 [model.v9]
 name = "V9 short"
-model = "grok-4.5"
+model = "grok-4.6"
 temperature = 0.7
-description = "V9 family alias → grok-4.5"
+description = "V9 family alias → grok-4.6"
 
-[model.v9-4p5]
-name = "V9 4.5 short"
-model = "grok-4.5"
+[model.v9-4p6]
+name = "V9 4.6 short"
+model = "grok-4.6"
 temperature = 0.7
-description = "V9 family alias → grok-4.5"
+description = "V9 family alias → grok-4.6"
 
 [model.chat-expert]
 name = "Chat Expert"
-model = "grok-4.5"
+model = "grok-4.6"
 temperature = 0.7
-description = "Chat-expert profile on grok-4.5"
+description = "Chat-expert profile on grok-4.6"
 
-[model.v9-4p5-chat-expert]
-name = "V9 4.5 Chat Expert"
-model = "grok-4.5"
+[model.v9-4p6-chat-expert]
+name = "V9 4.6 Chat Expert"
+model = "grok-4.6"
 temperature = 0.7
-description = "Chat-expert profile on grok-4.5"
+description = "Chat-expert profile on grok-4.6"
 
-[model.4p5-expert]
-name = "4.5 Expert"
-model = "grok-4.5"
+[model.4p6-expert]
+name = "4.6 Expert"
+model = "grok-4.6"
 temperature = 0.7
-description = "Chat-expert profile on grok-4.5"
+description = "Chat-expert profile on grok-4.6"
 
-[model."grok-4.5-expert"]
-name = "Grok 4.5 Expert"
-model = "grok-4.5"
+[model."grok-4.6-expert"]
+name = "Grok 4.6 Expert"
+model = "grok-4.6"
 temperature = 0.7
-description = "Chat-expert profile on grok-4.5"
+description = "Chat-expert profile on grok-4.6"
 
-[model.grok-v9-4p5-multi]
-name = "Grok V9 4.5 Multi"
-model = "grok-4.5"
+[model.grok-v9-4p6-multi]
+name = "Grok V9 4.6 Multi"
+model = "grok-4.6"
 temperature = 0.7
-description = "Multi/agent-oriented profile on grok-4.5"
+description = "Multi/agent-oriented profile on grok-4.6"
 
 [model.multi]
 name = "Multi"
-model = "grok-4.5"
+model = "grok-4.6"
 temperature = 0.7
-description = "Multi/agent-oriented profile on grok-4.5"
+description = "Multi/agent-oriented profile on grok-4.6"
 
-[model.v9-4p5-multi]
-name = "V9 4.5 Multi"
-model = "grok-4.5"
+[model.v9-4p6-multi]
+name = "V9 4.6 Multi"
+model = "grok-4.6"
 temperature = 0.7
-description = "Multi/agent-oriented profile on grok-4.5"
+description = "Multi/agent-oriented profile on grok-4.6"
 
-[model.4p5-multi]
-name = "4.5 Multi"
-model = "grok-4.5"
+[model.4p6-multi]
+name = "4.6 Multi"
+model = "grok-4.6"
 temperature = 0.7
-description = "Multi/agent-oriented profile on grok-4.5"
+description = "Multi/agent-oriented profile on grok-4.6"
 
-[model."grok-4.5-multi"]
-name = "Grok 4.5 Multi"
-model = "grok-4.5"
+[model."grok-4.6-multi"]
+name = "Grok 4.6 Multi"
+model = "grok-4.6"
 temperature = 0.7
-description = "Multi/agent-oriented profile on grok-4.5"
+description = "Multi/agent-oriented profile on grok-4.6"
 
 [model.grok-4-auto]
 name = "Grok 4 Auto"
-model = "grok-4.5"
+model = "grok-4.6"
 temperature = 0.7
-description = "Auto router profile on grok-4.5"
+description = "Auto router profile on grok-4.6"
 
 [model.auto]
 name = "Auto"
-model = "grok-4.5"
+model = "grok-4.6"
 temperature = 0.7
-description = "Auto router profile on grok-4.5"
+description = "Auto router profile on grok-4.6"
 
 [model.4-auto]
 name = "4 Auto"
-model = "grok-4.5"
+model = "grok-4.6"
 temperature = 0.7
-description = "Auto router profile on grok-4.5"
+description = "Auto router profile on grok-4.6"
 
 [model.grok-auto]
 name = "Grok Auto"
-model = "grok-4.5"
+model = "grok-4.6"
 temperature = 0.7
-description = "Auto router profile on grok-4.5"
+description = "Auto router profile on grok-4.6"
+
+# Compat: former 4.5 picker IDs still work; they now wrap grok-4.6
+[model.grok-v9-4p5-chat-expert]
+name = "Grok V9 4.5 Chat Expert (→ 4.6)"
+model = "grok-4.6"
+temperature = 0.7
+description = "Compat alias → grok-4.6"
+
+[model.grok-v9-4p5]
+name = "Grok V9 4.5 (→ 4.6)"
+model = "grok-4.6"
+temperature = 0.7
+description = "Compat alias → grok-4.6"
+
+[model.v9-4p5]
+name = "V9 4.5 short (→ 4.6)"
+model = "grok-4.6"
+temperature = 0.7
+description = "Compat alias → grok-4.6"
+
+[model.v9-4p5-chat-expert]
+name = "V9 4.5 Chat Expert (→ 4.6)"
+model = "grok-4.6"
+temperature = 0.7
+description = "Compat alias → grok-4.6"
+
+[model.4p5-expert]
+name = "4.5 Expert (→ 4.6)"
+model = "grok-4.6"
+temperature = 0.7
+description = "Compat alias → grok-4.6"
+
+[model."grok-4.5-expert"]
+name = "Grok 4.5 Expert (→ 4.6)"
+model = "grok-4.6"
+temperature = 0.7
+description = "Compat alias → grok-4.6"
+
+[model.grok-v9-4p5-multi]
+name = "Grok V9 4.5 Multi (→ 4.6)"
+model = "grok-4.6"
+temperature = 0.7
+description = "Compat alias → grok-4.6"
+
+[model.v9-4p5-multi]
+name = "V9 4.5 Multi (→ 4.6)"
+model = "grok-4.6"
+temperature = 0.7
+description = "Compat alias → grok-4.6"
+
+[model.4p5-multi]
+name = "4.5 Multi (→ 4.6)"
+model = "grok-4.6"
+temperature = 0.7
+description = "Compat alias → grok-4.6"
+
+[model."grok-4.5-multi"]
+name = "Grok 4.5 Multi (→ 4.6)"
+model = "grok-4.6"
+temperature = 0.7
+description = "Compat alias → grok-4.6"

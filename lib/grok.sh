@@ -372,15 +372,15 @@ install_roles() {
 # Grok Build
 # ---------------------------------------------------------------------------
 install_grok_build() {
-  msg -t "Installing Grok Build CLI (requires ≥ 1.0.0)"
+  msg -t "Installing Grok Build CLI (requires ≥ 1.0.5)"
 
   local ensure="" profile=""
   ensure="$(_gh_resolve "scripts/ensure_grok.sh" || true)"
   profile="$(_gh_resolve "scripts/install_grok_profile.sh" || true)"
 
-  # ensure_grok already merges the 1.0.0 NetHunter profile when present
+  # ensure_grok already merges the 1.0.5 NetHunter profile when present
   if [[ -n "${ensure}" && -f "${ensure}" ]]; then
-    msg -tn "Running shared ensure_grok.sh (Grok Build 1.0.0+)…"
+    msg -tn "Running shared ensure_grok.sh (Grok Build 1.0.5+)…"
     if bash "${ensure}"; then
       cursor -u1
       msg -ts "Grok Build ready"
@@ -410,15 +410,15 @@ install_grok_build() {
     local gver
     gver=$(grok --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1 || true)
     if [[ -n "${gver}" ]]; then
-      if ! printf '%s\n%s\n' "1.0.0" "${gver}" | sort -V | head -1 | grep -qx "1.0.0"; then
-        msg -tw "Grok Build ${gver} < 1.0.0 — run: grokhunter ensure --force"
+      if ! printf '%s\n%s\n' "1.0.5" "${gver}" | sort -V | head -1 | grep -qx "1.0.5"; then
+        msg -tw "Grok Build ${gver} < 1.0.5 — run: grokhunter ensure --force"
       fi
     fi
   fi
 }
 
 # ---------------------------------------------------------------------------
-# Aider (git-native pair programmer, xAI / Grok 4.5)
+# Aider (git-native pair programmer, xAI / Grok 4.6)
 # ---------------------------------------------------------------------------
 # Run scripts/install_aider.sh inside NetHunter when possible.
 # Copies the script into the rootfs so host paths need not be bind-mounted.
@@ -548,10 +548,10 @@ install_aider() {
 }
 
 # ---------------------------------------------------------------------------
-# V9 / 4.5 model pickers
+# V9 / 4.6 model pickers
 # ---------------------------------------------------------------------------
 install_v9_models() {
-  msg -t "Installing Grok V9 / 4.5 model pickers"
+  msg -t "Installing Grok V9 / 4.6 model pickers"
 
   local script=""
   script="$(_gh_resolve "scripts/install_v9_grok_models.sh" || true)"
@@ -560,7 +560,7 @@ install_v9_models() {
     msg -tn "Running install_v9_grok_models.sh…"
     if bash "${script}"; then
       cursor -u1
-      msg -ts "V9 / 4.5 model pickers installed"
+      msg -ts "V9 / 4.6 model pickers installed"
     else
       cursor -u1
       msg -tw "V9 picker install reported issues — try: bash scripts/install_v9_grok_models.sh --force"
