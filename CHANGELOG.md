@@ -6,6 +6,7 @@
 - Converted `branding/*.png` from JPEG-named files to real PNG (icon, favicon, lockup).
 - Wired assets into README, product site (header, hero, favicon, Open Graph / Twitter card), and XFCE menu (`Icon=grokhunter`).
 - Site accent shifted to brand cyan `#00E5C7`. Tagline: **Ship code from your pocket.**
+- Site palette aligned to brand charcoal `#0D1117` / cyan `#00E5C7` (no leftover phosphor green).
 
 ### Lab specialists
 

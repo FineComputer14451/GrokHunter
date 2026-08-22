@@ -1,23 +1,23 @@
-/* GrokHunter brand — carbon ink + phosphor + ice */
+/* GrokHunter brand — charcoal + cyan */
 :root {
-  --bg: #050506;
-  --bg-elevated: #0c0c0f;
-  --bg-subtle: #141418;
-  --bg-panel: #101014;
-  --fg: #f3f3f5;
-  --fg-muted: #9c9ca8;
-  --fg-subtle: #6a6a75;
-  --border: #1c1c24;
-  --border-strong: #2c2c38;
+  --bg: #0D1117;
+  --bg-elevated: #161B22;
+  --bg-subtle: #21262D;
+  --bg-panel: #161B22;
+  --fg: #E6EDF3;
+  --fg-muted: #8B949E;
+  --fg-subtle: #6E7681;
+  --border: #30363D;
+  --border-strong: #484F58;
   --accent: #00E5C7;
   --accent-dim: #00B8A0;
-  --accent-fg: #021412;
-  --ice: #ececf1;
-  --ice-fg: #0a0a0c;
-  --signal: #5ee9a8;
-  --warn: #c9a06a;
-  --danger: #d96b6b;
-  --code-bg: #08080b;
+  --accent-fg: #04201C;
+  --ice: #E6EDF3;
+  --ice-fg: #0D1117;
+  --signal: #5EEAD4;
+  --warn: #D29922;
+  --danger: #F85149;
+  --code-bg: #010409;
   --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --radius-sm: 8px;
@@ -280,12 +280,13 @@ button {
   height: 2.75rem;
   padding: 0 1.25rem;
   font-weight: 600;
-  background: var(--ice);
-  color: var(--ice-fg);
+  background: var(--accent);
+  color: var(--accent-fg);
 }
 
 .btn-primary:hover {
-  opacity: 0.92;
+  background: color-mix(in oklab, var(--accent) 88%, white);
+  opacity: 1;
 }
 
 .btn-lg {
