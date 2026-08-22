@@ -29,14 +29,19 @@ jobs:
       - name: Prepare Pages artifact
         run: |
           set -euo pipefail
-          mkdir -p _site
+          mkdir -p _site/assets
           # Static site root = website/ (no build step)
           cp -a website/. _site/
+          # Canonical brand files from branding/ (overwrite if present)
+          if [[ -d branding ]]; then
+            cp -f branding/favicon.png branding/logo-horizontal.png branding/icon.png _site/assets/ 2>/dev/null || true
+            cp -f branding/social-preview.jpg _site/assets/ 2>/dev/null || true
+          fi
           # Avoid Jekyll processing on Pages
           touch _site/.nojekyll
           # Drop internal docs from public site
           rm -f _site/README.md
-          ls -la _site
+          ls -la _site _site/assets
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

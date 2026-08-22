@@ -21,6 +21,7 @@ Installs to:
 | `~/.local/share/desktop-directories/grokhunter.directory` | Submenu label |
 | `~/.config/menus/applications-merged/grokhunter.menu` | XFCE/Kali menu merge |
 | `~/.local/bin/grokhunter-desktop-run` | PATH-safe launcher |
+| `~/.local/share/icons/hicolor/256x256/apps/grokhunter.png` | Menu icon |
 
 ## Menu items
 

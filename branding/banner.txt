@@ -6,7 +6,8 @@
  ╚██████╔╝██║  ██║╚██████╔╝██║  ██╗██║  ██║╚██████╔╝██║ ╚████║   ██║   ███████╗██║  ██║
   ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝  ╚═╝
 
-        Kali NetHunter  ×  Grok Build  —  AI-agent mobile lab
+        Kali NetHunter  ×  Grok Build  —  AI coding lab
+        Ship code from your pocket.
 
   Built on open work — please support:
     jorexdeveloper  termux-nethunter / termux-distro

@@ -45,6 +45,7 @@ remove_menu() {
     fi
   done
   rm -f "${BIN}/grokhunter-desktop-run" 2>/dev/null || true
+  rm -f "${HOME}/.local/share/icons/hicolor/256x256/apps/grokhunter.png" 2>/dev/null || true
   update-desktop-database "${APPS}" 2>/dev/null || true
   info "GrokHunter Kali menu entries removed"
 }
@@ -52,6 +53,25 @@ remove_menu() {
 install_menu() {
   [[ -d "${SRC}" ]] || die "Missing ${SRC}"
   mkdir -p "${APPS}" "${DIRS}" "${MENUS}" "${BIN}"
+
+  # Brand icon for Icon=grokhunter (freedesktop hicolor)
+  ICONS="${HOME}/.local/share/icons/hicolor/256x256/apps"
+  mkdir -p "${ICONS}"
+  icon_src=""
+  for cand in "${ROOT}/branding/icon-256.png" "${ROOT}/branding/icon.png"; do
+    if [[ -f "${cand}" ]]; then
+      icon_src="${cand}"
+      break
+    fi
+  done
+  if [[ -n "${icon_src}" ]]; then
+    cp -f "${icon_src}" "${ICONS}/grokhunter.png"
+    chmod 644 "${ICONS}/grokhunter.png"
+    gtk-update-icon-cache -f "${HOME}/.local/share/icons/hicolor" 2>/dev/null || true
+    info "Installed ${ICONS}/grokhunter.png"
+  else
+    warn "No branding/icon.png — menu will fall back to theme icons"
+  fi
 
   # Launcher used by Exec= lines
   if [[ -f "${ROOT}/bin/grokhunter-desktop-run" ]]; then

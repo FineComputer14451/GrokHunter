@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Branding
+- Converted `branding/*.png` from JPEG-named files to real PNG (icon, favicon, lockup).
+- Wired assets into README, product site (header, hero, favicon, Open Graph / Twitter card), and XFCE menu (`Icon=grokhunter`).
+- Site accent shifted to brand cyan `#00E5C7`. Tagline: **Ship code from your pocket.**
+
 ### Lab specialists
 
 - Optional skills **`toolchain`** (apt / Aider Python 3.12 / storage) and **`github-lab`** (`git-identity` playbook)

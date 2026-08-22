@@ -1,7 +1,8 @@
 #!/bin/sh
 # GrokHunter dynamic MOTD fragment (optional install into /etc/update-motd.d/)
 printf '\n'
-printf '  \033[1;36mGrokHunter\033[0m  ·  Kali NetHunter × Grok Build\n'
+printf '  \033[1;36mGrokHunter\033[0m  ·  Ship code from your pocket\n'
+printf '  Kali NetHunter × Grok Build  ·  no root\n'
 if command -v grok >/dev/null 2>&1; then
   ver=$(grok --version 2>/dev/null | head -1)
   printf '  Agent: %s\n' "$ver"

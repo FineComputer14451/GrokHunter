@@ -1,10 +1,16 @@
 # GrokHunter Rootless
 
+<p align="center">
+  <img src="branding/logo-horizontal.png" alt="GrokHunter Rootless" width="520">
+</p>
+
+<p align="center"><strong>Ship code from your pocket.</strong></p>
+
 **Kali NetHunter (rootless) × Grok Build — AI coding lab for unrooted Android**
 
 [![Release](https://img.shields.io/github/v/release/FineComputer14451/GrokHunter?label=release)](https://github.com/FineComputer14451/GrokHunter/releases/latest)
 [![Smoke](https://img.shields.io/github/actions/workflow/status/FineComputer14451/GrokHunter/smoke.yml?branch=main&label=smoke)](https://github.com/FineComputer14451/GrokHunter/actions/workflows/smoke.yml)
-[![Pages](https://img.shields.io/badge/site-live-2fd68a)](https://finecomputer14451.github.io/GrokHunter/)
+[![Pages](https://img.shields.io/badge/site-live-00E5C7)](https://finecomputer14451.github.io/GrokHunter/)
 
 Turn Termux + proot Kali into a Linux development environment on your phone, with [Grok](https://x.ai/cli) as an on-device pair programmer. **No root required.**
 
