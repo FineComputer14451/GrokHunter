@@ -130,7 +130,7 @@ Kali and Termux often default to `root <root@localhost.localdomain>`. GitHub can
 
 ```bash
 grokhunter git-identity          # show
-grokhunter git-identity set      # from `gh` if logged in
+grokhunter git-identity set      # gh, GH_TOKEN, or GitHub origin owner
 # or explicitly:
 git config --global user.name "Your GitHub name"
 git config --global user.email "ID+LOGIN@users.noreply.github.com"
@@ -152,7 +152,7 @@ sudo apt install -y build-essential git python3 python3-pip
 ### Aider not found / install fails
 
 Common on current Kali: **Python 3.13** + missing `python3-venv`.  
-`aider-chat` needs Python **&lt;3.13**. Use the shared installer (uv + 3.12):
+`aider-chat` needs Python **<3.13**. Use the shared installer (uv + 3.12):
 
 ```bash
 bash ~/GrokHunter/scripts/install_aider.sh
