@@ -31,6 +31,10 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p _site/assets
+          # Decode raster brand kit shipped as base64 text (binary-safe)
+          if compgen -G "branding/assets*.b64.json" > /dev/null; then
+            python3 branding/decode_assets.py
+          fi
           # Static site root = website/ (no build step)
           cp -a website/. _site/
           # Canonical brand files from branding/ (overwrite if present)
@@ -38,7 +42,7 @@ jobs:
             cp -f branding/favicon.png branding/favicon.svg branding/favicon-32.png \
               branding/logo-horizontal.png branding/icon.png branding/icon-256.png \
               branding/apple-touch-icon.png branding/og.jpg branding/social-preview.jpg \
-              branding/x-banner.jpg _site/assets/ 2>/dev/null || true
+              branding/x-banner.jpg branding/palette.jpg _site/assets/ 2>/dev/null || true
           fi
           # Avoid Jekyll processing on Pages
           touch _site/.nojekyll
