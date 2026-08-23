@@ -1,4 +1,4 @@
-/* GrokHunter brand — charcoal + Grok cyan + Kali blue + NetHunter red */
+/* GrokHunter brand — charcoal + Grok cyan + Kali blue + NetHunter red + geometric purple */
 :root {
   --bg: #0D1117;
   --bg-elevated: #161B22;
@@ -18,6 +18,10 @@
   --nethunter: #E31C3D;
   --nethunter-dim: #B81430;
   --nethunter-fg: #FFE8EC;
+  /* Geometric draft accent (cyan/purple split mascot) */
+  --purple: #9B5DE5;
+  --purple-dim: #7B46C7;
+  --purple-fg: #F5EDFF;
   --ice: #E6EDF3;
   --ice-fg: #0D1117;
   --signal: #5EEAD4;
@@ -505,6 +509,18 @@ a.chip-nethunter:hover {
   color: var(--nethunter-fg);
 }
 
+.chip-purple {
+  border-color: color-mix(in oklab, var(--purple) 40%, var(--border));
+  background: color-mix(in oklab, var(--purple) 10%, var(--bg-elevated));
+  color: var(--purple);
+  text-decoration: none;
+}
+
+a.chip-purple:hover {
+  border-color: var(--purple);
+  color: var(--purple-fg);
+}
+
 .kali {
   color: var(--kali);
 }
@@ -513,8 +529,13 @@ a.chip-nethunter:hover {
   color: var(--nethunter);
 }
 
+.purple {
+  color: var(--purple);
+}
+
 h1 .kali,
-h1 .nethunter {
+h1 .nethunter,
+h1 .purple {
   display: inline;
 }
 
