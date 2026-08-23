@@ -1,10 +1,17 @@
 # Agents — References Index
 
-Canonical cross-links for every GrokHunter agent. Keep agent files lean; put shared maps here.
+Canonical cross-links for every GrokHunter agent. Keep agent files lean; put shared maps here. Prefer this index over copying maps into agent prompts.
 
 **Product version:** 1.0.9 · Overlay cache: 2026.2.18 · Grok Build: ≥ 1.0.5 · Default model: grok-4.6
 
-Paired skill index: [skills/REFERENCES.md](../skills/REFERENCES.md) · [skills/README.md](../skills/README.md) · [skills/PLAYBOOKS.md](../skills/PLAYBOOKS.md)
+| Related | Path |
+|---------|------|
+| Roster / CLI | [README.md](README.md) |
+| Handoff cards | [HANDOFF-TEMPLATES.md](HANDOFF-TEMPLATES.md) |
+| Skills index | [skills/REFERENCES.md](../skills/REFERENCES.md) |
+| Skills roster | [skills/README.md](../skills/README.md) |
+| Symptom → skill | [skills/PLAYBOOKS.md](../skills/PLAYBOOKS.md) |
+| Protocol | [docs/CODING-TEAM.md](../docs/CODING-TEAM.md) |
 
 ## Core documents
 
@@ -28,7 +35,7 @@ Paired skill index: [skills/REFERENCES.md](../skills/REFERENCES.md) · [skills/R
 
 | Skill | Paired agent(s) | Notes |
 |-------|-----------------|-------|
-| `grokhunter` | (orchestrator) | Install, doctor, PATH, models, skills CLI |
+| `grokhunter` | overlay (partial) | Install, doctor, PATH, models, skills CLI |
 | `pair-programming` | coding-team, lucas | Session style for Grok 4.6 |
 | `aider-grok` | aider | uv + Python 3.12 helper |
 | `x11-desktop` | desktop | Black screen / lag triage |
@@ -70,15 +77,17 @@ Full skill roster + decision tree: [skills/README.md](../skills/README.md) · [s
 | aider | aider-grok | EDITORS |
 | session | session-lab | SHELL |
 | host | host-lab | PROOT, SHELL |
-| mcp | mcp-lab | user-guide/07-mcp-servers |
-| plugin | plugin-lab | user-guide/09-plugins |
+| mcp | mcp-lab | `~/.grok/docs/user-guide/07-mcp-servers.md` (Grok Build) |
+| plugin | plugin-lab | `~/.grok/docs/user-guide/09-plugins.md` (Grok Build) |
 | flow | flow-lab | create-workflow (bundled) |
 | storage | storage-lab | PROOT, INSTALL |
 | editor | editor-lab | EDITORS |
-| hook | hooks-lab | user-guide/10-hooks |
+| hook | hooks-lab | `~/.grok/docs/user-guide/10-hooks.md` (Grok Build) |
 | shell | shell-lab | SHELL |
 
 ## Shared hard rules (all agents)
+
+Canonical copy for agent prompts. Skills index may summarize or link here.
 
 - Never log, echo, or commit `XAI_API_KEY`, tokens, or private keys
 - Prefer small, reversible changes; confirm before destructive ops
@@ -90,14 +99,7 @@ Full skill roster + decision tree: [skills/README.md](../skills/README.md) · [s
 
 ## Personas & roles
 
-See `personas/README.md` and `roles/README.md`.  
-Mental model:
-
-```
-agent  = who          (benjamin, lucas, overlay, …)
-role   = capabilities (architect, builder, overlay, …)
-persona = tone/cards  (mobile, design-card, release-card, …)
-skill  = playbook     (grokhunter, pair-programming, …)
-```
+See [personas/README.md](../personas/README.md) and [roles/README.md](../roles/README.md).  
+Canonical agent / role / persona model: [roles/README.md](../roles/README.md).
 
 Install agents + skills + personas + roles via `grokhunter skills install`.
