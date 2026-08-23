@@ -1,1 +1,51 @@
-PLACEHOLDER_WILL_REPLACE_WITH_REAL
+#!/usr/bin/env bash
+# GrokHunter primary CLI — Kali NetHunter × Grok Build
+set -euo pipefail
+
+export PATH="${HOME}/.grok/bin:${HOME}/.local/bin:${PATH}"
+
+# Resolve overlay root (clone → GROKHUNTER_HOME → ~/GrokHunter → cache stamp)
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+_gh_cli_root() {
+  local d stamp
+  if [[ -f "${HERE}/../install.sh" ]]; then
+    cd "${HERE}/.." && pwd
+    return 0
+  fi
+  for d in "${GROKHUNTER_HOME:-}" "${HOME}/GrokHunter"; do
+    [[ -n "${d}" ]] || continue
+    case "${d}" in
+      /dev/fd|/dev/fd/*|/proc/self/fd|/proc/self/fd/*) continue ;;
+    esac
+    if [[ -f "${d}/install.sh" ]]; then
+      printf '%s\n' "${d}"
+      return 0
+    fi
+  done
+  stamp="${HOME}/.cache/grokhunter/OVERLAY_ROOT"
+  if [[ -r "${stamp}" ]]; then
+    d="$(tr -d '[:space:]' < "${stamp}" 2>/dev/null || true)"
+    if [[ -n "${d}" && -f "${d}/install.sh" ]]; then
+      printf '%s\n' "${d}"
+      return 0
+    fi
+  fi
+  if [[ -f "${HOME}/.cache/grokhunter/src/install.sh" ]]; then
+    printf '%s\n' "${HOME}/.cache/grokhunter/src"
+    return 0
+  fi
+  printf '%s\n' "${HERE}"
+}
+ROOT="$(_gh_cli_root)"
+export GROKHUNTER_HOME="${GROKHUNTER_HOME:-$ROOT}"
+case "${GROKHUNTER_HOME}" in
+  /dev/fd|/dev/fd/*|/proc/self/fd|/proc/self/fd/*)
+    export GROKHUNTER_HOME="${ROOT}" ;;
+esac
+
+# Discovery helpers (skills / agents / personas / roles)
+# shellcheck disable=SC1091
+if [[ -f "${GROKHUNTER_HOME}/lib/skills-discover.sh" ]]; then
+  # shellcheck source=lib/skills-discover.sh
+  source "${GROKHUNTER_HOME}/lib/skills-discover.sh"
+fi
