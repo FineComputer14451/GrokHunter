@@ -31,8 +31,8 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p _site/assets
-          # Decode raster brand kit shipped as base64 text (binary-safe)
-          if compgen -G "branding/assets*.b64.json" > /dev/null; then
+          # Decode raster brand kit shipped as base64 packs/sidecars (binary-safe)
+          if [[ -f branding/decode_assets.py ]]; then
             python3 branding/decode_assets.py
           fi
           # Static site root = website/ (no build step)
