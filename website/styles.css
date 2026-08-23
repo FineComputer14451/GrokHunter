@@ -1,4 +1,4 @@
-/* GrokHunter brand — charcoal + cyan */
+/* GrokHunter brand — charcoal + Grok cyan + Kali blue */
 :root {
   --bg: #0D1117;
   --bg-elevated: #161B22;
@@ -12,6 +12,9 @@
   --accent: #00E5C7;
   --accent-dim: #00B8A0;
   --accent-fg: #04201C;
+  --kali: #2777FF;
+  --kali-dim: #1A5CD6;
+  --kali-fg: #F4F8FF;
   --ice: #E6EDF3;
   --ice-fg: #0D1117;
   --signal: #5EEAD4;
@@ -398,14 +401,14 @@ button {
 .hero-wash {
   background:
     radial-gradient(
-      ellipse 70% 45% at 50% -8%,
-      color-mix(in oklab, var(--accent) 9%, transparent),
+      ellipse 55% 45% at 18% -8%,
+      color-mix(in oklab, var(--accent) 11%, transparent),
       transparent 58%
     ),
     radial-gradient(
-      ellipse 35% 28% at 88% 18%,
-      color-mix(in oklab, var(--ice) 4%, transparent),
-      transparent 50%
+      ellipse 50% 40% at 88% 8%,
+      color-mix(in oklab, var(--kali) 14%, transparent),
+      transparent 55%
     );
 }
 
@@ -468,6 +471,26 @@ button {
   background: color-mix(in oklab, var(--accent) 8%, var(--bg-elevated));
   color: var(--accent);
   font-family: var(--font-mono);
+}
+
+.chip-kali {
+  border-color: color-mix(in oklab, var(--kali) 40%, var(--border));
+  background: color-mix(in oklab, var(--kali) 10%, var(--bg-elevated));
+  color: var(--kali);
+  text-decoration: none;
+}
+
+a.chip-kali:hover {
+  border-color: var(--kali);
+  color: var(--kali-fg);
+}
+
+.kali {
+  color: var(--kali);
+}
+
+h1 .kali {
+  display: inline;
 }
 
 h1 {
@@ -1112,6 +1135,27 @@ td:last-child {
 .arch-card span {
   font-size: 0.875rem;
   color: var(--fg-muted);
+}
+
+.arch-layer-kali .arch-num {
+  border-color: color-mix(in oklab, var(--kali) 45%, var(--border-strong));
+  color: var(--kali);
+}
+
+.arch-layer-kali .arch-card {
+  border-color: color-mix(in oklab, var(--kali) 28%, var(--border));
+}
+
+.arch-layer-kali .arch-card strong {
+  color: var(--kali);
+}
+
+.credits-kali a {
+  color: var(--kali);
+}
+
+.credits-kali a:hover {
+  color: var(--kali-fg);
 }
 
 .mini-grid {

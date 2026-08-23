@@ -12,6 +12,7 @@
   <a href="https://github.com/FineComputer14451/GrokHunter/releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/FineComputer14451/GrokHunter?label=release&color=00E5C7&labelColor=0D1117"></a>
   <a href="https://github.com/FineComputer14451/GrokHunter/actions/workflows/smoke.yml"><img alt="Smoke" src="https://img.shields.io/github/actions/workflow/status/FineComputer14451/GrokHunter/smoke.yml?branch=main&label=smoke&labelColor=0D1117"></a>
   <a href="https://finecomputer14451.github.io/GrokHunter/"><img alt="Pages" src="https://img.shields.io/badge/site-live-00E5C7?labelColor=0D1117"></a>
+  <a href="https://www.kali.org/"><img alt="Kali Linux" src="https://img.shields.io/badge/Kali-NetHunter-2777FF?labelColor=0D1117"></a>
 </p>
 
 Turn Termux + proot Kali into a Linux development environment on your phone, with [Grok](https://x.ai/cli) as an on-device pair programmer. **No root required.**

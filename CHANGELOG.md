@@ -10,6 +10,7 @@
 - New share cards: `og.jpg` 1200×630 (link preview) and `x-banner.jpg` 1200×264 (X feed).
 - README hero uses the GH icon + charcoal/cyan shields (drop the noisy lockup).
 - Rebuilt all raster brand assets from a geometric G mark (crisp PNG/SVG, no photographic lockups).
+- Color scheme shout-out to Kali Linux: official blue `#2777FF` alongside Grok cyan.
 
 ### Lab specialists
 
