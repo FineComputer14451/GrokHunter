@@ -38,7 +38,7 @@ Workflow: [`.github/workflows/deploy-website.yml`](../.github/workflows/deploy-w
 2. Push `website/**` to `main` **or** **Actions → Deploy website → Run workflow**
 3. URL: https://finecomputer14451.github.io/GrokHunter/
 
-No Node/npm build — pure static HTML/CSS/JS. Brand tokens: `styles.css` (Grok cyan `#00E5C7` · Kali blue `#2777FF` · NetHunter red `#E31C3D`). Assets: `website/assets/` (favicon, lockup, social preview).
+No Node/npm build — pure static HTML/CSS/JS. Brand tokens: `styles.css` (Grok cyan `#00E5C7` · Kali blue `#2777FF` · NetHunter red `#E31C3D` · geometric purple `#9B5DE5`). Assets: `website/assets/` (favicon, lockup, social preview).
 
 ---
 
@@ -54,3 +54,5 @@ A new geometric low-poly wolf-fox mascot direction is under review:
 - Full favicon + lockup + hero/OG assets prepared
 
 Do not replace `website/assets/` until the draft is approved.
+- Header mark is now the inline geometric SVG (cyan/purple split, red eyes). `website/assets/` raster favicon is unchanged until the draft is fully approved.
+- Hero wash uses cyan left / purple right. `.chip-purple` and `.purple` are used in index.html.
