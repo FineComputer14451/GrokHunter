@@ -1,4 +1,4 @@
-/* GrokHunter brand — charcoal + Grok cyan + Kali blue */
+/* GrokHunter brand — charcoal + Grok cyan + Kali blue + NetHunter red */
 :root {
   --bg: #0D1117;
   --bg-elevated: #161B22;
@@ -15,6 +15,9 @@
   --kali: #2777FF;
   --kali-dim: #1A5CD6;
   --kali-fg: #F4F8FF;
+  --nethunter: #E31C3D;
+  --nethunter-dim: #B81430;
+  --nethunter-fg: #FFE8EC;
   --ice: #E6EDF3;
   --ice-fg: #0D1117;
   --signal: #5EEAD4;
@@ -409,6 +412,11 @@ button {
       ellipse 50% 40% at 88% 8%,
       color-mix(in oklab, var(--kali) 14%, transparent),
       transparent 55%
+    ),
+    radial-gradient(
+      ellipse 40% 35% at 58% 110%,
+      color-mix(in oklab, var(--nethunter) 12%, transparent),
+      transparent 55%
     );
 }
 
@@ -485,11 +493,28 @@ a.chip-kali:hover {
   color: var(--kali-fg);
 }
 
+.chip-nethunter {
+  border-color: color-mix(in oklab, var(--nethunter) 42%, var(--border));
+  background: color-mix(in oklab, var(--nethunter) 10%, var(--bg-elevated));
+  color: var(--nethunter);
+  text-decoration: none;
+}
+
+a.chip-nethunter:hover {
+  border-color: var(--nethunter);
+  color: var(--nethunter-fg);
+}
+
 .kali {
   color: var(--kali);
 }
 
-h1 .kali {
+.nethunter {
+  color: var(--nethunter);
+}
+
+h1 .kali,
+h1 .nethunter {
   display: inline;
 }
 
@@ -1150,12 +1175,33 @@ td:last-child {
   color: var(--kali);
 }
 
+.arch-layer-nethunter .arch-num {
+  border-color: color-mix(in oklab, var(--nethunter) 45%, var(--border-strong));
+  color: var(--nethunter);
+}
+
+.arch-layer-nethunter .arch-card {
+  border-color: color-mix(in oklab, var(--nethunter) 28%, var(--border));
+}
+
+.arch-layer-nethunter .arch-card strong {
+  color: var(--nethunter);
+}
+
 .credits-kali a {
   color: var(--kali);
 }
 
 .credits-kali a:hover {
   color: var(--kali-fg);
+}
+
+.credits-kali .nethunter {
+  color: var(--nethunter);
+}
+
+.credits-kali a.nethunter:hover {
+  color: var(--nethunter-fg);
 }
 
 .mini-grid {

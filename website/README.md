@@ -38,4 +38,4 @@ Workflow: [`.github/workflows/deploy-website.yml`](../.github/workflows/deploy-w
 2. Push `website/**` to `main` **or** **Actions → Deploy website → Run workflow**
 3. URL: https://finecomputer14451.github.io/GrokHunter/
 
-No Node/npm build — pure static HTML/CSS/JS. Brand tokens: `styles.css` (Grok cyan `#00E5C7` · Kali blue `#2777FF`). Assets: `website/assets/` (favicon, lockup, social preview).
+No Node/npm build — pure static HTML/CSS/JS. Brand tokens: `styles.css` (Grok cyan `#00E5C7` · Kali blue `#2777FF` · NetHunter red `#E31C3D`). Assets: `website/assets/` (favicon, lockup, social preview).

@@ -20,4 +20,4 @@ Drawn as real PNG/SVG (not photographic AI lockups).
 
 Product site copies live under `website/assets/` (GitHub Pages root).
 
-Colors: charcoal `#0D1117` · Grok cyan `#00E5C7` · Kali blue `#2777FF` · text `#E6EDF3`.
+Colors: charcoal `#0D1117` · Grok cyan `#00E5C7` · Kali blue `#2777FF` · NetHunter red `#E31C3D` · text `#E6EDF3`.
