@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="branding/favicon.svg" alt="GrokHunter" width="160" height="160">
+  <img src="branding/logo-horizontal.png" alt="GrokHunter" width="520">
 </p>
 
 <h1 align="center">GrokHunter</h1>
