@@ -14,8 +14,7 @@ Drawn as real PNG/SVG (not photographic AI lockups).
 | `logo-horizontal.png` | Site hero lockup (transparent) |
 | `logo-terminal.png` | Docs / CLI-adjacent lockup |
 | `og.jpg` | Open Graph / Twitter link preview (1200×630) |
-| `social-preview.jpg` | Same art as `og.jpg` (alias) |
-| `x-banner.jpg` | X feed card (50:11, 1200×264) |
+| `x-banner.jpg` | X profile header (50:11, 1200×264; upload in X settings, not HTML) |
 | `palette.jpg` | Brand color plate (guide) |
 | `banner.txt` | ASCII banner (installer / MOTD companion) |
 

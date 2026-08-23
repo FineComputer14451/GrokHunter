@@ -7,7 +7,7 @@
 - Wired assets into README, product site (header, hero, favicon, Open Graph / Twitter card), and XFCE menu (`Icon=grokhunter`).
 - Site accent shifted to brand cyan `#00E5C7`. Tagline: **Ship code from your pocket.**
 - Site palette aligned to brand charcoal `#0D1117` / cyan `#00E5C7` (no leftover phosphor green).
-- New share cards: `og.jpg` 1200×630 (link preview) and `x-banner.jpg` 1200×264 (X feed).
+- Share cards: `og.jpg` 1200×630 (Open Graph / Twitter). `x-banner.jpg` 1200×264 is an X profile header (upload in X settings, not HTML). Dropped `social-preview.jpg` alias and `x:game:image` meta.
 - README hero uses the GH icon + charcoal/cyan shields (drop the noisy lockup).
 - Rebuilt all raster brand assets from a geometric G mark (crisp PNG/SVG, no photographic lockups).
 - Color scheme shout-out to Kali Linux: official blue `#2777FF` alongside Grok cyan.

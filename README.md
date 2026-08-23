@@ -24,7 +24,7 @@ Turn Termux + proot Kali into a Linux development environment on your phone, wit
 **Product site:** [finecomputer14451.github.io/GrokHunter](https://finecomputer14451.github.io/GrokHunter/)  
 **Release:** [v1.0.9](https://github.com/FineComputer14451/GrokHunter/releases/tag/v1.0.9) · Grok Build **1.0.5+** · Grok **4.6**
 
-Source: [`website/`](website/) · deploy: push `website/**` or **Actions → Deploy website**.
+Source: [`website/`](website/) · deploy: push `website/**` or `branding/**`, or **Actions → Deploy website**.
 
 
 ---
@@ -43,7 +43,7 @@ cd GrokHunter && bash install.sh
 ### Recommended full stack
 
 ```bash
-bash install.sh --full --de xfce --browser chromium \\
+bash install.sh --full --de xfce --browser chromium \
   --with-grok --with-x11 --with-aider --with-v9-models
 ```
 

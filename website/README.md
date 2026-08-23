@@ -35,10 +35,10 @@ Or open `index.html` directly in a browser.
 Workflow: [`.github/workflows/deploy-website.yml`](../.github/workflows/deploy-website.yml)
 
 1. Pages source: **GitHub Actions** (already enabled for this repo)
-2. Push `website/**` to `main` **or** **Actions → Deploy website → Run workflow**
+2. Push `website/**` or `branding/**` to `main` **or** **Actions → Deploy website → Run workflow**
 3. URL: https://finecomputer14451.github.io/GrokHunter/
 
-No Node/npm build — pure static HTML/CSS/JS. Brand tokens: `styles.css` (Grok cyan `#00E5C7` · Kali blue `#2777FF` · NetHunter red `#E31C3D` · geometric purple `#9B5DE5`). Assets: `website/assets/` (favicon, lockup, social preview).
+No Node/npm build — pure static HTML/CSS/JS. Brand tokens: `styles.css` (Grok cyan `#00E5C7` · Kali blue `#2777FF` · NetHunter red `#E31C3D` · geometric purple `#9B5DE5`). Assets: `website/assets/` (favicon, lockup, `og.jpg` 1200×630). X profile header: `branding/x-banner.jpg` (upload in X settings).
 
 ---
 

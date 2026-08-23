@@ -41,8 +41,11 @@ jobs:
           if [[ -d branding ]]; then
             cp -f branding/favicon.png branding/favicon.svg branding/favicon-32.png \
               branding/logo-horizontal.png branding/icon.png branding/icon-256.png \
-              branding/apple-touch-icon.png branding/og.jpg branding/social-preview.jpg \
-              branding/x-banner.jpg branding/palette.jpg _site/assets/ 2>/dev/null || true
+              branding/apple-touch-icon.png branding/og.jpg branding/palette.jpg \
+              _site/assets/
+            if [[ -f branding/x-banner.jpg ]]; then
+              cp -f branding/x-banner.jpg _site/assets/
+            fi
           fi
           # Avoid Jekyll processing on Pages
           touch _site/.nojekyll
