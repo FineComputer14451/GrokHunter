@@ -9,6 +9,7 @@
 - Site palette aligned to brand charcoal `#0D1117` / cyan `#00E5C7` (no leftover phosphor green).
 - New share cards: `og.jpg` 1200×630 (link preview) and `x-banner.jpg` 1200×264 (X feed).
 - README hero uses the GH icon + charcoal/cyan shields (drop the noisy lockup).
+- Rebuilt all raster brand assets from a geometric G mark (crisp PNG/SVG, no photographic lockups).
 
 ### Lab specialists
 

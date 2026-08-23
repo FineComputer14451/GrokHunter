@@ -136,8 +136,8 @@ button {
   overflow: hidden;
   padding: 0;
   border-radius: var(--radius-sm);
-  border: 1px solid var(--border-strong);
-  background: #000;
+  border: none;
+  background: transparent;
   color: var(--accent);
 }
 

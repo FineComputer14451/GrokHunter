@@ -7,6 +7,7 @@ on:
     branches: [main]
     paths:
       - "website/**"
+      - "branding/**"
       - ".github/workflows/deploy-website.yml"
   workflow_dispatch:
 
@@ -34,8 +35,10 @@ jobs:
           cp -a website/. _site/
           # Canonical brand files from branding/ (overwrite if present)
           if [[ -d branding ]]; then
-            cp -f branding/favicon.png branding/logo-horizontal.png branding/icon.png _site/assets/ 2>/dev/null || true
-            cp -f branding/og.jpg branding/social-preview.jpg branding/x-banner.jpg _site/assets/ 2>/dev/null || true
+            cp -f branding/favicon.png branding/favicon.svg branding/favicon-32.png \
+              branding/logo-horizontal.png branding/icon.png branding/icon-256.png \
+              branding/apple-touch-icon.png branding/og.jpg branding/social-preview.jpg \
+              branding/x-banner.jpg _site/assets/ 2>/dev/null || true
           fi
           # Avoid Jekyll processing on Pages
           touch _site/.nojekyll

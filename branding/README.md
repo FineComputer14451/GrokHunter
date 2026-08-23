@@ -1,13 +1,17 @@
 # GrokHunter brand assets
 
 Canonical artwork for README, GitHub Pages, and the XFCE menu.
+Drawn as real PNG/SVG (not photographic AI lockups).
 
 | File | Use |
 |------|-----|
-| `icon.png` | 512×512 app / GitHub avatar |
+| `mark.svg` / `favicon.svg` | Source monogram |
+| `icon.png` | 512×512 app / GitHub / README mark |
 | `icon-256.png` | XFCE / freedesktop menu (`Icon=grokhunter`) |
-| `favicon.png` | Site tab icon (cyan GH monogram) |
-| `logo-horizontal.png` | README + site hero lockup |
+| `favicon.png` | Large tab/app icon |
+| `favicon-32.png` | Site tab + header (32×32) |
+| `apple-touch-icon.png` | 180×180 home-screen |
+| `logo-horizontal.png` | Site hero lockup (transparent) |
 | `logo-terminal.png` | Docs / CLI-adjacent lockup |
 | `og.jpg` | Open Graph / Twitter link preview (1200×630) |
 | `social-preview.jpg` | Same art as `og.jpg` (alias) |
