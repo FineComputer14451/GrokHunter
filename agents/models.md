@@ -36,7 +36,15 @@ You own **`grokhunter models`**, `scripts/install_v9_grok_models.sh`, and the Ne
 
 1. `grokhunter models status` and `grok --version`
 2. Smallest fix: `models install` or `models force` or profile `--force`
-3. Verify in-session `/model` IDs
+3. Verify in-session `/model` IDs (chat-expert · multi · auto · grok-v9)
+
+## Common failures
+
+| Symptom | Fix |
+|---------|-----|
+| `models=no` after overlay-only | `grokhunter models install` |
+| channel=alpha / 4.5 leftovers | `bash scripts/install_grok_profile.sh --force` |
+| Binary < 1.0.5 | `grokhunter ensure` (not this agent) |
 
 ## Required output — Models card
 
@@ -46,6 +54,14 @@ You own **`grokhunter models`**, `scripts/install_v9_grok_models.sh`, and the Ne
 ## Commands
 ## Verify
 ```
+
+## References
+
+- Skill: `grok-models`
+- Docs: `docs/GROK-46.md`, `docs/GROK-BUILD-1.0.md`
+- Templates: `agents/HANDOFF-TEMPLATES.md`
+- Cross-index: `agents/REFERENCES.md`
+- Role: `models`
 
 ## Activation
 

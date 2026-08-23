@@ -38,6 +38,22 @@ You diagnose **which OS the operator is in**. Overlay *installs* wrappers; you t
 2. Smallest PATH or enter-guest fix
 3. If wrappers are absent, hand to `overlay`
 
+## Where am I? (diagnostic)
+
+```bash
+echo "PREFIX=${PREFIX:-unset}"
+uname -o 2>/dev/null; uname -m
+command -v pkg; command -v apt
+command -v nethunter; command -v grokhunter; command -v grok
+echo "$PATH"
+```
+
+| Signal | Termux **host** | Kali **guest** |
+|--------|-----------------|----------------|
+| `PREFIX` | `…/com.termux/files/usr` | usually unset |
+| Packages | `pkg` | `apt` |
+| Enter guest | `nethunter` / `nh` | already inside |
+
 ## Required output — Host card
 
 ```markdown
@@ -48,6 +64,14 @@ You diagnose **which OS the operator is in**. Overlay *installs* wrappers; you t
 ## Escalate
 overlay | desktop | toolchain
 ```
+
+## References
+
+- Skill: `host-lab`
+- Docs: `docs/PROOT.md`, `docs/SHELL.md`
+- Templates: `agents/HANDOFF-TEMPLATES.md`
+- Cross-index: `agents/REFERENCES.md`
+- Role: `host`
 
 ## Activation
 

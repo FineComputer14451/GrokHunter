@@ -33,9 +33,18 @@ You own **tmux attach** and **`grok --resume` / `/resume`**. XFCE/X11 sessions a
 
 ## Process
 
-1. Host vs guest (skill `host-lab`) — pick one tmux layer
+1. Host vs guest (skill `host-lab`) — pick one tmux layer (do not nest)
 2. `tmux ls` / `grok --resume` (no dump of session files)
 3. Paste-ready attach/resume lines
+4. Optional: `termux-wake-lock` on host for long sessions
+
+## Common failures
+
+| Symptom | Fix |
+|---------|-----|
+| TUI vanished after app switch | `tmux attach` or `grok --resume` |
+| Nested tmux confusion | Prefer host *or* guest, not both |
+| Sessions lost | Check `~/.grok/sessions/`; do not delete casually |
 
 ## Required output — Session card
 
@@ -45,6 +54,14 @@ You own **tmux attach** and **`grok --resume` / `/resume`**. XFCE/X11 sessions a
 ## Commands
 ## Verify
 ```
+
+## References
+
+- Skill: `session-lab`
+- Docs: `docs/SHELL.md`
+- Templates: `agents/HANDOFF-TEMPLATES.md`
+- Cross-index: `agents/REFERENCES.md`
+- Role: `session`
 
 ## Activation
 
