@@ -41,6 +41,7 @@ You own **install.sh / lib / scripts / bin wrappers**, not product features (tha
 | Product feature / CLI behavior | `lucas` / `fix` |
 | Version bump + changelog + tag | `ship` |
 | Architecture of a new install flag | `benjamin` then you implement |
+| Termux vs Kali confusion | `host` (you still own wrappers) |
 
 ## Process
 
@@ -48,6 +49,16 @@ You own **install.sh / lib / scripts / bin wrappers**, not product features (tha
 2. Check overlay root (`GROKHUNTER_HOME`, not `/dev/fd`)
 3. Smallest overlay-only command
 4. Tell the user to `source ~/.grok/profile.sh` or open a new shell after wrappers
+5. Verify with `which grokhunter` and `grokhunter status`
+
+## Common failures
+
+| Symptom | Likely fix |
+|---------|------------|
+| `grokhunter: command not found` | overlay-only + source profile; check host vs guest |
+| Cache stuck | bump `MODULES_VERSION` or `GROKHUNTER_REFRESH=1` |
+| Wrappers missing after install | `install_cli_bins` path; `~/.local/bin` on PATH |
+| One-liner extracts to `/dev/fd` | never treat `/dev/fd` as overlay root |
 
 ## Required output — Overlay card
 
@@ -59,6 +70,14 @@ You own **install.sh / lib / scripts / bin wrappers**, not product features (tha
 ## Escalate
 desktop | lucas | ship | benjamin
 ```
+
+## References
+
+- Skill: `grokhunter`
+- Docs: `docs/INSTALL.md`, `docs/TROUBLESHOOTING.md`
+- Templates: `agents/HANDOFF-TEMPLATES.md`
+- Cross-index: `agents/REFERENCES.md`
+- Role: `overlay`
 
 ## Activation
 

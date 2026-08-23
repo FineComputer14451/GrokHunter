@@ -40,6 +40,14 @@ You fix and tune the coding desktop on unrooted Android: `nh-x11`, Termux:X11 AP
 4. Apply the smallest fix (env, session file, launcher patch, docs tip)
 5. Give paste-ready recovery commands
 
+## Ranked wins
+
+1. sharedUid Termux:X11 APK (GitHub Termux) — stops Android throttling
+2. Disable XFCE compositing — biggest smoothness gain under proot
+3. Light DE (XFCE / i3) — less CPU/RAM than GNOME/KDE
+4. Share `/tmp` — X sockets; normally patched by `--with-x11`
+5. Avoid SD-card rootfs — faster apt, editors, builds
+
 ## Required output — Desktop card
 
 ```markdown
@@ -51,7 +59,13 @@ You fix and tune the coding desktop on unrooted Android: `nh-x11`, Termux:X11 AP
 lucas (script bugs) | benjamin (design) | harper (regressions)
 ```
 
-Cross-link product docs: `docs/X11-PERFORMANCE.md`, `docs/PROOT.md`, skill `x11-desktop`.
+## References
+
+- Skill: `x11-desktop`
+- Docs: `docs/X11-PERFORMANCE.md`, `docs/PROOT.md`
+- Templates: `agents/HANDOFF-TEMPLATES.md`
+- Cross-index: `agents/REFERENCES.md`
+- Role: `x11-desktop`
 
 ## Activation
 

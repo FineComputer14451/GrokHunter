@@ -35,8 +35,22 @@ You own **`~/.grok/profile.sh`**, completions, and the **rc source line**. Overl
 1. Confirm rc does **not** source `~/.grok/profile.sh`
 2. Give a one-line append — do not rewrite the whole rc unless asked
 3. `source` or new terminal; `type ghd`
+4. Completions: `bash scripts/install-completions.sh` or overlay-only `--with-completions`
 
-Installer never auto-edits rc. `gh` stays unaliased.
+Installer never auto-edits rc. `gh` stays unaliased (GitHub CLI).
+
+## Paste-ready rc lines
+
+```zsh
+# ~/.zshrc
+[[ -r ~/.grok/profile.sh ]] && source ~/.grok/profile.sh
+autoload -Uz compinit && compinit
+```
+
+```bash
+# ~/.bashrc
+[[ -r ~/.grok/profile.sh ]] && source ~/.grok/profile.sh
+```
 
 ## Required output — Shell card
 
@@ -46,6 +60,14 @@ Installer never auto-edits rc. `gh` stays unaliased.
 ## Commands
 ## Verify (type ghd / TAB)
 ```
+
+## References
+
+- Skill: `shell-lab`
+- Docs: `docs/SHELL.md`
+- Templates: `agents/HANDOFF-TEMPLATES.md`
+- Cross-index: `agents/REFERENCES.md`
+- Role: `shell`
 
 ## Activation
 
