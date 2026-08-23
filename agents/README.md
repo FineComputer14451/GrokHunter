@@ -5,6 +5,16 @@ These are **Grok Build agent definitions**. Grok loads the matching file as the 
 - select the agent in `/config-agents` (alias `/agents`), or
 - spawn `subagent_type: <name>` from a parent agent / Coding Team
 
+**Expanded roster** (v1.0.9+): each agent includes domain ownership, process steps, common failures, required handoff cards, and explicit references to skills/docs.
+
+## Supporting files
+
+| File | Purpose |
+|------|---------|
+| [REFERENCES.md](REFERENCES.md) | Master cross-index of skills, docs, agents, hard rules |
+| [HANDOFF-TEMPLATES.md](HANDOFF-TEMPLATES.md) | All card templates in one place |
+| [../docs/CODING-TEAM.md](../docs/CODING-TEAM.md) | Full Design → Build → Harden protocol |
+
 ## Coding Team core
 
 | File | Type | Mode | Role |
@@ -108,4 +118,6 @@ done
 ```
 
 Personas (tone overlays): [personas/README.md](../personas/README.md) · install via `grokhunter skills install`  
-Protocol: [docs/CODING-TEAM.md](../docs/CODING-TEAM.md)
+Roles (capability defaults): [roles/README.md](../roles/README.md)  
+Protocol: [docs/CODING-TEAM.md](../docs/CODING-TEAM.md)  
+References: [REFERENCES.md](REFERENCES.md) · Templates: [HANDOFF-TEMPLATES.md](HANDOFF-TEMPLATES.md)
