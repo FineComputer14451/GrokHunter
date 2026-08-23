@@ -414,12 +414,7 @@ button {
     ),
     radial-gradient(
       ellipse 50% 40% at 88% 8%,
-      color-mix(in oklab, var(--kali) 14%, transparent),
-      transparent 55%
-    ),
-    radial-gradient(
-      ellipse 40% 35% at 58% 110%,
-      color-mix(in oklab, var(--nethunter) 12%, transparent),
+      color-mix(in oklab, var(--purple) 16%, transparent),
       transparent 55%
     );
 }
@@ -1475,6 +1470,10 @@ td:last-child {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--accent);
+}
+
+.stack-kicker-purple {
+  color: var(--purple);
 }
 
 .stack-card h3 {
