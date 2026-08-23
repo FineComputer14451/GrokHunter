@@ -1,0 +1,36 @@
+name: Patch OG meta
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch website/index.html share-card meta
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          p = Path('website/index.html')
+          t = p.read_text()
+          old = """    <meta property=\"og:image\" content=\"https://finecomputer14451.github.io/GrokHunter/assets/og.jpg\" />\n    <meta property=\"og:image:width\" content=\"1200\" />\n    <meta property=\"og:image:height\" content=\"630\" />\n    <meta name=\"twitter:card\" content=\"summary_large_image\" />\n    <meta name=\"twitter:title\" content=\"GrokHunter 1.0.9\" />\n    <meta name=\"twitter:description\" content=\"Rootless AI coding lab on unrooted Android. Ship code from your pocket.\" />\n    <meta name=\"twitter:image\" content=\"https://finecomputer14451.github.io/GrokHunter/assets/og.jpg\" />\n    <meta property=\"x:game:image\" content=\"https://finecomputer14451.github.io/GrokHunter/assets/x-banner.jpg\" />\n    <meta property=\"x:game:image:width\" content=\"1200\" />\n    <meta property=\"x:game:image:height\" content=\"264\" />\n"""
+          new = """    <meta property=\"og:image\" content=\"https://finecomputer14451.github.io/GrokHunter/assets/og.jpg\" />\n    <meta property=\"og:image:alt\" content=\"GrokHunter — Ship code from your pocket.\" />\n    <meta property=\"og:image:width\" content=\"1200\" />\n    <meta property=\"og:image:height\" content=\"630\" />\n    <meta name=\"twitter:card\" content=\"summary_large_image\" />\n    <meta name=\"twitter:title\" content=\"GrokHunter 1.0.9\" />\n    <meta name=\"twitter:description\" content=\"Rootless AI coding lab on unrooted Android. Ship code from your pocket.\" />\n    <meta name=\"twitter:image\" content=\"https://finecomputer14451.github.io/GrokHunter/assets/og.jpg\" />\n    <meta name=\"twitter:image:alt\" content=\"GrokHunter — Ship code from your pocket.\" />\n"""
+          if old not in t:
+              raise SystemExit('share-card meta pattern not found')
+          p.write_text(t.replace(old, new, 1))
+          PY
+      - name: Commit and push
+        run: |
+          git config user.name "Fine_Computer_4451"
+          git config user.email "119702188+FineComputer14451@users.noreply.github.com"
+          git add website/index.html
+          if git diff --cached --quiet; then
+            echo 'No index.html change'
+            exit 0
+          fi
+          git commit -m "Drop x:game meta; add og/twitter image alts."
+          git push
