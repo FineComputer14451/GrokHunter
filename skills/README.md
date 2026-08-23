@@ -4,7 +4,7 @@ These are **Grok Build skill definitions** (playbooks). Grok loads `SKILL.md` wh
 
 **Product version:** 1.0.9 · Grok Build ≥ 1.0.5 · Default model: **grok-4.6**
 
-Skills are **playbooks** (how to do a thing). Agents are **runtime specialists** (who does it). See [agents/README.md](../agents/README.md).
+Skills are **playbooks** (how to do a thing). Agents are **runtime specialists** (who does it). See [agents/README.md](../agents/README.md). Full agent / role / persona map: [roles/README.md](../roles/README.md) · [agents/REFERENCES.md](../agents/REFERENCES.md).
 
 ## Supporting files
 
@@ -77,17 +77,6 @@ grok inspect    # Skills: grokhunter, pair-programming, …
 ```
 
 Project-local: copy the same trees under `.grok/skills/`.
-
-## Mental model
-
-```
-skill   = playbook (how)     → skills/*/SKILL.md
-agent   = who (runtime)      → agents/*.md
-role    = capabilities       → roles/*.toml
-persona = tone / card shape  → personas/*.toml
-```
-
-`grokhunter skills install` deploys all four.
 
 ## Decision tree
 
