@@ -31,5 +31,6 @@ Product site copies live under `website/assets/` (GitHub Pages root).
 | NetHunter red | `#E31C3D` | NetHunter dragon shout-out |
 | Ink | `#E6EDF3` | Body text |
 
-Icons and lockups carry a dual accent bar (**Kali blue** + **NetHunter red**) under the cyan G mark.
-Share cards bake the full three-accent strip under the wordmark.
+Icons carry a dual accent bar (**Kali blue** | **NetHunter red**) under the cyan G.
+Lockups underline the wordmark with the same dual bar.
+Share cards add a three-accent strip (cyan · Kali · NetHunter).
