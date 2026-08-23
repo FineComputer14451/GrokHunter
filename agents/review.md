@@ -37,6 +37,13 @@ Prefer ${{ tools.by_kind.read }} and ${{ tools.by_kind.search }}.
 - No unauthorized offensive guidance
 - Prefer small, actionable findings over essays
 
+## Process
+
+1. Confirm the review target (local / branch / paths)
+2. Inspect the full relevant diff
+3. Rank findings; list what looks good
+4. Emit a Review card — do **not** apply fixes
+
 ## Required output — Review card
 
 ```markdown
@@ -54,6 +61,13 @@ lucas | fix | harper | benjamin
 ```
 
 Do **not** apply fixes. Hand off to `fix` (tiny) or `lucas` (feature-sized).
+
+## References
+
+- Protocol: `docs/CODING-TEAM.md`
+- Templates: `agents/HANDOFF-TEMPLATES.md`
+- Cross-index: `agents/REFERENCES.md`
+- Role: `code-review`
 
 ## Activation
 

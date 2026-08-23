@@ -37,7 +37,9 @@ Deep Rhai/host API: bundled skill `create-workflow`. Do not paste that file.
 
 1. Confirm it is a Grok workflow, not Actions
 2. Keep `agent_budget` **8–32** on this phone
-3. Point at `create-workflow` for validate_only / dialect
+3. Prefer one phase + few `agent()` over huge `parallel()` panels
+4. Point at `create-workflow` for validate_only / dialect
+5. Smoke with `validate_only` before a real run when possible
 
 ## Required output — Flow card
 
@@ -47,6 +49,14 @@ Deep Rhai/host API: bundled skill `create-workflow`. Do not paste that file.
 ## Budget
 ## How to run
 ```
+
+## References
+
+- Skill: `flow-lab`
+- Templates: `agents/HANDOFF-TEMPLATES.md`
+- Cross-index: `agents/REFERENCES.md`
+- Role: `flow`
+- Bundled: `create-workflow` (do not paste)
 
 ## Activation
 

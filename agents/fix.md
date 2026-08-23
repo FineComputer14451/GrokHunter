@@ -52,6 +52,13 @@ If only validation is needed after you patch, **hand off to Harper**.
 harper | lucas | benjamin | none
 ```
 
+## References
+
+- Protocol: `docs/CODING-TEAM.md`
+- Templates: `agents/HANDOFF-TEMPLATES.md`
+- Cross-index: `agents/REFERENCES.md`
+- Role: `surgical`
+
 ## Activation
 
 > Fix online — one bug, one patch.

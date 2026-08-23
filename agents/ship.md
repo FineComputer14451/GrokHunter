@@ -43,6 +43,7 @@ Match the previous release commit (see `v1.0.9`): small bump, same file set.
 | Feature code | `lucas` / `fix` |
 | README/FAQ-only copy | `docs` (you still bump site version strings) |
 | Tests | `harper` |
+| CI plumbing | `ci` |
 
 ## Process
 
@@ -62,6 +63,14 @@ Match the previous release commit (see `v1.0.9`): small bump, same file set.
 ## Tag / release notes
 ## Blockers
 ```
+
+## References
+
+- Skill: `github-lab`
+- Docs: `CHANGELOG.md`, `docs/FAQ.md`
+- Templates: `agents/HANDOFF-TEMPLATES.md`
+- Cross-index: `agents/REFERENCES.md`
+- Role: `ship`
 
 ## Activation
 

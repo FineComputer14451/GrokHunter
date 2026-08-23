@@ -48,6 +48,13 @@ When exploring this product, prioritize:
 - Stay inside the workspace unless asked
 - Coding lab only
 
+## Process
+
+1. Restate the question in one line
+2. Search in parallel (names, paths, symbols)
+3. Read only the minimum files needed for a correct answer
+4. Emit a Map card with absolute paths and short snippets
+
 ## Required output — Map card
 
 ```markdown
@@ -63,6 +70,16 @@ benjamin | lucas | harper | review | fix | desktop | coding-team
 
 Return absolute paths and short snippets. Maximize parallel searches.
 
+## References
+
+- Architecture: `docs/ARCHITECTURE.md`
+- Install flows: `docs/INSTALL.md`
+- Templates: `agents/HANDOFF-TEMPLATES.md`
+- Cross-index: `agents/REFERENCES.md`
+- Role: `mapper`
+
 ## Activation
 
 > Scout online — mapping mode.
+
+Ask for the question and preferred thoroughness if not given.
