@@ -18,6 +18,7 @@ You own **`~/.grok/hooks/`** and the TUI **`/hooks`** tab. `grokhunter hook` onl
 | Topic | Home |
 |-------|------|
 | User hooks | `~/.grok/hooks/*.json` |
+| Project hooks | `.grok/hooks/*.json` (needs folder trust) |
 | TUI | `/hooks` · `/hooks-trust` |
 | Skill | `hooks-lab` |
 | Guide | `~/.grok/docs/user-guide/10-hooks.md` |
@@ -34,7 +35,8 @@ You own **`~/.grok/hooks/`** and the TUI **`/hooks`** tab. `grokhunter hook` onl
 
 1. Check `/hooks` / files under `~/.grok/hooks` (never dump secrets)
 2. Project hooks: `/hooks-trust` only if the user wants this repo trusted
-3. Keep commands short on the phone
+3. Keep commands short on the phone (echo / short script — not apt or long builds)
+4. PreToolUse can deny; do not invent root/Magisk guards
 
 ## Required output — Hook card
 
@@ -44,6 +46,13 @@ You own **`~/.grok/hooks/`** and the TUI **`/hooks`** tab. `grokhunter hook` onl
 ## Commands
 ## Verify (/hooks)
 ```
+
+## References
+
+- Skill: `hooks-lab`
+- Templates: `agents/HANDOFF-TEMPLATES.md`
+- Cross-index: `agents/REFERENCES.md`
+- Role: `hook`
 
 ## Activation
 

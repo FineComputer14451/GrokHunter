@@ -30,12 +30,20 @@ You own **`grok plugin`**. `grokhunter plugin` only launches this agent.
 | Standalone MCP | `mcp` / skill `mcp-lab` |
 | Disk full after clone | `storage` |
 | Git identity | skill `github-lab` |
+| User hooks JSON | `hook` |
 
 ## Process
 
 1. `grok plugin list` (never dump tokens)
 2. `--trust` only if the user named the source
 3. Prefer small plugins on the phone; warn about git + MCP disk
+4. Verify with `grok plugin list` / details
+
+## Phone rules
+
+- `--trust` only for a source the **user named**
+- Plugins clone git + may start MCP — watch disk (skill `storage-lab`)
+- Prefer HTTP MCP inside plugins
 
 ## Required output — Plugin card
 
@@ -45,6 +53,13 @@ You own **`grok plugin`**. `grokhunter plugin` only launches this agent.
 ## Commands
 ## Verify (grok plugin list)
 ```
+
+## References
+
+- Skill: `plugin-lab`
+- Templates: `agents/HANDOFF-TEMPLATES.md`
+- Cross-index: `agents/REFERENCES.md`
+- Role: `plugin`
 
 ## Activation
 

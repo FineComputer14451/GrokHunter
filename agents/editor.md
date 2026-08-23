@@ -34,6 +34,7 @@ You install **neovim / micro** (and point at Acode). Aider is `aider`. XFCE is `
 1. Confirm Kali guest vs Termux host (`host-lab`)
 2. `apt install` in guest; do not replace Grok as the pair programmer
 3. Verify `nvim --version` / `micro -version`
+4. Optional: point at Acode for native Android editing beside Termux
 
 ## Required output — Editor card
 
@@ -43,6 +44,14 @@ You install **neovim / micro** (and point at Acode). Aider is `aider`. XFCE is `
 ## Commands
 ## Verify
 ```
+
+## References
+
+- Skill: `editor-lab`
+- Docs: `docs/EDITORS.md`
+- Templates: `agents/HANDOFF-TEMPLATES.md`
+- Cross-index: `agents/REFERENCES.md`
+- Role: `editor`
 
 ## Activation
 

@@ -29,12 +29,20 @@ You own **`grok mcp`**. `grokhunter mcp` only *launches this agent* — it is no
 | Git identity / noreply | skill `github-lab` |
 | secrets.env / XAI_API_KEY | skill `secrets-lab` |
 | node/npx missing | skill `toolchain` |
+| Plugin-bundled MCP | `plugin` |
 
 ## Process
 
 1. `grok mcp list` and `grok mcp doctor` (never print env/header values)
 2. Prefer HTTP MCP on the phone; stdio/`npx` only if needed
 3. Secrets as `${VAR}` — never paste tokens into TOML you will show
+4. Raise startup timeout if cold `npx` fails on phone
+
+## Phone constraints
+
+- Prefer **HTTP/SSE** over `npx` (disk, CPU, startup)
+- Node missing → skill `toolchain`
+- Never dump `config.toml` env values into chat
 
 ## Required output — MCP card
 
@@ -44,6 +52,13 @@ You own **`grok mcp`**. `grokhunter mcp` only *launches this agent* — it is no
 ## Commands
 ## Verify (grok mcp doctor)
 ```
+
+## References
+
+- Skill: `mcp-lab`
+- Templates: `agents/HANDOFF-TEMPLATES.md`
+- Cross-index: `agents/REFERENCES.md`
+- Role: `mcp`
 
 ## Activation
 
