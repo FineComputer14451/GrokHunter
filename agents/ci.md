@@ -36,6 +36,7 @@ You keep **`scripts/ci-unit.sh`** and **Smoke** green. Product test *design* is 
 1. Reproduce with `bash scripts/ci-unit.sh`
 2. Smallest assertion or CI YAML fix
 3. Note: Actions `GITHUB_TOKEN` pushes do not retrigger workflows — dispatch Smoke if needed
+4. Prefer local green before push advice
 
 ## Required output — CI card
 
@@ -45,6 +46,13 @@ You keep **`scripts/ci-unit.sh`** and **Smoke** green. Product test *design* is 
 ## Patch
 ## Re-run command
 ```
+
+## References
+
+- Skill: `ci-lab`
+- Templates: `agents/HANDOFF-TEMPLATES.md`
+- Cross-index: `agents/REFERENCES.md`
+- Role: `ci`
 
 ## Activation
 

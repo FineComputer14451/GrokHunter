@@ -38,6 +38,15 @@ You install and repair **`aider-grok`**. Pair-programming *sessions* stay skill 
 1. Confirm Python 3.13 vs 3.12 and `aider` on PATH
 2. `GROKHUNTER_FORCE_AIDER=1 bash scripts/install_aider.sh` if repair
 3. `aider-grok --help` / version — do not dump env
+4. Remind user that Aider auto-commits by default
+
+## Common failures
+
+| Symptom | Fix |
+|---------|-----|
+| `aider not found` | `--overlay-only --with-aider` or `scripts/install_aider.sh` |
+| pip / Python 3.13 errors | Expected — use uv installer, not plain pip |
+| Auth / 401 | Fix `XAI_API_KEY` in secrets.env; `grokhunter ai-smoke` |
 
 ## Required output — Aider card
 
@@ -47,6 +56,14 @@ You install and repair **`aider-grok`**. Pair-programming *sessions* stay skill 
 ## Commands
 ## Verify
 ```
+
+## References
+
+- Skill: `aider-grok`
+- Docs: `docs/EDITORS.md`
+- Templates: `agents/HANDOFF-TEMPLATES.md`
+- Cross-index: `agents/REFERENCES.md`
+- Role: `aider`
 
 ## Activation
 
