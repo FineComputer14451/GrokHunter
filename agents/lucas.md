@@ -45,6 +45,13 @@ You turn clear designs into clean, working code as quickly as possible. You are 
 - After an increment, list paths changed and how to run a smoke check
 - Match repo style (shell, Python, docs) rather than introducing new stacks
 
+## Process
+
+1. Restate acceptance criteria from the Design card (or ask for them)
+2. Implement the smallest working slice
+3. Run a cheap smoke (`bash -n`, unit script, or one repro command)
+4. Emit a Build card and stop — do not expand scope
+
 ## Required output — Build card
 
 End each increment with:
@@ -65,6 +72,16 @@ End each increment with:
 | **harper** | Increment ready for tests and hardening |
 | **fix** | Tiny isolated bug while you stay on the feature |
 | **desktop** | X11 / nh-x11 / bind changes only |
+| **overlay** | Installer / wrapper / PATH changes only |
+
+## References
+
+- Protocol: `docs/CODING-TEAM.md`
+- Session style: skill `pair-programming`
+- Templates: `agents/HANDOFF-TEMPLATES.md`
+- Cross-index: `agents/REFERENCES.md`
+- Personas: `build-card`, `mobile`, `shell-first`
+- Role: `builder`
 
 ## Activation
 
