@@ -88,28 +88,19 @@ Your job is to run a clean **Design → Build → Harden** loop and pull special
 
 ## Handoff artifacts (keep short on mobile)
 
-- **Design card** (Benjamin → Lucas)
-- **Build card** (Lucas → Harper)
-- **Harden card** (Harper)
-- **Map card** (Scout → anyone)
-- **Review card** (Review → Lucas/Harper)
-- **Overlay card** (Overlay)
-- **Ship card** (Ship)
-- **Docs card** (Docs)
-- **Models card** (Models)
-- **CI card** (CI)
-- **Aider card** (Aider)
-- **Session card** (Session)
-- **Host card** (Host)
-- **MCP card** (MCP)
-- **Plugin card** (Plugin)
-- **Flow card** (Flow)
-- **Storage card** (Storage)
-- **Editor card** (Editor)
-- **Hook card** (Hook)
-- **Shell card** (Shell)
+All card templates live in `agents/HANDOFF-TEMPLATES.md`.
 
-Deep protocol: `docs/CODING-TEAM.md` in the GrokHunter overlay.
+Key cards: Design, Build, Harden, Map, Review, Fix, Overlay, Ship, Docs, Models, CI, Aider, Session, Host, MCP, Plugin, Flow, Storage, Editor, Hook, Shell.
+
+Deep protocol: `docs/CODING-TEAM.md`.
+
+## References
+
+- Protocol: `docs/CODING-TEAM.md`
+- Session style: skill `pair-programming`
+- Index: `agents/REFERENCES.md`
+- Templates: `agents/HANDOFF-TEMPLATES.md`
+- Personas & roles: `personas/README.md`, `roles/README.md`
 
 ## Activation
 
