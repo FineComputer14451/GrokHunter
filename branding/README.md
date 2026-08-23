@@ -34,3 +34,18 @@ Product site copies live under `website/assets/` (GitHub Pages root).
 Icons carry a dual accent bar (**Kali blue** | **NetHunter red**) under the cyan G.
 Lockups underline the wordmark with the same dual bar.
 Share cards add a three-accent strip (cyan · Kali · NetHunter).
+
+---
+
+## Geometric Draft (in review)
+
+A new geometric low-poly wolf-fox mascot direction is available under:
+
+**`branding/geometric-draft/`**
+
+- Cyan / Purple split
+- Red eyes
+- No crest
+- Full favicon set + lockups + website assets prepared
+
+Review the draft before promoting any assets to canonical `branding/` or `website/assets/`.
