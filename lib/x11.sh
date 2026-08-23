@@ -1,7 +1,12 @@
 #!/data/data/com.termux/files/usr/bin/bash
 # GrokHunter — Termux:X11 low-latency desktop + proot bind optimizers
 
-GROKHUNTER_BINDS_MARK="# grokhunter-optimized-binds"
+# Marker base must remain "grokhunter-optimized-binds" (ci-unit greps it).
+# Version suffix lets us detect stale blocks and re-patch safely.
+GROKHUNTER_BINDS_MARK_BASE="# grokhunter-optimized-binds"
+GROKHUNTER_BINDS_VERSION="2"
+GROKHUNTER_BINDS_MARK="${GROKHUNTER_BINDS_MARK_BASE} v${GROKHUNTER_BINDS_VERSION}"
+
 TERMUX_FILES_DIR="${TERMUX_FILES_DIR:-/data/data/com.termux/files}"
 TERMUX_HOME="${TERMUX_FILES_DIR}/home"
 TERMUX_TMP="${TERMUX_FILES_DIR}/usr/tmp"
@@ -14,9 +19,26 @@ _ensure_workspace() {
   mkdir -p "${TERMUX_TMP}" 2>/dev/null || true
 }
 
-# Extra -b lines whose host path exists (missing /sdcard must not break nethunter).
+# Optional user extra binds: one "-b host[:guest]" per line (comments/# ok).
+# Checked in Termux home first, then current HOME.
+_gh_user_extra_binds_file() {
+  local f
+  for f in \
+    "${TERMUX_HOME}/.config/grokhunter/extra-binds" \
+    "${HOME:-}/.config/grokhunter/extra-binds"; do
+    if [[ -n "${f}" && -r "${f}" ]]; then
+      printf '%s\n' "${f}"
+      return 0
+    fi
+  done
+  return 1
+}
+
+# Desired -b lines whose host path exists (missing /sdcard must not break nethunter).
+# Includes optional user lines from extra-binds config.
 _gh_extra_bind_lines() {
   local -a lines=()
+  local user_file line host
   _ensure_workspace
   if [[ -d "${TERMUX_TMP}" ]]; then
     lines+=("-b ${TERMUX_TMP}:/tmp")
@@ -35,28 +57,129 @@ _gh_extra_bind_lines() {
   if [[ -d "${GROK_WORKSPACE}" ]]; then
     lines+=("-b ${GROK_WORKSPACE}:/workspace")
   fi
+  # User extras (host path must exist; guest optional)
+  if user_file="$(_gh_user_extra_binds_file)"; then
+    while IFS= read -r line || [[ -n "${line}" ]]; do
+      line="${line%%#*}"
+      line="${line#"${line%%[![:space:]]*}"}"  # ltrim
+      line="${line%"${line##*[![:space:]]}"}"  # rtrim
+      [[ -n "${line}" ]] || continue
+      case "${line}" in
+        -b\ *) ;;
+        *) line="-b ${line}" ;;
+      esac
+      host="${line#-b }"
+      host="${host%%:*}"
+      host="${host%%[[:space:]]*}"
+      if [[ -e "${host}" || -d "${host}" ]]; then
+        lines+=("${line}")
+      fi
+    done < "${user_file}"
+  fi
   if [[ ${#lines[@]} -gt 0 ]]; then
     printf '%s\n' "${lines[@]}"
   fi
 }
 
-# Pure-bash atomic patch: insert extra proot binds after the first "-b /dev" line.
-# Avoids multi-line sed -i (brittle across sed dialects).
+# True if file already has current versioned marker.
+_gh_binds_are_current() {
+  local f="$1"
+  [[ -f "${f}" ]] || return 1
+  grep -qF "${GROKHUNTER_BINDS_MARK}" "${f}" 2>/dev/null
+}
+
+# True if any grokhunter bind marker is present (any version).
+_gh_binds_have_any_mark() {
+  local f="$1"
+  [[ -f "${f}" ]] || return 1
+  grep -qF "${GROKHUNTER_BINDS_MARK_BASE}" "${f}" 2>/dev/null
+}
+
+# Find a line that is a good insertion anchor. Prefer -b /dev, then -b /proc,
+# then the first -b line. Prints 1-based line number or returns 1.
+_gh_find_bind_anchor() {
+  local f="$1"
+  local line n=0
+  local first_b=0 dev_n=0 proc_n=0
+  while IFS= read -r line || [[ -n "${line}" ]]; do
+    n=$((n + 1))
+    case "${line}" in
+      *"-b /dev"*|*-b\ /dev\ *|*-b\ /dev) [[ ${dev_n} -eq 0 ]] && dev_n=${n} ;;
+    esac
+    case "${line}" in
+      *"-b /proc"*|*-b\ /proc\ *|*-b\ /proc) [[ ${proc_n} -eq 0 ]] && proc_n=${n} ;;
+    esac
+    if [[ ${first_b} -eq 0 && "${line}" == *"-b "* ]]; then
+      first_b=${n}
+    fi
+  done < "${f}"
+  if [[ ${dev_n} -gt 0 ]]; then
+    printf '%s\n' "${dev_n}"
+    return 0
+  fi
+  if [[ ${proc_n} -gt 0 ]]; then
+    printf '%s\n' "${proc_n}"
+    return 0
+  fi
+  if [[ ${first_b} -gt 0 ]]; then
+    printf '%s\n' "${first_b}"
+    return 0
+  fi
+  return 1
+}
+
+# Strip any existing GrokHunter bind block (marker + following indented -b lines).
+_gh_strip_bind_block() {
+  local f="$1"
+  local line in_block=0
+  local -a out=()
+  while IFS= read -r line || [[ -n "${line}" ]]; do
+    if [[ "${line}" == *"${GROKHUNTER_BINDS_MARK_BASE}"* ]]; then
+      in_block=1
+      continue
+    fi
+    if [[ ${in_block} -eq 1 ]]; then
+      # Continue skipping while line looks like an inserted bind continuation
+      case "${line}" in
+        *"-b "*|""|[[:space:]]*)
+          # blank or bind-ish → still in block if indented or empty
+          if [[ "${line}" == *"-b "* ]] || [[ -z "${line//[[:space:]]/}" ]]; then
+            continue
+          fi
+          # non-bind content ends the block
+          in_block=0
+          ;;
+        *)
+          in_block=0
+          ;;
+      esac
+    fi
+    if [[ ${in_block} -eq 0 ]]; then
+      out+=("${line}")
+    fi
+  done < "${f}"
+  printf '%s\n' "${out[@]}"
+}
+
+# Pure-bash atomic patch: insert extra proot binds after an anchor line.
+# Usage: _patch_launcher_binds <file> [force]
+# force=1 rewrites even when current version marker is present.
 _patch_launcher_binds() {
   local f="$1"
-  local line found=0 tmp
-  local -a out=()
+  local force="${2:-0}"
+  local line found=0 tmp anchor_n n=0
+  local -a out=() extra=()
   local b
 
   [[ -f "${f}" ]] || return 0
 
-  if grep -q "${GROKHUNTER_BINDS_MARK}" "${f}" 2>/dev/null; then
-    msg -ts "${f##*/}: binds OK"
+  if [[ "${force}" != "1" ]] && _gh_binds_are_current "${f}"; then
+    msg -ts "${f##*/}: binds OK (v${GROKHUNTER_BINDS_VERSION})"
     return 0
   fi
 
-  if ! grep -q -- "-b /dev" "${f}"; then
-    msg -tw "Could not auto-patch ${f##*/} (no '-b /dev' anchor found)"
+  if ! anchor_n="$(_gh_find_bind_anchor "${f}")"; then
+    msg -tw "Could not auto-patch ${f##*/} (no '-b' anchor found)"
     return 1
   fi
 
@@ -65,13 +188,30 @@ _patch_launcher_binds() {
   fi
 
   _ensure_workspace
-
-  local -a extra=()
   mapfile -t extra < <(_gh_extra_bind_lines)
 
-  while IFS= read -r line || [[ -n "${line}" ]]; do
+  # Rebuild: drop stale block if any, then insert current block after anchor.
+  local -a base=()
+  if _gh_binds_have_any_mark "${f}"; then
+    mapfile -t base < <(_gh_strip_bind_block "${f}")
+    # Recompute anchor after strip
+    tmp="$(mktemp)"
+    printf '%s\n' "${base[@]}" > "${tmp}"
+    if ! anchor_n="$(_gh_find_bind_anchor "${tmp}")"; then
+      rm -f "${tmp}"
+      msg -tw "Could not auto-patch ${f##*/} (anchor lost after strip)"
+      return 1
+    fi
+    rm -f "${tmp}"
+  else
+    mapfile -t base < "${f}"
+  fi
+
+  n=0
+  for line in "${base[@]}"; do
+    n=$((n + 1))
     out+=("${line}")
-    if [[ ${found} -eq 0 && "${line}" == *"-b /dev"* ]]; then
+    if [[ ${found} -eq 0 && ${n} -eq ${anchor_n} ]]; then
       found=1
       out+=("${GROKHUNTER_BINDS_MARK}")
       for b in "${extra[@]}"; do
@@ -79,7 +219,7 @@ _patch_launcher_binds() {
         out+=("        ${b} \\")
       done
     fi
-  done < "${f}"
+  done
 
   if [[ ${found} -eq 0 ]]; then
     msg -tw "Could not auto-patch ${f##*/} (anchor not applied)"
@@ -90,7 +230,6 @@ _patch_launcher_binds() {
     msg -tw "mktemp failed while patching ${f##*/}"
     return 1
   }
-  # Preserve final newline
   printf '%s\n' "${out[@]}" > "${tmp}" || {
     rm -f "${tmp}"
     msg -tw "Failed writing temp patch for ${f##*/}"
@@ -103,20 +242,73 @@ _patch_launcher_binds() {
   fi
   chmod --reference="${f}.grokhunter.bak" "${f}" 2>/dev/null || chmod 755 "${f}" 2>/dev/null || true
 
-  if grep -q "${GROKHUNTER_BINDS_MARK}" "${f}" 2>/dev/null; then
-    msg -ts "Patched ${f##*/} with optimized binds"
+  if _gh_binds_are_current "${f}"; then
+    msg -ts "Patched ${f##*/} with optimized binds (v${GROKHUNTER_BINDS_VERSION})"
     return 0
   fi
 
   msg -tw "Could not auto-patch ${f##*/}"
   msg -a "  Backup: ${f}.grokhunter.bak (if created)"
   msg -a "  Manually add after '-b /dev' (only if the host path exists):"
-  local b
   while IFS= read -r b; do
     [[ -n "${b}" ]] || continue
     msg -a "    ${b} \\"
   done < <(_gh_extra_bind_lines)
   return 1
+}
+
+# Status: show desired vs applied binds for nethunter/nh launchers.
+show_proot_binds() {
+  local launcher="${TERMUX_FILES_DIR}/usr/bin/nethunter"
+  local shortcut="${TERMUX_FILES_DIR}/usr/bin/nh"
+  local f b user_file
+  msg -t "GrokHunter proot binds"
+  msg -a "  marker: ${GROKHUNTER_BINDS_MARK}"
+  if user_file="$(_gh_user_extra_binds_file)"; then
+    msg -a "  user extras: ${user_file}"
+  else
+    msg -a "  user extras: (none — optional ~/.config/grokhunter/extra-binds)"
+  fi
+  echo
+  msg -a "  Desired (host path must exist):"
+  while IFS= read -r b; do
+    [[ -n "${b}" ]] || continue
+    msg -a "    ${b}"
+  done < <(_gh_extra_bind_lines)
+  echo
+  for f in "${launcher}" "${shortcut}"; do
+    if [[ ! -f "${f}" ]]; then
+      msg -a "  ${f##*/}: missing"
+      continue
+    fi
+    if _gh_binds_are_current "${f}"; then
+      msg -ts "  ${f##*/}: current (v${GROKHUNTER_BINDS_VERSION})"
+    elif _gh_binds_have_any_mark "${f}"; then
+      msg -tw "  ${f##*/}: stale marker (run repair_proot_binds)"
+    else
+      msg -tw "  ${f##*/}: not patched"
+    fi
+    grep -E 'grokhunter-optimized-binds|-b .*(/tmp|/sdcard|/downloads|/termux-home|/workspace)' "${f}" 2>/dev/null \
+      | sed 's/^/    /' || true
+  done
+}
+
+# Force re-apply optimized binds on both launchers.
+repair_proot_binds() {
+  msg -t "Repairing proot binds"
+  _ensure_workspace
+  local launcher="${TERMUX_FILES_DIR}/usr/bin/nethunter"
+  local shortcut="${TERMUX_FILES_DIR}/usr/bin/nh"
+  local f rc=0
+  for f in "${launcher}" "${shortcut}"; do
+    if [[ ! -f "${f}" ]]; then
+      msg -a "  skip missing ${f##*/}"
+      continue
+    fi
+    _patch_launcher_binds "${f}" 1 || rc=1
+  done
+  show_proot_binds
+  return "${rc}"
 }
 
 save_x11_session() {
@@ -280,5 +472,7 @@ optimize_proot_binds() {
     _patch_launcher_binds "${f}" || true
   done
   msg -a "  Binds (existing host paths only): /tmp, /sdcard, /downloads, /termux-home, /workspace"
+  msg -a "  User extras: ~/.config/grokhunter/extra-binds (one -b line per path)"
+  msg -a "  Status: show_proot_binds · Repair: repair_proot_binds"
   msg -a "  Tip: keep rootfs on internal storage; see docs/PROOT.md"
 }
