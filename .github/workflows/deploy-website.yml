@@ -30,28 +30,55 @@ jobs:
       - name: Prepare Pages artifact
         run: |
           set -euo pipefail
+
           mkdir -p _site/assets
+
           # Decode raster brand kit shipped as base64 packs/sidecars (binary-safe)
           if [[ -f branding/decode_assets.py ]]; then
             python3 branding/decode_assets.py
           fi
+
           # Static site root = website/ (no build step)
           cp -a website/. _site/
-          # Canonical brand files from branding/ (overwrite if present)
+
+          # Canonical brand files from branding/ — only copy what exists
+          # (avoids hard-fail when optional assets like palette.jpg are absent)
           if [[ -d branding ]]; then
-            cp -f branding/favicon.png branding/favicon.svg branding/favicon-32.png \
-              branding/logo-horizontal.png branding/icon.png branding/icon-256.png \
-              branding/apple-touch-icon.png branding/og.jpg branding/palette.jpg \
-              _site/assets/
-            if [[ -f branding/x-banner.jpg ]]; then
-              cp -f branding/x-banner.jpg _site/assets/
-            fi
+            declare -a brand_assets=(
+              favicon.png
+              favicon.svg
+              favicon-32.png
+              logo-horizontal.png
+              icon.png
+              icon-256.png
+              apple-touch-icon.png
+              og.jpg
+              palette.jpg
+              x-banner.jpg
+              wolf-side-transparent.png
+            )
+            for f in "${brand_assets[@]}"; do
+              if [[ -f "branding/${f}" ]]; then
+                cp -f "branding/${f}" _site/assets/
+                echo "  + branding/${f}"
+              else
+                echo "  · skipped (missing): branding/${f}"
+              fi
+            done
           fi
+
           # Avoid Jekyll processing on Pages
           touch _site/.nojekyll
+
           # Drop internal docs from public site
           rm -f _site/README.md
-          ls -la _site _site/assets
+
+          echo
+          echo "=== _site layout ==="
+          ls -la _site
+          echo
+          echo "=== _site/assets ==="
+          ls -la _site/assets
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
