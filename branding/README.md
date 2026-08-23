@@ -1,22 +1,25 @@
 # GrokHunter brand assets
 
 Canonical artwork for README, GitHub Pages, and the XFCE menu.
-Drawn as real PNG/SVG (not photographic AI lockups).
+
+## Current direction — Geometric Wolf (2026-08)
+
+Low-poly geometric wolf / fox mascot:
+
+- Cyan → purple gradient split
+- Glowing red eyes
+- Clean, modern, no crest
+- Full set: side profile, front app icon, horizontal lockups, social cards
 
 | File | Use |
 |------|-----|
-| `mark.svg` / `favicon.svg` | Source monogram |
-| `icon.png` | 512×512 app / GitHub / README mark |
-| `icon-256.png` | XFCE / freedesktop menu (`Icon=grokhunter`) |
-| `favicon.png` | Large tab/app icon |
-| `favicon-32.png` | Site tab + header (32×32) |
+| `logo-horizontal.png` | Primary lockup (README + site hero) |
+| `icon.png` / `favicon.png` | 256–512 px app / GitHub mark |
+| `favicon-32.png` | Site tab + header |
 | `apple-touch-icon.png` | 180×180 home-screen |
-| `logo-horizontal.png` | Site hero lockup (transparent) |
-| `logo-terminal.png` | Docs / CLI-adjacent lockup |
 | `og.jpg` | Open Graph / Twitter link preview (1200×630) |
-| `x-banner.jpg` | X profile header (50:11, 1200×264; upload in X settings, not HTML) |
-| `palette.jpg` | Brand color plate (guide) |
-| `banner.txt` | ASCII banner (installer / MOTD companion) |
+| `x-banner.jpg` | X profile header |
+| `wolf-side-transparent.png` | Side profile (transparent) |
 
 Product site copies live under `website/assets/` (GitHub Pages root).
 
@@ -26,25 +29,18 @@ Product site copies live under `website/assets/` (GitHub Pages root).
 |-------|-----|------|
 | Charcoal | `#0D1117` | Backgrounds |
 | Grok cyan | `#00E5C7` | Primary accent · mark · CTAs |
-| Kali blue | `#2777FF` | Kali Linux shout-out |
-| NetHunter red | `#E31C3D` | NetHunter dragon shout-out |
+| Purple | `#9B5DE5` / `#7B2CBF` | Gradient secondary |
+| NetHunter red | `#E31C3D` | Eyes + accent |
+| Kali blue | `#2777FF` | Kali shout-out |
 | Ink | `#E6EDF3` | Body text |
 
-Icons carry a dual accent bar (**Kali blue** | **NetHunter red**) under the cyan G.
-Lockups underline the wordmark with the same dual bar.
-Share cards add a three-accent strip (cyan · Kali · NetHunter).
+## Previous monogram
+
+The earlier geometric-G monogram (`mark.svg` / `favicon.svg`) remains available for fallback or minimal contexts.
 
 ---
 
-## Geometric Draft (in review)
+## Notes
 
-A new geometric low-poly wolf-fox mascot direction is available under:
-
-**`branding/geometric-draft/`**
-
-- Cyan / Purple split
-- Red eyes
-- No crest
-- Full favicon set + lockups + website assets prepared
-
-Review the draft before promoting any assets to canonical `branding/` or `website/assets/`.
+- Drop new geometric assets into both `branding/` and `website/assets/`.
+- After updating binary assets, push and let the Deploy website Action refresh the live site.
