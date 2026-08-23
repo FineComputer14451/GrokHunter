@@ -16,8 +16,20 @@ Drawn as real PNG/SVG (not photographic AI lockups).
 | `og.jpg` | Open Graph / Twitter link preview (1200×630) |
 | `social-preview.jpg` | Same art as `og.jpg` (alias) |
 | `x-banner.jpg` | X feed card (50:11, 1200×264) |
+| `palette.jpg` | Brand color plate (guide) |
 | `banner.txt` | ASCII banner (installer / MOTD companion) |
 
 Product site copies live under `website/assets/` (GitHub Pages root).
 
-Colors: charcoal `#0D1117` · Grok cyan `#00E5C7` · Kali blue `#2777FF` · NetHunter red `#E31C3D` · text `#E6EDF3`.
+## Color scheme
+
+| Token | Hex | Role |
+|-------|-----|------|
+| Charcoal | `#0D1117` | Backgrounds |
+| Grok cyan | `#00E5C7` | Primary accent · mark · CTAs |
+| Kali blue | `#2777FF` | Kali Linux shout-out |
+| NetHunter red | `#E31C3D` | NetHunter dragon shout-out |
+| Ink | `#E6EDF3` | Body text |
+
+Icons and lockups carry a dual accent bar (**Kali blue** + **NetHunter red**) under the cyan G mark.
+Share cards bake the full three-accent strip under the wordmark.
