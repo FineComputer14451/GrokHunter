@@ -39,3 +39,18 @@ Workflow: [`.github/workflows/deploy-website.yml`](../.github/workflows/deploy-w
 3. URL: https://finecomputer14451.github.io/GrokHunter/
 
 No Node/npm build — pure static HTML/CSS/JS. Brand tokens: `styles.css` (Grok cyan `#00E5C7` · Kali blue `#2777FF` · NetHunter red `#E31C3D`). Assets: `website/assets/` (favicon, lockup, social preview).
+
+---
+
+## Geometric Branding Draft
+
+A new geometric low-poly wolf-fox mascot direction is under review:
+
+→ See [`branding/geometric-draft/`](../branding/geometric-draft/)
+
+- Cyan / Purple split
+- Red eyes
+- No crest
+- Full favicon + lockup + hero/OG assets prepared
+
+Do not replace `website/assets/` until the draft is approved.
