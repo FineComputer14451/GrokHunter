@@ -1,0 +1,98 @@
+# Agents — References Index
+
+Canonical cross-links for every GrokHunter agent. Keep agent files lean; put shared maps here.
+
+**Product version:** 1.0.9 · Overlay cache: 2026.2.18 · Grok Build: ≥ 1.0.5 · Default model: grok-4.6
+
+## Core documents
+
+| Doc | Use |
+|-----|-----|
+| `AGENTS.md` | Project rules for any agent session |
+| `docs/CODING-TEAM.md` | Full Design → Build → Harden protocol + handoff cards |
+| `docs/ARCHITECTURE.md` | Overlay layers, PATH, proot model |
+| `docs/INSTALL.md` | Install flags, overlay-only, one-liner |
+| `docs/TROUBLESHOOTING.md` | PATH, doctor, identity, X11 |
+| `docs/FAQ.md` | Short answers (identity, overlay, models) |
+| `docs/GROK-BUILD-1.0.md` | 1.0.5 compatibility |
+| `docs/GROK-46.md` | Model catalog / pickers |
+| `docs/EDITORS.md` | Aider, nvim, micro |
+| `docs/SHELL.md` | profile.sh, completions, aliases |
+| `docs/PROOT.md` | Binds, /tmp, storage placement |
+| `docs/X11-PERFORMANCE.md` | Desktop lag / black screen |
+| `CREDITS.md` | Four pillars — never weaken |
+
+## Skills (playbooks)
+
+| Skill | Paired agent(s) | Notes |
+|-------|-----------------|-------|
+| `grokhunter` | (orchestrator) | Install, doctor, PATH, models, skills CLI |
+| `pair-programming` | coding-team, lucas | Session style for Grok 4.6 |
+| `aider-grok` | aider | uv + Python 3.12 helper |
+| `x11-desktop` | desktop | Black screen / lag triage |
+| `github-lab` | ship, (identity) | `git-identity` playbook |
+| `toolchain` | aider, editor, storage | apt, compilers, space |
+| `grok-models` | models | V9 pickers / profile |
+| `ci-lab` | ci | ci-unit + Smoke |
+| `secrets-lab` | aider, mcp | secrets.env mode 600 |
+| `session-lab` | session | tmux + `grok --resume` |
+| `host-lab` | host | Termux vs Kali detection |
+| `mcp-lab` | mcp | `grok mcp` |
+| `plugin-lab` | plugin | `grok plugin` |
+| `flow-lab` | flow | `.rhai` workflows |
+| `storage-lab` | storage | df / cache / --mini |
+| `editor-lab` | editor | nvim / micro |
+| `hooks-lab` | hook | `~/.grok/hooks` |
+| `shell-lab` | shell | profile + completions |
+| `nethunter-recon` | — | Optional, authorized scope only |
+
+## Agent → skill / docs quick map
+
+| Agent | Primary skill | Key docs |
+|-------|---------------|----------|
+| benjamin | — | CODING-TEAM, ARCHITECTURE |
+| lucas | pair-programming | CODING-TEAM |
+| harper | — | CODING-TEAM, ci-unit |
+| coding-team | pair-programming | CODING-TEAM |
+| scout | — | ARCHITECTURE, INSTALL |
+| review | — | CODING-TEAM |
+| fix | — | CODING-TEAM |
+| desktop | x11-desktop | X11-PERFORMANCE, PROOT |
+| overlay | grokhunter | INSTALL, TROUBLESHOOTING |
+| ship | github-lab | CHANGELOG, VERSION, FAQ |
+| docs | — | README, FAQ, website |
+| models | grok-models | GROK-46, GROK-BUILD-1.0 |
+| ci | ci-lab | smoke.yml, ci-unit.sh |
+| aider | aider-grok | EDITORS |
+| session | session-lab | SHELL |
+| host | host-lab | PROOT, SHELL |
+| mcp | mcp-lab | user-guide/07-mcp-servers |
+| plugin | plugin-lab | user-guide/09-plugins |
+| flow | flow-lab | create-workflow (bundled) |
+| storage | storage-lab | PROOT, INSTALL |
+| editor | editor-lab | EDITORS |
+| hook | hooks-lab | user-guide/10-hooks |
+| shell | shell-lab | SHELL |
+
+## Shared hard rules (all agents)
+
+- Never log, echo, or commit `XAI_API_KEY`, tokens, or private keys
+- Prefer small, reversible changes; confirm before destructive ops
+- Do not claim affiliation with xAI, Offensive Security, Termux, or jorexdeveloper
+- Always credit the four pillars (CREDITS.md / `grokhunter credits`)
+- Coding lab only — not a platform for unauthorized offensive activity
+- Respect rootless / proot limits; do not invent Magisk, HID, or firmware capabilities
+- Mobile-first output: short, paste-ready commands
+
+## Personas & roles
+
+See `personas/README.md` and `roles/README.md`.  
+Mental model:
+
+```
+agent  = who          (benjamin, lucas, overlay, …)
+role   = capabilities (architect, builder, overlay, …)
+persona = tone/cards  (mobile, design-card, release-card, …)
+```
+
+Install both via `grokhunter skills install`.
