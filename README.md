@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="branding/icon.png" alt="GrokHunter" width="160" height="160">
+  <img src="branding/favicon.svg" alt="GrokHunter" width="160" height="160">
 </p>
 
 <h1 align="center">GrokHunter</h1>
@@ -43,7 +43,7 @@ cd GrokHunter && bash install.sh
 ### Recommended full stack
 
 ```bash
-bash install.sh --full --de xfce --browser chromium \
+bash install.sh --full --de xfce --browser chromium \\
   --with-grok --with-x11 --with-aider --with-v9-models
 ```
 
