@@ -4,6 +4,8 @@ Canonical cross-links for every GrokHunter agent. Keep agent files lean; put sha
 
 **Product version:** 1.0.9 · Overlay cache: 2026.2.18 · Grok Build: ≥ 1.0.5 · Default model: grok-4.6
 
+Paired skill index: [skills/REFERENCES.md](../skills/REFERENCES.md) · [skills/README.md](../skills/README.md) · [skills/PLAYBOOKS.md](../skills/PLAYBOOKS.md)
+
 ## Core documents
 
 | Doc | Use |
@@ -45,6 +47,8 @@ Canonical cross-links for every GrokHunter agent. Keep agent files lean; put sha
 | `hooks-lab` | hook | `~/.grok/hooks` |
 | `shell-lab` | shell | profile + completions |
 | `nethunter-recon` | — | Optional, authorized scope only |
+
+Full skill roster + decision tree: [skills/README.md](../skills/README.md) · [skills/PLAYBOOKS.md](../skills/PLAYBOOKS.md)
 
 ## Agent → skill / docs quick map
 
@@ -93,6 +97,7 @@ Mental model:
 agent  = who          (benjamin, lucas, overlay, …)
 role   = capabilities (architect, builder, overlay, …)
 persona = tone/cards  (mobile, design-card, release-card, …)
+skill  = playbook     (grokhunter, pair-programming, …)
 ```
 
-Install both via `grokhunter skills install`.
+Install agents + skills + personas + roles via `grokhunter skills install`.
