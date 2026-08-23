@@ -1,1 +1,3 @@
-{"branding/icon.png": "PLACEHOLDER - too large for this call, will use alternative"}
+{
+  "_note": "Dual-accent (Kali blue #2777FF | NetHunter red #E31C3D) packs generated locally. SVG mark.svg is source of truth. Run branding/decode_assets.py after regenerating packs if needed. See branding/README.md Color scheme."
+}
