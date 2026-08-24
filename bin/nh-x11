@@ -89,7 +89,10 @@ export XDG_RUNTIME_DIR="${TMPDIR:-/data/data/com.termux/files/usr/tmp}"
 mkdir -p "${XDG_RUNTIME_DIR}"
 
 X11_EXTRA=()
-[[ "${NH_X11_LEGACY:-0}" == "1" ]] && X11_EXTRA+=(-legacy-drawing)
+# Default legacy drawing: Termux:X11 often black-screens / GPU-crashes on phones.
+if [[ "${NH_X11_LEGACY:-1}" != "0" ]]; then
+  X11_EXTRA+=(-legacy-drawing)
+fi
 [[ -n "${NH_X11_DPI:-}" ]] && X11_EXTRA+=(-dpi "${NH_X11_DPI}")
 
 termux-x11 :0 "${X11_EXTRA[@]}" >/dev/null 2>&1 &
@@ -98,8 +101,46 @@ sleep 2
 am start --user 0 -n com.termux.x11/com.termux.x11.MainActivity >/dev/null 2>&1 || true
 sleep 0.8
 
+# glycin/gdk-pixbuf 2.44 runs SVG via bwrap --unshare-all (crashes GTK in proot).
+_bwrap_stub=""
+for _s in \
+  "${GROKHUNTER_HOME:-}/bin/bwrap-proot" \
+  "${_ROOTFS}/home/kali/GrokHunter/bin/bwrap-proot" \
+  "/data/data/com.termux/files/home/GrokHunter/bin/bwrap-proot"
+do
+  if [[ -f "${_s}" ]]; then
+    _bwrap_stub="${_s}"
+    break
+  fi
+done
+if [[ -n "${_bwrap_stub}" ]]; then
+  mkdir -p "${_ROOTFS}/usr/local/bin" 2>/dev/null || true
+  cp -f "${_bwrap_stub}" "${_ROOTFS}/usr/local/bin/bwrap" 2>/dev/null || true
+  chmod 755 "${_ROOTFS}/usr/local/bin/bwrap" 2>/dev/null || true
+  # glycin looks up "bwrap" and may hit /usr/bin first. Real bwrap --unshare-all
+  # exits 1 in proot and GTK aborts. Keep ELF as bwrap.real.
+  _usr_bwrap="${_ROOTFS}/usr/bin/bwrap"
+  if [[ -f "${_usr_bwrap}" ]] && ! grep -q bwrap-proot "${_usr_bwrap}" 2>/dev/null; then
+    [[ -f "${_usr_bwrap}.real" ]] || cp -f "${_usr_bwrap}" "${_usr_bwrap}.real" 2>/dev/null || true
+    cp -f "${_bwrap_stub}" "${_usr_bwrap}" 2>/dev/null || true
+    chmod 755 "${_usr_bwrap}" 2>/dev/null || true
+  fi
+fi
+
 echo "[nh-x11] Termux:X11 on :0 — starting ${SESSION_CMD} (via ${LAUNCHER})..."
 
-# nethunter args become the proot command. DO NOT use -r (that is --rename).
-# Run a login shell with DISPLAY set, then the DE session as user kali.
-exec "${LAUNCHER}" /bin/bash -lc "export DISPLAY=:0 PULSE_SERVER=127.0.0.1 XDG_RUNTIME_DIR=/tmp LANG=\${LANG:-en_US.UTF-8}; ${SESSION_PREP} exec su - kali -c '${SESSION_CMD}'"
+# jorexdeveloper nethunter: [OPTION] [USERNAME] [-- [COMMAND [ARGS]]]
+# su --login clears most --env vars; export DISPLAY inside -c.
+# Do not set XDG_RUNTIME_DIR=/tmp (world-writable; dbus refuses it).
+# --share-tmp puts Termux X sockets at guest /tmp.
+_guest_cmd="$(printf '%s\n' \
+  'export DISPLAY=:0 PULSE_SERVER=127.0.0.1' \
+  'export XDG_RUNTIME_DIR=/tmp/runtime-kali' \
+  'mkdir -p "$XDG_RUNTIME_DIR" && chmod 700 "$XDG_RUNTIME_DIR"' \
+  "${SESSION_PREP}" \
+  "exec ${SESSION_CMD}")"
+exec "${LAUNCHER}" \
+  --env DISPLAY=:0 \
+  --env PULSE_SERVER=127.0.0.1 \
+  --share-tmp \
+  -- su --login kali -c "${_guest_cmd}"

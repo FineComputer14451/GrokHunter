@@ -9,6 +9,8 @@ _grokhunter() {
   commands=(
     'status:Short status line (auth/x11/skills/agents)'
     'doctor:Full health report'
+    'binds:Proot binds (status|repair|optimize)'
+    'proot-binds:Alias for binds'
     'setup:One-shot lab sync (ensure + skills + optional models)'
     'sync:Alias for setup'
     'boot:Alias for setup'
@@ -79,6 +81,15 @@ _grokhunter() {
     'help:Identity help'
   )
 
+  local -a binds_cmds
+  binds_cmds=(
+    'status:Show desired vs applied nethunter/nh binds'
+    'show:Alias for status'
+    'repair:Force re-apply optimized binds'
+    'optimize:Apply binds if missing or stale'
+    'help:Binds help'
+  )
+
   local -a setup_opts
   setup_opts=(
     '--force-grok[Reinstall Grok]'
@@ -136,6 +147,9 @@ _grokhunter() {
           ;;
         git-identity)
           _describe -t identity_cmds 'git-identity' identity_cmds
+          ;;
+        binds|proot-binds)
+          _describe -t binds_cmds 'binds' binds_cmds
           ;;
         setup|sync|boot)
           _values 'setup options' $setup_opts

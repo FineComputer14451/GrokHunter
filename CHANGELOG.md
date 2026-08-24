@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### CLI
+- Restored `bin/grokhunter` after accidental PLACEHOLDER wipe (`ee3f6d7` / incomplete `85ef807`).
+- Added `grokhunter binds [status|repair|optimize]` (wraps `lib/x11.sh` proot bind helpers).
+- `install_grok_profile.sh` no longer drops the V9 picker marker that sits after `[models]`.
+- Honor Kali CA bundle when Grok/Termux inject `SSL_CERT_FILE=/etc/tls/cert.pem` (profile, doctor probe, git-identity, `/etc/tls` compat symlink).
+- `nh-x11` uses `nethunter --env … -- COMMAND` (jorexdeveloper 2026.2.x). Fixes `Unrecognized option '-lc'`.
+- `nh-x11` exports DISPLAY inside `su --login` and uses `XDG_RUNTIME_DIR=/tmp/runtime-kali` (mode 700) so XFCE/dbus can start.
+- `bin/bwrap-proot` replaces Kali `/usr/bin/bwrap` (ELF kept as `bwrap.real`) so glycin SVG loaders do not abort GTK under proot.
+- `nh-x11` defaults to Termux:X11 `-legacy-drawing` (`NH_X11_LEGACY=0` to disable).
+
 ### Branding
 - Converted `branding/*.png` from JPEG-named files to real PNG (icon, favicon, lockup).
 - Wired assets into README, product site (header, hero, favicon, Open Graph / Twitter card), and XFCE menu (`Icon=grokhunter`).

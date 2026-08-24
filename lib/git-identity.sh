@@ -102,6 +102,13 @@ _gh_git_identity_curl_github() {
   local -a args
   [[ "${path}" == /* ]] || return 1
   command -v curl >/dev/null 2>&1 || return 1
+  # Same Termux TLS injection as lib/https-probe.sh (keep identity self-contained).
+  if [[ -n "${SSL_CERT_FILE:-}" && ! -r "${SSL_CERT_FILE}" ]]; then
+    unset SSL_CERT_FILE
+  fi
+  if [[ -n "${SSL_CERT_DIR:-}" && ! -d "${SSL_CERT_DIR}" ]]; then
+    unset SSL_CERT_DIR
+  fi
   args=(-sS --max-time "${GROKHUNTER_GIT_IDENTITY_TIMEOUT:-8}"
         -H "Accept: application/vnd.github+json"
         -H "User-Agent: GrokHunter-git-identity")

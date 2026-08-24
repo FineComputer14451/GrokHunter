@@ -437,6 +437,21 @@ setup_termux_x11() {
   else
     msg -tw "Could not install nh-x11 — clone repo or ensure bin/nh-x11 is present"
   fi
+  # gdk-pixbuf 2.44 glycin SVG loaders call bwrap --unshare-all (fatal under proot).
+  local kali_root="${DEFAULT_ROOTFS_DIR:-${TERMUX_FILES_DIR}/kali}"
+  local kali_local="${kali_root}/usr/local/bin"
+  local kali_bwrap="${kali_root}/usr/bin/bwrap"
+  if src="$(_resolve_overlay_file "bin/bwrap-proot")" && [[ -f "${src}" ]]; then
+    mkdir -p "${kali_local}" 2>/dev/null || true
+    _install_repo_bin "bin/bwrap-proot" "${kali_local}/bwrap" && \
+      msg -ts "Installed /usr/local/bin/bwrap stub (glycin SVG under proot)" || true
+    if [[ -f "${kali_bwrap}" ]] && ! grep -q bwrap-proot "${kali_bwrap}" 2>/dev/null; then
+      [[ -f "${kali_bwrap}.real" ]] || cp -f "${kali_bwrap}" "${kali_bwrap}.real" 2>/dev/null || true
+      if _install_repo_bin "bin/bwrap-proot" "${kali_bwrap}"; then
+        msg -ts "Replaced /usr/bin/bwrap with proot stub (saved bwrap.real)"
+      fi
+    fi
+  fi
   # Persist preferred DE session for nh-x11 (doctor checks this file)
   local sess
   sess="$(_detect_x11_session)"

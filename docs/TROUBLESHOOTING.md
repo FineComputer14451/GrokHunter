@@ -100,6 +100,30 @@ chmod 600 ~/.grok/secrets.env
 bash install.sh --with-x11
 ```
 
+### `Unrecognized option '-lc'`
+
+Current `nethunter` is `nethunter [OPTION] [USERNAME] [-- COMMAND]`.
+`nh-x11` must not pass `/bin/bash -lc` as launcher flags.
+
+```bash
+# after overlay update:
+hash -r
+NH_X11_LEGACY=1 nh-x11
+```
+
+### XFCE panel dies / Gtk glycin `bwrap` abort
+
+Kali 2026 gdk-pixbuf loads SVG via **glycin** + `bwrap --unshare-all`, which **exits 1** in proot and GTK aborts (xfce4-panel).
+`nh-x11` installs `bin/bwrap-proot` as `/usr/local/bin/bwrap` **and** `/usr/bin/bwrap` (ELF saved as `bwrap.real`).
+
+```bash
+# manual (inside Kali):
+sudo dpkg-divert --local --rename --divert /usr/bin/bwrap.real --add /usr/bin/bwrap
+sudo install -m 755 ~/GrokHunter/bin/bwrap-proot /usr/bin/bwrap
+```
+
+Termux:X11 GPU crashes: `nh-x11` now defaults to **legacy drawing**. Disable with `NH_X11_LEGACY=0`.
+
 ### Black screen / no desktop
 
 1. Install the **Termux:X11** APK from official nightlies.  

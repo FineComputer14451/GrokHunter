@@ -68,6 +68,11 @@ if grep -R --line-number -E '^PLACEHOLDER$|^WILL_REPLACE$' \
 fi
 info "no placeholder markers"
 
+# Incomplete 85ef807 left a 51-line stub that still passed PLACEHOLDER grep.
+_gh_cli_lines=$(wc -l < bin/grokhunter)
+[[ "${_gh_cli_lines}" -ge 200 ]] || die "bin/grokhunter looks stubbed (${_gh_cli_lines} lines)"
+info "grokhunter CLI length OK (${_gh_cli_lines} lines)"
+
 # ---------- parse_cli feature table ----------
 bash -c '
   set -euo pipefail
@@ -146,6 +151,29 @@ if grep -qE 'grok-cli-termux-native/main/install.sh' scripts/ensure_grok.sh; the
 fi
 info "termux-native grok pin OK"
 
+# nh-x11 must use nethunter -- COMMAND (not bash -lc as launcher options)
+if grep -vE '^[[:space:]]*#' bin/nh-x11 | grep -qE '/bin/bash[[:space:]]+-lc'; then
+  die "nh-x11 must not pass bash -lc as nethunter options"
+fi
+grep -q -- '--share-tmp' bin/nh-x11 || die "nh-x11 should pass --share-tmp for X sockets"
+grep -q -- '--env DISPLAY=:0' bin/nh-x11 || die "nh-x11 should pass DISPLAY via --env"
+if grep -q -- '--env XDG_RUNTIME_DIR=/tmp' bin/nh-x11; then
+  die "nh-x11 must not set XDG_RUNTIME_DIR=/tmp (dbus rejects world-writable runtime)"
+fi
+grep -q 'XDG_RUNTIME_DIR=/tmp/runtime-kali' bin/nh-x11 || die "nh-x11 should use a 700 runtime dir"
+info "nh-x11 nethunter CLI form OK"
+
+bash -c '
+  set -euo pipefail
+  d=$(mktemp -d)
+  printf "%s\n" "#!/bin/sh" "echo ran" > "$d/payload"
+  chmod +x "$d/payload"
+  out="$(bash bin/bwrap-proot --unshare-all --die-with-parent --ro-bind /usr /usr "$d/payload")"
+  rm -rf "$d"
+  [[ "$out" == ran ]]
+' || die "bwrap-proot should exec the payload, skipping sandbox flags"
+info "bwrap-proot OK"
+
 # ---------- CLI help surfaces ----------
 # Capture full command output before grepping. Piping long help/credits into
 # `grep -q` closes the pipe early; with set -o pipefail that can fail CI on
@@ -163,6 +191,7 @@ echo "${_help}" | grep -q team || die "help missing team"
 echo "${_help}" | grep -q menu || die "help missing menu"
 echo "${_help}" | grep -q credits || die "help missing credits"
 echo "${_help}" | grep -q git-identity || die "help missing git-identity"
+echo "${_help}" | grep -q binds || die "help missing binds"
 echo "${_help}" | grep -q scout || die "help missing scout"
 echo "${_help}" | grep -q overlay || die "help missing overlay"
 echo "${_help}" | grep -q 'grokhunter ship' || die "help missing ship"
@@ -222,6 +251,10 @@ bash bin/grokhunter git-identity help | grep -q set || die "git-identity help mi
 bash bin/grokhunter git-identity help | grep -q origin || die "git-identity help missing origin fallback"
 info "git-identity help OK"
 
+bash bin/grokhunter binds help | grep -q repair || die "binds help missing repair"
+bash bin/grokhunter binds help | grep -q optimize || die "binds help missing optimize"
+info "binds help OK"
+
 bash -c '
   set -euo pipefail
   source lib/git-identity.sh
@@ -253,6 +286,13 @@ _gh_http_code_means_reachable 421 || die "421 should count as reachable"
 _gh_http_code_means_reachable 200 || die "200 should count as reachable"
 if _gh_http_code_means_reachable 000; then die "000 (connect fail) should not count as reachable"; fi
 if _gh_http_code_means_reachable ""; then die "empty http_code should not count as reachable"; fi
+SSL_CERT_FILE=/no/such/grokhunter-cert.pem
+SSL_CERT_DIR=/no/such/grokhunter-certs
+export SSL_CERT_FILE SSL_CERT_DIR
+_gh_tls_sanitize_env
+[[ -z "${SSL_CERT_FILE:-}" ]] || die "tls sanitize should unset missing SSL_CERT_FILE"
+[[ -z "${SSL_CERT_DIR:-}" ]] || die "tls sanitize should unset missing SSL_CERT_DIR"
+unset SSL_CERT_FILE SSL_CERT_DIR
 info "doctor https probe OK"
 
 # ---------- doctor os-release (missing file is not a hard fail) ----------
@@ -320,6 +360,26 @@ echo "$(_status_models '# --- Grok Imagine Cinematic Studio: v9-4p5 specialist m
 echo "$(_status_models '# no pickers')" \
   | grep -q 'models=no' || die "status should report models=no without a V9 marker"
 info "status models marker OK"
+
+# ---------- profile merge must keep V9 picker marker ----------
+_prof_tmp="$(mktemp -d)"
+cat > "${_prof_tmp}/config.toml" <<'EOF'
+[models]
+default = "grok-4.6"
+
+# --- GrokHunter: v9 specialist models (test) ---
+[model.chat-expert]
+name = "Chat Expert"
+model = "grok-4.6"
+temperature = 0.7
+EOF
+GROK_CONFIG="${_prof_tmp}/config.toml" bash scripts/install_grok_profile.sh >/dev/null
+grep -qF '# --- GrokHunter: v9 specialist models' "${_prof_tmp}/config.toml" \
+  || die "install_grok_profile.sh ate V9 picker marker"
+grep -qE 'channel\s*=\s*"stable"' "${_prof_tmp}/config.toml" \
+  || die "install_grok_profile.sh did not set channel=stable"
+rm -rf "${_prof_tmp}"
+info "profile merge keeps V9 marker OK"
 
 # ---------- ai-smoke missing-key path (no network) ----------
 # Unset key for this subshell only; do not touch secrets files.

@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# PATH stub for bubblewrap inside rootless proot (Kali NetHunter).
+# gdk-pixbuf 2.44+ loads SVG via glycin → bwrap --unshare-all, which fails
+# under proot and aborts GTK (xfce4-panel, etc.).
+# If $1 is already an executable, run it; else skip sandbox flags until the
+# first real executable path (glycin-svg).
+set -euo pipefail
+if [[ $# -eq 0 ]]; then
+  echo "bwrap-proot: missing command" >&2
+  exit 127
+fi
+if [[ "$1" == /* && -f "$1" && -x "$1" ]]; then
+  exec "$@"
+fi
+args=("$@")
+for ((i = 0; i < ${#args[@]}; i++)); do
+  a="${args[$i]}"
+  if [[ "${a}" == /* && -f "${a}" && -x "${a}" ]]; then
+    exec "${args[@]:i}"
+  fi
+done
+echo "bwrap-proot: no command found in: $*" >&2
+exit 127

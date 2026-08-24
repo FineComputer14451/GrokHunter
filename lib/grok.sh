@@ -147,6 +147,15 @@ install_cli_bins() {
   # Short commands as real bins (work outside interactive shells; not bash aliases only)
   install_cli_shortcuts || true
 
+  # Kali guest: Grok/Termux SSL_CERT_FILE=/etc/tls/cert.pem is missing here.
+  if [[ ! -e /etc/tls/cert.pem && -r /etc/ssl/certs/ca-certificates.crt ]]; then
+    if command -v sudo >/dev/null 2>&1 && sudo -n true 2>/dev/null; then
+      sudo -n mkdir -p /etc/tls 2>/dev/null || true
+      sudo -n ln -sfn /etc/ssl/certs /etc/tls/certs 2>/dev/null || true
+      sudo -n ln -sf /etc/ssl/certs/ca-certificates.crt /etc/tls/cert.pem 2>/dev/null || true
+    fi
+  fi
+
   # Kali / XFCE application menu (GrokHunter submenu)
   install_kali_menu || true
 

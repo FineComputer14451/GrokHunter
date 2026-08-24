@@ -4,6 +4,22 @@
 
 export PATH="${HOME}/.grok/bin:${HOME}/.local/bin:${PATH}"
 
+# Grok Build on Android injects Termux TLS paths that do not exist in Kali.
+if [[ -n "${SSL_CERT_FILE:-}" && ! -r "${SSL_CERT_FILE}" ]]; then
+  if [[ -r /etc/ssl/certs/ca-certificates.crt ]]; then
+    export SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+  else
+    unset SSL_CERT_FILE
+  fi
+fi
+if [[ -n "${SSL_CERT_DIR:-}" && ! -d "${SSL_CERT_DIR}" ]]; then
+  if [[ -d /etc/ssl/certs ]]; then
+    export SSL_CERT_DIR=/etc/ssl/certs
+  else
+    unset SSL_CERT_DIR
+  fi
+fi
+
 export COLORTERM="${COLORTERM:-truecolor}"
 if [[ -z "${TERM:-}" || "${TERM}" == "dumb" ]]; then
   export TERM="xterm-256color"

@@ -118,10 +118,14 @@ def strip_owned_sections(text: str) -> str:
         line = lines[i]
         m = re.match(r"^\[([^\]]+)\]\s*$", line.strip())
         if m and m.group(1).strip() in OWNED:
-            # skip until next section or EOF
+            # skip until next section or EOF — but keep sibling feature
+            # markers (V9 pickers comment lives after [models])
             i += 1
             while i < len(lines):
-                if re.match(r"^\[", lines[i].strip() or ""):
+                stripped = lines[i].strip()
+                if re.match(r"^\[", stripped or ""):
+                    break
+                if stripped.startswith("# --- GrokHunter:") and "NetHunter profile" not in stripped:
                     break
                 i += 1
             continue
