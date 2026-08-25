@@ -277,6 +277,9 @@ bash bin/grokhunter models help | grep -q install || die "models help missing in
 bash bin/grokhunter skills help | grep -q install || die "skills help missing install"
 bash bin/grokhunter setup --help | grep -q with-models || die "setup help missing --with-models"
 bash bin/grokhunter agents help | grep -q status || die "agents help missing status"
+bash bin/grokhunter agents help | grep -q github || die "agents help missing github"
+bash bin/grokhunter agents help | grep -q secrets || die "agents help missing secrets"
+bash bin/grokhunter agents help | grep -q toolchain || die "agents help missing toolchain"
 info "cli help OK"
 
 # ---------- git identity helpers ----------
@@ -585,6 +588,9 @@ bash -c '
   echo "$names" | grep -qx "github"
   echo "$names" | grep -qx "secrets"
   echo "$names" | grep -qx "toolchain"
+  echo "$names" | grep -qx "REFERENCES" && exit 1
+  echo "$names" | grep -qx "HANDOFF-TEMPLATES" && exit 1
+  echo "$names" | grep -qx "README" && exit 1
   rm -rf "$HOME"
 '
 info "install_agents OK"

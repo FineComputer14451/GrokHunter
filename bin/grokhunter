@@ -419,7 +419,7 @@ cmd_agents_status() {
     fi
   done < <(_gh_list_agent_names "${GROKHUNTER_HOME}")
   echo "installed: ${n}"
-  echo "launch:    grokhunter team | scout | review | fix | desktop | overlay | ship | docs | modeler | ci | aider | session | host | mcp | plugin | flow | storage | editor | hook | shell"
+  echo "launch:    grokhunter team | scout | review | fix | desktop | overlay | ship | docs | modeler | ci | aider | session | host | mcp | plugin | flow | storage | editor | hook | shell | github | secrets | toolchain"
   echo "tui:       /config-agents"
   [[ "${n}" -gt 0 ]]
 }
@@ -436,7 +436,7 @@ Usage: grokhunter agents [status|list|help]
   help          This help
 
 Install agents:  grokhunter skills install
-Launch:          grokhunter team | scout | review | fix | desktop | overlay | ship | docs | modeler | ci | aider | session | host | mcp | plugin | flow | storage | editor | hook | shell
+Launch:          grokhunter team | scout | review | fix | desktop | overlay | ship | docs | modeler | ci | aider | session | host | mcp | plugin | flow | storage | editor | hook | shell | github | secrets | toolchain
 EOF
       return 0
       ;;

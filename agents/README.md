@@ -152,7 +152,7 @@ Use this when Coding Team should `spawn_subagent` / `grokhunter <name>`:
 12. **Neighbors** — Do not steal rows on the agents you almost collided with (Wave 6: ship vs github, aider vs toolchain, secrets vs mcp).
 13. **Verify** — `bash scripts/ci-unit.sh`; `grokhunter help | grep <name>`; `grokhunter skills install`.
 
-Install copies are scan-based (`lib/agents-discover.sh`, `lib/skills-discover.sh`). CLI, completions, and Coding Team routing are **not**.
+Install copies are scan-based (`lib/agents-discover.sh`, `lib/skills-discover.sh`). Discover skips `_` prefixes, `README.md`, and uppercase doc files (`REFERENCES`, `HANDOFF-TEMPLATES`). CLI, completions, and Coding Team routing are **not**.
 
 ## Loop
 
