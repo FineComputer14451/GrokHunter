@@ -47,6 +47,7 @@ Paired index: [agents/REFERENCES.md](../agents/REFERENCES.md).
 | `hooks-lab` | hook | user-guide/10-hooks |
 | `shell-lab` | shell | SHELL |
 | `nethunter-recon` | — | Authorized scope only |
+| `specialist-lab` | — (meta) | `agents/README.md` add recipe |
 
 ## Skills-core vs optional
 

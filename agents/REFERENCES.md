@@ -55,6 +55,7 @@ Canonical cross-links for every GrokHunter agent. Keep agent files lean; put sha
 | `hooks-lab` | hook | `~/.grok/hooks` |
 | `shell-lab` | shell | profile + completions |
 | `nethunter-recon` | — | Optional, authorized scope only |
+| `specialist-lab` | — (meta) | Add-a-specialist recipe in agents/README |
 
 Full skill roster + decision tree: [skills/README.md](../skills/README.md) · [skills/PLAYBOOKS.md](../skills/PLAYBOOKS.md)
 

@@ -515,6 +515,7 @@ bash -c '
   echo "$names" | grep -qx "editor-lab"
   echo "$names" | grep -qx "hooks-lab"
   echo "$names" | grep -qx "shell-lab"
+  echo "$names" | grep -qx "specialist-lab"
   _gh_is_core_skill grokhunter
   _gh_is_core_skill x11-desktop && exit 1 || true
   mkdir -p "$SCRIPT_DIR/skills/_template"

@@ -52,6 +52,7 @@ Symptom → skill routing for the GrokHunter phone lab. Prefer the **narrowest**
 | `.rhai` workflow / /workflow | `flow-lab` | agent_budget 8–32 |
 | Hook did not fire | `hooks-lab` | `~/.grok/hooks`, `/hooks-trust` |
 | ci-unit / Smoke red | `ci-lab` | Local first |
+| New lab agent or `*-lab` skill | `specialist-lab` | Recipe: `agents/README.md` |
 
 ## Scoped
 

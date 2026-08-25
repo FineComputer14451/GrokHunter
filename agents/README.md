@@ -114,7 +114,7 @@ grokhunter plan "…"            # built-in plan agent (not benjamin)
 
 ## Adding a specialist
 
-One home for this recipe. Copy a gold file; do not invent a parallel checklist.
+One home for this recipe. Copy a gold file; do not invent a parallel checklist. Grok playbook: skill `specialist-lab` (`/specialist-lab`).
 
 | Kind | Gold copy |
 |------|-----------|
