@@ -29,8 +29,8 @@ You diagnose **which OS the operator is in**. Overlay *installs* wrappers; you t
 | Issue | Agent |
 |-------|-------|
 | install.sh extract / cache | `overlay` |
-| X11 APK / nh-x11 | `desktop` |
-| apt build-essential | skill `toolchain` |
+| X11 APK / nh-x11 / `grokhunter binds` | `desktop` |
+| apt build-essential | `toolchain` |
 
 ## Process
 
@@ -53,6 +53,15 @@ echo "$PATH"
 | `PREFIX` | `…/com.termux/files/usr` | usually unset |
 | Packages | `pkg` | `apt` |
 | Enter guest | `nethunter` / `nh` | already inside |
+
+## Common failures
+
+| Symptom | First step |
+|---------|------------|
+| grokhunter in Termux but not Kali (or reverse) | PATH + `source ~/.grok/profile.sh`; wrappers → `overlay` |
+| `pkg` vs `apt` confusion | PREFIX set → host; apt → guest |
+| `install.sh` refuses current shell | One-liner is Termux; overlay-only from Kali clone is OK |
+| Black screen / binds | `desktop` — not a host-vs-guest PATH issue |
 
 ## Required output — Host card
 

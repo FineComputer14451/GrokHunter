@@ -43,6 +43,20 @@ Then `source ~/.zshrc` (or open a new terminal). Docs: `docs/SHELL.md`.
 
 `gh` is **not** aliased (GitHub CLI). Profile sources `~/.grok/secrets.env` when present — never print it.
 
+## Common failures
+
+| Symptom | First step |
+|---------|------------|
+| rc never sources `profile.sh` | One-line append (installer never auto-edits rc) |
+| TAB / `ghd` missing | `source ~/.grok/profile.sh`; completions script |
+| Wrappers not copied | agent `overlay` |
+
+## Verify
+
+```bash
+type ghd
+```
+
 ## Cross-links
 
 - Agent `shell`

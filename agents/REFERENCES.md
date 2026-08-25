@@ -39,11 +39,11 @@ Canonical cross-links for every GrokHunter agent. Keep agent files lean; put sha
 | `pair-programming` | coding-team, lucas | Session style for Grok 4.6 |
 | `aider-grok` | aider | uv + Python 3.12 helper |
 | `x11-desktop` | desktop | Black screen / lag triage |
-| `github-lab` | ship, (identity) | `git-identity` playbook |
-| `toolchain` | aider, editor, storage | apt, compilers, space |
+| `github-lab` | github | `git-identity` playbook (ship still cuts releases) |
+| `toolchain` | toolchain | apt, compilers, space |
 | `grok-models` | models | V9 pickers / profile |
 | `ci-lab` | ci | ci-unit + Smoke |
-| `secrets-lab` | aider, mcp | secrets.env mode 600 |
+| `secrets-lab` | secrets | secrets.env mode 600 |
 | `session-lab` | session | tmux + `grok --resume` |
 | `host-lab` | host | Termux vs Kali detection |
 | `mcp-lab` | mcp | `grok mcp` |
@@ -68,9 +68,12 @@ Full skill roster + decision tree: [skills/README.md](../skills/README.md) · [s
 | scout | — | ARCHITECTURE, INSTALL |
 | review | — | CODING-TEAM |
 | fix | — | CODING-TEAM |
-| desktop | x11-desktop | X11-PERFORMANCE, PROOT |
-| overlay | grokhunter | INSTALL, TROUBLESHOOTING |
-| ship | github-lab | CHANGELOG, VERSION, FAQ |
+| desktop | x11-desktop | X11-PERFORMANCE, PROOT, `grokhunter binds` |
+| overlay | grokhunter | INSTALL, TROUBLESHOOTING, `lib/tls.sh` |
+| ship | github-lab (release notes only) | CHANGELOG, VERSION, FAQ |
+| github | github-lab | FAQ, `grokhunter git-identity` |
+| secrets | secrets-lab | secrets.env mode 600 |
+| toolchain | toolchain | EDITORS, PROOT |
 | docs | — | README, FAQ, website |
 | models | grok-models | GROK-46, GROK-BUILD-1.0 |
 | ci | ci-lab | smoke.yml, ci-unit.sh |

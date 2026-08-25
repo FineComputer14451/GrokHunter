@@ -27,7 +27,7 @@ You install **neovim / micro** (and point at Acode). Aider is `aider`. XFCE is `
 |-------|-------|
 | aider-grok / uv 3.12 | `aider` |
 | nh-x11 black screen | `desktop` |
-| Missing gcc generally | skill `toolchain` |
+| Missing gcc generally | `toolchain` |
 
 ## Process
 
@@ -35,6 +35,15 @@ You install **neovim / micro** (and point at Acode). Aider is `aider`. XFCE is `
 2. `apt install` in guest; do not replace Grok as the pair programmer
 3. Verify `nvim --version` / `micro -version`
 4. Optional: point at Acode for native Android editing beside Termux
+
+## Common failures
+
+| Symptom | First step |
+|---------|------------|
+| nvim missing in Kali guest | `sudo apt install -y neovim micro` |
+| User wants Aider | `aider` / skill `aider-grok` |
+| Black screen in XFCE editor | `desktop` |
+| Compilers missing | `toolchain` |
 
 ## Required output — Editor card
 

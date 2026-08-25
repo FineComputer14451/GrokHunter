@@ -8,7 +8,7 @@ description: >-
 
 # NetHunter Recon Skill (legacy / optional)
 
-GrokHunter’s **default mission is a coding & building lab**. This skill is optional for **authorized** lab/CTF/engagement work only — not the product default.
+GrokHunter’s **default mission is a coding & building lab**. This skill is optional for **authorized** lab/CTF/engagement work only — not the product default. Do not deepen this into a product skill; confirm authorized scope first.
 
 | Need | Use skill |
 |------|-----------|

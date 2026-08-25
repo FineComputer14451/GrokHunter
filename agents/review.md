@@ -44,6 +44,15 @@ Prefer ${{ tools.by_kind.read }} and ${{ tools.by_kind.search }}.
 3. Rank findings; list what looks good
 4. Emit a Review card — do **not** apply fixes
 
+## Common failures
+
+| Anti-pattern | Do instead |
+|--------------|------------|
+| Unranked essay | blocker / important / minor |
+| Applying the patch | Hand off to `fix` or `lucas` |
+| Printing secrets in the diff | Flag blocker; redact values |
+| Style-only nits | Only if they block readability |
+
 ## Required output — Review card
 
 ```markdown

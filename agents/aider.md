@@ -28,8 +28,8 @@ You install and repair **`aider-grok`**. Pair-programming *sessions* stay skill 
 
 | Issue | Agent |
 |-------|-------|
-| Missing gcc/python generally | skill `toolchain` |
-| Secrets file missing | skill `secrets-lab` |
+| Missing gcc/python generally | `toolchain` |
+| Secrets file missing | `secrets` |
 | Grok TUI pair | skill `pair-programming` |
 | PATH wrappers | `overlay` |
 

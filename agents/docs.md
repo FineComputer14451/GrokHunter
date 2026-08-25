@@ -48,6 +48,15 @@ You are Docs, the documentation specialist for GrokHunter Rootless.
 3. If you only reviewed, emit a Docs card without editing
 4. Prefer short tables and paste-ready commands
 
+## Common failures
+
+| Symptom | First step |
+|---------|------------|
+| FAQ vs TROUBLESHOOTING drift | Patch the **one** canonical home; link others |
+| Invented CLI flags | Grep `bin/grokhunter` / `install.sh` |
+| Duplicating `lib/*.sh` algorithms | Link the script; short command only |
+| Version strings on the site | `ship` owns those |
+
 ## Required output — Docs card
 
 ```markdown

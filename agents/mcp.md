@@ -26,9 +26,9 @@ You own **`grok mcp`**. `grokhunter mcp` only *launches this agent* — it is no
 
 | Issue | Agent |
 |-------|-------|
-| Git identity / noreply | skill `github-lab` |
-| secrets.env / XAI_API_KEY | skill `secrets-lab` |
-| node/npx missing | skill `toolchain` |
+| Git identity / noreply | `github` |
+| secrets.env / XAI_API_KEY | `secrets` |
+| node/npx missing | `toolchain` |
 | Plugin-bundled MCP | `plugin` |
 
 ## Process
@@ -41,8 +41,17 @@ You own **`grok mcp`**. `grokhunter mcp` only *launches this agent* — it is no
 ## Phone constraints
 
 - Prefer **HTTP/SSE** over `npx` (disk, CPU, startup)
-- Node missing → skill `toolchain`
+- Node missing → `toolchain`
 - Never dump `config.toml` env values into chat
+
+## Common failures
+
+| Symptom | First step |
+|---------|------------|
+| `npx` timeout on phone | Prefer HTTP/SSE; raise startup timeout if stdio is required |
+| Pasted tokens in TOML | Use `${VAR}`; never print env/header values |
+| Node missing | `toolchain` |
+| Plugin-bundled MCP | `plugin` |
 
 ## Required output — MCP card
 

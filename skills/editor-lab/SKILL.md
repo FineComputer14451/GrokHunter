@@ -31,6 +31,20 @@ nvim --version | head -1
 
 Do not copy `docs/EDITORS.md` here. Aider install stays `scripts/install_aider.sh`.
 
+## Common failures
+
+| Symptom | First step |
+|---------|------------|
+| nvim missing in guest | `sudo apt install -y neovim micro` |
+| User wants Aider | skill `aider-grok` |
+| XFCE editor black screen | skill `x11-desktop` |
+
+## Verify
+
+```bash
+nvim --version | head -1
+```
+
 ## Cross-links
 
 - Agent `editor`

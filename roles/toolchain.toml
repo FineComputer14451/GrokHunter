@@ -1,0 +1,4 @@
+# Toolchain role — apt compilers / language runtimes
+description = "Kali apt, gcc, python, node on the phone lab"
+default_capability_mode = "all"
+reasoning_effort = "medium"

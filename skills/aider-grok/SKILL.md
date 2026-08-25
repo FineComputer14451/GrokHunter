@@ -116,4 +116,11 @@ grokhunter ai-smoke    # verifies XAI_API_KEY reaches api.x.ai
 | Wrong model | `AIDER_MODEL=grok-4.6` or `--model` |
 | Commits unwanted | Start Aider with no-auto-commit flags per Aider docs; warn user |
 
-Docs: `docs/EDITORS.md`, `docs/GROK-46.md`.
+## Verify
+
+```bash
+which aider-grok
+grokhunter ai-smoke    # key reaches api.x.ai — never print it
+```
+
+Docs: `docs/EDITORS.md`, `docs/GROK-46.md`. Agent: `aider`.

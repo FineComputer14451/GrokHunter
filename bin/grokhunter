@@ -184,6 +184,9 @@ Usage:
   grokhunter editor [prompt]  Launch nvim/micro agent
   grokhunter hook [prompt]    Launch Grok hooks agent
   grokhunter shell [prompt]   Launch profile/completions agent
+  grokhunter github [prompt]  Launch git-identity agent (CLI is git-identity)
+  grokhunter secrets [prompt] Launch secrets.env agent
+  grokhunter toolchain [prompt] Launch apt/compiler agent
   grokhunter ai-smoke [prompt] SpaceXAI API smoke (scripts/spacexai_smoke.sh)
   grokhunter smoke [prompt]   Alias for ai-smoke
   grokhunter install [args]   Run / re-run installer (supports --overlay-only)
@@ -937,7 +940,7 @@ main() {
       shift || true
       cmd_agent_launch coding-team "$@"
       ;;
-    scout|benjamin|lucas|harper|review|fix|desktop|overlay|ship|docs|ci|aider|session|host|mcp|plugin|flow|storage|editor|hook|shell)
+    scout|benjamin|lucas|harper|review|fix|desktop|overlay|ship|docs|ci|aider|session|host|mcp|plugin|flow|storage|editor|hook|shell|github|secrets|toolchain)
       shift || true
       cmd_agent_launch "${sub}" "$@"
       ;;

@@ -88,8 +88,8 @@ Quick path:
 Lab broken / install / PATH     → grokhunter
 Writing code                    → pair-programming (+ coding-team agents)
 Aider missing / Python 3.13     → aider-grok
-X11 black / lag                 → x11-desktop
-GitHub invalid-email            → github-lab
+X11 black / lag / binds / bwrap → x11-desktop (`grokhunter binds`)
+GitHub invalid-email            → github-lab (agent `github`)
 models=no / pickers             → grok-models
 Termux vs Kali confusion        → host-lab
 Disk full                       → storage-lab

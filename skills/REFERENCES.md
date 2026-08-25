@@ -28,15 +28,15 @@ Paired index: [agents/REFERENCES.md](../agents/REFERENCES.md).
 
 | Skill | Primary agent(s) | Key docs / CLI |
 |-------|------------------|----------------|
-| `grokhunter` | overlay (partial) | INSTALL, TROUBLESHOOTING, `grokhunter doctor` |
+| `grokhunter` | overlay (partial) | INSTALL, TROUBLESHOOTING, `grokhunter doctor`, `lib/tls.sh` |
 | `pair-programming` | coding-team, lucas | CODING-TEAM, GROK-46 |
 | `aider-grok` | aider | EDITORS, `scripts/install_aider.sh` |
-| `x11-desktop` | desktop | X11-PERFORMANCE, PROOT |
-| `github-lab` | ship | FAQ, `grokhunter git-identity` |
-| `toolchain` | aider, editor, storage | EDITORS, PROOT |
+| `x11-desktop` | desktop | X11-PERFORMANCE, PROOT, `grokhunter binds` |
+| `github-lab` | github | FAQ, `grokhunter git-identity` |
+| `toolchain` | toolchain | EDITORS, PROOT |
 | `grok-models` | models | GROK-46, GROK-BUILD-1.0 |
 | `ci-lab` | ci | `scripts/ci-unit.sh`, smoke.yml |
-| `secrets-lab` | aider, mcp | secrets.env mode 600 |
+| `secrets-lab` | secrets | secrets.env mode 600 |
 | `session-lab` | session | SHELL |
 | `host-lab` | host | PROOT, SHELL |
 | `mcp-lab` | mcp | user-guide/07-mcp-servers |

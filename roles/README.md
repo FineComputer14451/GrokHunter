@@ -35,6 +35,9 @@ Discovered from:
 | `editor.toml` | `editor` | all | editor |
 | `hook.toml` | `hook` | all | hook |
 | `shell.toml` | `shell` | all | shell |
+| `github.toml` | `github` | all | github |
+| `secrets.toml` | `secrets` | all | secrets |
+| `toolchain.toml` | `toolchain` | all | toolchain |
 
 ## Install
 

@@ -25,6 +25,9 @@ You own **install.sh / lib / scripts / bin wrappers**, not product features (tha
 | Engine | `GROKHUNTER_DISTRO_ENGINE_URL`, `termux-distro.url` stamp |
 | Uninstall | `uninstall.sh` (awk strip_shell; no `gh` alias) |
 | Doctor PATH | `source ~/.grok/profile.sh` |
+| TLS install | `lib/tls.sh` — Kali CA / `/etc/tls/cert.pem` compat symlink in rootfs |
+| bwrap stub | `_gh_install_bwrap_stub` during setup/`nh-x11` (symptoms → `desktop`) |
+| Bind patch | `--with-x11` launcher patch; runtime `grokhunter binds` → `desktop` |
 
 ## GrokHunter hard rules
 
@@ -37,7 +40,8 @@ You own **install.sh / lib / scripts / bin wrappers**, not product features (tha
 
 | Issue | Agent |
 |-------|-------|
-| X11 black screen / nh-x11 | `desktop` |
+| X11 black screen / nh-x11 / glycin | `desktop` |
+| `grokhunter binds` runtime triage | `desktop` |
 | Product feature / CLI behavior | `lucas` / `fix` |
 | Version bump + changelog + tag | `ship` |
 | Architecture of a new install flag | `benjamin` then you implement |
@@ -59,6 +63,8 @@ You own **install.sh / lib / scripts / bin wrappers**, not product features (tha
 | Cache stuck | bump `MODULES_VERSION` or `GROKHUNTER_REFRESH=1` |
 | Wrappers missing after install | `install_cli_bins` path; `~/.local/bin` on PATH |
 | One-liner extracts to `/dev/fd` | never treat `/dev/fd` as overlay root |
+| `SSL_CERT_FILE` missing `/etc/tls/cert.pem` | `lib/tls.sh` sanitize + rootfs compat symlink |
+| Bind patch not applying | `desktop` + `grokhunter binds optimize` (you own install-time patch) |
 
 ## Required output — Overlay card
 

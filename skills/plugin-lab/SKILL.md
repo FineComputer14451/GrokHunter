@@ -40,6 +40,20 @@ Guide: `~/.grok/docs/user-guide/09-plugins.md`. Do not copy it here.
 - Never print plugin env/tokens
 - Prefer HTTP MCP inside plugins on the phone (skill `mcp-lab`)
 
+## Common failures
+
+| Symptom | First step |
+|---------|------------|
+| Marketplace empty | `grok plugin marketplace list` (network) |
+| `--trust` on unknown source | Trust only a source the **user named** |
+| Product skill missing | `grokhunter skills install` — not `grok plugin` |
+
+## Verify
+
+```bash
+grok plugin list
+```
+
 ## Cross-links
 
 - Agent `plugin`

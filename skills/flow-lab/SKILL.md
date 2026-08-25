@@ -35,6 +35,18 @@ You author and run **Grok Build workflows** (Rhai scripts). GitHub Actions Smoke
 - Smoke-check with `validate_only` before a real run (see `create-workflow`)
 - Coding Team specialists (`benjamin` / `lucas` / …) can be `agent_type` when installed
 
+## Common failures
+
+| Symptom | First step |
+|---------|------------|
+| `agent_budget` too large | Keep **8–32** on this phone |
+| Actions YAML vs `.rhai` | Actions → skill `ci-lab` |
+| Workflow will not start | `meta.name` + first `let meta = #{ ... };`; `validate_only` |
+
+## Verify
+
+TUI `/workflows` or open `.grok/workflows/<name>.rhai`. Agent: `flow`.
+
 ## Cross-links
 
 - Agent `flow`

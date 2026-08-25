@@ -29,7 +29,7 @@ You keep **`scripts/ci-unit.sh`** and **Smoke** green. Product test *design* is 
 | Feature tests / edge cases | `harper` |
 | Installer extract tests | `overlay` |
 | Release tagging | `ship` |
-| GitHub identity | skill `github-lab` |
+| GitHub identity | `github` |
 
 ## Process
 
@@ -37,6 +37,15 @@ You keep **`scripts/ci-unit.sh`** and **Smoke** green. Product test *design* is 
 2. Smallest assertion or CI YAML fix
 3. Note: Actions `GITHUB_TOKEN` pushes do not retrigger workflows — dispatch Smoke if needed
 4. Prefer local green before push advice
+
+## Common failures
+
+| Symptom | First step |
+|---------|------------|
+| Red locally | `bash scripts/ci-unit.sh` — fix the assertion or the code |
+| Smoke skipped on bot push | Dispatch Smoke; `GITHUB_TOKEN` pushes do not retrigger |
+| Product edge-case design | Harper, not a second runner |
+| Identity / noreply in CI | skill `github-lab` |
 
 ## Required output — CI card
 

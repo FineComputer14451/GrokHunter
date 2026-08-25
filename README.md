@@ -108,6 +108,7 @@ grok                   # Interactive Grok session
 grokhunter             # Primary CLI / TUI
 grokhunter status      # auth / x11 / v9 quick line
 grokhunter doctor      # Full health report
+grokhunter binds       # Proot binds (status|repair|optimize)
 grokhunter git-identity  # GitHub-attributable git user.name / email
 grokhunter setup       # One-shot: ensure + skills + doctor
 grokhunter ensure      # Grok Build ≥ 1.0.5 + NetHunter profile
@@ -118,6 +119,7 @@ grokhunter modeler|ci|aider "…"   # Models/V9, CI, Aider (modeler ≠ grokhunt
 grokhunter session|host|mcp "…"   # tmux/resume, Termux vs Kali, MCP (mcp ≠ grok mcp)
 grokhunter plugin|flow|storage "…"  # plugins (≠ grok plugin), workflows, disk
 grokhunter editor|hook|shell "…"  # nvim/micro, Grok hooks, profile/completions
+grokhunter github|secrets|toolchain "…"  # git-identity agent, secrets.env, apt (github ≠ git-identity CLI)
 grokhunter models      # Install or status V9 model pickers
 grokhunter ai-smoke    # SpaceXAI API smoke (needs XAI_API_KEY)
 grokhunter plan "…"    # Plan agent (Grok Build 1.0.5)
@@ -163,7 +165,7 @@ lib/
   grok.sh                  Grok Build + Aider + V9 helpers
   x11.sh                   Termux:X11 + nh-x11 + /tmp bind patch
 bin/
-  grokhunter               status | doctor | models | ai-smoke | ensure | plan | install
+  grokhunter               status | doctor | binds | models | ai-smoke | ensure | plan | install
   grokhunter-doctor        Health report
   grok-nethunter           Full-screen launcher
   nh-x11 / aider-grok      Desktop + Aider helpers

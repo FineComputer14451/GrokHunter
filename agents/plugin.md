@@ -29,7 +29,7 @@ You own **`grok plugin`**. `grokhunter plugin` only launches this agent.
 | Product skills (grokhunter, …) | `grokhunter skills install` |
 | Standalone MCP | `mcp` / skill `mcp-lab` |
 | Disk full after clone | `storage` |
-| Git identity | skill `github-lab` |
+| Git identity | `github` |
 | User hooks JSON | `hook` |
 
 ## Process
@@ -44,6 +44,15 @@ You own **`grok plugin`**. `grokhunter plugin` only launches this agent.
 - `--trust` only for a source the **user named**
 - Plugins clone git + may start MCP — watch disk (skill `storage-lab`)
 - Prefer HTTP MCP inside plugins
+
+## Common failures
+
+| Symptom | First step |
+|---------|------------|
+| Marketplace empty | `grok plugin marketplace` / list; check network |
+| `--trust` on unknown source | Trust only a source the **user named** |
+| Disk full after clone | `storage` |
+| Product skills missing | `grokhunter skills install` — not `grok plugin` |
 
 ## Required output — Plugin card
 

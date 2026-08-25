@@ -42,6 +42,20 @@ Secrets in env/headers: **`${VAR}`**, not pasted tokens. Do not commit keys. `np
 - `grok mcp doctor` before editing TOML by hand
 - Never dump `config.toml` env values into chat
 
+## Common failures
+
+| Symptom | First step |
+|---------|------------|
+| `npx` timeout on phone | Prefer HTTP/SSE; raise startup timeout if stdio is required |
+| Pasted tokens in TOML | Use `${VAR}`; never print env/header values |
+| Node missing | skill `toolchain` |
+
+## Verify
+
+```bash
+grok mcp doctor
+```
+
 ## Cross-links
 
 - Grok user guide: `~/.grok/docs/user-guide/07-mcp-servers.md`

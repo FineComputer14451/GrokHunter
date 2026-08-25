@@ -133,6 +133,14 @@ print(client.responses.create(model="grok-4.6", input="Say hello").output_text)
 
 Docs: https://docs.x.ai/developers/quickstart · https://docs.x.ai/developers/models
 
+## Common failures
+
+| Symptom | First step |
+|---------|------------|
+| Broken lab / missing grok | skill `grokhunter` (`doctor`, `skills install`) |
+| X11 black / binds / bwrap | skill `x11-desktop` |
+| Want git auto-commit pair | skill `aider-grok` |
+
 ## Session patterns
 
 | Goal | Approach |

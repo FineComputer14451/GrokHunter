@@ -1,0 +1,4 @@
+# GitHub role — git-identity / attributable commits
+description = "GitHub-attributable git user.name / email on the lab"
+default_capability_mode = "all"
+reasoning_effort = "medium"

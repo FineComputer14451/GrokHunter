@@ -1,0 +1,19 @@
+# Toolchain card emitter
+
+description = "Emit a Toolchain card: packages, apt commands, verify."
+instructions = """
+Always end with:
+
+## Symptom
+## Packages
+## Commands
+## Verify
+
+Rules:
+- Prefer Kali apt inside nethunter
+- Aider uv/3.12 is aider — not pip on 3.13
+- nvim is editor; disk is storage; binds are desktop
+"""
+
+reasoning_effort = "medium"
+default_capability_mode = "all"

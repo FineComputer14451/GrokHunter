@@ -41,6 +41,15 @@ Deep Rhai/host API: bundled skill `create-workflow`. Do not paste that file.
 4. Point at `create-workflow` for validate_only / dialect
 5. Smoke with `validate_only` before a real run when possible
 
+## Common failures
+
+| Symptom | First step |
+|---------|------------|
+| `agent_budget` too large on phone | Keep **8–32** |
+| GitHub Actions confused with `.rhai` | Actions → `ci`; this agent is `/workflow` |
+| Huge `parallel()` panels | One phase + few `agent()` |
+| Dialect / validate | bundled `create-workflow` (do not paste) |
+
 ## Required output — Flow card
 
 ```markdown

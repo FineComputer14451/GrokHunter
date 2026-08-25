@@ -49,6 +49,21 @@ In TUI: `/resume` · `/rename` · `/fork` · `/dashboard` (aliases `/sessions`).
 
 History lives under `~/.grok/sessions/` (URL-encoded cwd). Do not dump session files into chat.
 
+## Common failures
+
+| Symptom | First step |
+|---------|------------|
+| TUI vanished after app switch | `tmux attach` or `grok --resume` |
+| Nested tmux | Prefer host *or* guest, not both |
+| Desktop session died | skill `x11-desktop` (`nh-x11`, not tmux) |
+
+## Verify
+
+```bash
+tmux ls
+# grok --resume
+```
+
 ## Cross-links
 
 - Completions / profile: `docs/SHELL.md`

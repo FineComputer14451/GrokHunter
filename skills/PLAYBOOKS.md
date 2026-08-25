@@ -15,8 +15,8 @@ Symptom → skill routing for the GrokHunter phone lab. Prefer the **narrowest**
 | Grok binary missing / &lt; 1.0.5 | `grokhunter` | `grokhunter ensure` |
 | models=no / pickers missing | `grok-models` | `grokhunter models install` |
 | Skills not discovered | `grokhunter` | `grokhunter skills install` |
-| GitHub `invalid-email-address` | `github-lab` | `grokhunter git-identity set` |
-| Secrets missing / ai-smoke key | `secrets-lab` | `~/.grok/secrets.env` mode 600 |
+| GitHub `invalid-email-address` | `github-lab` | `grokhunter git-identity set` (agent `github`) |
+| Secrets missing / ai-smoke key | `secrets-lab` | `~/.grok/secrets.env` mode 600 (agent `secrets`) |
 
 ## Coding sessions
 
@@ -26,7 +26,7 @@ Symptom → skill routing for the GrokHunter phone lab. Prefer the **narrowest**
 | Multi-agent feature work | `pair-programming` + agents | `coding-team` / benjamin → lucas → harper |
 | Git-native auto-commit pair | `aider-grok` | uv + Python 3.12 |
 | Aider missing on Kali 3.13 | `aider-grok` | `scripts/install_aider.sh` |
-| Compilers / node / apt missing | `toolchain` | Prefer Kali apt |
+| Compilers / node / apt missing | `toolchain` | Prefer Kali apt (agent `toolchain`) |
 | Human editor (nvim/micro) | `editor-lab` | Not a pair tool |
 
 ## Desktop & shell
@@ -35,6 +35,9 @@ Symptom → skill routing for the GrokHunter phone lab. Prefer the **narrowest**
 |---------|-------|-------|
 | Black screen after `nh-x11` | `x11-desktop` | legacy drawing is default; compositor |
 | Desktop lag / jank | `x11-desktop` | sharedUid APK, light DE |
+| `/tmp` X socket / binds missing | `x11-desktop` | `grokhunter binds status` then repair/optimize |
+| XFCE panel / glycin `bwrap` abort | `x11-desktop` | `bwrap-proot`; `docs/TROUBLESHOOTING.md` |
+| TLS / `SSL_CERT_FILE` / CA | `grokhunter` | `lib/tls.sh`; never print certs |
 | Am I in Termux or Kali? | `host-lab` | PREFIX / pkg vs apt |
 | TUI vanished / Termux killed process | `session-lab` | tmux / `grok --resume` |
 | TAB complete / `ghd` missing | `shell-lab` | source `~/.grok/profile.sh` |
@@ -67,6 +70,7 @@ grokhunter git-identity set
 grokhunter ai-smoke
 bash scripts/ci-unit.sh
 nh-x11                    # legacy drawing on; NH_X11_LEGACY=0 to disable
+grokhunter binds status
 aider-grok
 ```
 
@@ -78,6 +82,9 @@ Skills are playbooks for the current session. For long multi-step work or spawna
 skills/x11-desktop  →  agent desktop
 skills/mcp-lab      →  agent mcp
 skills/session-lab  →  agent session
+skills/github-lab   →  agent github
+skills/secrets-lab  →  agent secrets
+skills/toolchain    →  agent toolchain
 …
 ```
 

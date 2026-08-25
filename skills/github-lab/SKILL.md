@@ -53,14 +53,30 @@ Identity does **not** require GitHub CLI. Origin fallback is enough on a clone o
 
 Install `gh` only if the user needs PRs/releases from the phone (`apt install gh` or GitHub's linux aarch64 binary). Never print tokens.
 
+## Common failures
+
+| Symptom | First step |
+|---------|------------|
+| `invalid-email-address` / `root` | `grokhunter git-identity set` |
+| `gh api` TLS / missing CA | `lib/tls.sh` sanitizes `SSL_CERT_FILE`; do not paste certs |
+| No `gh` CLI | Origin fallback is enough; `gh` is optional |
+
+## Verify
+
+```bash
+grokhunter git-identity
+```
+
 ## Hard rules
 
 - Never log or commit `XAI_API_KEY`, `GH_TOKEN`, or private keys
 - Prefer `git config --global` so every repo on the lab is attributable
 - Do not rewrite published history unless the user explicitly asks
+- Hard rules: `skills/REFERENCES.md`
 
 ## Cross-links
 
+- Agent `github` (`grokhunter github` launches the agent; CLI is `grokhunter git-identity`)
 - CLI + doctor: skill `grokhunter`
 - Docs: `docs/FAQ.md`, `docs/TROUBLESHOOTING.md`
 - Agent `ship` for VERSION/changelog/tag — not this skill

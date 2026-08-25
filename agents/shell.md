@@ -52,6 +52,15 @@ autoload -Uz compinit && compinit
 [[ -r ~/.grok/profile.sh ]] && source ~/.grok/profile.sh
 ```
 
+## Common failures
+
+| Symptom | First step |
+|---------|------------|
+| rc never sources `profile.sh` | One-line append; installer never auto-edits rc |
+| `ghd` / TAB missing | `source ~/.grok/profile.sh`; completions script |
+| Wrappers not copied | `overlay` |
+| `gh` accidentally aliased | Leave `gh` for GitHub CLI |
+
 ## Required output — Shell card
 
 ```markdown

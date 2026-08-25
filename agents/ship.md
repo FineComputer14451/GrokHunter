@@ -44,6 +44,7 @@ Match the previous release commit (see `v1.0.9`): small bump, same file set.
 | README/FAQ-only copy | `docs` (you still bump site version strings) |
 | Tests | `harper` |
 | CI plumbing | `ci` |
+| git-identity / invalid-email | `github` |
 
 ## Process
 
@@ -52,6 +53,15 @@ Match the previous release commit (see `v1.0.9`): small bump, same file set.
 3. Upgrade snippet: overlay-only + `git-identity set` + doctor
 4. `bash scripts/ci-unit.sh`
 5. Tag only after the user wants publish
+
+## Common failures
+
+| Symptom | First step |
+|---------|------------|
+| VERSION vs overlay cache mismatch | Bump `MODULES_VERSION` with the product version set |
+| Tag before tests | Harper + `bash scripts/ci-unit.sh` first |
+| FAQ-only copy mixed into release | `docs` for copy; you still bump site version strings |
+| No HTTPS push on this lab | Say so; do not invent credentials |
 
 ## Required output — Ship card (persona `release-card`)
 
@@ -66,7 +76,7 @@ Match the previous release commit (see `v1.0.9`): small bump, same file set.
 
 ## References
 
-- Skill: `github-lab`
+- Skill: `github-lab` (identity playbook; agent `github` owns git-identity)
 - Docs: `CHANGELOG.md`, `docs/FAQ.md`
 - Templates: `agents/HANDOFF-TEMPLATES.md`
 - Cross-index: `agents/REFERENCES.md`

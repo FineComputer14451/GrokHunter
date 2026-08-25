@@ -58,7 +58,7 @@ Canonical protocol: `docs/CODING-TEAM.md`.
 ## Call / data flow (if relevant)
 ## Risks / surprises
 ## Suggested next agent
-benjamin | lucas | harper | review | fix | desktop | coding-team
+benjamin | lucas | harper | review | fix | desktop | overlay | host | coding-team
 ```
 
 ---
@@ -103,8 +103,9 @@ harper | lucas | benjamin | none
 ## Diagnosis
 ## Fix applied / recommended commands
 ## Verify
+grokhunter binds status / nh-x11
 ## Escalate
-lucas (script bugs) | benjamin (design) | harper (regressions)
+lucas (script bugs) | benjamin (design) | harper (regressions) | overlay (install patch)
 ```
 
 ---
@@ -278,4 +279,37 @@ overlay | desktop | toolchain
 ## rc / profile
 ## Commands
 ## Verify (type ghd / TAB)
+```
+
+---
+
+## GitHub card (github)
+
+```markdown
+## Symptom
+## Identity
+## Commands
+## Verify (grokhunter git-identity)
+```
+
+---
+
+## Secrets card (secrets)
+
+```markdown
+## Symptom
+## File / mode
+## Commands
+## Verify (ai-smoke — never print the key)
+```
+
+---
+
+## Toolchain card (toolchain)
+
+```markdown
+## Symptom
+## Packages
+## Commands
+## Verify
 ```

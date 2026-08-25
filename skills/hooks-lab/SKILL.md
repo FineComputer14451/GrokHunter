@@ -41,6 +41,18 @@ Project hooks need `/hooks-trust` (same folder-trust store as MCP). Do not `--tr
 - Never print secrets from hook stdout
 - PreToolUse can deny; do not invent root/Magisk guards
 
+## Common failures
+
+| Symptom | First step |
+|---------|------------|
+| `/hooks` empty | `~/.grok/hooks/*.json`; restart grok |
+| Project hook skipped | `/hooks-trust` only if the user wants this repo trusted |
+| Long apt in a hook | Keep commands tiny (echo / short script) |
+
+## Verify
+
+TUI `/hooks`. Agent: `hook`.
+
 ## Cross-links
 
 - Agent `hook`

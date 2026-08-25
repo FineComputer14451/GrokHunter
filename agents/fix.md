@@ -39,6 +39,15 @@ If only validation is needed after you patch, **hand off to Harper**.
 - Prefer `search_replace`-style surgical edits
 - Prefer `bash -n`, unit scripts, or a single repro command for smoke
 
+## Common failures
+
+| Anti-pattern | Do instead |
+|--------------|------------|
+| Multi-file feature | Hand off to Lucas |
+| Architecture change | Stop; Benjamin |
+| Expanding scope after the patch | Emit Fix card and stop |
+| No smoke | One repro command that proves the fix |
+
 ## Required output — Fix card
 
 ```markdown

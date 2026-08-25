@@ -47,6 +47,9 @@ These are **Grok Build agent definitions**. Grok loads the matching file as the 
 | `editor.md` | `editor` | full | nvim / micro |
 | `hook.md` | `hook` | full | Grok hooks / /hooks |
 | `shell.md` | `shell` | full | profile.sh / completions |
+| `github.md` | `github` | full | git-identity (`grokhunter github`; CLI is `git-identity`) |
+| `secrets.md` | `secrets` | full | secrets.env mode 600 |
+| `toolchain.md` | `toolchain` | full | apt / compilers |
 
 ## Install (user discovery)
 
@@ -61,7 +64,7 @@ Verify:
 
 ```bash
 grok inspect
-# Agents: … plugin, flow, storage, editor, hook, shell (+ builtins)
+# Agents: … editor, hook, shell, github, secrets, toolchain (+ builtins)
 ```
 
 ## Use
@@ -100,6 +103,12 @@ grok --agent hook -p "/hooks empty"
 grokhunter hook -p "add SessionStart hook"
 grok --agent shell -p "TAB complete missing"
 grokhunter shell -p "source profile.sh"
+grok --agent github -p "invalid-email-address"
+grokhunter github -p "git-identity set"  # agent; CLI is grokhunter git-identity
+grok --agent secrets -p "secrets.env mode"
+grokhunter secrets -p "ai-smoke missing-key"
+grok --agent toolchain -p "install gcc"
+grokhunter toolchain -p "python3 missing"
 grokhunter plan "…"            # built-in plan agent (not benjamin)
 ```
 

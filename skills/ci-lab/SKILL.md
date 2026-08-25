@@ -34,6 +34,20 @@ Covers: `bash -n`, CLI help, git-identity, doctor probes, overlay extract, skill
 
 This lab often cannot `git push` over HTTPS. Do not invent credentials; see skill `github-lab`.
 
+## Common failures
+
+| Symptom | First step |
+|---------|------------|
+| Red locally | `bash scripts/ci-unit.sh` first |
+| Smoke skipped on bot push | Dispatch Smoke; `GITHUB_TOKEN` pushes do not retrigger |
+| No HTTPS push on this lab | skill `github-lab`; do not invent credentials |
+
+## Verify
+
+```bash
+bash scripts/ci-unit.sh
+```
+
 ## Cross-links
 
 - Agent `ci` for failing jobs / adding assertions

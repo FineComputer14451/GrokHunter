@@ -66,7 +66,7 @@ Clarify goal + constraints
 | Diff / PR review only | `review` |
 | One-bug surgical patch | `fix` |
 | Installer / PATH / cache / wrappers | `overlay` |
-| Termux:X11 / nh-x11 / proot desktop | `desktop` |
+| Termux:X11 / nh-x11 / proot desktop | `desktop` (`grokhunter binds`, bwrap/glycin) |
 | Termux host vs Kali guest | `host` |
 | VERSION / changelog / tag | `ship` |
 | README / FAQ / site copy | `docs` |
@@ -81,6 +81,9 @@ Clarify goal + constraints
 | nvim / micro | `editor` |
 | `~/.grok/hooks` / `/hooks` | `hook` |
 | profile.sh / completions / `ghd` | `shell` |
+| git-identity / invalid-email | `github` (CLI is `grokhunter git-identity`) |
+| secrets.env / missing API key | `secrets` |
+| apt / gcc / python / node | `toolchain` (Aider uv stays `aider`) |
 
 ### When not to use the full loop
 
@@ -88,10 +91,13 @@ Clarify goal + constraints
 |-----------|--------|
 | One-line bug | `fix` |
 | Installer / PATH / cache | `overlay` |
-| X11 black screen / lag | `desktop` |
+| X11 black screen / lag / binds / bwrap | `desktop` |
 | “Am I in Termux or Kali?” | `host` |
 | Version / tag only | `ship` (after Harper if code changed) |
 | Doc-only drift | `docs` |
+| GitHub invalid-email | `github` |
+| secrets.env / ai-smoke key | `secrets` |
+| Compilers missing | `toolchain` |
 
 ## Mobile constraints checklist
 
@@ -169,6 +175,9 @@ grok --agent storage -p "df full after overlay-only"
 grok --agent editor -p "install nvim in Kali"
 grok --agent hook -p "SessionStart hook did not fire"
 grok --agent shell -p "ghd not found in new zsh"
+grok --agent github -p "commits show invalid-email-address"
+grok --agent secrets -p "ai-smoke missing-key"
+grok --agent toolchain -p "gcc missing in nethunter"
 ```
 
 In TUI: `/config-agents` or `/agents` · personas: `/personas`.

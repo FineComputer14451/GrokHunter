@@ -41,6 +41,20 @@ du -sh ~/.cache/grokhunter ~/.grok/sessions ~/.grok/installed-plugins 2>/dev/nul
 
 Do **not** delete the Kali rootfs or `~/.grok/secrets.env`. Uninstall overlay only: `bash uninstall.sh` (keeps rootfs).
 
+## Common failures
+
+| Symptom | First step |
+|---------|------------|
+| SD-card rootfs slow / full | Prefer internal; `docs/PROOT.md` |
+| Overlay cache fill | `du -sh ~/.cache/grokhunter`; ask before `rm` |
+| Install failed on space | `--nano` / `--mini` / `--overlay-only` |
+
+## Verify
+
+```bash
+df -h
+```
+
 ## Cross-links
 
 - Agent `storage`

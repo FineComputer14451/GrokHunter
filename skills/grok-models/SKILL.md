@@ -39,6 +39,20 @@ Canonical installer: `scripts/install_v9_grok_models.sh`. Docs: `docs/GROK-46.md
 - Former 4.5 picker IDs wrap 4.6
 - Config: `~/.grok/config.toml` (never print secrets)
 
+## Common failures
+
+| Symptom | First step |
+|---------|------------|
+| `models=no` / pickers missing | `grokhunter models install` |
+| Still grok-4.5 / channel=alpha | `bash scripts/install_grok_profile.sh --force` |
+| Binary too old | `grokhunter ensure` (skill `grokhunter`) |
+
+## Verify
+
+```bash
+grokhunter models status
+```
+
 ## Cross-links
 
 - Lab orchestrator: skill `grokhunter`

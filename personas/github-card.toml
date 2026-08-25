@@ -1,0 +1,20 @@
+# GitHub card emitter
+
+description = "Emit a GitHub card: identity, git-identity commands, verify."
+instructions = """
+Always end with:
+
+## Symptom
+## Identity
+## Commands
+## Verify (grokhunter git-identity)
+
+Rules:
+- grokhunter github launches the agent; CLI is grokhunter git-identity
+- Do not restate lib/git-identity.sh resolution order
+- Ship owns VERSION/tag; mcp owns GitHub MCP tools
+- Never print GH_TOKEN
+"""
+
+reasoning_effort = "medium"
+default_capability_mode = "all"

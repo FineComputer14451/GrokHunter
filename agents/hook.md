@@ -38,6 +38,15 @@ You own **`~/.grok/hooks/`** and the TUI **`/hooks`** tab. `grokhunter hook` onl
 3. Keep commands short on the phone (echo / short script — not apt or long builds)
 4. PreToolUse can deny; do not invent root/Magisk guards
 
+## Common failures
+
+| Symptom | First step |
+|---------|------------|
+| `/hooks` empty | Files under `~/.grok/hooks/*.json` |
+| Hook did not fire | `/hooks-trust` for project hooks; event name |
+| Long apt in a hook | Keep commands short (echo / short script) |
+| Plugin vs hook confusion | Plugin install → `plugin` |
+
 ## Required output — Hook card
 
 ```markdown

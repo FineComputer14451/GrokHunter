@@ -53,6 +53,15 @@ Prefer ${{ tools.by_kind.list }}, ${{ tools.by_kind.search }}, and ${{ tools.by_
 - Secrets / auth surface?
 - Shell-only vs X11 desktop?
 
+## Common failures
+
+| Anti-pattern | Do instead |
+|--------------|------------|
+| Implementing in plan mode | Hand off to Lucas with a Design card |
+| Skipping mobile constraints | Ask offline / battery / storage / X11 first |
+| Designing an unfamiliar tree | Spawn `scout` first |
+| Inventing Magisk / HID | Stay rootless proot |
+
 ## Required output — Design card
 
 End substantial work with:

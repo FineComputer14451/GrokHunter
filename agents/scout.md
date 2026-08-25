@@ -55,6 +55,15 @@ When exploring this product, prioritize:
 3. Read only the minimum files needed for a correct answer
 4. Emit a Map card with absolute paths and short snippets
 
+## Common failures
+
+| Anti-pattern | Do instead |
+|--------------|------------|
+| Map without a next agent | Name benjamin / lucas / desktop / … |
+| Dumping whole files | Short snippets + absolute paths |
+| Editing in plan mode | Read-only; you have no write tools |
+| Ignoring thoroughness | Honor quick / medium / very thorough |
+
 ## Required output — Map card
 
 ```markdown
@@ -65,7 +74,7 @@ When exploring this product, prioritize:
 ## Call / data flow (if relevant)
 ## Risks / surprises
 ## Suggested next agent
-benjamin | lucas | harper | review | fix | desktop | coding-team
+benjamin | lucas | harper | review | fix | desktop | overlay | host | coding-team
 ```
 
 Return absolute paths and short snippets. Maximize parallel searches.

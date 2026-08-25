@@ -49,6 +49,21 @@ source ~/.grok/profile.sh 2>/dev/null || true
 
 Wrappers land in `~/.local/bin` (`grokhunter skills install` / overlay-only). New shell or `source` after install.
 
+## Common failures
+
+| Symptom | First step |
+|---------|------------|
+| grokhunter in one shell only | PATH + `source ~/.grok/profile.sh`; wrappers → `overlay` |
+| `pkg` vs `apt` | PREFIX set → Termux host; apt → Kali guest |
+| `install.sh` refuses Kali | One-liner is Termux; overlay-only from a Kali clone is OK |
+
+## Verify
+
+```bash
+echo "PREFIX=${PREFIX:-unset}"
+command -v grokhunter; command -v nethunter
+```
+
 ## Cross-links
 
 - Wrappers / overlay-only: agent `overlay`

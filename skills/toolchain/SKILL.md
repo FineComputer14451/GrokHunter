@@ -55,9 +55,24 @@ proot `/tmp` is not the Android host tmp. If builds fail on `/tmp`, check `docs/
 
 Only if asked. Prefer `apt` (`golang`, `rustc`/`cargo`) over rustup/gvm on a phone. Warn about disk and battery.
 
+## Common failures
+
+| Symptom | First step |
+|---------|------------|
+| `gcc` / `python3` / `node` missing | Kali `apt` inside `nethunter` |
+| Aider on Python 3.13 | `bash ~/GrokHunter/scripts/install_aider.sh` (uv 3.12) |
+| Builds fail on `/tmp` | `docs/PROOT.md`; `grokhunter binds status` (skill `x11-desktop`) |
+
+## Verify
+
+```bash
+command -v gcc python3 git
+```
+
 ## Cross-links
 
+- Agent `toolchain` (`grokhunter toolchain`)
+- Aider uv / Python 3.12: skill `aider-grok` / agent `aider`
 - Disk / `--mini` / cache cleanup: skill `storage-lab`
 - Lab orchestrator: skill `grokhunter` (`ensure`, doctor, overlay-only)
-- Git-native pair: skill `aider-grok`
 - Identity: skill `github-lab` · `grokhunter git-identity set`
