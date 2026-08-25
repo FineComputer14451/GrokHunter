@@ -7,6 +7,7 @@ Compatible with **Grok Build 1.0.5+** (`~/.grok/agents/`, `/config-agents`, `spa
 | Related | Path |
 |---------|------|
 | Agent roster / CLI | [agents/README.md](../agents/README.md) |
+| Add a specialist | [agents/README.md](../agents/README.md#adding-a-specialist) |
 | Cross-index | [agents/REFERENCES.md](../agents/REFERENCES.md) |
 | All handoff cards | [agents/HANDOFF-TEMPLATES.md](../agents/HANDOFF-TEMPLATES.md) |
 | Session style | skill `pair-programming` |

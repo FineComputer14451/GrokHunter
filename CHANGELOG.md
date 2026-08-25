@@ -37,6 +37,7 @@
 
 - Playbooks catch up to Unreleased: `grokhunter binds`, TLS/`lib/tls.sh`, `bwrap-proot` / glycin. Thin agents/skills gain Common failures + Verify.
 - Wave 6: agents **`github`**, **`secrets`**, **`toolchain`** (skills already existed). `grokhunter github` launches the agent; CLI is `grokhunter git-identity`. No binds agent — Desktop owns `grokhunter binds`.
+- Specialist add recipe in `agents/README.md` (skill-only vs agent+skill; CLI collisions; ci-unit). No new names.
 - Optional skills **`toolchain`** (apt / Aider Python 3.12 / storage) and **`github-lab`** (`git-identity` playbook)
 - Agents **`overlay`**, **`ship`**, **`docs`** plus roles/personas and Coding Team routing
 - `grokhunter overlay|ship|docs` launchers + completions

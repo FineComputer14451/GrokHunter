@@ -54,4 +54,4 @@ role        = capabilities + effort defaults
 persona     = tone + card contracts (mobile, concise, …)
 ```
 
-TUI: `/config-agents` · see also [personas/README.md](../personas/README.md) and [docs/CODING-TEAM.md](../docs/CODING-TEAM.md).
+TUI: `/config-agents` · see also [personas/README.md](../personas/README.md) and [docs/CODING-TEAM.md](../docs/CODING-TEAM.md). New specialist role: [agents/README.md — Adding a specialist](../agents/README.md#adding-a-specialist).

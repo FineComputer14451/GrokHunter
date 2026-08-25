@@ -88,7 +88,7 @@ grok inspect
 
 | Tree | Role |
 |------|------|
-| `agents/` | Runtime agent system prompts |
+| `agents/` | Runtime agent system prompts — add recipe in [agents/README.md](../agents/README.md#adding-a-specialist) |
 | `personas/` | Tone + card contracts |
 | `roles/` | Capability mode + reasoning effort |
 | `config/` | Completions, desktop entries, profile |

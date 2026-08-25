@@ -83,4 +83,4 @@ grok inspect
 
 Personas are applied via **role / resolution**, not a `spawn_subagent` parameter. Use the Personas tab or roles that reference them.
 
-See [docs/CODING-TEAM.md](../docs/CODING-TEAM.md) and Grok user guide *Subagents*.
+See [docs/CODING-TEAM.md](../docs/CODING-TEAM.md) and Grok user guide *Subagents*. New specialist persona: [agents/README.md — Adding a specialist](../agents/README.md#adding-a-specialist).

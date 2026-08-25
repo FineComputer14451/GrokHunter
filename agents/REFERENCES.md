@@ -7,6 +7,7 @@ Canonical cross-links for every GrokHunter agent. Keep agent files lean; put sha
 | Related | Path |
 |---------|------|
 | Roster / CLI | [README.md](README.md) |
+| Add a specialist | [README.md](README.md#adding-a-specialist) |
 | Handoff cards | [HANDOFF-TEMPLATES.md](HANDOFF-TEMPLATES.md) |
 | Skills index | [skills/REFERENCES.md](../skills/REFERENCES.md) |
 | Skills roster | [skills/README.md](../skills/README.md) |

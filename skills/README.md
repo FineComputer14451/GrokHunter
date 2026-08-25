@@ -4,7 +4,7 @@ These are **Grok Build skill definitions** (playbooks). Grok loads `SKILL.md` wh
 
 **Product version:** 1.0.9 · Grok Build ≥ 1.0.5 · Default model: **grok-4.6**
 
-Skills are **playbooks** (how to do a thing). Agents are **runtime specialists** (who does it). See [agents/README.md](../agents/README.md). Full agent / role / persona map: [roles/README.md](../roles/README.md) · [agents/REFERENCES.md](../agents/REFERENCES.md).
+Skills are **playbooks** (how to do a thing). Agents are **runtime specialists** (who does it). See [agents/README.md](../agents/README.md). Full agent / role / persona map: [roles/README.md](../roles/README.md) · [agents/REFERENCES.md](../agents/REFERENCES.md). Adding a new specialist: [agents/README.md — Adding a specialist](../agents/README.md#adding-a-specialist).
 
 ## Supporting files
 

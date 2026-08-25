@@ -112,6 +112,48 @@ grokhunter toolchain -p "python3 missing"
 grokhunter plan "…"            # built-in plan agent (not benjamin)
 ```
 
+## Adding a specialist
+
+One home for this recipe. Copy a gold file; do not invent a parallel checklist.
+
+| Kind | Gold copy |
+|------|-----------|
+| Normal lab agent | [`toolchain.md`](toolchain.md) |
+| Agent whose CLI name is taken | [`github.md`](github.md) (`grokhunter github` vs `git-identity`) |
+| Skill playbook | [`secrets-lab/SKILL.md`](../skills/secrets-lab/SKILL.md) |
+| Common failures / Do not steal | [`overlay.md`](overlay.md), [`session.md`](session.md) |
+
+**Do not add** a `binds` agent (Desktop owns `grokhunter binds`). **Do not** promote `nethunter-recon` to a product default. Core health stays `skills=N/3` (`grokhunter`, `pair-programming`, `aider-grok`).
+
+### Skill-only
+
+If there is nothing to spawn, stop at a playbook:
+
+1. `skills/<name>/SKILL.md` — YAML `name` + `description` with trigger words; optional, not N/3
+2. When to activate, first commands, **Common failures** (3–6 rows), **Verify**, cross-link
+3. [`skills/PLAYBOOKS.md`](../skills/PLAYBOOKS.md) + [`skills/README.md`](../skills/README.md) + both REFERENCES indexes
+4. `grokhunter skills install` (scan-based; skip `_` dirs)
+
+### Agent + skill (Wave 6 shape)
+
+Use this when Coding Team should `spawn_subagent` / `grokhunter <name>`:
+
+1. **Name** — kebab `agents/<name>.md`. Must not steal: `binds`, `models` (use `modeler`), `git-identity` (use `github`), `mcp`/`plugin` (those CLIs are `grok …`).
+2. **Agent file** — frontmatter `name`, `description`, `prompt_mode: full`, `permission_mode: default` (or `plan` if read-only), `agents_md: true`. Body: ownership sentence, Domain, Do not steal, Process, Common failures, card, References, Activation.
+3. **Skill** — pair `skills/<name>/` or `skills/<name>-lab/` (existing pattern). Point at the agent; do not copy Domain tables.
+4. **Role** — `roles/<name>.toml` (`default_capability_mode`, `reasoning_effort`).
+5. **Persona** — `personas/<name>-card.toml` emitting the same card as [`HANDOFF-TEMPLATES.md`](HANDOFF-TEMPLATES.md).
+6. **Card** — add the skeleton to `HANDOFF-TEMPLATES.md`.
+7. **CLI** — `bin/grokhunter`: one `usage()` line (**no backticks** — ci-unit greps the heredoc) and append `<name>` to the specialist `case` arm. Keep the file **under 1000 lines**. Collision: `modeler` → agent `models`; `github` → CLI `git-identity`; `mcp`/`plugin` → `grok mcp` / `grok plugin`.
+8. **Completions** — `config/completions/zsh/_grokhunter` and `config/completions/bash/grokhunter.bash`.
+9. **ci-unit** — `grep -q 'grokhunter <name>'` on help; `grep -qx "<name>"` in install_agents / install_roles / install_personas (`<name>-card`).
+10. **Coding Team** — roster row, routing rule, spawn list, speaker label `[Name]`, activation line in `agents/coding-team.md` + `docs/CODING-TEAM.md`.
+11. **Indexes** — this roster table, [`REFERENCES.md`](REFERENCES.md), [`skills/REFERENCES.md`](../skills/REFERENCES.md), PLAYBOOKS escalate map, README + `website/index.html` CLI row, FAQ one-liner, CHANGELOG Unreleased.
+12. **Neighbors** — Do not steal rows on the agents you almost collided with (Wave 6: ship vs github, aider vs toolchain, secrets vs mcp).
+13. **Verify** — `bash scripts/ci-unit.sh`; `grokhunter help | grep <name>`; `grokhunter skills install`.
+
+Install copies are scan-based (`lib/agents-discover.sh`, `lib/skills-discover.sh`). CLI, completions, and Coding Team routing are **not**.
+
 ## Loop
 
 ```text

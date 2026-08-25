@@ -89,3 +89,5 @@ skills/toolchain    →  agent toolchain
 ```
 
 Orchestrated coding: `grok --agent coding-team` or `/config-agents`.
+
+Minting a new specialist: [agents/README.md — Adding a specialist](../agents/README.md#adding-a-specialist).
