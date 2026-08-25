@@ -125,7 +125,7 @@ def strip_owned_sections(text: str) -> str:
                 stripped = lines[i].strip()
                 if re.match(r"^\[", stripped or ""):
                     break
-                if stripped.startswith("# --- GrokHunter:") and "NetHunter profile" not in stripped:
+                if stripped.startswith("# --- GrokHunter") and marker.strip() not in stripped:
                     break
                 i += 1
             continue

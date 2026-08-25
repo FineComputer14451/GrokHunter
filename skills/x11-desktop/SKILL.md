@@ -55,11 +55,11 @@ Deep detail: `docs/X11-PERFORMANCE.md`.
 ## Recovery commands
 
 ```bash
-# Default launch
+# Default launch (legacy drawing on)
 nh-x11
 
-# Black screen on some devices
-NH_X11_LEGACY=1 nh-x11
+# GPU path if legacy drawing is too slow
+NH_X11_LEGACY=0 nh-x11
 
 # Disable XFCE compositor (inside Kali session)
 xfconf-query -c xfwm4 -p /general/use_compositing -s false 2>/dev/null || true

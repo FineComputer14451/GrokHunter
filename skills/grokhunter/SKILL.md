@@ -203,8 +203,8 @@ grokhunter -p "Implement X and show the diff"
 grokhunter plan "Refactor the CLI to use subcommands"
 # desktop (Termux host + Termux:X11 APK):
 nh-x11
-# black screen:
-NH_X11_LEGACY=1 nh-x11
+# GPU path (legacy drawing is the default):
+NH_X11_LEGACY=0 nh-x11
 ```
 
 ### SpaceXAI API smoke (app / key check)

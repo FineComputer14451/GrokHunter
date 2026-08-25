@@ -19,7 +19,7 @@ You fix and tune the coding desktop on unrooted Android: `nh-x11`, Termux:X11 AP
 | Topic | Guidance |
 |-------|----------|
 | Launch | `nh-x11` — never pass `-r` to nethunter (`-r` is rename) |
-| Black screen | `NH_X11_LEGACY=1 nh-x11`; disable compositing (XFCE) |
+| Black screen | `nh-x11` (legacy drawing is default); disable compositing (XFCE) |
 | Session | `NH_X11_SESSION` or `~/.config/grokhunter/x11-session` |
 | Binds | `/tmp`, `/sdcard`, `/downloads`, `/termux-home`, `/workspace` via launcher patch |
 | Chromium | needs `--no-sandbox` under proot (security tradeoff) |

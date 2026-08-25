@@ -37,11 +37,11 @@ xfconf-query -c xfwm4 -p /general/use_compositing -s false 2>/dev/null || true
 ## 3. Preferential launch flags
 
 ```bash
-# Default (GrokHunter)
+# Default (GrokHunter; legacy drawing on)
 nh-x11
 
-# Black screen on some devices
-NH_X11_LEGACY=1 nh-x11
+# GPU path if legacy drawing is too slow
+NH_X11_LEGACY=0 nh-x11
 
 # Manual Termux-native example
 termux-x11 :0 -dpi 120 -xstartup "dbus-launch --exit-with-session xfce4-session"

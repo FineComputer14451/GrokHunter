@@ -513,6 +513,9 @@ printf "  ${CYAN}Thank you${NC} jorexdeveloper · Termux · Kali/OffSec · xAI �
 
 # ---------- Network ----------
 hdr "Network"
+if declare -F _gh_install_tls_compat >/dev/null 2>&1; then
+  _gh_install_tls_compat || true
+fi
 if [[ -r /etc/resolv.conf ]] && grep -qE 'nameserver\s+' /etc/resolv.conf 2>/dev/null; then
   ok "/etc/resolv.conf has nameservers"
 else

@@ -10,15 +10,14 @@ _gh_http_code_means_reachable() {
   esac
 }
 
-# Grok/Termux may inject SSL_CERT_FILE=/etc/tls/cert.pem (absent in Kali).
-_gh_tls_sanitize_env() {
-  if [[ -n "${SSL_CERT_FILE:-}" && ! -r "${SSL_CERT_FILE}" ]]; then
-    unset SSL_CERT_FILE
+if ! declare -F _gh_tls_sanitize_env >/dev/null 2>&1; then
+  _gh_tls="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" 2>/dev/null && pwd)/tls.sh"
+  if [[ -f "${_gh_tls}" ]]; then
+    # shellcheck source=lib/tls.sh
+    source "${_gh_tls}"
   fi
-  if [[ -n "${SSL_CERT_DIR:-}" && ! -d "${SSL_CERT_DIR}" ]]; then
-    unset SSL_CERT_DIR
-  fi
-}
+  unset _gh_tls
+fi
 
 _gh_https_got_response() {
   local url="${1:-}" code=""

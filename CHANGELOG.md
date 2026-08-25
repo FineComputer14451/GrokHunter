@@ -8,9 +8,17 @@
 - `install_grok_profile.sh` no longer drops the V9 picker marker that sits after `[models]`.
 - Honor Kali CA bundle when Grok/Termux inject `SSL_CERT_FILE=/etc/tls/cert.pem` (profile, doctor probe, git-identity, `/etc/tls` compat symlink).
 - `nh-x11` uses `nethunter --env … -- COMMAND` (jorexdeveloper 2026.2.x). Fixes `Unrecognized option '-lc'`.
-- `nh-x11` exports DISPLAY inside `su --login` and uses `XDG_RUNTIME_DIR=/tmp/runtime-kali` (mode 700) so XFCE/dbus can start.
+- `nh-x11` passes DISPLAY via `--env` plus a non-login `su -c`, and uses `XDG_RUNTIME_DIR=/tmp/runtime-kali` (mode 700) so XFCE/dbus can start.
 - `bin/bwrap-proot` replaces Kali `/usr/bin/bwrap` (ELF kept as `bwrap.real`) so glycin SVG loaders do not abort GTK under proot.
 - `nh-x11` defaults to Termux:X11 `-legacy-drawing` (`NH_X11_LEGACY=0` to disable).
+- `nh-x11` wake-locks Termux, waits for the X11 socket, starts `xfce4-session` before opening the X11 app, and skips `startxfce4`/`xrdb` (hang under proot). XFCE session env (`XDG_MENU_PREFIX`) is still exported.
+- `nh-x11` no longer uses `su --login` (it cleared DISPLAY → `Cannot open display: .`).
+- `nh-x11` traps cleanup on EXIT/INT/TERM before the DE poll so a failed start still wake-unlocks.
+- `/etc/tls/cert.pem` compat symlink is written into the Kali rootfs (not only live `/etc` on Termux).
+- `grokhunter binds` matches jorexdeveloper `--bind=` / `proot_args+=(--bind=)` launchers; `optimize` now fails if the patch does not apply.
+- `git-identity` sanitizes a missing `SSL_CERT_FILE` before `gh api`, not only the curl fallback.
+- `nh-x11` tracks the `termux-x11` PID (cleanup + xserver log on socket timeout), aborts if the guest runtime dir cannot be created, and tails `nh-x11.log` when the session exits after “desktop is up”.
+- TLS rewrite/compat lives in `lib/tls.sh` (probe, identity, doctor, install). `grokhunter binds` lives in `lib/x11.sh`. One `_gh_install_bwrap_stub` is shared by setup and `nh-x11`.
 
 ### Branding
 - Converted `branding/*.png` from JPEG-named files to real PNG (icon, favicon, lockup).

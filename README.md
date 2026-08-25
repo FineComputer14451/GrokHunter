@@ -140,7 +140,7 @@ Base model is **grok-4.6**. See [docs/GROK-46.md](docs/GROK-46.md) and [docs/GRO
 
 1. Install the [Termux:X11 APK](https://github.com/termux/termux-x11/releases) (prefer **sharedUserId** builds with GitHub Termux).
 2. Run `nh-x11`.
-3. Black screen? `NH_X11_LEGACY=1 nh-x11`
+3. Black screen? `nh-x11` defaults to legacy drawing; `NH_X11_LEGACY=0` disables it.
 4. Performance tips: [docs/X11-PERFORMANCE.md](docs/X11-PERFORMANCE.md)
 
 ### Aider (optional)

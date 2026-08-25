@@ -71,6 +71,9 @@ info "no placeholder markers"
 # Incomplete 85ef807 left a 51-line stub that still passed PLACEHOLDER grep.
 _gh_cli_lines=$(wc -l < bin/grokhunter)
 [[ "${_gh_cli_lines}" -ge 200 ]] || die "bin/grokhunter looks stubbed (${_gh_cli_lines} lines)"
+[[ "${_gh_cli_lines}" -lt 1000 ]] || die "bin/grokhunter is ${_gh_cli_lines} lines; keep dispatch thin"
+grep -q 'cmd_binds()' lib/x11.sh || die "cmd_binds should live in lib/x11.sh"
+grep -q '_gh_ensure_x11_lib' bin/grokhunter && die "bin/grokhunter should not define _gh_ensure_x11_lib"
 info "grokhunter CLI length OK (${_gh_cli_lines} lines)"
 
 # ---------- parse_cli feature table ----------
@@ -139,6 +142,18 @@ bash -c '
   fi
   _patch_launcher_binds "$f"
   [[ "$(grep -c grokhunter-optimized-binds "$f")" -eq 1 ]]
+  f2="$d/nethunter-bind-eq"
+  printf "%s\n" "proot_args+=(--bind=/dev)" "proot_args+=(--bind=/proc)" > "$f2"
+  _patch_launcher_binds "$f2"
+  grep -q "grokhunter-optimized-binds" "$f2"
+  grep -q "proot_args+=(--bind=" "$f2"
+  grep -q "/workspace" "$f2"
+  grep -q "/tmp" "$f2"
+  mkdir -p "$TERMUX_FILES_DIR/usr/bin"
+  printf "%s\n" "#!/bin/sh" "echo no-binds" > "$TERMUX_FILES_DIR/usr/bin/nethunter"
+  rc=0
+  optimize_proot_binds || rc=$?
+  [[ "$rc" -ne 0 ]]
   rm -rf "$d"
 '
 info "bind-patch OK"
@@ -151,17 +166,58 @@ if grep -qE 'grok-cli-termux-native/main/install.sh' scripts/ensure_grok.sh; the
 fi
 info "termux-native grok pin OK"
 
-# nh-x11 must use nethunter -- COMMAND (not bash -lc as launcher options)
 if grep -vE '^[[:space:]]*#' bin/nh-x11 | grep -qE '/bin/bash[[:space:]]+-lc'; then
   die "nh-x11 must not pass bash -lc as nethunter options"
 fi
 grep -q -- '--share-tmp' bin/nh-x11 || die "nh-x11 should pass --share-tmp for X sockets"
 grep -q -- '--env DISPLAY=:0' bin/nh-x11 || die "nh-x11 should pass DISPLAY via --env"
-if grep -q -- '--env XDG_RUNTIME_DIR=/tmp' bin/nh-x11; then
-  die "nh-x11 must not set XDG_RUNTIME_DIR=/tmp (dbus rejects world-writable runtime)"
-fi
-grep -q 'XDG_RUNTIME_DIR=/tmp/runtime-kali' bin/nh-x11 || die "nh-x11 should use a 700 runtime dir"
+grep -q -- '--env XDG_RUNTIME_DIR=/tmp' bin/nh-x11 \
+  && die "nh-x11 must not set XDG_RUNTIME_DIR=/tmp (dbus rejects world-writable runtime)"
+grep -vE '^[[:space:]]*#' bin/nh-x11 | grep -q 'su --login' \
+  && die "nh-x11 must not use su --login (clears DISPLAY)"
+grep -vE '^[[:space:]]*#' bin/nh-x11 | grep -qE 'pgrep -x xfce4-session' \
+  && die "nh-x11 readiness must not hard-code xfce4-session"
+grep -q '_gh_install_bwrap_stub' bin/nh-x11 || die "nh-x11 should call _gh_install_bwrap_stub"
+grep -q 'grep -q bwrap-proot' bin/nh-x11 && die "nh-x11 should not inline bwrap ELF replacement"
+grep -A80 '^setup_termux_x11()' lib/x11.sh | grep -q '_gh_install_bwrap_stub' \
+  || die "setup_termux_x11 should call _gh_install_bwrap_stub"
+bash -c '
+  set -euo pipefail
+  # shellcheck source=bin/nh-x11
+  source bin/nh-x11
+  declare -F _nh_x11_guest_command >/dev/null
+  cmd="$(_nh_x11_guest_command "dbus-run-session -- xfce4-session" "export XDG_MENU_PREFIX=xfce-;" "xfconf-query -c xfwm4 -p /general/use_compositing -s false 2>/dev/null || true;")"
+  [[ "$cmd" == *DISPLAY=:0* ]]
+  [[ "$cmd" == *XDG_RUNTIME_DIR=/tmp/runtime-kali* ]]
+  [[ "$cmd" == *"failed to create runtime dir"* ]]
+  [[ "$cmd" == *XDG_MENU_PREFIX=xfce-* ]]
+  [[ "$cmd" == *"exec dbus-run-session -- xfce4-session" ]]
+' || die "nh-x11 guest command should be sourceable and include runtime-dir + DISPLAY"
 info "nh-x11 nethunter CLI form OK"
+
+[[ -f lib/tls.sh ]] || die "missing lib/tls.sh"
+grep -q 'tls.sh' lib/https-probe.sh || die "https-probe should source lib/tls.sh"
+grep -q 'tls.sh' lib/git-identity.sh || die "git-identity should source lib/tls.sh"
+grep -q 'tls.sh' lib/grok.sh || die "grok.sh should source lib/tls.sh"
+grep -q '_gh_git_identity_tls_sanitize' lib/git-identity.sh \
+  && die "git-identity should use _gh_tls_sanitize_env from lib/tls.sh"
+grep -q '^_gh_install_tls_compat()' lib/grok.sh && die "tls compat installer belongs in lib/tls.sh"
+grep -A12 '_gh_git_identity_from_gh()' lib/git-identity.sh | grep -q '_gh_tls_sanitize_env' \
+  || die "git-identity from_gh must sanitize via _gh_tls_sanitize_env"
+grep -q '_gh_install_tls_compat' bin/grokhunter-doctor || die "doctor should install tls compat"
+bash -c '
+  set -euo pipefail
+  source lib/grok.sh
+  msg() { :; }
+  d=$(mktemp -d)
+  mkdir -p "$d/etc/ssl/certs"
+  echo ca > "$d/etc/ssl/certs/ca-certificates.crt"
+  DEFAULT_ROOTFS_DIR="$d"
+  _gh_install_tls_compat
+  [[ -L "$d/etc/tls/cert.pem" ]] || { echo "missing kali rootfs tls compat"; exit 1; }
+  rm -rf "$d"
+' || die "tls compat symlink must be written into the Kali rootfs"
+info "tls compat + git-identity gh sanitize OK"
 
 bash -c '
   set -euo pipefail
@@ -290,8 +346,18 @@ SSL_CERT_FILE=/no/such/grokhunter-cert.pem
 SSL_CERT_DIR=/no/such/grokhunter-certs
 export SSL_CERT_FILE SSL_CERT_DIR
 _gh_tls_sanitize_env
-[[ -z "${SSL_CERT_FILE:-}" ]] || die "tls sanitize should unset missing SSL_CERT_FILE"
-[[ -z "${SSL_CERT_DIR:-}" ]] || die "tls sanitize should unset missing SSL_CERT_DIR"
+if [[ -r /etc/ssl/certs/ca-certificates.crt ]]; then
+  [[ "${SSL_CERT_FILE}" == /etc/ssl/certs/ca-certificates.crt ]] \
+    || die "tls sanitize should rewrite to Kali CA, got ${SSL_CERT_FILE:-empty}"
+else
+  [[ -z "${SSL_CERT_FILE:-}" ]] || die "tls sanitize should unset missing SSL_CERT_FILE when no Kali CA"
+fi
+if [[ -d /etc/ssl/certs ]]; then
+  [[ "${SSL_CERT_DIR}" == /etc/ssl/certs ]] \
+    || die "tls sanitize should rewrite SSL_CERT_DIR to Kali certs dir, got ${SSL_CERT_DIR:-empty}"
+else
+  [[ -z "${SSL_CERT_DIR:-}" ]] || die "tls sanitize should unset missing SSL_CERT_DIR when no Kali certs dir"
+fi
 unset SSL_CERT_FILE SSL_CERT_DIR
 info "doctor https probe OK"
 
@@ -378,6 +444,9 @@ grep -qF '# --- GrokHunter: v9 specialist models' "${_prof_tmp}/config.toml" \
   || die "install_grok_profile.sh ate V9 picker marker"
 grep -qE 'channel\s*=\s*"stable"' "${_prof_tmp}/config.toml" \
   || die "install_grok_profile.sh did not set channel=stable"
+if grep -q '"NetHunter profile" not in' scripts/install_grok_profile.sh; then
+  die "profile stripper should key off marker, not NetHunter profile substring"
+fi
 rm -rf "${_prof_tmp}"
 info "profile merge keeps V9 marker OK"
 

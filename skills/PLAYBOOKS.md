@@ -33,7 +33,7 @@ Symptom → skill routing for the GrokHunter phone lab. Prefer the **narrowest**
 
 | Symptom | Skill | Notes |
 |---------|-------|-------|
-| Black screen after `nh-x11` | `x11-desktop` | `NH_X11_LEGACY=1`, compositor |
+| Black screen after `nh-x11` | `x11-desktop` | legacy drawing is default; compositor |
 | Desktop lag / jank | `x11-desktop` | sharedUid APK, light DE |
 | Am I in Termux or Kali? | `host-lab` | PREFIX / pkg vs apt |
 | TUI vanished / Termux killed process | `session-lab` | tmux / `grok --resume` |
@@ -66,7 +66,7 @@ grokhunter models install
 grokhunter git-identity set
 grokhunter ai-smoke
 bash scripts/ci-unit.sh
-nh-x11                    # or NH_X11_LEGACY=1 nh-x11
+nh-x11                    # legacy drawing on; NH_X11_LEGACY=0 to disable
 aider-grok
 ```
 

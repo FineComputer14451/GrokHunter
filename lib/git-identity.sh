@@ -2,6 +2,15 @@
 # Git identity helpers — keep GitHub from mapping commits to invalid-email-address.
 # Sourced by grokhunter / grokhunter-doctor. Idempotent.
 
+if ! declare -F _gh_tls_sanitize_env >/dev/null 2>&1; then
+  _gh_tls="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" 2>/dev/null && pwd)/tls.sh"
+  if [[ -f "${_gh_tls}" ]]; then
+    # shellcheck source=lib/tls.sh
+    source "${_gh_tls}"
+  fi
+  unset _gh_tls
+fi
+
 _gh_git_identity_is_placeholder() {
   local name="${1:-}" email="${2:-}"
   local n e
@@ -102,13 +111,7 @@ _gh_git_identity_curl_github() {
   local -a args
   [[ "${path}" == /* ]] || return 1
   command -v curl >/dev/null 2>&1 || return 1
-  # Same Termux TLS injection as lib/https-probe.sh (keep identity self-contained).
-  if [[ -n "${SSL_CERT_FILE:-}" && ! -r "${SSL_CERT_FILE}" ]]; then
-    unset SSL_CERT_FILE
-  fi
-  if [[ -n "${SSL_CERT_DIR:-}" && ! -d "${SSL_CERT_DIR}" ]]; then
-    unset SSL_CERT_DIR
-  fi
+  _gh_tls_sanitize_env
   args=(-sS --max-time "${GROKHUNTER_GIT_IDENTITY_TIMEOUT:-8}"
         -H "Accept: application/vnd.github+json"
         -H "User-Agent: GrokHunter-git-identity")
@@ -122,6 +125,7 @@ _gh_git_identity_from_gh() {
   # Prints "name<TAB>email". Uses gh if authenticated.
   command -v gh >/dev/null 2>&1 || return 1
   local json login id display
+  _gh_tls_sanitize_env
   json="$(gh api user --jq '[.login,.id,(.name // .login)] | @tsv' 2>/dev/null)" || return 1
   login="$(printf '%s' "${json}" | awk -F'\t' '{print $1}')"
   id="$(printf '%s' "${json}" | awk -F'\t' '{print $2}')"

@@ -1,10 +1,20 @@
 #!/data/data/com.termux/files/usr/bin/bash
 # GrokHunter — Termux:X11 low-latency desktop + proot bind optimizers
 
+if ! declare -F msg >/dev/null 2>&1; then
+  msg() {
+    shift || true
+    printf '[GrokHunter] %s\n' "$*"
+  }
+fi
+if ! declare -F cursor >/dev/null 2>&1; then
+  cursor() { :; }
+fi
+
 # Marker base must remain "grokhunter-optimized-binds" (ci-unit greps it).
 # Version suffix lets us detect stale blocks and re-patch safely.
 GROKHUNTER_BINDS_MARK_BASE="# grokhunter-optimized-binds"
-GROKHUNTER_BINDS_VERSION="2"
+GROKHUNTER_BINDS_VERSION="3"
 GROKHUNTER_BINDS_MARK="${GROKHUNTER_BINDS_MARK_BASE} v${GROKHUNTER_BINDS_VERSION}"
 
 TERMUX_FILES_DIR="${TERMUX_FILES_DIR:-/data/data/com.termux/files}"
@@ -95,22 +105,74 @@ _gh_binds_have_any_mark() {
   grep -qF "${GROKHUNTER_BINDS_MARK_BASE}" "${f}" 2>/dev/null
 }
 
-# Find a line that is a good insertion anchor. Prefer -b /dev, then -b /proc,
-# then the first -b line. Prints 1-based line number or returns 1.
+# Host path from a -b / --bind= / proot_args+=(--bind=) line, or empty.
+_gh_line_bind_host() {
+  local line="${1-}" spec=""
+  line="${line%%\\}"
+  line="${line%"${line##*[![:space:]]}"}"
+  line="${line#"${line%%[![:space:]]*}"}"
+  case "${line}" in
+    *'proot_args+=(--bind='*)
+      spec="${line#*--bind=}"
+      spec="${spec%%)}"
+      ;;
+    --bind=*)
+      spec="${line#--bind=}"
+      ;;
+    --bind\ *)
+      spec="${line#--bind }"
+      ;;
+    -b\ *)
+      spec="${line#-b }"
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+  spec="${spec%%[[:space:]]*}"
+  spec="${spec%%:*}"
+  [[ -n "${spec}" ]] || return 1
+  printf '%s\n' "${spec}"
+}
+
+# dash-b | bind-eq | proot-args — match the launcher's own bind syntax.
+_gh_detect_bind_style() {
+  local f="$1" line
+  while IFS= read -r line || [[ -n "${line}" ]]; do
+    case "${line}" in
+      *'proot_args+=(--bind='*) printf '%s\n' "proot-args"; return 0 ;;
+      *'--bind='*|*'--bind '*) printf '%s\n' "bind-eq"; return 0 ;;
+      *'-b '*) printf '%s\n' "dash-b"; return 0 ;;
+    esac
+  done < "${f}"
+  printf '%s\n' "dash-b"
+}
+
+_gh_format_inserted_bind() {
+  local style="$1" spec="$2"
+  local rest="${spec#-b }"
+  case "${style}" in
+    proot-args) printf '%s\n' "        proot_args+=(--bind=${rest})" ;;
+    bind-eq)    printf '%s\n' "        --bind=${rest} \\" ;;
+    *)          printf '%s\n' "        -b ${rest} \\" ;;
+  esac
+}
+
+# Find a line that is a good insertion anchor. Prefer /dev, then /proc,
+# then the first bind line (-b, --bind=, or proot_args+=(--bind=)).
 _gh_find_bind_anchor() {
   local f="$1"
-  local line n=0
+  local line host n=0
   local first_b=0 dev_n=0 proc_n=0
   while IFS= read -r line || [[ -n "${line}" ]]; do
     n=$((n + 1))
-    case "${line}" in
-      *"-b /dev"*|*-b\ /dev\ *|*-b\ /dev) [[ ${dev_n} -eq 0 ]] && dev_n=${n} ;;
-    esac
-    case "${line}" in
-      *"-b /proc"*|*-b\ /proc\ *|*-b\ /proc) [[ ${proc_n} -eq 0 ]] && proc_n=${n} ;;
-    esac
-    if [[ ${first_b} -eq 0 && "${line}" == *"-b "* ]]; then
-      first_b=${n}
+    host="$(_gh_line_bind_host "${line}" 2>/dev/null || true)"
+    [[ -n "${host}" ]] || continue
+    [[ ${first_b} -eq 0 ]] && first_b=${n}
+    if [[ "${host}" == /dev && ${dev_n} -eq 0 ]]; then
+      dev_n=${n}
+    elif [[ "${host}" == /proc && ${proc_n} -eq 0 ]]; then
+      proc_n=${n}
     fi
   done < "${f}"
   if [[ ${dev_n} -gt 0 ]]; then
@@ -139,20 +201,10 @@ _gh_strip_bind_block() {
       continue
     fi
     if [[ ${in_block} -eq 1 ]]; then
-      # Continue skipping while line looks like an inserted bind continuation
-      case "${line}" in
-        *"-b "*|""|[[:space:]]*)
-          # blank or bind-ish → still in block if indented or empty
-          if [[ "${line}" == *"-b "* ]] || [[ -z "${line//[[:space:]]/}" ]]; then
-            continue
-          fi
-          # non-bind content ends the block
-          in_block=0
-          ;;
-        *)
-          in_block=0
-          ;;
-      esac
+      if [[ -z "${line//[[:space:]]/}" ]] || _gh_line_bind_host "${line}" >/dev/null 2>&1; then
+        continue
+      fi
+      in_block=0
     fi
     if [[ ${in_block} -eq 0 ]]; then
       out+=("${line}")
@@ -167,7 +219,7 @@ _gh_strip_bind_block() {
 _patch_launcher_binds() {
   local f="$1"
   local force="${2:-0}"
-  local line found=0 tmp anchor_n n=0
+  local line found=0 tmp anchor_n n=0 style="dash-b"
   local -a out=() extra=()
   local b
 
@@ -179,7 +231,7 @@ _patch_launcher_binds() {
   fi
 
   if ! anchor_n="$(_gh_find_bind_anchor "${f}")"; then
-    msg -tw "Could not auto-patch ${f##*/} (no '-b' anchor found)"
+    msg -tw "Could not auto-patch ${f##*/} (no -b/--bind= anchor found)"
     return 1
   fi
 
@@ -189,6 +241,7 @@ _patch_launcher_binds() {
 
   _ensure_workspace
   mapfile -t extra < <(_gh_extra_bind_lines)
+  style="$(_gh_detect_bind_style "${f}")"
 
   # Rebuild: drop stale block if any, then insert current block after anchor.
   local -a base=()
@@ -216,7 +269,7 @@ _patch_launcher_binds() {
       out+=("${GROKHUNTER_BINDS_MARK}")
       for b in "${extra[@]}"; do
         [[ -n "${b}" ]] || continue
-        out+=("        ${b} \\")
+        out+=("$(_gh_format_inserted_bind "${style}" "${b}")")
       done
     fi
   done
@@ -288,7 +341,7 @@ show_proot_binds() {
     else
       msg -tw "  ${f##*/}: not patched"
     fi
-    grep -E 'grokhunter-optimized-binds|-b .*(/tmp|/sdcard|/downloads|/termux-home|/workspace)' "${f}" 2>/dev/null \
+    grep -E 'grokhunter-optimized-binds|-b .*(/tmp|/sdcard|/downloads|/termux-home|/workspace)|--bind=.*(/tmp|/sdcard|/downloads|/termux-home|/workspace)' "${f}" 2>/dev/null \
       | sed 's/^/    /' || true
   done
 }
@@ -412,6 +465,38 @@ _install_repo_bin() {
   return 0
 }
 
+# glycin/gdk-pixbuf 2.44 runs SVG via bwrap --unshare-all (fatal under proot).
+_gh_install_bwrap_stub() {
+  local kali_root="${1:-${DEFAULT_ROOTFS_DIR:-${TERMUX_FILES_DIR:-/data/data/com.termux/files}/kali}}"
+  local kali_local="${kali_root}/usr/local/bin"
+  local kali_bwrap="${kali_root}/usr/bin/bwrap"
+  local src
+  if ! src="$(_resolve_overlay_file "bin/bwrap-proot")"; then
+    return 1
+  fi
+  [[ -f "${src}" ]] || return 1
+  if [[ -f "${kali_local}/bwrap" ]] && grep -q bwrap-proot "${kali_local}/bwrap" 2>/dev/null \
+     && { [[ ! -f "${kali_bwrap}" ]] || grep -q bwrap-proot "${kali_bwrap}" 2>/dev/null; }; then
+    return 0
+  fi
+  mkdir -p "${kali_local}" 2>/dev/null || true
+  if ! _install_repo_bin "bin/bwrap-proot" "${kali_local}/bwrap"; then
+    msg -tw "Could not install /usr/local/bin/bwrap stub"
+    return 1
+  fi
+  msg -ts "Installed /usr/local/bin/bwrap stub (glycin SVG under proot)"
+  if [[ -f "${kali_bwrap}" ]] && ! grep -q bwrap-proot "${kali_bwrap}" 2>/dev/null; then
+    [[ -f "${kali_bwrap}.real" ]] || cp -f "${kali_bwrap}" "${kali_bwrap}.real" 2>/dev/null || true
+    if _install_repo_bin "bin/bwrap-proot" "${kali_bwrap}"; then
+      msg -ts "Replaced /usr/bin/bwrap with proot stub (saved bwrap.real)"
+    else
+      msg -tw "Could not replace /usr/bin/bwrap with proot stub"
+      return 1
+    fi
+  fi
+  return 0
+}
+
 setup_termux_x11() {
   msg -t "Setting up Termux:X11 (low-latency desktop)"
 
@@ -437,21 +522,8 @@ setup_termux_x11() {
   else
     msg -tw "Could not install nh-x11 — clone repo or ensure bin/nh-x11 is present"
   fi
-  # gdk-pixbuf 2.44 glycin SVG loaders call bwrap --unshare-all (fatal under proot).
-  local kali_root="${DEFAULT_ROOTFS_DIR:-${TERMUX_FILES_DIR}/kali}"
-  local kali_local="${kali_root}/usr/local/bin"
-  local kali_bwrap="${kali_root}/usr/bin/bwrap"
-  if src="$(_resolve_overlay_file "bin/bwrap-proot")" && [[ -f "${src}" ]]; then
-    mkdir -p "${kali_local}" 2>/dev/null || true
-    _install_repo_bin "bin/bwrap-proot" "${kali_local}/bwrap" && \
-      msg -ts "Installed /usr/local/bin/bwrap stub (glycin SVG under proot)" || true
-    if [[ -f "${kali_bwrap}" ]] && ! grep -q bwrap-proot "${kali_bwrap}" 2>/dev/null; then
-      [[ -f "${kali_bwrap}.real" ]] || cp -f "${kali_bwrap}" "${kali_bwrap}.real" 2>/dev/null || true
-      if _install_repo_bin "bin/bwrap-proot" "${kali_bwrap}"; then
-        msg -ts "Replaced /usr/bin/bwrap with proot stub (saved bwrap.real)"
-      fi
-    fi
-  fi
+  _gh_install_bwrap_stub "${DEFAULT_ROOTFS_DIR:-${TERMUX_FILES_DIR}/kali}" \
+    || msg -tw "Could not install bwrap proot stub (glycin SVG may abort GTK)"
   # Persist preferred DE session for nh-x11 (doctor checks this file)
   local sess
   sess="$(_detect_x11_session)"
@@ -474,7 +546,7 @@ setup_termux_x11() {
   msg -a "    1. Install Termux:X11 APK (prefer sharedUid if Termux is from GitHub)"
   msg -a "    2. Run:  ${P:-}nh-x11${S:-}"
   msg -a "    Override DE:  ${P:-}NH_X11_SESSION=startxfce4 nh-x11${S:-}"
-  msg -a "    Black screen?  ${P:-}NH_X11_LEGACY=1 nh-x11${S:-}"
+  msg -a "    Black screen?  ${P:-}nh-x11${S:-} (legacy drawing is default; NH_X11_LEGACY=0 to disable)"
   msg -a "  ${T:-}Tips:${S:-} docs/X11-PERFORMANCE.md  docs/PROOT.md"
 }
 
@@ -483,11 +555,51 @@ optimize_proot_binds() {
   _ensure_workspace
   local launcher="${TERMUX_FILES_DIR}/usr/bin/nethunter"
   local shortcut="${TERMUX_FILES_DIR}/usr/bin/nh"
+  local f rc=0
   for f in "${launcher}" "${shortcut}"; do
-    _patch_launcher_binds "${f}" || true
+    if [[ ! -f "${f}" ]]; then
+      continue
+    fi
+    _patch_launcher_binds "${f}" || rc=1
   done
   msg -a "  Binds (existing host paths only): /tmp, /sdcard, /downloads, /termux-home, /workspace"
   msg -a "  User extras: ~/.config/grokhunter/extra-binds (one -b line per path)"
   msg -a "  Status: show_proot_binds · Repair: repair_proot_binds"
   msg -a "  Tip: keep rootfs on internal storage; see docs/PROOT.md"
+  return "${rc}"
+}
+
+cmd_binds() {
+  local sub="${1:-status}"
+  shift || true
+  case "${sub}" in
+    help|-h|--help)
+      cat <<'EOF'
+Usage: grokhunter binds [status|repair|optimize]
+
+  status    Show desired vs applied nethunter/nh proot binds (default)
+  show      Alias for status
+  repair    Force re-apply optimized binds
+  optimize  Apply binds if missing or stale
+  help      This help
+
+See docs/PROOT.md
+EOF
+      return 0
+      ;;
+    status|show)
+      show_proot_binds
+      ;;
+    repair)
+      repair_proot_binds
+      ;;
+    optimize)
+      optimize_proot_binds
+      ;;
+    *)
+      echo "Unknown binds subcommand: ${sub}" >&2
+      echo "Usage: grokhunter binds [status|repair|optimize]" >&2
+      return 2
+      ;;
+  esac
 }

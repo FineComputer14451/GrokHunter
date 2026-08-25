@@ -149,39 +149,6 @@ _v9_script() {
   return 1
 }
 
-# lib/x11.sh needs termux-distro msg/cursor; CLI runs without the engine.
-_gh_ensure_x11_lib() {
-  if declare -F show_proot_binds >/dev/null 2>&1; then
-    return 0
-  fi
-  if ! declare -F msg >/dev/null 2>&1; then
-    msg() {
-      shift || true
-      printf '[GrokHunter] %s\n' "$*"
-    }
-  fi
-  if ! declare -F cursor >/dev/null 2>&1; then
-    cursor() { :; }
-  fi
-  local d f
-  for d in \
-    "${GROKHUNTER_HOME:-}" \
-    "${HERE}/.." \
-    "${HOME}/GrokHunter" \
-    "${HOME}/.cache/grokhunter/src"
-  do
-    [[ -n "${d}" ]] || continue
-    f="${d}/lib/x11.sh"
-    if [[ -f "${f}" ]]; then
-      # shellcheck disable=SC1090
-      source "${f}"
-      return 0
-    fi
-  done
-  echo "lib/x11.sh not found (set GROKHUNTER_HOME or clone ~/GrokHunter)" >&2
-  return 1
-}
-
 usage() {
   cat <<EOF
 GrokHunter v${VERSION} — Kali NetHunter powered by Grok Build
@@ -905,44 +872,6 @@ EOF
   esac
 }
 
-cmd_binds() {
-  local sub="${1:-status}"
-  shift || true
-  case "${sub}" in
-    help|-h|--help)
-      cat <<'EOF'
-Usage: grokhunter binds [status|repair|optimize]
-
-  status    Show desired vs applied nethunter/nh proot binds (default)
-  show      Alias for status
-  repair    Force re-apply optimized binds
-  optimize  Apply binds if missing or stale
-  help      This help
-
-See docs/PROOT.md
-EOF
-      return 0
-      ;;
-    status|show)
-      _gh_ensure_x11_lib || return 1
-      show_proot_binds
-      ;;
-    repair)
-      _gh_ensure_x11_lib || return 1
-      repair_proot_binds
-      ;;
-    optimize)
-      _gh_ensure_x11_lib || return 1
-      optimize_proot_binds
-      ;;
-    *)
-      echo "Unknown binds subcommand: ${sub}" >&2
-      echo "Usage: grokhunter binds [status|repair|optimize]" >&2
-      return 2
-      ;;
-  esac
-}
-
 main() {
   local sub="${1:-}"
   case "$sub" in
@@ -972,6 +901,12 @@ main() {
       ;;
     binds|proot-binds)
       shift || true
+      if [[ ! -f "${GROKHUNTER_HOME}/lib/x11.sh" ]]; then
+        echo "lib/x11.sh not found under ${GROKHUNTER_HOME}" >&2
+        return 1
+      fi
+      # shellcheck source=lib/x11.sh
+      source "${GROKHUNTER_HOME}/lib/x11.sh"
       cmd_binds "$@"
       ;;
     setup|sync|boot)

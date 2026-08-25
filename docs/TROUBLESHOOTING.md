@@ -108,7 +108,7 @@ Current `nethunter` is `nethunter [OPTION] [USERNAME] [-- COMMAND]`.
 ```bash
 # after overlay update:
 hash -r
-NH_X11_LEGACY=1 nh-x11
+nh-x11
 ```
 
 ### XFCE panel dies / Gtk glycin `bwrap` abort
