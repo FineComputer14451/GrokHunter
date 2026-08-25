@@ -450,11 +450,83 @@ grep -qF '# --- GrokHunter: v9 specialist models' "${_prof_tmp}/config.toml" \
   || die "install_grok_profile.sh ate V9 picker marker"
 grep -qE 'channel\s*=\s*"stable"' "${_prof_tmp}/config.toml" \
   || die "install_grok_profile.sh did not set channel=stable"
+grep -qE 'theme\s*=\s*"groknight"' "${_prof_tmp}/config.toml" \
+  || die "install_grok_profile.sh did not set theme=groknight"
+if grep -qE 'theme\s*=\s*"auto"' "${_prof_tmp}/config.toml"; then
+  die "install_grok_profile.sh left theme=auto as ui theme"
+fi
 if grep -q '"NetHunter profile" not in' scripts/install_grok_profile.sh; then
   die "profile stripper should key off marker, not NetHunter profile substring"
 fi
 rm -rf "${_prof_tmp}"
 info "profile merge keeps V9 marker OK"
+
+# ---------- profile merge upgrades stale theme=auto without --force ----------
+_stale_tmp="$(mktemp -d)"
+cat > "${_stale_tmp}/config.toml" <<'EOF'
+# --- GrokHunter NetHunter profile (Grok Build 1.0.5+) ---
+[ui]
+screen_mode = "fullscreen"
+theme = "auto"
+
+[models]
+default = "grok-4.6"
+
+# --- GrokHunter: v9 specialist models (test) ---
+[model.chat-expert]
+name = "Chat Expert"
+model = "grok-4.6"
+temperature = 0.7
+EOF
+GROK_CONFIG="${_stale_tmp}/config.toml" bash scripts/install_grok_profile.sh >/dev/null
+grep -qF '# --- GrokHunter: v9 specialist models' "${_stale_tmp}/config.toml" \
+  || die "stale-auto upgrade ate V9 picker marker"
+grep -qE 'theme\s*=\s*"groknight"' "${_stale_tmp}/config.toml" \
+  || die "stale theme=auto was not upgraded to groknight without --force"
+if grep -qE 'theme\s*=\s*"auto"' "${_stale_tmp}/config.toml"; then
+  die "stale-auto upgrade left theme=auto as ui theme"
+fi
+rm -rf "${_stale_tmp}"
+info "profile merge upgrades stale theme=auto OK"
+
+# ---------- profile merge leaves custom theme alone without --force ----------
+# Stale-key is literal theme = "auto" only. A user theme must skip (no merge).
+_custom_tmp="$(mktemp -d)"
+cat > "${_custom_tmp}/config.toml" <<'EOF'
+# --- GrokHunter NetHunter profile (Grok Build 1.0.5+) ---
+[ui]
+screen_mode = "fullscreen"
+theme = "oscura-midnight"
+
+[models]
+default = "grok-4.6"
+
+# --- GrokHunter: v9 specialist models (test) ---
+[model.chat-expert]
+name = "Chat Expert"
+model = "grok-4.6"
+temperature = 0.7
+EOF
+_custom_before="$(cat "${_custom_tmp}/config.toml")"
+_custom_out="$(GROK_CONFIG="${_custom_tmp}/config.toml" bash scripts/install_grok_profile.sh)"
+echo "${_custom_out}" | grep -q 'profile already present' \
+  || die "custom theme skip should print profile already present, got: ${_custom_out}"
+if echo "${_custom_out}" | grep -q 'merged profile'; then
+  die "custom theme skip merged instead of skipping: ${_custom_out}"
+fi
+if [[ -f "${_custom_tmp}/config.toml.bak.profile" ]]; then
+  die "custom theme skip wrote a backup (merge ran)"
+fi
+_custom_after="$(cat "${_custom_tmp}/config.toml")"
+[[ "${_custom_before}" == "${_custom_after}" ]] \
+  || die "custom-theme skip rewrote config.toml"
+grep -qE 'theme\s*=\s*"oscura-midnight"' "${_custom_tmp}/config.toml" \
+  || die "custom oscura-midnight theme was overwritten without --force"
+if grep -qE 'theme\s*=\s*"groknight"' "${_custom_tmp}/config.toml"; then
+  die "custom theme was rewritten to groknight without --force"
+fi
+rm -rf "${_custom_tmp}"
+info "profile merge leaves custom theme OK"
 
 # ---------- ai-smoke missing-key path (no network) ----------
 # Unset key for this subshell only; do not touch secrets files.

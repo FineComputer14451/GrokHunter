@@ -103,6 +103,8 @@ if marker in cfg_text and not force:
         need = True
     if re.search(r'(?m)^web_search\s*=\s*"grok-4\.5"', cfg_text):
         need = True
+    if re.search(r'(?m)^theme\s*=\s*"auto"', cfg_text):
+        need = True
     if not need:
         print("profile already present (use --force to refresh)")
         sys.exit(0)
