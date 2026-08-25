@@ -29,7 +29,7 @@ Default mission is a **coding lab**, not offensive ops (see optional `nethunter-
 
 | Item | Value |
 |------|-------|
-| Version | **1.0.9** (repo `VERSION`; overlay cache **2026.2.18**) |
+| Version | **1.0.10** (repo `VERSION`; overlay cache **2026.2.25**) |
 | Overlay | `~/GrokHunter` or `$GROKHUNTER_HOME` |
 | Launch | `grokhunter` / `grok` (wrappers in `~/.local/bin`) |
 | Doctor | `grokhunter doctor` |

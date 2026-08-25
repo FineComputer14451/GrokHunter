@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## [1.0.10] — 2026-08-25 — Desktop recovery + Coding Team Wave 6
+
+nh-x11, binds, and TLS work on rootless Kali. Coding Team adds github, secrets, toolchain, and a recipe to mint more. Overlay cache **2026.2.25**.
+
 ### CLI
 - Restored `bin/grokhunter` after accidental PLACEHOLDER wipe (`ee3f6d7` / incomplete `85ef807`).
 - Added `grokhunter binds [status|repair|optimize]` (wraps `lib/x11.sh` proot bind helpers).
@@ -32,6 +36,7 @@
 - NetHunter dragon red `#E31C3D` on hero, chips, architecture, and credits.
 - Baked dual accent bar (Kali blue | NetHunter red) into all brand rasters, lockups, share cards, and palette.
 - Split binary assets into `assets-*.b64.json` packs + sidecars; deploy always runs `decode_assets.py`.
+- Product site: Wave 6 agents, `grokhunter binds`, 20 skills, X11 FAQ (legacy drawing is the default).
 
 ### Lab specialists
 
@@ -48,7 +53,7 @@
 - Wave 3: skills **`session-lab`**, **`host-lab`**, **`mcp-lab`**; agents **`session`**, **`host`**, **`mcp`** (`grokhunter mcp` launches the agent; CLI is `grok mcp`)
 - Wave 4: skills **`plugin-lab`**, **`flow-lab`**, **`storage-lab`**; agents **`plugin`**, **`flow`**, **`storage`** (`grokhunter plugin` launches the agent; CLI is `grok plugin`)
 - Wave 5: skills **`editor-lab`**, **`hooks-lab`**, **`shell-lab`**; agents **`editor`**, **`hook`**, **`shell`**
-- Overlay cache **2026.2.18**
+- Overlay cache **2026.2.25** (was 2026.2.18 in Unreleased)
 
 ## [1.0.9] — 2026-08-22 — Doctor truth + GitHub identity
 

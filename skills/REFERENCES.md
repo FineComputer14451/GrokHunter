@@ -2,7 +2,7 @@
 
 Canonical cross-links for every GrokHunter skill. Keep individual `SKILL.md` files lean; put shared maps here.
 
-**Product version:** 1.0.9 · Overlay cache: 2026.2.18 · Grok Build: ≥ 1.0.5 · Default model: grok-4.6
+**Product version:** 1.0.10 · Overlay cache: 2026.2.25 · Grok Build: ≥ 1.0.5 · Default model: grok-4.6
 
 Paired index: [agents/REFERENCES.md](../agents/REFERENCES.md).
 

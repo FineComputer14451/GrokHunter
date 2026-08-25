@@ -2,7 +2,7 @@
 
 Symptom → skill routing for the GrokHunter phone lab. Prefer the **narrowest** skill that owns the domain.
 
-**Product version:** 1.0.9 · See also [README.md](README.md) · [REFERENCES.md](REFERENCES.md)
+**Product version:** 1.0.10 · See also [README.md](README.md) · [REFERENCES.md](REFERENCES.md)
 
 ## Lab health & install
 

@@ -37,7 +37,7 @@ case "${GROKHUNTER_HOME}" in
   /dev/fd|/dev/fd/*|/proc/self/fd|/proc/self/fd/*)
     export GROKHUNTER_HOME="${HOME}/GrokHunter" ;;
 esac
-export GROKHUNTER_VERSION="${GROKHUNTER_VERSION:-1.0.9}"
+export GROKHUNTER_VERSION="${GROKHUNTER_VERSION:-1.0.10}"
 if [[ -d "${GROKHUNTER_HOME}/bin" ]]; then
   export PATH="${GROKHUNTER_HOME}/bin:${PATH}"
 fi

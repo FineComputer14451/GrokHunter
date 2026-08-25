@@ -1,6 +1,6 @@
 # GrokHunter website
 
-Static product landing page for [GrokHunter](https://github.com/FineComputer14451/GrokHunter) **v1.0.3**.
+Static product landing page for [GrokHunter](https://github.com/FineComputer14451/GrokHunter) **v1.0.10**.
 
 **Live:** https://finecomputer14451.github.io/GrokHunter/
 
@@ -8,7 +8,7 @@ Static product landing page for [GrokHunter](https://github.com/FineComputer1445
 
 | Section | Content |
 |---------|---------|
-| Hero | Quick install + animated terminal (1.0.3 stack) |
+| Hero | Quick install + animated terminal (1.0.10 stack) |
 | Stats | Version / Grok min / agents / personas / roles |
 | Why | Comparison table |
 | Features | 9 feature cards (Grok Build 1.0.5, Grok 4.6, agents, Aider, …) |
@@ -17,7 +17,7 @@ Static product landing page for [GrokHunter](https://github.com/FineComputer1445
 | Personas & roles | Full product lists |
 | Install | One-liner, full, clone, overlay-only + flags |
 | CLI | Full `grokhunter` command list |
-| Upgrade | Paste-ready 1.0.3 upgrade path |
+| Upgrade | Paste-ready 1.0.10 upgrade path |
 | Architecture | Overlay layers |
 | FAQ | Rootless, auth, Aider 3.13, X11, scope |
 
