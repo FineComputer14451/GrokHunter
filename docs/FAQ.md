@@ -35,7 +35,7 @@ command -v pkg; command -v apt
 command -v nethunter; command -v grokhunter
 ```
 
-Deeper playbook: skill `host-lab` · `grokhunter host`. Persist the TUI with skill `session-lab` (`tmux` / `grok --resume`). MCP tools: `grok mcp` (skill `mcp-lab`; `grokhunter mcp` is the agent). Plugins: `grok plugin` (skill `plugin-lab`). Grok `.rhai` pipelines: skill `flow-lab` (not GitHub Actions). Disk: skill `storage-lab`. Editors: skill `editor-lab`. Hooks: skill `hooks-lab`. Completions/aliases: skill `shell-lab`. Git identity: skill `github-lab` · `grokhunter github` (CLI is `git-identity`). Secrets: skill `secrets-lab`. Compilers: skill `toolchain`.
+Deeper playbook: skill `host-lab` · `grokhunter host`. Persist the TUI with skill `session-lab` (`tmux` / `grok --resume`). MCP tools: `grok mcp` (skill `mcp-lab`; `grokhunter mcp` is the agent). Plugins: `grok plugin` (skill `plugin-lab`). Grok `.rhai` pipelines: skill `flow-lab` (not GitHub Actions). Disk: skill `storage-lab`. Editors: skill `editor-lab`. Hooks: skill `hooks-lab`. Completions/aliases: skill `shell-lab`. Git identity: skill `github-lab` · `grokhunter github` (CLI is `git-identity`). Secrets: skill `secrets-lab`. Compilers: skill `toolchain`. New lab agent/skill: skill `specialist-lab`.
 
 ## How is this different from bare Termux?
 

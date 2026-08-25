@@ -85,6 +85,7 @@ Clarify goal + constraints
 | git-identity / invalid-email | `github` (CLI is `grokhunter git-identity`) |
 | secrets.env / missing API key | `secrets` |
 | apt / gcc / python / node | `toolchain` (Aider uv stays `aider`) |
+| New lab agent / `*-lab` skill | skill `specialist-lab` (not a new agent type) |
 
 ### When not to use the full loop
 
@@ -99,6 +100,7 @@ Clarify goal + constraints
 | GitHub invalid-email | `github` |
 | secrets.env / ai-smoke key | `secrets` |
 | Compilers missing | `toolchain` |
+| Add a specialist | skill `specialist-lab` |
 
 ## Mobile constraints checklist
 

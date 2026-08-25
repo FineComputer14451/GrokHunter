@@ -51,7 +51,7 @@ Default mission is a **coding lab**, not offensive ops (see optional `nethunter-
 | Git identity | `grokhunter git-identity` [`show` \| `set`] — flags, env, gh, `GH_TOKEN`, or GitHub origin |
 | Binds | `grokhunter binds` [`status` \| `repair` \| `optimize`] — `lib/x11.sh`; runtime triage is skill `x11-desktop` |
 | TLS | `lib/tls.sh` — doctor probe, git-identity, install CA compat (`/etc/tls/cert.pem`) |
-| Related skills | coding: `pair-programming`, `aider-grok`; optional lab skills (toolchain…shell-lab, x11-desktop); scoped: `nethunter-recon` |
+| Related skills | coding: `pair-programming`, `aider-grok`; optional lab skills (toolchain…shell-lab, specialist-lab, x11-desktop); scoped: `nethunter-recon` |
 | Coding Team agents | core + specialists (overlay…toolchain) → `~/.grok/agents/` |
 
 ## CLI map
@@ -125,6 +125,7 @@ Disk / SD full?       → skill storage-lab
 nvim / micro?         → skill editor-lab
 Grok hook missing?    → skill hooks-lab (TUI /hooks; agent `hook`)
 TAB / ghd missing?    → skill shell-lab
+New lab agent/skill?  → skill specialist-lab (recipe in agents/README)
 Broken PATH?          → export PATH + skills install / doctor; source ~/.grok/profile.sh
 ```
 

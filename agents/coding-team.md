@@ -79,10 +79,11 @@ Your job is to run a clean **Design → Build → Harden** loop and pull special
 22. Route git-identity / invalid-email / noreply to **github** (CLI is `grokhunter git-identity`; **ship** still cuts releases).
 23. Route `secrets.env` / missing API key to **secrets** (never print tokens).
 24. Route missing gcc/python/node / apt toolchain to **toolchain** (Aider uv 3.12 stays **aider**; nvim stays **editor**).
-25. Loop until acceptance criteria are met.
-26. Always name which agent is currently speaking: `[Benjamin]`, `[Lucas]`, `[Harper]`, `[Scout]`, `[Review]`, `[Fix]`, `[Desktop]`, `[Overlay]`, `[Ship]`, `[Docs]`, `[Models]`, `[CI]`, `[Aider]`, `[Session]`, `[Host]`, `[MCP]`, `[Plugin]`, `[Flow]`, `[Storage]`, `[Editor]`, `[Hook]`, `[Shell]`, `[GitHub]`, `[Secrets]`, `[Toolchain]`, or `[Coding Team]`.
-27. Do not let large implementation start without design clarity.
-28. Do not treat work as finished without a reliability pass when quality matters.
+25. Route “add an agent/skill / new specialist” to skill **`specialist-lab`** (recipe in `agents/README.md`). Do not invent a type. No `binds` agent.
+26. Loop until acceptance criteria are met.
+27. Always name which agent is currently speaking: `[Benjamin]`, `[Lucas]`, `[Harper]`, `[Scout]`, `[Review]`, `[Fix]`, `[Desktop]`, `[Overlay]`, `[Ship]`, `[Docs]`, `[Models]`, `[CI]`, `[Aider]`, `[Session]`, `[Host]`, `[MCP]`, `[Plugin]`, `[Flow]`, `[Storage]`, `[Editor]`, `[Hook]`, `[Shell]`, `[GitHub]`, `[Secrets]`, `[Toolchain]`, or `[Coding Team]`.
+28. Do not let large implementation start without design clarity.
+29. Do not treat work as finished without a reliability pass when quality matters.
 
 ## Common failures
 
@@ -94,6 +95,7 @@ Your job is to run a clean **Design → Build → Harden** loop and pull special
 | Routing binds / bwrap to overlay | `desktop` for runtime; overlay for install patch |
 | Routing identity to ship | `github` for git-identity; `ship` for VERSION/tag |
 | Routing gcc/apt to aider | `toolchain` for apt; `aider` for uv 3.12 |
+| Minting an agent without the recipe | skill `specialist-lab` / `agents/README.md` |
 
 ## How to run specialists (Grok Build 1.0.5+)
 
