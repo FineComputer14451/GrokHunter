@@ -1,0 +1,222 @@
+    <main id="top">
+      <section class="section" id="desktop">
+        <div class="wrap">
+          <p class="section-label">Desktop</p>
+          <h2>XFCE on Termux:X11</h2>
+          <p class="section-lead">
+            Optional graphical session. Most pair work stays in the shell.
+            <code>grokhunter menu</code> installs the XFCE Applications submenu — it is not the lab TUI.
+          </p>
+          <div class="callout">
+            <strong>Three different “menus”</strong>
+            <pre class="inline-pre">grokhunter           Grok Build fullscreen TUI
+grokhunter tui       lab operations menu (alias: lab)
+grokhunter menu      Applications → GrokHunter on XFCE
+nh-x11               start the desktop session</pre>
+          </div>
+        </div>
+      </section>
+
+      <section class="section alt" id="start">
+        <div class="wrap">
+          <p class="section-label">Start</p>
+          <h2>Install Termux:X11, then nh-x11</h2>
+          <p class="section-lead">
+            Need the Termux:X11 APK first. SharedUid + GitHub Termux is the smooth path.
+            F-Droid Termux uses the non-sharedUid APK.
+          </p>
+          <div class="code-block">
+            <div class="code-head">
+              <span class="code-label">Launch desktop</span>
+              <button type="button" class="copy-btn" data-copy="nh-x11">Copy</button>
+            </div>
+            <pre><code>nh-x11</code></pre>
+          </div>
+          <div class="cli-list" style="margin-top: 1.25rem">
+            <div class="cli-row"><code>bash install.sh --with-x11</code><span>Helper + /tmp share for X sockets</span></div>
+            <div class="cli-row"><code>nh-x11</code><span>Default: legacy drawing on, compositor off</span></div>
+            <div class="cli-row"><code>NH_X11_LEGACY=0 nh-x11</code><span>GPU path if legacy drawing is too slow</span></div>
+            <div class="cli-row"><code>NH_X11_SESSION=startlxde nh-x11</code><span>Other DE already installed</span></div>
+            <div class="cli-row"><code>grokhunter desktop</code><span>Coding Team desktop agent — not the X session</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="binds">
+        <div class="wrap">
+          <p class="section-label">Binds</p>
+          <h2>X sockets have to be visible inside proot</h2>
+          <p class="section-lead">
+            <code>grokhunter binds</code> is the repair path when the display exists in Termux
+            but Kali says it cannot open it.
+          </p>
+          <div class="code-block">
+            <div class="code-head">
+              <span class="code-label">Binds</span>
+              <button
+                type="button"
+                class="copy-btn"
+                data-copy="grokhunter binds status&#10;grokhunter binds repair"
+              >Copy</button>
+            </div>
+            <pre><code>grokhunter binds status
+grokhunter binds repair</code></pre>
+          </div>
+          <p class="fineprint" style="margin-top: 1rem">
+            Runtime triage playbook: skill <code>x11-desktop</code>.
+            Wrapper notes: <code>bwrap-proot</code> keeps GTK/glycin from aborting under proot.
+          </p>
+        </div>
+      </section>
+
+      <section class="section alt" id="xfce-menu">
+        <div class="wrap">
+          <p class="section-label">XFCE menu</p>
+          <h2>Applications → GrokHunter</h2>
+          <p class="section-lead">
+            Desktop entries for Grok Build, Coding Team, Scout, Aider, Doctor, Setup.
+            Log out/in of XFCE if the submenu does not appear immediately.
+          </p>
+          <div class="code-block">
+            <div class="code-head">
+              <span class="code-label">Install submenu</span>
+              <button type="button" class="copy-btn" data-copy="grokhunter menu install">Copy</button>
+            </div>
+            <pre><code>grokhunter menu install
+# or: bash scripts/install_kali_menu.sh
+grokhunter menu remove</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="performance">
+        <div class="wrap">
+          <p class="section-label">Performance</p>
+          <h2>Phone-real wins, ranked</h2>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Priority</th>
+                  <th>Action</th>
+                  <th>Effect</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>sharedUid APK (GitHub Termux)</td>
+                  <td>Stops Android throttling Termux when X11 is foreground</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>Disable XFCE compositing</td>
+                  <td>Biggest smoothness gain on proot — <code>nh-x11</code> tries this</td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>Light DE (XFCE / i3)</td>
+                  <td>Less CPU/RAM than GNOME/KDE</td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td>Share <code>/tmp</code></td>
+                  <td>Required for X sockets — patched by <code>--with-x11</code></td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td>Avoid SD-card rootfs</td>
+                  <td>Faster apt, editors, builds</td>
+                </tr>
+                <tr>
+                  <td>6</td>
+                  <td>Optional GPU (Turnip/Zink)</td>
+                  <td>Advanced, device-specific. GrokHunter does not auto-install drivers</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section alt" id="black-screen">
+        <div class="wrap">
+          <p class="section-label">Black screen</p>
+          <h2>When nh-x11 opens nothing</h2>
+          <ol class="steps">
+            <li>Confirm the Termux:X11 APK matches how Termux was installed (sharedUid only with GitHub Termux).</li>
+            <li><code>grokhunter binds status</code> then <code>grokhunter binds repair</code>.</li>
+            <li>One DE only. Then:
+              <div class="code-block" style="margin-top: 0.75rem">
+                <div class="code-head">
+                  <span class="code-label">Reset X11</span>
+                  <button
+                    type="button"
+                    class="copy-btn"
+                    data-copy="pkill -f termux.x11 || true&#10;am force-stop com.termux.x11 || true&#10;nh-x11"
+                  >Copy</button>
+                </div>
+                <pre><code>pkill -f termux.x11 || true
+am force-stop com.termux.x11 || true
+nh-x11</code></pre>
+              </div>
+            </li>
+            <li>Leave legacy drawing on unless you are testing <code>NH_X11_LEGACY=0</code>.</li>
+          </ol>
+          <p class="fineprint">
+            Longer notes:
+            <a href="https://github.com/FineComputer14451/GrokHunter/blob/main/docs/X11-PERFORMANCE.md" target="_blank" rel="noopener noreferrer">docs/X11-PERFORMANCE.md</a>
+            · skill <code>x11-desktop</code> · agent <code>grokhunter desktop</code>.
+          </p>
+        </div>
+      </section>
+
+      <section class="section" id="phone-vs-desktop">
+        <div class="wrap">
+          <p class="section-label">Phone vs desktop</p>
+          <h2>Shell first, XFCE when the screen is large</h2>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Shell</th>
+                  <th>XFCE + nh-x11</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Battery / RAM</td>
+                  <td>Low</td>
+                  <td>High — keep one session</td>
+                </tr>
+                <tr>
+                  <td>Pair programming</td>
+                  <td><code>grokhunter</code> / <code>grokhunter tui</code></td>
+                  <td>Same CLI inside a terminal window</td>
+                </tr>
+                <tr>
+                  <td>Editors</td>
+                  <td>nvim / micro</td>
+                  <td>GUI editors if you accept the lag</td>
+                </tr>
+                <tr>
+                  <td>Chromium</td>
+                  <td>—</td>
+                  <td>Patched <code>--no-sandbox</code> under proot. Lab only</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="fineprint">
+            Out of scope: Magisk, HID, firmware, rooted X11 tricks.
+            Rootless / proot only.
+          </p>
+          <div class="cta-row">
+            <a class="btn btn-primary" href="install.html">Install flags</a>
+            <a class="btn btn-ghost btn-lg" href="cli.html">CLI list</a>
+            <a class="btn btn-ghost btn-lg" href="faq.html">FAQ</a>
+          </div>
+        </div>
+      </section>
+    </main>
