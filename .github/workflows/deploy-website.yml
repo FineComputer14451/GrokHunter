@@ -8,6 +8,12 @@ on:
     paths:
       - "website/**"
       - "branding/**"
+      - "VERSION"
+      - "agents/**"
+      - "personas/**"
+      - "roles/**"
+      - "skills/**"
+      - "scripts/build-website.py"
       - ".github/workflows/deploy-website.yml"
   workflow_dispatch:
 
@@ -38,7 +44,10 @@ jobs:
             python3 branding/decode_assets.py
           fi
 
-          # Static site root = website/ (no build step)
+          # Stitch pages + site.json from VERSION and catalog counts (no npm)
+          python3 scripts/build-website.py
+
+          # Static site root = website/ (no JS framework)
           cp -a website/. _site/
 
           # Canonical brand files from branding/ — only copy what exists
@@ -71,8 +80,9 @@ jobs:
           # Avoid Jekyll processing on Pages
           touch _site/.nojekyll
 
-          # Drop internal docs from public site
+          # Drop internal docs and stitch fragments from public site
           rm -f _site/README.md
+          rm -rf _site/_src
 
           echo
           echo "=== _site layout ==="

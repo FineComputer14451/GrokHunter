@@ -51,6 +51,7 @@ if [[ -n "${ZSH_VERSION:-}" ]]; then
     fpath=("${GROKHUNTER_HOME}/config/completions/zsh" ${fpath[@]})
   fi
   (( ${+aliases[ghn]} )) || alias ghn='grok-nethunter'
+  (( ${+aliases[ghl]} )) || alias ghl='grokhunter tui'
   (( ${+aliases[ghd]} )) || alias ghd='grokhunter doctor'
   (( ${+aliases[ghs]} )) || alias ghs='grokhunter status'
   (( ${+aliases[ghsu]} )) || alias ghsu='grokhunter setup'
@@ -74,6 +75,7 @@ if [[ -n "${BASH_VERSION:-}" ]]; then
     source "${GROKHUNTER_HOME}/config/completions/bash/grokhunter.bash"
   fi
   alias ghn='grok-nethunter' 2>/dev/null || true
+  alias ghl='grokhunter tui' 2>/dev/null || true
   alias ghd='grokhunter doctor' 2>/dev/null || true
   alias ghs='grokhunter status' 2>/dev/null || true
   alias ghsu='grokhunter setup' 2>/dev/null || true

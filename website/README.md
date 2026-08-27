@@ -1,58 +1,41 @@
 # GrokHunter website
 
-Static product landing page for [GrokHunter](https://github.com/FineComputer14451/GrokHunter) **v1.0.10**.
+Static product site for [GrokHunter](https://github.com/FineComputer14451/GrokHunter) **v1.0.10**.
 
 **Live:** https://finecomputer14451.github.io/GrokHunter/
 
-## Sections
+No npm. Pages are stitched from `website/_src/` by `scripts/build-website.py`.
+Generated HTML is committed so a phone can open the files without running the stitch.
 
-| Section | Content |
-|---------|---------|
-| Hero | Quick install + animated terminal (1.0.10 stack) |
-| Stats | Version / Grok min / agents / personas / roles |
-| Why | Comparison table |
-| Features | 9 feature cards (Grok Build 1.0.5, Grok 4.6, agents, Aider, …) |
-| Stack | skills · agents · personas · roles |
-| Agents | Coding Team loop + roster table |
-| Personas & roles | Full product lists |
-| Install | One-liner, full, clone, overlay-only + flags |
-| CLI | Full `grokhunter` command list |
-| Upgrade | Paste-ready 1.0.10 upgrade path |
-| Architecture | Overlay layers |
-| FAQ | Rootless, auth, Aider 3.13, X11, scope |
+## Pages
 
-## Open locally
+| File | Content |
+|------|---------|
+| `index.html` | Hero, stats, why, features, links to the rest |
+| `install.html` | Install + overlay-only + upgrade |
+| `cli.html` | Command list (Grok TUI vs lab TUI vs XFCE `menu`) |
+| `desktop.html` | XFCE / Termux:X11 / `nh-x11` / binds / XFCE submenu |
+| `agents.html` | Stack, Coding Team, personas / roles |
+| `faq.html` | Architecture, FAQ, credits |
+| `404.html` | GitHub Pages fallback |
+| `site.json` | Version + catalog counts + TUI wording |
+
+## Build
 
 ```bash
+python3 scripts/build-website.py
 python3 -m http.server 8080 -d website
-# then open http://localhost:8080
+# http://localhost:8080
 ```
 
-Or open `index.html` directly in a browser.
+`site.json` counts `agents/*.md` (minus README/HANDOFF/REFERENCES), `personas/*.toml`, `roles/*.toml`, and `skills/*/` directories.
 
 ## Deploy
 
 Workflow: [`.github/workflows/deploy-website.yml`](../.github/workflows/deploy-website.yml)
 
-1. Pages source: **GitHub Actions** (already enabled for this repo)
-2. Push `website/**` or `branding/**` to `main` **or** **Actions → Deploy website → Run workflow**
+1. Pages source: **GitHub Actions**
+2. Workflow runs `python3 scripts/build-website.py`, copies `website/` to `_site`, drops `_src/` and `README.md`
 3. URL: https://finecomputer14451.github.io/GrokHunter/
 
-No Node/npm build — pure static HTML/CSS/JS. Brand tokens: `styles.css` (Grok cyan `#00E5C7` · Kali blue `#2777FF` · NetHunter red `#E31C3D` · geometric purple `#9B5DE5`). Assets: `website/assets/` (favicon, lockup, `og.jpg` 1200×630). X profile header: `branding/x-banner.jpg` (upload in X settings).
-
----
-
-## Geometric Branding Draft
-
-A new geometric low-poly wolf-fox mascot direction is under review:
-
-→ See [`branding/geometric-draft/`](../branding/geometric-draft/)
-
-- Cyan / Purple split
-- Red eyes
-- No crest
-- Full favicon + lockup + hero/OG assets prepared
-
-Do not replace `website/assets/` until the draft is approved.
-- Header mark is now the inline geometric SVG (cyan/purple split, red eyes). `website/assets/` raster favicon is unchanged until the draft is fully approved.
-- Hero wash uses cyan left / purple right. `.chip-purple` and `.purple` are used in index.html.
+Relative links only (`cli.html`, not `/GrokHunter/cli.html`) so project Pages and `file://` both work.

@@ -1,0 +1,23 @@
+{
+  "version": "1.0.10",
+  "min_grok": "1.0.5",
+  "overlay_cache": "2026.2.25",
+  "agents": 26,
+  "personas": 24,
+  "roles": 25,
+  "skills": 20,
+  "pages": [
+    "index.html",
+    "install.html",
+    "cli.html",
+    "desktop.html",
+    "agents.html",
+    "faq.html",
+    "404.html"
+  ],
+  "tui": {
+    "bare": "Grok Build fullscreen TUI (grok-nethunter)",
+    "tui": "Lab operations menu (alias: lab)",
+    "menu": "Kali/XFCE Applications submenu"
+  }
+}
