@@ -61,6 +61,8 @@ Options:
   -h, --help              Show this help and exit
 
 Examples:
+  install.sh                         TTY: first-run wizard (default coding-only)
+  install.sh --yes                   Coding-only default, no wizard
   install.sh --full --de xfce --with-grok --with-x11 --with-aider --with-completions
   install.sh -m
   install.sh --nano --no-de --with-grok
@@ -69,6 +71,7 @@ Examples:
 Env:
   GROKHUNTER_REFRESH=1              Bypass module + engine cache
   GROKHUNTER_DISTRO_ENGINE_URL=…    Pin/fork of termux-distro.sh
+  GROKHUNTER_INSTALL_TUI=0          Skip wizard; use termux-distro choose/ask
 
 Grok Build:  https://x.ai/cli
 Termux:X11:  https://github.com/termux/termux-x11

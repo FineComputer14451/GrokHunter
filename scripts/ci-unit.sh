@@ -174,6 +174,30 @@ bash -c '
 '
 info "install-tui preset OK"
 
+bash -c '
+  set -euo pipefail
+  source lib/cli.sh
+  source lib/install-tui.sh
+  install_tui_defaults
+  out="$(install_tui_dump)"
+  [[ "$out" == "$(install_tui_argv)" ]]
+  [[ "$out" != *XAI* ]]
+  [[ "$out" != *secrets* ]]
+  declare -F install_tui_main >/dev/null
+  declare -F install_tui_home >/dev/null
+  declare -F install_tui_confirm >/dev/null
+'
+info "install-tui dump OK"
+
+grep -q 'install-tui.sh' install.sh || die "install.sh must load install-tui.sh"
+grep -q '2026.8.27' install.sh || die "install.sh MODULES_VERSION/VERSION_NAME must be 2026.8.27"
+grep -q 'install_tui_main' install.sh || die "install.sh must call install_tui_main"
+grep -q -- '--yes' lib/cli.sh || die "cli help/parse must include --yes"
+if grep -E 'XAI_API_KEY|secrets.env' lib/install-tui.sh; then
+  die "install-tui must not mention XAI_API_KEY or secrets.env"
+fi
+info "install-tui wire OK"
+
 # ---------- maybe_install / run_optional_features ----------
 bash -c '
   set -euo pipefail

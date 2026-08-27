@@ -43,9 +43,9 @@ die_with_help() {
 
 REPO_RAW="https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main"
 REPO_TAR="https://github.com/FineComputer14451/GrokHunter/archive/refs/heads/main.tar.gz"
-MODULES=(cli.sh actions.sh grok.sh x11.sh)
+MODULES=(cli.sh actions.sh grok.sh x11.sh install-tui.sh)
 DISCOVER_MODULES=(skills-discover.sh agents-discover.sh personas-discover.sh roles-discover.sh)
-MODULES_VERSION="2026.2.25"
+MODULES_VERSION="2026.8.27"
 OVERLAY_ITEMS=(
   install.sh uninstall.sh VERSION LICENSE CREDITS.md AGENTS.md README.md CHANGELOG.md
 )
@@ -324,13 +324,15 @@ done
 # shellcheck source=/dev/null
 source "${LIB_DIR}/cli.sh" || die "failed to source cli.sh"
 # shellcheck source=/dev/null
+source "${LIB_DIR}/install-tui.sh" || die "failed to source install-tui.sh"
+# shellcheck source=/dev/null
 source "${LIB_DIR}/actions.sh" || die "failed to source actions.sh"
 # shellcheck source=/dev/null
 source "${LIB_DIR}/grok.sh" || die "failed to source grok.sh"
 # shellcheck source=/dev/null
 source "${LIB_DIR}/x11.sh" || die "failed to source x11.sh"
 
-for fn in parse_cli install_grok_build setup_termux_x11; do
+for fn in parse_cli install_tui_main install_grok_build setup_termux_x11; do
   declare -F "$fn" >/dev/null 2>&1 || die_with_help "Installer modules are incomplete or corrupted (missing function: $fn)." \
     "Force a clean re-download:  GROKHUNTER_REFRESH=1 bash install.sh" \
     "Or clone a fresh copy of the repository"
@@ -340,7 +342,7 @@ DISTRO_NAME="Kali NetHunter"
 PROGRAM_NAME="install.sh"
 DISTRO_REPOSITORY=termux-nethunter
 KERNEL_RELEASE=$(uname -r 2>/dev/null || echo unknown)
-VERSION_NAME="GrokHunter-Rootless-2026.2.25"
+VERSION_NAME="GrokHunter-Rootless-2026.8.27"
 SHASUM_CMD=sha256sum
 
 # Offline / air-gapped fallbacks (live SHA from Kali /current/ is preferred).
@@ -364,6 +366,18 @@ DEFAULT_LOGIN=kali
 parse_cli "$@" || die_with_help "Invalid command-line options." \
   "Run with --help to see available flags" \
   "Example:  bash install.sh --full --de xfce --with-grok --with-x11"
+
+if [[ ${NON_INTERACTIVE} -eq 0 ]]; then
+  if [[ ! -t 0 || ! -t 1 ]]; then
+    die_with_help "Not a TTY. Pass flags or run in a Termux terminal." \
+      "Coding-only:  bash install.sh --nano --no-de --with-grok --with-completions" \
+      "Desktop:      bash install.sh --full --de xfce --browser chromium --with-grok --with-x11 --with-completions" \
+      "Default:      bash install.sh --yes"
+  fi
+  if install_tui_should_run; then
+    install_tui_main
+  fi
+fi
 
 # Lightweight messaging when termux-distro is not loaded (overlay-only).
 _ensure_msg_stubs() {
