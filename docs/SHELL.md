@@ -57,6 +57,7 @@ Same installer. In `~/.bashrc`:
 | Alias | Expands to |
 |-------|------------|
 | `ghn` | `grok-nethunter` |
+| `ghl` | `grokhunter tui` |
 | `ghd` | `grokhunter doctor` |
 | `ghs` | `grokhunter status` |
 | `ghsu` | `grokhunter setup` |
