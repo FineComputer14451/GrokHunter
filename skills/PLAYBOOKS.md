@@ -37,7 +37,8 @@ Symptom → skill routing for the GrokHunter phone lab. Prefer the **narrowest**
 | Desktop lag / jank | `x11-desktop` | sharedUid APK, light DE |
 | `/tmp` X socket / binds missing | `x11-desktop` | `grokhunter binds status` then repair/optimize |
 | XFCE panel / glycin `bwrap` abort | `x11-desktop` | `bwrap-proot`; `docs/TROUBLESHOOTING.md` |
-| TLS / `SSL_CERT_FILE` / CA | `grokhunter` | `lib/tls.sh`; never print certs |
+| TLS / `SSL_CERT_FILE` / CA | `tls-lab` | `lib/tls.sh`; never print certs (agent `tls`) |
+| Doctor offline / no route to x.ai | `net-lab` | 401/403 = reachable; `000` = outage (agent `net`) |
 | Am I in Termux or Kali? | `host-lab` | PREFIX / pkg vs apt |
 | TUI vanished / Termux killed process | `session-lab` | tmux / `grok --resume` |
 | TAB complete / `ghd` missing | `shell-lab` | source `~/.grok/profile.sh` |
@@ -68,6 +69,8 @@ grokhunter status
 grokhunter skills install
 grokhunter models install
 grokhunter git-identity set
+grokhunter tls
+grokhunter net
 grokhunter ai-smoke
 bash scripts/ci-unit.sh
 nh-x11                    # legacy drawing on; NH_X11_LEGACY=0 to disable
@@ -86,6 +89,8 @@ skills/session-lab  →  agent session
 skills/github-lab   →  agent github
 skills/secrets-lab  →  agent secrets
 skills/toolchain    →  agent toolchain
+skills/tls-lab      →  agent tls
+skills/net-lab      →  agent net
 …
 ```
 

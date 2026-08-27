@@ -31,6 +31,8 @@ You own **`~/.grok/secrets.env`** (mode **600**). `grokhunter secrets` only laun
 | MCP env/headers in TOML | `mcp` (use `${VAR}`) |
 | Aider mapping `XAI_API_KEY` → helper | `aider` |
 | SuperGrok / `auth.json` dump | do not print `~/.grok/auth.json` |
+| CA / `SSL_CERT_FILE` / cert files | `tls` (never print PEM) |
+| x.ai offline / `http_code=000` | `net` |
 
 ## Process
 

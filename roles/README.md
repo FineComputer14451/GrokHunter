@@ -38,6 +38,8 @@ Discovered from:
 | `github.toml` | `github` | all | github |
 | `secrets.toml` | `secrets` | all | secrets |
 | `toolchain.toml` | `toolchain` | all | toolchain |
+| `tls.toml` | `tls` | all | tls |
+| `net.toml` | `net` | all | net |
 
 ## Install
 

@@ -21,7 +21,7 @@ Skills are **playbooks** (how to do a thing). Agents are **runtime specialists**
 |-------|--------|------|
 | **Core** | `grokhunter`, `pair-programming` | Lab orchestrator + coding session style |
 | **Primary tools** | `aider-grok`, `x11-desktop` | Aider + Termux:X11 desktop |
-| **Optional lab** | 15 `*-lab` / toolchain skills | Narrow phone-environment playbooks |
+| **Optional lab** | 17 `*-lab` / toolchain skills | Narrow phone-environment playbooks |
 | **Scoped** | `nethunter-recon` | Authorized recon only — not product default |
 
 ## Roster
@@ -59,6 +59,8 @@ Skills are **playbooks** (how to do a thing). Agents are **runtime specialists**
 | [`hooks-lab`](hooks-lab/SKILL.md) | ~/.grok/hooks / /hooks |
 | [`shell-lab`](shell-lab/SKILL.md) | profile.sh / completions / ghd |
 | [`specialist-lab`](specialist-lab/SKILL.md) | Add a lab agent/skill (recipe in agents/README) |
+| [`tls-lab`](tls-lab/SKILL.md) | Kali CA / `SSL_CERT_FILE` |
+| [`net-lab`](net-lab/SKILL.md) | x.ai probe / guest DNS |
 
 ### Scoped / legacy
 
@@ -96,6 +98,8 @@ Termux vs Kali confusion        → host-lab
 Disk full                       → storage-lab
 TAB / ghd missing               → shell-lab
 New lab agent / skill           → specialist-lab
+TLS / SSL_CERT_FILE / CA        → tls-lab (agent `tls`)
+x.ai offline / DNS              → net-lab (agent `net`)
 ```
 
 ## Hard rules (all skills)

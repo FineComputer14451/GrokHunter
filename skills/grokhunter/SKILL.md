@@ -3,7 +3,7 @@ name: grokhunter
 description: >-
   GrokHunter Rootless orchestrator for the on-device coding lab. Activate for
   install, overlay-only updates, doctor, PATH/config repair, models/skills
-  pickers, grokhunter binds, TLS/CA, bwrap-proot, SpaceXAI smoke, and launching
+  pickers, grokhunter binds, bwrap-proot, SpaceXAI smoke, and launching
   pair-programming or build workflows.
 ---
 
@@ -23,7 +23,7 @@ Default mission is a **coding lab**, not offensive ops (see optional `nethunter-
 - Choosing desktop (`nh-x11`) vs shell-only workflows
 - Starting or repairing a pair-programming session
 - SpaceXAI API smoke / app LLM key checks
-- Proot binds / TLS CA (runtime X11 triage is still skill `x11-desktop`)
+- Proot binds (runtime X11 triage is still skill `x11-desktop`; TLS is skill `tls-lab`)
 
 ## Facts
 
@@ -50,9 +50,11 @@ Default mission is a **coding lab**, not offensive ops (see optional `nethunter-
 | Skills install dir | `~/.grok/skills/{name}/SKILL.md` |
 | Git identity | `grokhunter git-identity` [`show` \| `set`] — flags, env, gh, `GH_TOKEN`, or GitHub origin |
 | Binds | `grokhunter binds` [`status` \| `repair` \| `optimize`] — `lib/x11.sh`; runtime triage is skill `x11-desktop` |
-| TLS | `lib/tls.sh` — doctor probe, git-identity, install CA compat (`/etc/tls/cert.pem`) |
-| Related skills | coding: `pair-programming`, `aider-grok`; optional lab skills (toolchain…shell-lab, specialist-lab, x11-desktop); scoped: `nethunter-recon` |
-| Coding Team agents | core + specialists (overlay…toolchain) → `~/.grok/agents/` |
+| TLS | skill `tls-lab` / agent `tls` — `lib/tls.sh`; overlay still writes install symlink |
+| Net | skill `net-lab` / agent `net` — `lib/https-probe.sh`; 401/403 = reachable |
+| Related skills | coding: `pair-programming`, `aider-grok`; optional lab skills (toolchain…shell-lab, specialist-lab, tls-lab, net-lab, x11-desktop); scoped: `nethunter-recon` |
+| Coding Team agents | core + specialists (overlay…toolchain, tls, net) → `~/.grok/agents/` |
+| TUI status line | `~/.grok/statusline.sh` via `scripts/install_grok_statusline.sh` (restart `grok`) |
 
 ## CLI map
 
@@ -70,7 +72,7 @@ grokhunter modeler|ci|aider [prompt]
 grokhunter session|host|mcp [prompt]
 grokhunter plugin|flow|storage [prompt]
 grokhunter editor|hook|shell [prompt]
-grokhunter github|secrets|toolchain [prompt]  # github ≠ git-identity CLI
+grokhunter github|secrets|toolchain|tls|net [prompt]  # github ≠ git-identity CLI
 grokhunter git-identity [show|set]
 grokhunter agents status
 grokhunter models status|install|force
@@ -111,13 +113,15 @@ Desktop?              → --with-x11 + Termux:X11 APK + nh-x11
 X11 black/lag/tune?   → skill x11-desktop (docs/X11-PERFORMANCE.md)
 Binds /tmp / X socket? → grokhunter binds status  then skill x11-desktop
 XFCE panel / glycin bwrap? → skill x11-desktop (docs/TROUBLESHOOTING.md)
-TLS / SSL_CERT_FILE / CA? → doctor + lib/tls.sh (never print certs)
+TLS / SSL_CERT_FILE / CA? → skill tls-lab / agent tls (never print certs)
+x.ai offline / DNS?       → skill net-lab / agent net (401/403 = reachable)
 API key check?        → grokhunter ai-smoke
 GitHub invalid-email? → grokhunter git-identity set  (skill github-lab / agent github)
 Secrets / missing key? → skill secrets-lab / agent secrets (never print)
 Compilers / apt?      → skill toolchain / agent toolchain (Aider stays aider-grok)
 Termux vs Kali?       → skill host-lab
 TUI died / resume?    → skill session-lab
+TUI status line?      → bash scripts/install_grok_statusline.sh  (restart grok)
 MCP tools missing?    → skill mcp-lab (`grok mcp`; agent `mcp`)
 Plugin missing?       → skill plugin-lab (`grok plugin`; agent `plugin`)
 Grok workflow .rhai?  → skill flow-lab (agent `flow`; Actions = ci-lab)
@@ -246,7 +250,7 @@ Anchors: `XAI_API_KEY`, base `https://api.x.ai/v1`, model **`grok-4.6`**. Never 
 
 ```bash
 bash ~/GrokHunter/scripts/ci-unit.sh
-# syntax, parse_cli, maybe_install, bind patch, status fields, skills install
+# syntax, parse_cli, maybe_install, bind patch, status fields, skills install, statusline
 ```
 
 ### Uninstall (overlay only; keeps rootfs)
@@ -286,10 +290,10 @@ Canonical helpers: repo `bin/` (`nh-x11`, `aider-grok`, `grokhunter`, …) → `
 | wrapper not on PATH | overlay-only installs to `~/.local/bin`; `source ~/.grok/profile.sh` or new shell; skill `host-lab` if Termux vs Kali |
 | git identity placeholder | `grokhunter git-identity set` |
 | no secrets / key | write `~/.grok/secrets.env` mode 600 |
-| x.ai unreachable | real outage only if probe gets no HTTP status (`000`); Cloudflare 403 / API 401 are reachable. Offline lab still OK for non-API work |
-| TLS / `SSL_CERT_FILE` | Kali CA bundle vs injected `/etc/tls/cert.pem`; `lib/tls.sh` sanitizes. Compat symlink is install-time (overlay). Never print certs |
+| x.ai unreachable | skill `net-lab` / agent `net`. Real outage only if probe gets no HTTP status (`000`); Cloudflare 403 / API 401 are reachable. Offline lab still OK for non-API work |
+| TLS / `SSL_CERT_FILE` | skill `tls-lab` / agent `tls`. Kali CA vs injected `/etc/tls/cert.pem`; overlay writes the install symlink. Never print certs |
 | binds marker missing | `grokhunter binds status` then skill `x11-desktop` |
 
 ## Response style
 
-Short commands, mobile-friendly, never print secrets. Prefer paste-ready lines over essays. Cross-link `pair-programming` / `aider-grok` for coding, optional lab skills (`shell-lab`, `editor-lab`, `hooks-lab`, `host-lab`, `session-lab`, `storage-lab`, `toolchain`) for the phone environment.
+Short commands, mobile-friendly, never print secrets. Prefer paste-ready lines over essays. Cross-link `pair-programming` / `aider-grok` for coding, optional lab skills (`shell-lab`, `editor-lab`, `hooks-lab`, `host-lab`, `session-lab`, `storage-lab`, `toolchain`, `tls-lab`, `net-lab`) for the phone environment.

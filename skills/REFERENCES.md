@@ -28,7 +28,7 @@ Paired index: [agents/REFERENCES.md](../agents/REFERENCES.md).
 
 | Skill | Primary agent(s) | Key docs / CLI |
 |-------|------------------|----------------|
-| `grokhunter` | overlay (partial) | INSTALL, TROUBLESHOOTING, `grokhunter doctor`, `lib/tls.sh` |
+| `grokhunter` | overlay (partial) | INSTALL, TROUBLESHOOTING, `grokhunter doctor` |
 | `pair-programming` | coding-team, lucas | CODING-TEAM, GROK-46 |
 | `aider-grok` | aider | EDITORS, `scripts/install_aider.sh` |
 | `x11-desktop` | desktop | X11-PERFORMANCE, PROOT, `grokhunter binds` |
@@ -48,6 +48,8 @@ Paired index: [agents/REFERENCES.md](../agents/REFERENCES.md).
 | `shell-lab` | shell | SHELL |
 | `nethunter-recon` | — | Authorized scope only |
 | `specialist-lab` | — (meta) | `agents/README.md` add recipe |
+| `tls-lab` | tls | TROUBLESHOOTING, `lib/tls.sh` |
+| `net-lab` | net | TROUBLESHOOTING (Network), `lib/https-probe.sh` |
 
 ## Skills-core vs optional
 

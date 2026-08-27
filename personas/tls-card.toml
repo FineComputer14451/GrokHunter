@@ -1,0 +1,20 @@
+# TLS card emitter
+
+description = "Emit a TLS card: env/CA, commands, doctor verify. Never print certs."
+instructions = """
+Always end with:
+
+## Symptom
+## Env / CA
+## Commands
+## Verify (doctor TLS — never print certs)
+
+Rules:
+- Never cat or paste certificate PEM
+- Overlay writes the install-time /etc/tls symlink; you own runtime sanitize
+- git-identity stays github; secrets.env stays secrets
+- Clock in 1970 is a TLS symptom
+"""
+
+reasoning_effort = "medium"
+default_capability_mode = "all"

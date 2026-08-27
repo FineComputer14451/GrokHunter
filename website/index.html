@@ -354,7 +354,7 @@
               <h3>Coding Team agents</h3>
               <p>
                 Benjamin · Lucas · Harper plus lab specialists (desktop, overlay, github, secrets,
-                toolchain, …) for Design → Build → Harden. Twenty-six runtime agents.
+                toolchain, tls, net, …) for Design → Build → Harden. Twenty-eight runtime agents.
               </p>
             </article>
             <article class="card">
@@ -450,7 +450,7 @@
             <article class="stack-card">
               <span class="stack-kicker">Skills</span>
               <h3>~/.grok/skills</h3>
-              <p>Twenty lab playbooks (core N/3 plus *-lab specialists, including specialist-lab).</p>
+              <p>Twenty-two lab playbooks (core N/3 plus *-lab specialists, including specialist-lab, tls-lab, and net-lab).</p>
               <code>skills-core=3/3</code>
             </article>
             <article class="stack-card">
@@ -582,6 +582,16 @@ persona = tone / cards  (mobile, design-card, concise, …)</pre>
                   <td><code>github</code> · <code>secrets</code> · <code>toolchain</code></td>
                   <td>full</td>
                   <td>git-identity (CLI is git-identity) · secrets.env · apt/compilers</td>
+                </tr>
+                <tr>
+                  <td><code>tls</code></td>
+                  <td>full</td>
+                  <td>Kali CA / SSL_CERT_FILE (never print certs)</td>
+                </tr>
+                <tr>
+                  <td><code>net</code></td>
+                  <td>full</td>
+                  <td>x.ai probe / guest DNS (401/403 = reachable)</td>
                 </tr>
               </tbody>
             </table>
@@ -794,7 +804,7 @@ bash install.sh --full --de xfce --with-grok --with-x11</code></pre>
             <div class="cli-row"><code>grokhunter session|host|mcp</code><span>tmux/resume, Termux vs Kali, MCP (`mcp` ≠ `grok mcp`)</span></div>
             <div class="cli-row"><code>grokhunter plugin|flow|storage</code><span>plugins (`plugin` ≠ `grok plugin`), workflows, disk</span></div>
             <div class="cli-row"><code>grokhunter editor|hook|shell</code><span>nvim/micro, Grok hooks, profile/completions</span></div>
-            <div class="cli-row"><code>grokhunter github|secrets|toolchain</code><span>git-identity agent (≠ git-identity CLI), secrets.env, apt/compilers</span></div>
+            <div class="cli-row"><code>grokhunter github|secrets|toolchain|tls|net</code><span>git-identity agent (≠ git-identity CLI), secrets.env, apt/compilers, CA, HTTPS</span></div>
             <div class="cli-row"><code>grokhunter agents status</code><span>Installed Coding Team agents</span></div>
             <div class="cli-row"><code>grokhunter models install</code><span>V9 / 4.6 model pickers</span></div>
             <div class="cli-row"><code>grokhunter ai-smoke</code><span>SpaceXAI API smoke test</span></div>

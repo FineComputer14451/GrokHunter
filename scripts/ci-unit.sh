@@ -267,6 +267,8 @@ echo "${_help}" | grep -q 'grokhunter shell' || die "help missing shell"
 echo "${_help}" | grep -q 'grokhunter github' || die "help missing github"
 echo "${_help}" | grep -q 'grokhunter secrets' || die "help missing secrets"
 echo "${_help}" | grep -q 'grokhunter toolchain' || die "help missing toolchain"
+echo "${_help}" | grep -q 'grokhunter tls' || die "help missing tls"
+echo "${_help}" | grep -q 'grokhunter net' || die "help missing net"
 bash bin/grokhunter menu help | grep -q install || die "menu help missing install"
 _credits="$(bash bin/grokhunter credits)"
 echo "${_credits}" | grep -qi jorexdeveloper || die "credits missing jorexdeveloper"
@@ -280,6 +282,8 @@ bash bin/grokhunter agents help | grep -q status || die "agents help missing sta
 bash bin/grokhunter agents help | grep -q github || die "agents help missing github"
 bash bin/grokhunter agents help | grep -q secrets || die "agents help missing secrets"
 bash bin/grokhunter agents help | grep -q toolchain || die "agents help missing toolchain"
+bash bin/grokhunter agents help | grep -q tls || die "agents help missing tls"
+bash bin/grokhunter agents help | grep -q net || die "agents help missing net"
 info "cli help OK"
 
 # ---------- git identity helpers ----------
@@ -591,6 +595,8 @@ bash -c '
   echo "$names" | grep -qx "hooks-lab"
   echo "$names" | grep -qx "shell-lab"
   echo "$names" | grep -qx "specialist-lab"
+  echo "$names" | grep -qx "tls-lab"
+  echo "$names" | grep -qx "net-lab"
   _gh_is_core_skill grokhunter
   _gh_is_core_skill x11-desktop && exit 1 || true
   mkdir -p "$SCRIPT_DIR/skills/_template"
@@ -660,6 +666,8 @@ bash -c '
   echo "$names" | grep -qx "github"
   echo "$names" | grep -qx "secrets"
   echo "$names" | grep -qx "toolchain"
+  echo "$names" | grep -qx "tls"
+  echo "$names" | grep -qx "net"
   echo "$names" | grep -qx "REFERENCES" && exit 1
   echo "$names" | grep -qx "HANDOFF-TEMPLATES" && exit 1
   echo "$names" | grep -qx "README" && exit 1
@@ -702,6 +710,8 @@ bash -c '
   echo "$names" | grep -qx "github-card"
   echo "$names" | grep -qx "secrets-card"
   echo "$names" | grep -qx "toolchain-card"
+  echo "$names" | grep -qx "tls-card"
+  echo "$names" | grep -qx "net-card"
   rm -rf "$HOME"
 '
 info "install_personas OK"
@@ -743,6 +753,8 @@ bash -c '
   echo "$names" | grep -qx "github"
   echo "$names" | grep -qx "secrets"
   echo "$names" | grep -qx "toolchain"
+  echo "$names" | grep -qx "tls"
+  echo "$names" | grep -qx "net"
   rm -rf "$HOME"
 '
 info "install_roles OK"
@@ -1074,5 +1086,131 @@ bash -c '
   rm -rf "$HOME" "$fake"
 '
 info "uninstall strip_shell + shortcuts OK"
+
+# ---------- grok-statusline: lab TUI row (no network, no secrets) ----------
+# Production change that would fail these: missing renderer, leaking payload
+# keys, showing sub-$0.005 cost, skipping truncation, or installer stomping
+# a foreign command / theme.
+command -v python3 >/dev/null 2>&1 || die "python3 required for grok-statusline tests"
+[[ -f scripts/grok-statusline.py ]] || die "missing scripts/grok-statusline.py"
+python3 -m py_compile scripts/grok-statusline.py \
+  || die "py_compile failed: scripts/grok-statusline.py"
+[[ -f scripts/install_grok_statusline.sh ]] || die "missing scripts/install_grok_statusline.sh"
+bash -n scripts/install_grok_statusline.sh \
+  || die "bash -n failed: scripts/install_grok_statusline.sh"
+grep -q 'install_grok_statusline' lib/grok.sh \
+  || die "install_cli_bins must call install_grok_statusline"
+
+_sl_strip() { python3 -c 'import re,sys; print(re.sub(r"\x1b\[[0-9;]*m","",sys.stdin.read()), end="")'; }
+
+_sl_run() {
+  local cols="$1" payload="$2"
+  shift 2
+  printf '%s\n' "${payload}" | GROK_STATUSLINE_NO_GIT=1 COLUMNS="${cols}" python3 scripts/grok-statusline.py "$@"
+}
+
+# Happy path: cwd, model, ctx, cost, branch
+_sl_out="$(_sl_run 80 '{"cwd":"/home/kali/GrokHunter","model":{"display_name":"Multi","id":"multi"},"context_window":{"used_percentage":32},"cost":{"total_cost_usd":0.12},"workspace":{"current_dir":"/home/kali/GrokHunter","branch":"main"}}' | _sl_strip)"
+echo "${_sl_out}" | grep -q 'GrokHunter' || die "statusline missing cwd: ${_sl_out}"
+echo "${_sl_out}" | grep -q 'Multi' || die "statusline missing model: ${_sl_out}"
+echo "${_sl_out}" | grep -q '32%' || die "statusline missing ctx: ${_sl_out}"
+echo "${_sl_out}" | grep -q '\$0.12' || die "statusline missing cost: ${_sl_out}"
+echo "${_sl_out}" | grep -q 'main' || die "statusline missing branch: ${_sl_out}"
+echo "${_sl_out}" | grep -q ' │ ' || die "statusline missing separator: ${_sl_out}"
+
+# Tiny cost is hidden (not $0.00)
+_sl_out="$(_sl_run 80 '{"model":{"display_name":"Multi"},"context_window":{"used_percentage":10},"cost":{"total_cost_usd":0.004}}' | _sl_strip)"
+if echo "${_sl_out}" | grep -q '\$'; then
+  die "sub-\$0.005 cost must be hidden: ${_sl_out}"
+fi
+
+# Narrow phone: drop from the right (cwd/cost/branch), keep model + ctx
+_sl_out="$(_sl_run 20 '{"workspace":{"current_dir":"/home/kali/GrokHunter","branch":"main"},"model":{"display_name":"Multi"},"context_window":{"used_percentage":32},"cost":{"total_cost_usd":0.12}}' | _sl_strip)"
+echo "${_sl_out}" | grep -q 'Multi' || die "narrow row must keep model: ${_sl_out}"
+echo "${_sl_out}" | grep -q '32%' || die "narrow row must keep ctx: ${_sl_out}"
+if echo "${_sl_out}" | grep -q 'GrokHunter'; then
+  die "COLUMNS=20 must drop cwd: ${_sl_out}"
+fi
+if echo "${_sl_out}" | grep -q '\$0.12'; then
+  die "COLUMNS=20 must drop cost: ${_sl_out}"
+fi
+if echo "${_sl_out}" | grep -q 'main'; then
+  die "COLUMNS=20 must drop branch: ${_sl_out}"
+fi
+
+# Ctx warn color at 80% (or auto-compact threshold); NO_COLOR skips it
+_sl_raw="$(printf '%s\n' '{"model":{"display_name":"Multi"},"context_window":{"used_percentage":85}}' | env -u NO_COLOR GROK_STATUSLINE_NO_GIT=1 COLUMNS=80 python3 scripts/grok-statusline.py)"
+echo "${_sl_raw}" | grep -q $'\033\[33m' || die "80%+ ctx must be amber: ${_sl_raw}"
+_sl_nocolor="$(printf '%s\n' '{"model":{"display_name":"Multi"},"context_window":{"used_percentage":85}}' | GROK_STATUSLINE_NO_GIT=1 COLUMNS=80 NO_COLOR=1 python3 scripts/grok-statusline.py)"
+if echo "${_sl_nocolor}" | grep -q $'\033'; then
+  die "NO_COLOR must suppress ANSI: ${_sl_nocolor}"
+fi
+
+# Turn timer uses injectable clock
+_sl_out="$(printf '%s\n' '{"model":{"display_name":"Multi"},"context_window":{"used_percentage":32},"turn":{"started_at_ms":2000}}' | GROK_STATUSLINE_NO_GIT=1 COLUMNS=80 GROK_STATUSLINE_NOW_MS=10000 python3 scripts/grok-statusline.py | _sl_strip)"
+echo "${_sl_out}" | grep -q '8s' || die "turn timer missing 8s: ${_sl_out}"
+
+# Empty / invalid JSON still prints a row (blank would hide the status line)
+_sl_out="$(printf '%s\n' '{}' | GROK_STATUSLINE_NO_GIT=1 COLUMNS=80 python3 scripts/grok-statusline.py | _sl_strip)"
+[[ -n "${_sl_out//[$'\t\r\n ']/}" ]] || die "empty payload must still print a row"
+_sl_out="$(printf '%s\n' 'not-json' | GROK_STATUSLINE_NO_GIT=1 COLUMNS=80 python3 scripts/grok-statusline.py | _sl_strip)"
+[[ -n "${_sl_out//[$'\t\r\n ']/}" ]] || die "invalid JSON must still print a row"
+
+# Never echo unknown payload keys (secrets / session ids)
+_sl_out="$(printf '%s\n' '{"api_key":"xai-secret-token","session_id":"sess-secret","XAI_API_KEY":"xai-secret-token","model":{"display_name":"Multi"},"context_window":{"used_percentage":1}}' | GROK_STATUSLINE_NO_GIT=1 COLUMNS=80 python3 scripts/grok-statusline.py)"
+echo "${_sl_out}" | grep -q 'xai-secret-token' && die "statusline leaked api_key"
+echo "${_sl_out}" | grep -q 'sess-secret' && die "statusline leaked session_id"
+echo "${_sl_out}" | grep -q 'XAI_API_KEY' && die "statusline leaked env-like key"
+info "grok-statusline renderer OK"
+
+# Installer: copy script + patch builtin/missing only; never stomp theme or foreign command
+bash -c '
+  set -euo pipefail
+  ROOT="$(pwd)"
+  HOME=$(mktemp -d)
+  export HOME
+  mkdir -p "$HOME/.grok"
+  cat > "$HOME/.grok/config.toml" <<EOF
+[ui]
+theme = "oscura-midnight"
+compact_mode = true
+
+[ui.status_line]
+type = "builtin"
+items = ["cwd", "model", "context"]
+EOF
+  bash "$ROOT/scripts/install_grok_statusline.sh" >/dev/null 2>&1
+  [[ -x "$HOME/.grok/statusline.sh" ]] || { echo "statusline.sh not executable"; exit 1; }
+  grep -qE "^type\s*=\s*\"command\"" "$HOME/.grok/config.toml" || exit 1
+  grep -qE "^command\s*=\s*\"~/.grok/statusline.sh\"" "$HOME/.grok/config.toml" || exit 1
+  grep -qE "theme\s*=\s*\"oscura-midnight\"" "$HOME/.grok/config.toml" || exit 1
+  # Foreign command must be left alone (script still installed)
+  cat > "$HOME/.grok/config.toml" <<EOF
+[ui]
+theme = "oscura-midnight"
+
+[ui.status_line]
+type = "command"
+command = "~/my-status.sh"
+EOF
+  bash "$ROOT/scripts/install_grok_statusline.sh" >/dev/null 2>&1
+  grep -qE "command\s*=\s*\"~/my-status.sh\"" "$HOME/.grok/config.toml" || exit 1
+  if grep -qE "command\s*=\s*\"~/.grok/statusline.sh\"" "$HOME/.grok/config.toml"; then
+    echo "installer overwrote foreign statusline command"
+    exit 1
+  fi
+  grep -qE "theme\s*=\s*\"oscura-midnight\"" "$HOME/.grok/config.toml" || exit 1
+  # Missing section is created
+  cat > "$HOME/.grok/config.toml" <<EOF
+[ui]
+theme = "groknight"
+EOF
+  bash "$ROOT/scripts/install_grok_statusline.sh" >/dev/null 2>&1
+  grep -qF "[ui.status_line]" "$HOME/.grok/config.toml" || exit 1
+  grep -qE "^command\s*=\s*\"~/.grok/statusline.sh\"" "$HOME/.grok/config.toml" || exit 1
+  grep -qE "theme\s*=\s*\"groknight\"" "$HOME/.grok/config.toml" || exit 1
+  rm -rf "$HOME"
+'
+info "install_grok_statusline OK"
 
 info "ALL OK"

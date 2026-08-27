@@ -16,6 +16,7 @@ GrokHunter **1.0.10+** targets **[Grok Build 1.0.5](https://x.ai/build/changelog
 | Skills | `~/.grok/skills/` (and project `.grok/skills/`) |
 | Agents | `~/.grok/agents/` Coding Team + builtins (`plan`, `explore`, …) |
 | Subagents | enabled in profile for workflows / Coding Team |
+| Status line | `scripts/install_grok_statusline.sh` → `~/.grok/statusline.sh` (cwd · model · ctx% · cost · git). Not part of the owned `[ui]` profile merge. |
 
 1.0.5 adds launcher config overlays (`GROK_CONFIG` / `GROK_CONFIG_PATH`), safer worktree reclaim, hook-block messaging, and image/video call limits. Changelog: https://x.ai/build/changelog
 

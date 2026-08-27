@@ -187,6 +187,8 @@ Usage:
   grokhunter github [prompt]  Launch git-identity agent (CLI is git-identity)
   grokhunter secrets [prompt] Launch secrets.env agent
   grokhunter toolchain [prompt] Launch apt/compiler agent
+  grokhunter tls [prompt]     Launch TLS/CA agent
+  grokhunter net [prompt]     Launch HTTPS/DNS agent
   grokhunter ai-smoke [prompt] SpaceXAI API smoke (scripts/spacexai_smoke.sh)
   grokhunter smoke [prompt]   Alias for ai-smoke
   grokhunter install [args]   Run / re-run installer (supports --overlay-only)
@@ -419,7 +421,7 @@ cmd_agents_status() {
     fi
   done < <(_gh_list_agent_names "${GROKHUNTER_HOME}")
   echo "installed: ${n}"
-  echo "launch:    grokhunter team | scout | review | fix | desktop | overlay | ship | docs | modeler | ci | aider | session | host | mcp | plugin | flow | storage | editor | hook | shell | github | secrets | toolchain"
+  echo "launch:    grokhunter team | scout | review | fix | desktop | overlay | ship | docs | modeler | ci | aider | session | host | mcp | plugin | flow | storage | editor | hook | shell | github | secrets | toolchain | tls | net"
   echo "tui:       /config-agents"
   [[ "${n}" -gt 0 ]]
 }
@@ -436,7 +438,7 @@ Usage: grokhunter agents [status|list|help]
   help          This help
 
 Install agents:  grokhunter skills install
-Launch:          grokhunter team | scout | review | fix | desktop | overlay | ship | docs | modeler | ci | aider | session | host | mcp | plugin | flow | storage | editor | hook | shell | github | secrets | toolchain
+Launch:          grokhunter team | scout | review | fix | desktop | overlay | ship | docs | modeler | ci | aider | session | host | mcp | plugin | flow | storage | editor | hook | shell | github | secrets | toolchain | tls | net
 EOF
       return 0
       ;;
@@ -940,7 +942,7 @@ main() {
       shift || true
       cmd_agent_launch coding-team "$@"
       ;;
-    scout|benjamin|lucas|harper|review|fix|desktop|overlay|ship|docs|ci|aider|session|host|mcp|plugin|flow|storage|editor|hook|shell|github|secrets|toolchain)
+    scout|benjamin|lucas|harper|review|fix|desktop|overlay|ship|docs|ci|aider|session|host|mcp|plugin|flow|storage|editor|hook|shell|github|secrets|toolchain|tls|net)
       shift || true
       cmd_agent_launch "${sub}" "$@"
       ;;

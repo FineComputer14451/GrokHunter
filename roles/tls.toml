@@ -1,0 +1,4 @@
+# TLS role — Kali CA / SSL_CERT_FILE
+description = "Runtime TLS, Kali CA, SSL_CERT_FILE on the phone lab"
+default_capability_mode = "all"
+reasoning_effort = "medium"

@@ -168,6 +168,9 @@ install_cli_bins() {
   install_agents || true
   install_personas || true
   install_roles || true
+
+  # Grok Build TUI lab status line (does not stomp a foreign command or theme)
+  install_grok_statusline || true
 }
 
 # Install freedesktop .desktop entries + XFCE applications-merged submenu.
@@ -379,6 +382,16 @@ install_roles() {
   else
     msg -tw "No roles installed"
   fi
+}
+
+# Copy lab statusline + surgically patch [ui.status_line] (see scripts/install_grok_statusline.sh).
+install_grok_statusline() {
+  local script=""
+  script="$(_gh_resolve "scripts/install_grok_statusline.sh" || true)"
+  if [[ -z "${script}" || ! -f "${script}" ]]; then
+    return 0
+  fi
+  bash "${script}" || true
 }
 
 # ---------------------------------------------------------------------------

@@ -85,6 +85,8 @@ Clarify goal + constraints
 | git-identity / invalid-email | `github` (CLI is `grokhunter git-identity`) |
 | secrets.env / missing API key | `secrets` |
 | apt / gcc / python / node | `toolchain` (Aider uv stays `aider`) |
+| TLS / `SSL_CERT_FILE` / CA | `tls` (overlay still writes the install symlink) |
+| x.ai offline / `http_code=000` / DNS | `net` (401/403 = reachable; CA stays `tls`) |
 | New lab agent / `*-lab` skill | skill `specialist-lab` (not a new agent type) |
 
 ### When not to use the full loop
@@ -100,6 +102,8 @@ Clarify goal + constraints
 | GitHub invalid-email | `github` |
 | secrets.env / ai-smoke key | `secrets` |
 | Compilers missing | `toolchain` |
+| curl/gh SSL / missing CA | `tls` |
+| Doctor offline / no route to x.ai | `net` |
 | Add a specialist | skill `specialist-lab` |
 
 ## Mobile constraints checklist

@@ -50,6 +50,8 @@ These are **Grok Build agent definitions**. Grok loads the matching file as the 
 | `github.md` | `github` | full | git-identity (`grokhunter github`; CLI is `git-identity`) |
 | `secrets.md` | `secrets` | full | secrets.env mode 600 |
 | `toolchain.md` | `toolchain` | full | apt / compilers |
+| `tls.md` | `tls` | full | Kali CA / `SSL_CERT_FILE` |
+| `net.md` | `net` | full | HTTPS probe / guest DNS |
 
 ## Install (user discovery)
 
@@ -64,7 +66,7 @@ Verify:
 
 ```bash
 grok inspect
-# Agents: … editor, hook, shell, github, secrets, toolchain (+ builtins)
+# Agents: … editor, hook, shell, github, secrets, toolchain, tls, net (+ builtins)
 ```
 
 ## Use
@@ -109,6 +111,10 @@ grok --agent secrets -p "secrets.env mode"
 grokhunter secrets -p "ai-smoke missing-key"
 grok --agent toolchain -p "install gcc"
 grokhunter toolchain -p "python3 missing"
+grok --agent tls -p "SSL_CERT_FILE missing"
+grokhunter tls -p "doctor TLS warning"
+grok --agent net -p "doctor says offline"
+grokhunter net -p "http_code 000"
 grokhunter plan "…"            # built-in plan agent (not benjamin)
 ```
 
@@ -149,7 +155,7 @@ Use this when Coding Team should `spawn_subagent` / `grokhunter <name>`:
 9. **ci-unit** — `grep -q 'grokhunter <name>'` on help; `grep -qx "<name>"` in install_agents / install_roles / install_personas (`<name>-card`).
 10. **Coding Team** — roster row, routing rule, spawn list, speaker label `[Name]`, activation line in `agents/coding-team.md` + `docs/CODING-TEAM.md`.
 11. **Indexes** — this roster table, [`REFERENCES.md`](REFERENCES.md), [`skills/REFERENCES.md`](../skills/REFERENCES.md), PLAYBOOKS escalate map, README + `website/index.html` CLI row, FAQ one-liner, CHANGELOG Unreleased.
-12. **Neighbors** — Do not steal rows on the agents you almost collided with (Wave 6: ship vs github, aider vs toolchain, secrets vs mcp).
+12. **Neighbors** — Do not steal rows on the agents you almost collided with (Wave 6: ship vs github, aider vs toolchain, secrets vs mcp. Wave 7: overlay vs tls, github vs tls. Wave 8: tls vs net).
 13. **Verify** — `bash scripts/ci-unit.sh`; `grokhunter help | grep <name>`; `grokhunter skills install`.
 
 Install copies are scan-based (`lib/agents-discover.sh`, `lib/skills-discover.sh`). Discover skips `_` prefixes, `README.md`, and uppercase doc files (`REFERENCES`, `HANDOFF-TEMPLATES`). CLI, completions, and Coding Team routing are **not**.

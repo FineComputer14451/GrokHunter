@@ -118,7 +118,7 @@ lucas (script bugs) | benjamin (design) | harper (regressions) | overlay (instal
 ## Commands
 ## Verify (doctor / which grokhunter)
 ## Escalate
-desktop | lucas | ship | benjamin
+desktop | lucas | ship | benjamin | tls
 ```
 
 ---
@@ -312,4 +312,26 @@ overlay | desktop | toolchain
 ## Packages
 ## Commands
 ## Verify
+```
+
+---
+
+## TLS card (tls)
+
+```markdown
+## Symptom
+## Env / CA
+## Commands
+## Verify (doctor TLS — never print certs)
+```
+
+---
+
+## Net card (net)
+
+```markdown
+## Symptom
+## http_code / DNS
+## Commands
+## Verify (doctor x.ai — never print bodies)
 ```

@@ -180,6 +180,20 @@ git config --global user.email "ID+LOGIN@users.noreply.github.com"
 
 Your noreply address is on https://github.com/settings/emails (format `ID+LOGIN@users.noreply.github.com`). Then `grokhunter doctor` should report a real identity.
 
+## TLS / CA
+
+Termux or Grok may inject `SSL_CERT_FILE=/etc/tls/cert.pem`. That path is often missing inside Kali, so curl/`gh` fail. Do not paste certificate PEM.
+
+```bash
+echo "SSL_CERT_FILE=${SSL_CERT_FILE:-unset}"
+test -r /etc/ssl/certs/ca-certificates.crt && echo kali-ca-ok
+ls -l /etc/tls/cert.pem 2>/dev/null || echo 'no /etc/tls/cert.pem'
+date -u
+grokhunter doctor
+```
+
+Skill `tls-lab` · `grokhunter tls`. Overlay still writes the install-time `/etc/tls` compat symlink. If `date` is 1970, fix the Android clock first.
+
 ## Coding tools
 
 ### No git / python / gcc
@@ -227,6 +241,8 @@ ls -l /etc/os-release /usr/lib/os-release
 If both are missing, identification is skipped; Grok / PATH checks are the ones that matter.
 
 ## Network
+
+Skill `net-lab` · `grokhunter net`. CA / `SSL_CERT_FILE` stays skill `tls-lab`.
 
 ### Doctor says “Offline or no route to x.ai”
 

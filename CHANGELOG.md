@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### TUI
+- Lab status line for Grok Build: `scripts/grok-statusline.py` → `~/.grok/statusline.sh`. One row (cwd, model, ctx%, cost, git branch, turn timer). Hides cost under $0.005, truncates on a phone, never reads `secrets.env`. `grokhunter skills install` copies it and patches `[ui.status_line]` only when missing, builtin, or already this script (does not stomp a foreign command or theme). Restart `grok` to pick it up.
+
+### Lab specialists
+
+- Wave 7: agent **`tls`** + skill **`tls-lab`**. Runtime TLS (`lib/tls.sh`, `SSL_CERT_FILE`, Kali CA, doctor probe, clock-skew). Overlay still writes the install-time `/etc/tls` symlink. `grokhunter tls` launches the agent. Never print certs.
+- Wave 8: agent **`net`** + skill **`net-lab`**. HTTPS reachability (`lib/https-probe.sh`, `http_code` 000 vs 403/401, guest DNS). CA stays `tls`. `grokhunter net` launches the agent. Offline lab is still OK for local coding.
+
 ## [1.0.10] — 2026-08-25 — Desktop recovery + Coding Team Wave 6
 
 nh-x11, binds, and TLS work on rootless Kali. Coding Team adds github, secrets, toolchain, and a recipe to mint more. Overlay cache **2026.2.25**.

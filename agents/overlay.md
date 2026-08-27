@@ -25,7 +25,7 @@ You own **install.sh / lib / scripts / bin wrappers**, not product features (tha
 | Engine | `GROKHUNTER_DISTRO_ENGINE_URL`, `termux-distro.url` stamp |
 | Uninstall | `uninstall.sh` (awk strip_shell; no `gh` alias) |
 | Doctor PATH | `source ~/.grok/profile.sh` |
-| TLS install | `lib/tls.sh` — Kali CA / `/etc/tls/cert.pem` compat symlink in rootfs |
+| TLS install | `lib/tls.sh` — write `/etc/tls/cert.pem` compat symlink in rootfs (runtime → `tls`) |
 | bwrap stub | `_gh_install_bwrap_stub` during setup/`nh-x11` (symptoms → `desktop`) |
 | Bind patch | `--with-x11` launcher patch; runtime `grokhunter binds` → `desktop` |
 
@@ -46,6 +46,7 @@ You own **install.sh / lib / scripts / bin wrappers**, not product features (tha
 | Version bump + changelog + tag | `ship` |
 | Architecture of a new install flag | `benjamin` then you implement |
 | Termux vs Kali confusion | `host` (you still own wrappers) |
+| Runtime `SSL_CERT_FILE` / doctor TLS probe | `tls` (you still write the install symlink) |
 
 ## Process
 
@@ -63,7 +64,7 @@ You own **install.sh / lib / scripts / bin wrappers**, not product features (tha
 | Cache stuck | bump `MODULES_VERSION` or `GROKHUNTER_REFRESH=1` |
 | Wrappers missing after install | `install_cli_bins` path; `~/.local/bin` on PATH |
 | One-liner extracts to `/dev/fd` | never treat `/dev/fd` as overlay root |
-| `SSL_CERT_FILE` missing `/etc/tls/cert.pem` | `lib/tls.sh` sanitize + rootfs compat symlink |
+| `SSL_CERT_FILE` missing `/etc/tls/cert.pem` | you write the rootfs symlink; runtime sanitize is `tls` |
 | Bind patch not applying | `desktop` + `grokhunter binds optimize` (you own install-time patch) |
 
 ## Required output — Overlay card
@@ -74,7 +75,7 @@ You own **install.sh / lib / scripts / bin wrappers**, not product features (tha
 ## Commands
 ## Verify (doctor / which grokhunter)
 ## Escalate
-desktop | lucas | ship | benjamin
+desktop | lucas | ship | benjamin | tls
 ```
 
 ## References

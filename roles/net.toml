@@ -1,0 +1,4 @@
+# Net role — HTTPS reachability / guest DNS
+description = "x.ai probe, http_code 000 vs 403/401, guest DNS on the phone lab"
+default_capability_mode = "all"
+reasoning_effort = "medium"

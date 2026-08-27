@@ -41,6 +41,8 @@ _grokhunter() {
     'github:Launch git-identity agent (CLI is git-identity)'
     'secrets:Launch secrets.env agent'
     'toolchain:Launch apt/compiler agent'
+    'tls:Launch TLS/CA agent'
+    'net:Launch HTTPS/DNS agent'
     'benjamin:Launch benjamin architect agent'
     'lucas:Launch lucas builder agent'
     'harper:Launch harper reliability agent'

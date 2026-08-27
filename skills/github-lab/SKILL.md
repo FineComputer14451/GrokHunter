@@ -58,7 +58,7 @@ Install `gh` only if the user needs PRs/releases from the phone (`apt install gh
 | Symptom | First step |
 |---------|------------|
 | `invalid-email-address` / `root` | `grokhunter git-identity set` |
-| `gh api` TLS / missing CA | `lib/tls.sh` sanitizes `SSL_CERT_FILE`; do not paste certs |
+| `gh api` TLS / missing CA | skill `tls-lab` / agent `tls`; do not paste certs |
 | No `gh` CLI | Origin fallback is enough; `gh` is optional |
 
 ## Verify
@@ -81,3 +81,4 @@ grokhunter git-identity
 - Docs: `docs/FAQ.md`, `docs/TROUBLESHOOTING.md`
 - Agent `ship` for VERSION/changelog/tag — not this skill
 - MCP GitHub *tools*: skill `mcp-lab` (`grok mcp`) — not identity
+- TLS / missing CA: skill `tls-lab` / agent `tls`

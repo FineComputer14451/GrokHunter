@@ -38,6 +38,8 @@ TUI: `/personas` or Personas tab under `/config-agents`.
 | `github-card.toml` | `github-card` | GitHub card shape |
 | `secrets-card.toml` | `secrets-card` | Secrets card shape |
 | `toolchain-card.toml` | `toolchain-card` | Toolchain card shape |
+| `tls-card.toml` | `tls-card` | TLS card shape |
+| `net-card.toml` | `net-card` | Net card shape |
 
 ## Install
 
@@ -80,6 +82,8 @@ grok inspect
 | github | `github-card`, `security-lab`, `concise` |
 | secrets | `secrets-card`, `security-lab`, `concise` |
 | toolchain | `toolchain-card`, `shell-first`, `mobile` |
+| tls | `tls-card`, `security-lab`, `concise` |
+| net | `net-card`, `concise`, `mobile` |
 
 Personas are applied via **role / resolution**, not a `spawn_subagent` parameter. Use the Personas tab or roles that reference them.
 

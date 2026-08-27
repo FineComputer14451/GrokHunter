@@ -56,6 +56,8 @@ Canonical cross-links for every GrokHunter agent. Keep agent files lean; put sha
 | `shell-lab` | shell | profile + completions |
 | `nethunter-recon` | — | Optional, authorized scope only |
 | `specialist-lab` | — (meta) | Add-a-specialist recipe in agents/README |
+| `tls-lab` | tls | Kali CA / `SSL_CERT_FILE` (never print certs) |
+| `net-lab` | net | x.ai probe / `http_code` 000 vs 403 (never print bodies) |
 
 Full skill roster + decision tree: [skills/README.md](../skills/README.md) · [skills/PLAYBOOKS.md](../skills/PLAYBOOKS.md)
 
@@ -71,11 +73,13 @@ Full skill roster + decision tree: [skills/README.md](../skills/README.md) · [s
 | review | — | CODING-TEAM |
 | fix | — | CODING-TEAM |
 | desktop | x11-desktop | X11-PERFORMANCE, PROOT, `grokhunter binds` |
-| overlay | grokhunter | INSTALL, TROUBLESHOOTING, `lib/tls.sh` |
+| overlay | grokhunter | INSTALL, TROUBLESHOOTING (TLS install symlink; runtime → `tls`) |
 | ship | github-lab (release notes only) | CHANGELOG, VERSION, FAQ |
 | github | github-lab | FAQ, `grokhunter git-identity` |
 | secrets | secrets-lab | secrets.env mode 600 |
 | toolchain | toolchain | EDITORS, PROOT |
+| tls | tls-lab | TROUBLESHOOTING, FAQ, `lib/tls.sh` |
+| net | net-lab | TROUBLESHOOTING (Network), FAQ, `lib/https-probe.sh` |
 | docs | — | README, FAQ, website |
 | models | grok-models | GROK-46, GROK-BUILD-1.0 |
 | ci | ci-lab | smoke.yml, ci-unit.sh |

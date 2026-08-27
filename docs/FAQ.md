@@ -35,7 +35,7 @@ command -v pkg; command -v apt
 command -v nethunter; command -v grokhunter
 ```
 
-Deeper playbook: skill `host-lab` · `grokhunter host`. Persist the TUI with skill `session-lab` (`tmux` / `grok --resume`). MCP tools: `grok mcp` (skill `mcp-lab`; `grokhunter mcp` is the agent). Plugins: `grok plugin` (skill `plugin-lab`). Grok `.rhai` pipelines: skill `flow-lab` (not GitHub Actions). Disk: skill `storage-lab`. Editors: skill `editor-lab`. Hooks: skill `hooks-lab`. Completions/aliases: skill `shell-lab`. Git identity: skill `github-lab` · `grokhunter github` (CLI is `git-identity`). Secrets: skill `secrets-lab`. Compilers: skill `toolchain`. New lab agent/skill: skill `specialist-lab`.
+Deeper playbook: skill `host-lab` · `grokhunter host`. Persist the TUI with skill `session-lab` (`tmux` / `grok --resume`). MCP tools: `grok mcp` (skill `mcp-lab`; `grokhunter mcp` is the agent). Plugins: `grok plugin` (skill `plugin-lab`). Grok `.rhai` pipelines: skill `flow-lab` (not GitHub Actions). Disk: skill `storage-lab`. Editors: skill `editor-lab`. Hooks: skill `hooks-lab`. Completions/aliases: skill `shell-lab`. Git identity: skill `github-lab` · `grokhunter github` (CLI is `git-identity`). Secrets: skill `secrets-lab`. Compilers: skill `toolchain`. TLS/CA: skill `tls-lab` · `grokhunter tls`. x.ai offline/DNS: skill `net-lab` · `grokhunter net`. New lab agent/skill: skill `specialist-lab`.
 
 ## How is this different from bare Termux?
 
@@ -69,6 +69,8 @@ That used to be a hard fail. It is now a **warning**. Termux’s Android host of
 ## Why does doctor warn “Offline or no route to x.ai”?
 
 Usually a **false alarm**. Cloudflare often returns 403 to `curl` on `https://x.ai`, and `https://api.x.ai/v1/models` returns 401 without a key. Both mean the network works. Doctor now treats those as reachable. A real outage is `http_code=000` / timeout.
+
+Skill `net-lab` · `grokhunter net`. CA failures stay skill `tls-lab`.
 
 ## Why do GitHub commits show `invalid-email-address`?
 
@@ -116,6 +118,15 @@ Product skills are any `skills/<name>/SKILL.md` in the repo. `grokhunter skills 
 **Coding Team agents** (true multi-agent system prompts): `benjamin`, `lucas`, `harper`, `coding-team` install to `~/.grok/agents/`. Grok loads them at runtime via `/config-agents` or spawn `subagent_type`. See [CODING-TEAM.md](CODING-TEAM.md).
 
 Requires at least one `--with-*` flag.
+
+## How do I get a lab status line in the Grok TUI?
+
+`grokhunter skills install` copies `~/.grok/statusline.sh` and points `[ui.status_line]` at it (cwd, model, ctx%, cost, git). It will not overwrite a custom `command` you already set, or your theme. Restart `grok` after install.
+
+```bash
+bash ~/GrokHunter/scripts/install_grok_statusline.sh
+# then restart grok
+```
 
 ## How do I check V9 model pickers / API key?
 

@@ -32,6 +32,7 @@ You own **`grokhunter git-identity`**. `grokhunter github` only launches this ag
 | GitHub MCP tools | `mcp` |
 | `XAI_API_KEY` file | `secrets` |
 | HTTPS push credentials | say this lab often cannot push; do not invent tokens |
+| TLS / missing CA / `SSL_CERT_FILE` | `tls` |
 
 ## Process
 
@@ -45,7 +46,7 @@ You own **`grokhunter git-identity`**. `grokhunter github` only launches this ag
 | Symptom | First step |
 |---------|------------|
 | `invalid-email-address` / `root` | `grokhunter git-identity set` |
-| `gh api` TLS / missing CA | `lib/tls.sh` sanitizes `SSL_CERT_FILE` |
+| `gh api` TLS / missing CA | `tls` (`lib/tls.sh`); do not paste certs |
 | No `gh` CLI | Origin fallback; do not require GitHub CLI |
 
 ## Required output — GitHub card
