@@ -57,6 +57,7 @@ Options:
   --no-completions        Skip shell completions
   --overlay-only          Skip rootfs / termux-distro; only run optional overlays
                           (use with --with-grok / --with-x11 / --with-aider / …)
+  --yes                   Coding-only default (nano, no DE, Grok + completions); no wizard
   -h, --help              Show this help and exit
 
 Examples:
@@ -139,6 +140,16 @@ parse_cli() {
       --with-completions) _feature_yes completions; NON_INTERACTIVE=1; shift ;;
       --no-completions)   _feature_no completions; NON_INTERACTIVE=1; shift ;;
       --overlay-only) OVERLAY_ONLY=1; NON_INTERACTIVE=1; shift ;;
+      --yes)
+        NON_INTERACTIVE=1
+        SELECTED_INSTALLATION=nano
+        SKIP_DE=1
+        _feature_yes grok
+        _feature_yes completions
+        _feature_no x11
+        _feature_no aider
+        _feature_no v9
+        shift ;;
       -h|--help)     show_help 0 ;;
       *)
         echo "Error: Unknown option '$1'" >&2

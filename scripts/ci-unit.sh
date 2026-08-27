@@ -88,6 +88,92 @@ bash -c '
 '
 info "parse_cli OK"
 
+# ---------- install TUI argv / --yes / gates ----------
+bash -c '
+  set -euo pipefail
+  source lib/cli.sh
+  source lib/install-tui.sh
+  install_tui_defaults
+  [[ "$(install_tui_argv)" == "--nano --no-de --with-grok --with-completions" ]]
+
+  INSTALL_TUI_GROK=no INSTALL_TUI_COMPLETIONS=no
+  [[ "$(install_tui_argv)" == "--nano --no-de --no-grok --no-completions" ]]
+
+  install_tui_defaults
+  INSTALL_TUI_AIDER=yes INSTALL_TUI_V9=yes
+  [[ "$(install_tui_argv)" == "--nano --no-de --with-grok --with-completions --with-aider --with-v9-models" ]]
+
+  install_tui_defaults
+  install_tui_set_preset desktop
+  [[ "$(install_tui_argv)" == "--full --de xfce --browser chromium --with-x11 --with-grok --with-completions" ]]
+
+  INSTALL_TUI_GROK=no
+  [[ "$(install_tui_argv)" == "--full --de xfce --browser chromium --with-x11 --no-grok --with-completions" ]]
+'
+info "install-tui argv OK"
+
+bash -c '
+  set -euo pipefail
+  source lib/cli.sh
+  parse_cli --yes
+  [[ "$NON_INTERACTIVE" -eq 1 ]]
+  [[ "$SELECTED_INSTALLATION" == nano ]]
+  [[ "$SKIP_DE" -eq 1 ]]
+  [[ "$FEATURE_GROK" == yes ]]
+  [[ "$FEATURE_COMPLETIONS" == yes ]]
+  [[ "$FEATURE_X11" == no ]]
+  [[ "$FEATURE_AIDER" == no ]]
+  [[ "$FEATURE_V9" == no ]]
+'
+info "parse_cli --yes OK"
+
+bash -c '
+  set -euo pipefail
+  source lib/cli.sh
+  source lib/install-tui.sh
+  install_tui_defaults
+  NON_INTERACTIVE=0 OVERLAY_ONLY=0
+  unset GROKHUNTER_INSTALL_TUI GROKHUNTER_INSTALL_TUI_RAN
+  install_tui_should_run
+
+  NON_INTERACTIVE=1
+  if install_tui_should_run; then exit 1; fi
+  NON_INTERACTIVE=0
+
+  OVERLAY_ONLY=1
+  if install_tui_should_run; then exit 1; fi
+  OVERLAY_ONLY=0
+
+  GROKHUNTER_INSTALL_TUI=0
+  if install_tui_should_run; then exit 1; fi
+  unset GROKHUNTER_INSTALL_TUI
+
+  GROKHUNTER_INSTALL_TUI_RAN=1
+  if install_tui_should_run; then exit 1; fi
+'
+info "install-tui should_run OK"
+
+bash -c '
+  set -euo pipefail
+  source lib/cli.sh
+  source lib/install-tui.sh
+  install_tui_defaults
+  INSTALL_TUI_AIDER=yes
+  install_tui_set_preset desktop
+  argv="$(install_tui_argv)"
+  [[ "$argv" == *"--full"* ]]
+  [[ "$argv" == *"--de xfce"* ]]
+  [[ "$argv" == *"--with-x11"* ]]
+  [[ "$argv" == *"--with-aider"* ]]
+  install_tui_set_preset coding
+  argv="$(install_tui_argv)"
+  [[ "$argv" == *"--nano"* ]]
+  [[ "$argv" == *"--no-de"* ]]
+  [[ "$argv" != *"--with-x11"* ]]
+  [[ "$argv" == *"--with-aider"* ]]
+'
+info "install-tui preset OK"
+
 # ---------- maybe_install / run_optional_features ----------
 bash -c '
   set -euo pipefail
