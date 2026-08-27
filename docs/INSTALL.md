@@ -16,6 +16,24 @@ AI coding & building lab for **unrooted Android** (Termux + proot + Grok Build).
 bash <(curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/install.sh)
 ```
 
+On a Termux **TTY** with **no flags**, that opens a numbered installer wizard. Default recipe is coding-only:
+
+```text
+--nano --no-de --with-grok --with-completions
+```
+
+Toggle “desktop lab” in the wizard for `--full --de xfce --browser chromium --with-x11`. Confirm prints the exact argv, then runs the existing engine. Never prompts for an API key.
+
+Skip the wizard:
+
+```bash
+bash install.sh --yes          # coding-only default, no prompts
+bash install.sh --full --de xfce --with-grok --with-x11   # flags = non-interactive
+GROKHUNTER_INSTALL_TUI=0 bash install.sh   # old termux-distro choose/ask
+```
+
+Non-TTY with no flags exits: pass `--yes` or explicit flags. Overlay-only is unchanged (still needs `--with-*`; no wizard).
+
 ### Recommended full stack
 
 ```bash
@@ -59,6 +77,7 @@ bash install.sh --full --de xfce --with-grok --with-x11
 --with-completions      Copy completions + ~/.grok/profile.sh (does not edit .zshrc/.bashrc)
 --no-completions        Skip shell completions
 --overlay-only          Skip rootfs / termux-distro; only run optional overlays
+--yes                   Coding-only default (nano, no DE, Grok + completions); no wizard
 -h, --help              Show help
 ```
 
@@ -84,6 +103,7 @@ Helpers (`nh-x11`, `aider-grok`, `grokhunter`, …) are installed from repo `bin
 | Variable | Purpose |
 |----------|---------|
 | `GROKHUNTER_REFRESH=1` | Bypass module + engine cache |
+| `GROKHUNTER_INSTALL_TUI=0` | Skip first-run wizard; use termux-distro `choose`/`ask` |
 | `GROKHUNTER_DISTRO_ENGINE_URL` | Pin/fork of `termux-distro.sh` (default: **jorexdeveloper/termux-distro** main) |
 | `GROKHUNTER_GROK_INSTALLER` | `auto` \| `official` \| `termux-native` |
 | `GROKHUNTER_GROK_TERMUX_URL` | Override Termux-native installer URL (default: pinned commit, not `main`) |

@@ -87,6 +87,17 @@ git config --global user.name "Your GitHub name"
 git config --global user.email "ID+LOGIN@users.noreply.github.com"
 ```
 
+## What is the installer wizard vs Grok vs the XFCE menu?
+
+| Surface | Job |
+|---------|-----|
+| `bash install.sh` (Termux TTY, no flags) | First-run numbered wizard. Default is **coding-only nano**. Confirm execs flags. |
+| `install.sh --yes` or any `--full` / `--with-*` | Skip wizard. Overlay-only still needs `--with-*` and has no wizard. |
+| `grokhunter` / `grok` | Grok Build pair TUI (after install). Not the installer. |
+| `grokhunter menu` | XFCE Applications submenu. Not the installer. |
+
+`GROKHUNTER_INSTALL_TUI=0 bash install.sh` restores the old sequential `choose`/`ask` prompts. The wizard never asks for an API key.
+
 ## How do I update?
 
 Use **overlay-only** so you do not re-enter the termux-distro / rootfs path:

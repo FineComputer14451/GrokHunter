@@ -29,7 +29,7 @@ Default mission is a **coding lab**, not offensive ops (see optional `nethunter-
 
 | Item | Value |
 |------|-------|
-| Version | **1.0.10** (repo `VERSION`; overlay cache **2026.2.25**) |
+| Version | **1.0.10** (repo `VERSION`; overlay cache **2026.8.27**) |
 | Overlay | `~/GrokHunter` or `$GROKHUNTER_HOME` |
 | Launch | `grokhunter` / `grok` (wrappers in `~/.local/bin`) |
 | Doctor | `grokhunter doctor` |
@@ -103,8 +103,8 @@ grokhunter help | version
 ## Decision tree (quick)
 
 ```
-Need Kali rootfs?     → full/mini/nano install.sh
-Already have Kali?    → --overlay-only --with-*
+Need Kali rootfs?     → install.sh (TTY wizard, default nano) or --yes / flags
+Already have Kali?    → --overlay-only --with-*   # no wizard
 Only Grok binary?     → grokhunter ensure   # requires Grok Build 1.0.5+
 Profile only?         → bash scripts/install_grok_profile.sh
 Only V9 pickers?      → grokhunter models install
@@ -250,7 +250,7 @@ Anchors: `XAI_API_KEY`, base `https://api.x.ai/v1`, model **`grok-4.6`**. Never 
 
 ```bash
 bash ~/GrokHunter/scripts/ci-unit.sh
-# syntax, parse_cli, maybe_install, bind patch, status fields, skills install, statusline
+# syntax, parse_cli, maybe_install, bind patch, status fields, skills install, statusline, install-tui
 ```
 
 ### Uninstall (overlay only; keeps rootfs)
@@ -273,6 +273,7 @@ bash ~/GrokHunter/uninstall.sh --purge-grok
 | `--with-v9-models` / `--no-v9-models` | Model pickers |
 | `--with-completions` / `--no-completions` | Completions + `~/.grok/profile.sh` (does not edit rc files) |
 | `--overlay-only` | No rootfs/engine; overlays only |
+| `--yes` | Coding-only default; skip wizard |
 
 Canonical helpers: repo `bin/` (`nh-x11`, `aider-grok`, `grokhunter`, …) → `~/.local/bin`.
 

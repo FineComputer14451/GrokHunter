@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Installer TUI
+- First-run numbered wizard on Termux: bare `install.sh` (TTY, no size/feature flags) shows a checklist, prints argv, then `exec`s the existing engine. Default is **coding-only** (`--nano --no-de --with-grok --with-completions`). Desktop toggle promotes to `--full --de xfce --browser chromium --with-x11`. `--yes` is the default with no wizard. Flags still skip it. Overlay-only is unchanged. Overlay cache **2026.8.27**. Never prompts for a key.
+
 ### TUI
 - Lab status line for Grok Build: `scripts/grok-statusline.py` → `~/.grok/statusline.sh`. One row (cwd, model, ctx%, cost, git branch, turn timer). Hides cost under $0.005, truncates on a phone, never reads `secrets.env`. `grokhunter skills install` copies it and patches `[ui.status_line]` only when missing, builtin, or already this script (does not stomp a foreign command or theme). Restart `grok` to pick it up.
 

@@ -33,6 +33,7 @@ Source: [`website/`](website/) · deploy: push `website/**` or `branding/**`, or
 
 ```bash
 # One-liner (Termux from F-Droid / GitHub — not Play Store)
+# No flags: TTY wizard (default coding-only nano). --yes skips the wizard.
 bash <(curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/install.sh)
 
 # Or clone
@@ -158,9 +159,10 @@ Details: [docs/EDITORS.md](docs/EDITORS.md).
 ## Architecture
 
 ```
-install.sh                 Termux one-liner entry (wake-lock, module cache)
+install.sh                 Termux one-liner entry (wake-lock, module cache, first-run TUI)
 lib/
   cli.sh                   Flags & help
+  install-tui.sh           First-run numbered wizard (argv → exec flags)
   actions.sh               Rootfs / DE / Grok / X11 / Aider / V9 hooks
   grok.sh                  Grok Build + Aider + V9 helpers
   x11.sh                   Termux:X11 + nh-x11 + /tmp bind patch
