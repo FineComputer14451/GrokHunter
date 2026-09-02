@@ -31,6 +31,7 @@ screen_mode = "fullscreen"
 max_thoughts_width = 100
 # Secondary model for forks / side tasks (must be a real catalog id)
 fork_secondary_model = "grok-4.6"
+# Sticky across --force (reset with --force-ui). Template never sets yolo=true.
 yolo = false
 compact_mode = true
 permission_mode = "always-approve"
