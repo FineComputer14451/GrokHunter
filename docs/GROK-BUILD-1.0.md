@@ -74,3 +74,4 @@ cat ~/.grok/config.toml | head -40
 - Session auth (SuperGrok / X Premium+) and `XAI_API_KEY` both work; prefer secrets in `~/.grok/secrets.env`.
 - V9 picker aliases are **local** `[model.*]` names that still call **grok-4.6**. Former 4.5 picker IDs remain as compat aliases.
 - `grok-build` as a **model id** is not the lab default — use `grok-4.6` (agent type `plan` is separate from model id).
+- `[ui].permission_mode` and `[ui].yolo` survive `install_grok_profile.sh --force`. Restore product defaults with `--force-ui`. Template ships `always-approve` + `yolo=false`.

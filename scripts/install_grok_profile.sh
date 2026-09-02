@@ -3,12 +3,14 @@
 #
 # - Does NOT delete custom [model.*] blocks or unrelated user keys
 # - Overwrites known profile sections/keys from config/grok-build.nethunter.toml
+# - Sticky [ui] keys (permission_mode, yolo) survive --force; reset with --force-ui
 # - Safe to re-run (idempotent)
 #
 # Usage:
 #   bash scripts/install_grok_profile.sh
 #   GROK_CONFIG=/path/to/config.toml bash scripts/install_grok_profile.sh
 #   bash scripts/install_grok_profile.sh --force
+#   bash scripts/install_grok_profile.sh --force-ui
 set -euo pipefail
 
 info() { echo "[install_grok_profile] $*"; }
@@ -20,12 +22,17 @@ SRC="${GROKHUNTER_PROFILE_SRC:-$ROOT/config/grok-build.nethunter.toml}"
 CFG="${GROK_CONFIG:-${HOME:?HOME not set}/.grok/config.toml}"
 MARKER="# --- GrokHunter NetHunter profile (Grok Build 1.0.5+) ---"
 FORCE=0
+FORCE_UI=0
 
 for arg in "$@"; do
   case "$arg" in
     --force|-f) FORCE=1 ;;
+    --force-ui)
+      FORCE=1
+      FORCE_UI=1
+      ;;
     --help|-h)
-      sed -n '2,14p' "$0" || true
+      sed -n '2,16p' "$0" || true
       exit 0
       ;;
     *) die "Unknown option: $arg" ;;
@@ -43,12 +50,13 @@ if [[ ! -f "$CFG" ]]; then
 fi
 
 # Parse simple TOML subset: [section] and key = value (no nested tables as keys)
-python3 - "$SRC" "$CFG" "$MARKER" "$FORCE" <<'PY'
+python3 - "$SRC" "$CFG" "$MARKER" "$FORCE" "$FORCE_UI" <<'PY'
 from pathlib import Path
 import re
 import sys
 
 src_path, cfg_path, marker, force = Path(sys.argv[1]), Path(sys.argv[2]), sys.argv[3], sys.argv[4] == "1"
+force_ui = sys.argv[5] == "1" if len(sys.argv) > 5 else False
 
 # Sections we own and fully replace key-wise (nested table ui.display_refresh included)
 OWNED = {
@@ -61,6 +69,12 @@ OWNED = {
     "models",
     "subagents",
 }
+
+# Phone-tuned approvals must survive --force (stale 4.5 / alpha repair).
+# --force-ui restores product defaults from the template.
+STICKY_UI = {"permission_mode", "yolo"}
+YOLO_RE = re.compile(r"^(true|false)$", re.I)
+PERM_RE = re.compile(r'^"[A-Za-z][A-Za-z0-9_-]*"$')
 
 def parse_toml_simple(text: str):
     """Return {section: {key: raw_value_line}} preserving raw RHS text."""
@@ -86,6 +100,19 @@ def parse_toml_simple(text: str):
 
 src = parse_toml_simple(src_path.read_text(encoding="utf-8"))
 cfg_text = cfg_path.read_text(encoding="utf-8")
+cfg_parsed = parse_toml_simple(cfg_text)
+
+def sticky_ui_value(key: str, template_val: str) -> str:
+    if force_ui:
+        return template_val
+    prev = cfg_parsed.get("ui", {}).get(key)
+    if not prev:
+        return template_val
+    if key == "yolo" and YOLO_RE.match(prev):
+        return prev.lower()
+    if key == "permission_mode" and PERM_RE.match(prev):
+        return prev
+    return template_val
 
 # Already applied? (skip unless --force)
 if marker in cfg_text and not force:
@@ -109,9 +136,6 @@ if marker in cfg_text and not force:
         print("profile already present (use --force to refresh)")
         sys.exit(0)
 
-# Strip previous marker block (from marker to next blank-line-before-[ or EOF we don't own)
-# Safer: strip owned sections entirely, then re-append.
-
 def strip_owned_sections(text: str) -> str:
     lines = text.splitlines(keepends=True)
     out = []
@@ -120,8 +144,6 @@ def strip_owned_sections(text: str) -> str:
         line = lines[i]
         m = re.match(r"^\[([^\]]+)\]\s*$", line.strip())
         if m and m.group(1).strip() in OWNED:
-            # skip until next section or EOF — but keep sibling feature
-            # markers (V9 pickers comment lives after [models])
             i += 1
             while i < len(lines):
                 stripped = lines[i].strip()
@@ -131,7 +153,6 @@ def strip_owned_sections(text: str) -> str:
                     break
                 i += 1
             continue
-        # Drop old marker comment lines
         if marker in line or line.strip().startswith("# GrokHunter Rootless") \
            or line.strip().startswith("# Applied by scripts/install_grok_profile"):
             i += 1
@@ -145,9 +166,7 @@ def strip_owned_sections(text: str) -> str:
 
 base = strip_owned_sections(cfg_text)
 
-# Build owned sections from SRC only
 parts = [base.rstrip(), "", marker]
-# Preserve template comments header lightly
 parts.append("# Managed keys for Grok Build 1.0.5+ (safe to re-run install_grok_profile.sh)")
 
 order = ["hints", "features", "telemetry", "cli", "ui", "ui.display_refresh", "models", "subagents"]
@@ -157,6 +176,8 @@ for sec in order:
     parts.append("")
     parts.append(f"[{sec}]")
     for key, val in src[sec].items():
+        if sec == "ui" and key in STICKY_UI:
+            val = sticky_ui_value(key, val)
         parts.append(f"{key} = {val}")
 
 new_text = "\n".join(parts).rstrip() + "\n"
