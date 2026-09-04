@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="https://github.com/FineComputer14451/GrokHunter/releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/FineComputer14451/GrokHunter?label=release&color=00E5C7&labelColor=0D1117"></a>
-  <a href="https://github.com/FineComputer14451/GrokHunter/actions/workflows/smoke.yml"><img alt="Smoke" src="https://img.shields.io/github/actions/workflow/status/FineComputer14451/GrokHunter/smoke.yml?branch=main&label=smoke&labelColor=0D1117"></a>
+  <a href="https://github.com/FineComputer14451/GrokHunter/actions/workflows/smoke.yml"><img alt="Smoke" src="https://img.shields.io/github/actions/workflow-status/FineComputer14451/GrokHunter/smoke.yml?branch=main&label=smoke&labelColor=0D1117"></a>
   <a href="https://finecomputer14451.github.io/GrokHunter/"><img alt="Pages" src="https://img.shields.io/badge/site-live-00E5C7?labelColor=0D1117"></a>
   <a href="https://www.kali.org/"><img alt="Kali Linux" src="https://img.shields.io/badge/Kali-Linux-2777FF?labelColor=0D1117"></a>
   <a href="https://www.kali.org/docs/nethunter/"><img alt="Kali NetHunter" src="https://img.shields.io/badge/Kali-NetHunter-E31C3D?labelColor=0D1117"></a>
@@ -121,11 +121,29 @@ grokhunter session|host|mcp "…"   # tmux/resume, Termux vs Kali, MCP (mcp ≠ 
 grokhunter plugin|flow|storage "…"  # plugins (≠ grok plugin), workflows, disk
 grokhunter editor|hook|shell "…"  # nvim/micro, Grok hooks, profile/completions
 grokhunter github|secrets|toolchain|tls|net "…"  # git-identity agent, secrets.env, apt, CA, HTTPS (github ≠ git-identity CLI)
+tookie -p "…"              # Scoped OSINT agent (authorized public usernames)
 grokhunter models      # Install or status V9 model pickers
 grokhunter ai-smoke    # SpaceXAI API smoke (needs XAI_API_KEY)
 grokhunter plan "…"    # Plan agent (Grok Build 1.0.5)
 grokhunter -p "…"      # Headless one-shot
 ```
+
+### Tookie-OSINT (scoped, not a product default)
+
+Authorized **public username** lookup only. Hits are leads, not identity. Confirm authorization first.
+
+```bash
+grokhunter skills install
+cp bin/tookie ~/.local/bin/tookie && chmod +x ~/.local/bin/tookie
+bash scripts/install_tookie.sh          # optional CLI venv
+
+tookie                                  # interactive agent
+tookie -p "authorized username check HANDLE"
+tookie --cli -u HANDLE -sC -o json -t 2
+grok --agent tookie
+```
+
+Upstream: [Alfredredbird/tookie-osint](https://github.com/Alfredredbird/tookie-osint) (MIT). GrokHunter does not vendor `brib.py`. Playbook: [skills/tookie-osint](skills/tookie-osint/SKILL.md).
 
 ### Grok Build 1.0.5 + Grok 4.6
 
@@ -171,19 +189,21 @@ bin/
   grokhunter-doctor        Health report
   grok-nethunter           Full-screen launcher
   nh-x11 / aider-grok      Desktop + Aider helpers
+  tookie                   Tookie-OSINT agent launcher (scoped)
 scripts/
   install_v9_grok_models.sh   Atomic V9 [model.*] picker install
   spacexai_smoke.sh           SpaceXAI Responses API smoke
   ci-unit.sh                  Local unit checks (bash scripts/ci-unit.sh)
+  install_tookie.sh           Rootless Tookie-OSINT venv (optional, no sudo)
 config/                    Completions, profile, model examples
-skills/                    grokhunter · pair-programming · aider-grok · x11-desktop · nethunter-recon
+skills/                    grokhunter · pair-programming · aider-grok · x11-desktop · nethunter-recon · tookie-osint
                            toolchain · github-lab · grok-models · ci-lab · secrets-lab
                            session-lab · host-lab · mcp-lab · plugin-lab · flow-lab · storage-lab
                            editor-lab · hooks-lab · shell-lab · specialist-lab · tls-lab · net-lab (optional)
 agents/                    benjamin · lucas · harper · coding-team · scout · review · fix · desktop
                            overlay · ship · docs · models · ci · aider · session · host · mcp
                            plugin · flow · storage · editor · hook · shell · github · secrets
-                           toolchain · tls · net
+                           toolchain · tls · net · tookie
 docs/                      INSTALL, FAQ, X11, PROOT, EDITORS, GROK-46
 ```
 
@@ -239,6 +259,6 @@ GrokHunter Rootless enhancements © 2026 FineComputer14451 and contributors.
 
 **Thank you** to jorexdeveloper, the Termux project, Kali/OffSec, and xAI. Please support their work directly.
 
-Also: [Aider](https://aider.chat) (optional pair tool).
+Also: [Aider](https://aider.chat) (optional pair tool) · [Tookie-OSINT](https://github.com/Alfredredbird/tookie-osint) (optional scoped username lookup).
 
 > **Not affiliated** with xAI, Offensive Security, Termux, or jorexdeveloper. We credit and depend on their work.
