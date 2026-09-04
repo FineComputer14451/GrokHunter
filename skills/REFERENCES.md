@@ -50,6 +50,7 @@ Paired index: [agents/REFERENCES.md](../agents/REFERENCES.md).
 | `specialist-lab` | — (meta) | `agents/README.md` add recipe |
 | `tls-lab` | tls | TROUBLESHOOTING, `lib/tls.sh` |
 | `net-lab` | net | TROUBLESHOOTING (Network), `lib/https-probe.sh` |
+| `tookie-osint` | tookie | Scoped username OSINT; `grokhunter tookie`; hits are leads |
 
 ## Skills-core vs optional
 

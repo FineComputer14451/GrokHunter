@@ -130,7 +130,7 @@ install_cli_bins() {
   local installed=0
   mkdir -p "${dest_dir}" 2>/dev/null || true
 
-  for name in grokhunter grokhunter-doctor grok-nethunter aider-grok nh-x11; do
+  for name in grokhunter grokhunter-doctor grok-nethunter aider-grok nh-x11 tookie; do
     if src="$(_gh_resolve "bin/${name}")"; then
       if _gh_install_bin "bin/${name}" "${dest_dir}/${name}"; then
         installed=$((installed + 1))

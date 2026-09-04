@@ -120,8 +120,8 @@ grokhunter modeler|ci|aider "…"   # Models/V9, CI, Aider (modeler ≠ grokhunt
 grokhunter session|host|mcp "…"   # tmux/resume, Termux vs Kali, MCP (mcp ≠ grok mcp)
 grokhunter plugin|flow|storage "…"  # plugins (≠ grok plugin), workflows, disk
 grokhunter editor|hook|shell "…"  # nvim/micro, Grok hooks, profile/completions
-grokhunter github|secrets|toolchain|tls|net "…"  # git-identity agent, secrets.env, apt, CA, HTTPS (github ≠ git-identity CLI)
-tookie -p "…"              # Scoped OSINT agent (authorized public usernames)
+grokhunter github|secrets|toolchain|tls|net|tookie "…"  # git-identity agent, secrets.env, apt, CA, HTTPS, scoped OSINT (github ≠ git-identity CLI)
+tookie -p "…"              # Same Tookie agent via bin/tookie (authorized public usernames)
 grokhunter models      # Install or status V9 model pickers
 grokhunter ai-smoke    # SpaceXAI API smoke (needs XAI_API_KEY)
 grokhunter plan "…"    # Plan agent (Grok Build 1.0.5)
@@ -133,12 +133,11 @@ grokhunter -p "…"      # Headless one-shot
 Authorized **public username** lookup only. Hits are leads, not identity. Confirm authorization first.
 
 ```bash
-grokhunter skills install
-cp bin/tookie ~/.local/bin/tookie && chmod +x ~/.local/bin/tookie
+grokhunter skills install               # wrappers + agent; copies bin/tookie
 bash scripts/install_tookie.sh          # optional CLI venv
 
-tookie                                  # interactive agent
-tookie -p "authorized username check HANDLE"
+grokhunter tookie                       # interactive agent
+grokhunter tookie -p "authorized username check HANDLE"
 tookie --cli -u HANDLE -sC -o json -t 2
 grok --agent tookie
 ```

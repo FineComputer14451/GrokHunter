@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### CLI
+- `grokhunter tookie` — Wave 9 case arm. Overlay copies `bin/tookie`. Scoped; hits are leads.
+
 ### Installer TUI
 - First-run numbered wizard on Termux: bare `install.sh` (TTY, no size/feature flags) shows a checklist, prints argv, then `exec`s the existing engine. Default is **coding-only** (`--nano --no-de --with-grok --with-completions`). Desktop toggle promotes to `--full --de xfce --browser chromium --with-x11`. `--yes` is the default with no wizard. Flags still skip it. Overlay-only is unchanged. Overlay cache **2026.8.27**. Never prompts for a key.
 

@@ -52,8 +52,8 @@ Default mission is a **coding lab**, not offensive ops (see optional `nethunter-
 | Binds | `grokhunter binds` [`status` \| `repair` \| `optimize`] — `lib/x11.sh`; runtime triage is skill `x11-desktop` |
 | TLS | skill `tls-lab` / agent `tls` — `lib/tls.sh`; overlay still writes install symlink |
 | Net | skill `net-lab` / agent `net` — `lib/https-probe.sh`; 401/403 = reachable |
-| Related skills | coding: `pair-programming`, `aider-grok`; optional lab skills (toolchain…shell-lab, specialist-lab, tls-lab, net-lab, x11-desktop); scoped: `nethunter-recon` |
-| Coding Team agents | core + specialists (overlay…toolchain, tls, net) → `~/.grok/agents/` |
+| Related skills | coding: `pair-programming`, `aider-grok`; optional lab skills (toolchain…shell-lab, specialist-lab, tls-lab, net-lab, x11-desktop); scoped: `nethunter-recon`, `tookie-osint` |
+| Coding Team agents | core + specialists (overlay…toolchain, tls, net, tookie) → `~/.grok/agents/` |
 | TUI status line | `~/.grok/statusline.sh` via `scripts/install_grok_statusline.sh` (restart `grok`) |
 
 ## CLI map
@@ -72,7 +72,7 @@ grokhunter modeler|ci|aider [prompt]
 grokhunter session|host|mcp [prompt]
 grokhunter plugin|flow|storage [prompt]
 grokhunter editor|hook|shell [prompt]
-grokhunter github|secrets|toolchain|tls|net [prompt]  # github ≠ git-identity CLI
+grokhunter github|secrets|toolchain|tls|net|tookie [prompt]  # github ≠ git-identity CLI; tookie is scoped
 grokhunter git-identity [show|set]
 grokhunter agents status
 grokhunter models status|install|force
@@ -115,6 +115,7 @@ Binds /tmp / X socket? → grokhunter binds status  then skill x11-desktop
 XFCE panel / glycin bwrap? → skill x11-desktop (docs/TROUBLESHOOTING.md)
 TLS / SSL_CERT_FILE / CA? → skill tls-lab / agent tls (never print certs)
 x.ai offline / DNS?       → skill net-lab / agent net (401/403 = reachable)
+Authorized username OSINT? → skill tookie-osint / grokhunter tookie (hits are leads)
 API key check?        → grokhunter ai-smoke
 GitHub invalid-email? → grokhunter git-identity set  (skill github-lab / agent github)
 Secrets / missing key? → skill secrets-lab / agent secrets (never print)
@@ -297,4 +298,4 @@ Canonical helpers: repo `bin/` (`nh-x11`, `aider-grok`, `grokhunter`, …) → `
 
 ## Response style
 
-Short commands, mobile-friendly, never print secrets. Prefer paste-ready lines over essays. Cross-link `pair-programming` / `aider-grok` for coding, optional lab skills (`shell-lab`, `editor-lab`, `hooks-lab`, `host-lab`, `session-lab`, `storage-lab`, `toolchain`, `tls-lab`, `net-lab`) for the phone environment.
+Short commands, mobile-friendly, never print secrets. Prefer paste-ready lines over essays. Cross-link `pair-programming` / `aider-grok` for coding, optional lab skills (`shell-lab`, `editor-lab`, `hooks-lab`, `host-lab`, `session-lab`, `storage-lab`, `toolchain`, `tls-lab`, `net-lab`) for the phone environment, scoped `tookie-osint` only with authorization.

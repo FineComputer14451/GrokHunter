@@ -43,7 +43,7 @@ warn() { printf '[!] %s\n' "$*"; }
 
 remove_bins() {
   local b
-  for b in grokhunter grok-nethunter grokhunter-doctor aider-grok nh-x11 \
+  for b in grokhunter grok-nethunter grokhunter-doctor aider-grok nh-x11 tookie \
            ghsu ght ghd ghs ghp ghm ghk ghai ghn; do
     if [[ -f "${BIN_DIR}/${b}" ]]; then
       rm -f "${BIN_DIR}/${b}"

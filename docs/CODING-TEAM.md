@@ -87,6 +87,7 @@ Clarify goal + constraints
 | apt / gcc / python / node | `toolchain` (Aider uv stays `aider`) |
 | TLS / `SSL_CERT_FILE` / CA | `tls` (overlay still writes the install symlink) |
 | x.ai offline / `http_code=000` / DNS | `net` (401/403 = reachable; CA stays `tls`) |
+| Authorized public username footprint | `tookie` (hits are leads; not a product default) |
 | New lab agent / `*-lab` skill | skill `specialist-lab` (not a new agent type) |
 
 ### When not to use the full loop
@@ -104,6 +105,7 @@ Clarify goal + constraints
 | Compilers missing | `toolchain` |
 | curl/gh SSL / missing CA | `tls` |
 | Doctor offline / no route to x.ai | `net` |
+| Authorized public username lookup | `tookie` |
 | Add a specialist | skill `specialist-lab` |
 
 ## Mobile constraints checklist

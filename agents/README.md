@@ -117,7 +117,8 @@ grokhunter tls -p "doctor TLS warning"
 grok --agent net -p "doctor says offline"
 grokhunter net -p "http_code 000"
 grok --agent tookie -p "authorized username check HANDLE"
-tookie -p "scan HANDLE"           # scoped; confirm authorization first
+grokhunter tookie -p "scan HANDLE"  # scoped; confirm authorization first
+tookie --cli -u HANDLE -sC -o json -t 2
 grokhunter plan "…"            # built-in plan agent (not benjamin)
 ```
 

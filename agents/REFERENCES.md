@@ -58,6 +58,7 @@ Canonical cross-links for every GrokHunter agent. Keep agent files lean; put sha
 | `specialist-lab` | — (meta) | Add-a-specialist recipe in agents/README |
 | `tls-lab` | tls | Kali CA / `SSL_CERT_FILE` (never print certs) |
 | `net-lab` | net | x.ai probe / `http_code` 000 vs 403 (never print bodies) |
+| `tookie-osint` | tookie | Scoped public username OSINT; hits are leads |
 
 Full skill roster + decision tree: [skills/README.md](../skills/README.md) · [skills/PLAYBOOKS.md](../skills/PLAYBOOKS.md)
 
@@ -80,6 +81,7 @@ Full skill roster + decision tree: [skills/README.md](../skills/README.md) · [s
 | toolchain | toolchain | EDITORS, PROOT |
 | tls | tls-lab | TROUBLESHOOTING, FAQ, `lib/tls.sh` |
 | net | net-lab | TROUBLESHOOTING (Network), FAQ, `lib/https-probe.sh` |
+| tookie | tookie-osint | FAQ, `grokhunter tookie`, `bin/tookie` |
 | docs | — | README, FAQ, website |
 | models | grok-models | GROK-46, GROK-BUILD-1.0 |
 | ci | ci-lab | smoke.yml, ci-unit.sh |

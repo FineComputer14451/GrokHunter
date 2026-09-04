@@ -43,6 +43,7 @@ extra=(
   bin/nh-x11
   bin/aider-grok
   bin/grok-nethunter
+  bin/tookie
 )
 declare -A seen=()
 count=0
@@ -379,6 +380,8 @@ echo "${_help}" | grep -q 'grokhunter secrets' || die "help missing secrets"
 echo "${_help}" | grep -q 'grokhunter toolchain' || die "help missing toolchain"
 echo "${_help}" | grep -q 'grokhunter tls' || die "help missing tls"
 echo "${_help}" | grep -q 'grokhunter net' || die "help missing net"
+echo "${_help}" | grep -q 'grokhunter tookie' || die "help missing tookie"
+grep -qE '\|net\|tookie\)' bin/grokhunter || die "specialist case missing tookie"
 bash bin/grokhunter menu help | grep -q install || die "menu help missing install"
 _credits="$(bash bin/grokhunter credits)"
 echo "${_credits}" | grep -qi jorexdeveloper || die "credits missing jorexdeveloper"
@@ -394,6 +397,13 @@ bash bin/grokhunter agents help | grep -q secrets || die "agents help missing se
 bash bin/grokhunter agents help | grep -q toolchain || die "agents help missing toolchain"
 bash bin/grokhunter agents help | grep -q tls || die "agents help missing tls"
 bash bin/grokhunter agents help | grep -q net || die "agents help missing net"
+bash bin/grokhunter agents help | grep -q tookie || die "agents help missing tookie"
+grep -q tookie config/completions/bash/grokhunter.bash || die "bash completions missing tookie"
+grep -q tookie config/completions/zsh/_grokhunter || die "zsh completions missing tookie"
+[[ -f bin/tookie ]] || die "missing bin/tookie"
+[[ -x bin/tookie ]] || die "bin/tookie must be executable"
+grep -qE 'aider-grok nh-x11 tookie' lib/grok.sh || die "install_cli_bins must install bin/tookie"
+grep -q tookie uninstall.sh || die "uninstall must remove bin/tookie"
 info "cli help OK"
 
 # ---------- git identity helpers ----------
@@ -707,6 +717,7 @@ bash -c '
   echo "$names" | grep -qx "specialist-lab"
   echo "$names" | grep -qx "tls-lab"
   echo "$names" | grep -qx "net-lab"
+  echo "$names" | grep -qx "tookie-osint"
   _gh_is_core_skill grokhunter
   _gh_is_core_skill x11-desktop && exit 1 || true
   mkdir -p "$SCRIPT_DIR/skills/_template"
@@ -778,6 +789,7 @@ bash -c '
   echo "$names" | grep -qx "toolchain"
   echo "$names" | grep -qx "tls"
   echo "$names" | grep -qx "net"
+  echo "$names" | grep -qx "tookie"
   echo "$names" | grep -qx "REFERENCES" && exit 1
   echo "$names" | grep -qx "HANDOFF-TEMPLATES" && exit 1
   echo "$names" | grep -qx "README" && exit 1
@@ -822,6 +834,7 @@ bash -c '
   echo "$names" | grep -qx "toolchain-card"
   echo "$names" | grep -qx "tls-card"
   echo "$names" | grep -qx "net-card"
+  echo "$names" | grep -qx "tookie-card"
   rm -rf "$HOME"
 '
 info "install_personas OK"
@@ -865,6 +878,7 @@ bash -c '
   echo "$names" | grep -qx "toolchain"
   echo "$names" | grep -qx "tls"
   echo "$names" | grep -qx "net"
+  echo "$names" | grep -qx "tookie"
   rm -rf "$HOME"
 '
 info "install_roles OK"
