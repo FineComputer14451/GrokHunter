@@ -1,0 +1,4 @@
+# Tookie role — authorized public username OSINT
+description = "Tookie-OSINT username discovery and hit triage for authorized public-source work"
+default_capability_mode = "all"
+reasoning_effort = "medium"

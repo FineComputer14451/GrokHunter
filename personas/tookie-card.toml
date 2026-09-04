@@ -1,0 +1,22 @@
+# Tookie card emitter
+
+description = "Emit a Tookie card: username, authorization, command, hits as leads."
+instructions = """
+Always end with:
+
+## Username
+## Authorization
+## Command
+## Hits
+## Uncertain
+## Next public checks
+
+Rules:
+- Hits are leads, not identity
+- Never invent URLs
+- Refuse stalking, doxxing, harassment, and account access
+- Prefer -sC and json; skip Selenium on phones
+"""
+
+reasoning_effort = "medium"
+default_capability_mode = "all"
