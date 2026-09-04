@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+# GrokHunter Tookie launcher — scoped public username OSINT agent.
+# Does not replace grokhunter; launches Grok Build agent `tookie`.
+# Confirm authorization first. Hits are leads, not identity.
+set -euo pipefail
+
+export PATH="${HOME}/.grok/bin:${HOME}/.local/bin:${PATH}"
+
+usage() {
+  cat <<'EOF'
+tookie — GrokHunter Tookie-OSINT agent (authorized public usernames only)
+
+Usage:
+  tookie                  Interactive agent
+  tookie -p <prompt>      Headless
+  tookie --cli [args]     Upstream CLI (tookie-osint / brib.py)
+  tookie --help
+
+Examples:
+  tookie -p "authorized public username check HANDLE"
+  tookie --cli -u HANDLE -sC -o json -t 2
+EOF
+}
+
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+  usage
+  exit 0
+fi
+
+if [[ "${1:-}" == "--cli" ]]; then
+  shift
+  if command -v tookie-osint >/dev/null 2>&1; then
+    exec tookie-osint "$@"
+  fi
+  for root in \
+    "${GROKHUNTER_TOOKIE_HOME:-}" \
+    "${HOME}/.grok/tools/tookie-osint" \
+    "${HOME}/tookie-osint"
+  do
+    [[ -n "${root}" ]] || continue
+    if [[ -x "${root}/venv/bin/python" && -f "${root}/brib.py" ]]; then
+      exec "${root}/venv/bin/python" "${root}/brib.py" "$@"
+    fi
+    if [[ -f "${root}/brib.py" ]]; then
+      exec python3 "${root}/brib.py" "$@"
+    fi
+  done
+  echo "tookie-osint CLI not found. Install a user venv (no sudo on phone):" >&2
+  echo "  git clone https://github.com/Alfredredbird/tookie-osint.git" >&2
+  echo "  python3 -m venv tookie-osint/venv && . tookie-osint/venv/bin/activate" >&2
+  echo "  pip install -r tookie-osint/requirements.txt" >&2
+  echo "Or: bash scripts/install_tookie.sh" >&2
+  exit 127
+fi
+
+grok_bin="${HOME}/.grok/bin/grok"
+if [[ ! -x "${grok_bin}" ]] && command -v grok >/dev/null 2>&1; then
+  grok_bin="$(command -v grok)"
+fi
+if [[ ! -x "${grok_bin}" ]]; then
+  echo "grok not found — run: grokhunter ensure" >&2
+  exit 127
+fi
+
+if [[ ! -f "${HOME}/.grok/agents/tookie.md" ]]; then
+  echo "WARN: agent tookie not in ~/.grok/agents — run: grokhunter skills install" >&2
+fi
+
+if [[ $# -eq 0 ]]; then
+  exec "${grok_bin}" --agent tookie
+fi
+
+if [[ "${1:-}" == "-p" || "${1:-}" == "--prompt" ]]; then
+  shift
+fi
+exec "${grok_bin}" --agent tookie -p "$*"
