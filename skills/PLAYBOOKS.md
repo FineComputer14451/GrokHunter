@@ -72,6 +72,7 @@ grokhunter models install
 grokhunter git-identity set
 grokhunter tls
 grokhunter net
+grokhunter tookie
 grokhunter ai-smoke
 bash scripts/ci-unit.sh
 nh-x11                    # legacy drawing on; NH_X11_LEGACY=0 to disable
