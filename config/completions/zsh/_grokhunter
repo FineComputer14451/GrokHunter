@@ -43,6 +43,7 @@ _grokhunter() {
     'toolchain:Launch apt/compiler agent'
     'tls:Launch TLS/CA agent'
     'net:Launch HTTPS/DNS agent'
+    'tookie:Launch Tookie-OSINT agent'
     'benjamin:Launch benjamin architect agent'
     'lucas:Launch lucas builder agent'
     'harper:Launch harper reliability agent'

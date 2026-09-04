@@ -92,6 +92,7 @@ Support: [x.ai](https://x.ai) · [x.ai/cli](https://x.ai/cli)
 |---------|--------|
 | **Aider** | Optional git-native pair tool — [aider.chat](https://aider.chat) |
 | **Astral uv** | Used by the Aider install path for managed Python — [astral.sh/uv](https://github.com/astral-sh/uv) |
+| **Tookie-OSINT** | Optional scoped username lookup (`tookie-osint` / `brib.py`) — [github.com/Alfredredbird/tookie-osint](https://github.com/Alfredredbird/tookie-osint) |
 
 ---
 
