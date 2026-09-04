@@ -335,3 +335,16 @@ overlay | desktop | toolchain
 ## Commands
 ## Verify (doctor x.ai — never print bodies)
 ```
+
+---
+
+## Tookie card (tookie)
+
+```markdown
+## Username
+## Authorization
+## Command
+## Hits
+## Uncertain
+## Next public checks
+```
