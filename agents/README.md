@@ -52,6 +52,7 @@ These are **Grok Build agent definitions**. Grok loads the matching file as the 
 | `toolchain.md` | `toolchain` | full | apt / compilers |
 | `tls.md` | `tls` | full | Kali CA / `SSL_CERT_FILE` |
 | `net.md` | `net` | full | HTTPS probe / guest DNS |
+| `tookie.md` | `tookie` | full | Authorized public username OSINT (`tookie` / `grok --agent tookie`) |
 
 ## Install (user discovery)
 
@@ -66,7 +67,7 @@ Verify:
 
 ```bash
 grok inspect
-# Agents: … editor, hook, shell, github, secrets, toolchain, tls, net (+ builtins)
+# Agents: … editor, hook, shell, github, secrets, toolchain, tls, net, tookie (+ builtins)
 ```
 
 ## Use
@@ -115,6 +116,8 @@ grok --agent tls -p "SSL_CERT_FILE missing"
 grokhunter tls -p "doctor TLS warning"
 grok --agent net -p "doctor says offline"
 grokhunter net -p "http_code 000"
+grok --agent tookie -p "authorized username check HANDLE"
+tookie -p "scan HANDLE"           # scoped; confirm authorization first
 grokhunter plan "…"            # built-in plan agent (not benjamin)
 ```
 
