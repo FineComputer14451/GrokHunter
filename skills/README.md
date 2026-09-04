@@ -22,7 +22,7 @@ Skills are **playbooks** (how to do a thing). Agents are **runtime specialists**
 | **Core** | `grokhunter`, `pair-programming` | Lab orchestrator + coding session style |
 | **Primary tools** | `aider-grok`, `x11-desktop` | Aider + Termux:X11 desktop |
 | **Optional lab** | 17 `*-lab` / toolchain skills | Narrow phone-environment playbooks |
-| **Scoped** | `nethunter-recon` | Authorized recon only — not product default |
+| **Scoped** | `nethunter-recon`, `tookie-osint` | Authorized recon / public username OSINT — not product default |
 
 ## Roster
 
@@ -67,6 +67,7 @@ Skills are **playbooks** (how to do a thing). Agents are **runtime specialists**
 | Skill | Activate for |
 |-------|----------------|
 | [`nethunter-recon`](nethunter-recon/SKILL.md) | **Authorized** lab/CTF/engagement only — not the default mission |
+| [`tookie-osint`](tookie-osint/SKILL.md) | **Authorized** public username discovery (Tookie-OSINT) — leads not identity |
 
 ## Install
 
@@ -100,6 +101,7 @@ TAB / ghd missing               → shell-lab
 New lab agent / skill           → specialist-lab
 TLS / SSL_CERT_FILE / CA        → tls-lab (agent `tls`)
 x.ai offline / DNS              → net-lab (agent `net`)
+Authorized username footprint   → tookie-osint (agent `tookie`)
 ```
 
 ## Hard rules (all skills)
@@ -108,5 +110,5 @@ x.ai offline / DNS              → net-lab (agent `net`)
 - Prefer small, reversible changes
 - Do not claim affiliation with xAI, Offensive Security, Termux, or jorexdeveloper
 - Always credit the four pillars (`CREDITS.md` / `grokhunter credits`)
-- Coding lab only by default — `nethunter-recon` requires explicit authorized scope
+- Coding lab only by default — `nethunter-recon` and `tookie-osint` require explicit authorized scope
 - Respect rootless / proot limits; no Magisk/HID/firmware claims

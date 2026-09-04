@@ -60,6 +60,7 @@ Symptom → skill routing for the GrokHunter phone lab. Prefer the **narrowest**
 | Symptom | Skill | Notes |
 |---------|-------|-------|
 | Authorized recon / CTF only | `nethunter-recon` | Confirm scope first; not product default |
+| Authorized public username footprint | `tookie-osint` | Tookie-OSINT / `brib.py -sC`; agent `tookie`; hits are leads |
 
 ## Quick CLI cheatsheet
 
@@ -91,6 +92,7 @@ skills/secrets-lab  →  agent secrets
 skills/toolchain    →  agent toolchain
 skills/tls-lab      →  agent tls
 skills/net-lab      →  agent net
+skills/tookie-osint →  agent tookie
 …
 ```
 
