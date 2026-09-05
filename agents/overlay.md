@@ -80,7 +80,7 @@ desktop | lucas | ship | benjamin | tls
 
 ## References
 
-- Skill: `grokhunter`
+- Skill: `overlay-lab` (bootstrap/doctor still `grokhunter`)
 - Docs: `docs/INSTALL.md`, `docs/TROUBLESHOOTING.md`
 - Templates: `agents/HANDOFF-TEMPLATES.md`
 - Cross-index: `agents/REFERENCES.md`
