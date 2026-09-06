@@ -1,5 +1,9 @@
 ## Unreleased
 
+- Termux Connect bootstrap: auto-install cloudflared, start MCP in tmux, health-check; `--tunnel` option.
+
+## Unreleased
+
 - Termux Connect: add `skills/termux-connect/scripts/bootstrap.sh` one-shot install (clone/update + MCP).
 
 ## Unreleased
