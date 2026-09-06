@@ -21,6 +21,15 @@ call scoped tools (`grokhunter_doctor`, files, allowlisted shell).
 
 ## Install (on the phone)
 
+## One-shot bootstrap (recommended)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/skills/termux-connect/scripts/bootstrap.sh | bash
+```
+
+Or from a checkout: `bash skills/termux-connect/scripts/bootstrap.sh` (optional `--start`).
+
+
 ```bash
 # from a GrokHunter checkout (or plugin unpack)
 bash plugins/grokhunter-termux-connect/skills/termux-connect/scripts/install.sh

@@ -9,6 +9,11 @@ Grok Bot local execution is **Mac/Windows desktop**. Android/Termux is not a reg
 ## Quick start (Termux)
 
 ```bash
+curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/skills/termux-connect/scripts/bootstrap.sh | bash
+```
+
+
+```bash
 grok plugin marketplace add FineComputer14451/GrokHunter
 grok plugin install grokhunter-termux-connect --trust
 
