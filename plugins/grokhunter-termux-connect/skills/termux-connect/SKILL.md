@@ -27,6 +27,9 @@ call scoped tools (`grokhunter_doctor`, files, allowlisted shell).
 curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/skills/termux-connect/scripts/bootstrap.sh | bash
 ```
 
+Adds `cloudflared` (pkg or release binary), starts MCP in `tmux` session `tc`, health-checks. Add `--tunnel` to also start Cloudflare in session `tun`.
+
+
 Or from a checkout: `bash skills/termux-connect/scripts/bootstrap.sh` (optional `--start`).
 
 
