@@ -56,6 +56,7 @@ grok plugin install grokhunter-ci --trust
 | `grokhunter-desktop` | GrokHunter X11 desktop — grokhunter binds, nh-x11, bwrap black-screen triage (rootless). |
 | `grokhunter-overlay` | GrokHunter overlay cache — install.sh --overlay-only, MODULES_VERSION, PATH wrappers. |
 | `grokhunter-tookie` | Authorized public username OSINT with Tookie-OSINT (Sherlock-class). Scoped GrokHunter mod… |
+| `grokhunter-termux-connect` | Bridge Grok Bot ↔ Termux via HTTP MCP + tunnel (not native Local Computer). |
 | `grokhunter-full` | Complete GrokHunter Grok Build pack — core, Coding Team, all lab specialists, desktop, ove… |
 
 ## Layout
@@ -79,3 +80,15 @@ After this lands on `main`, open a PR to [xai-org/plugin-marketplace](https://gi
 ## Credits
 
 Not affiliated with xAI, Offensive Security, Termux, or jorexdeveloper. See CREDITS.md.
+
+
+## Termux Connect
+
+Native Grok Bot Local Computer is Mac/Windows only. To drive GrokHunter on Termux from Grok Bot:
+
+```bash
+grok plugin install grokhunter-termux-connect --trust
+bash ~/.…  # see plugin README / skill termux-connect
+```
+
+Use a tunnel + custom connector (`https://<host>/mcp` + Bearer). Never paste the token in chat.

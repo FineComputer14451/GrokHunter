@@ -724,6 +724,30 @@
         }
       ],
       "version": "1.0.11"
+    },
+    {
+      "agents": [],
+      "commands": [
+        {
+          "description": "Install the Termux Connect HTTP MCP on the phone (venv + token + start script)",
+          "name": "termux-connect-install"
+        },
+        {
+          "description": "Expose Termux Connect MCP with Cloudflare or ngrok and register in Grok Bot",
+          "name": "termux-connect-tunnel"
+        }
+      ],
+      "hooks": [],
+      "lspServers": [],
+      "mcpServers": [],
+      "name": "grokhunter-termux-connect",
+      "skills": [
+        {
+          "description": "Bridge Grok Bot to GrokHunter on Termux via authenticated HTTP MCP + Cloudflare/ngrok tunnel. Use when the user wants th",
+          "name": "termux-connect"
+        }
+      ],
+      "version": "1.0.0"
     }
   ]
 }
