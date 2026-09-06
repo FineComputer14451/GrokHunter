@@ -627,6 +627,10 @@ h1 .accent {
   font-size: 12px;
   font-weight: 500;
   color: var(--fg);
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
   transition: border-color 0.15s, color 0.15s;
 }
 

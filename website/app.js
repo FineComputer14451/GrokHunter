@@ -49,33 +49,70 @@
     else if (mql.addListener) mql.addListener(onBp);
   }
 
-  async function copyText(text) {
+  // Prefer sync execCommand while the click gesture is still live (iOS/Android
+  // often reject clipboard.writeText after an async handler yields). Fall back
+  // to the Clipboard API, then report failure honestly.
+  function copyViaExecCommand(text) {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.setAttribute("aria-hidden", "true");
+    // Keep it in-viewport (not display:none) so iOS / Android WebViews allow select+copy.
+    ta.style.cssText =
+      "position:fixed;top:0;left:0;width:2em;height:2em;padding:0;border:0;opacity:0.01;";
+    document.body.appendChild(ta);
+    const prevActive = document.activeElement;
+    ta.focus();
+    ta.select();
+    ta.setSelectionRange(0, text.length);
+    let ok = false;
     try {
-      await navigator.clipboard.writeText(text);
-      return true;
+      ok = document.execCommand("copy");
     } catch {
-      const ta = document.createElement("textarea");
-      ta.value = text;
-      ta.style.position = "fixed";
-      ta.style.left = "-9999px";
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand("copy");
-      document.body.removeChild(ta);
-      return true;
+      ok = false;
     }
+    document.body.removeChild(ta);
+    if (prevActive && typeof prevActive.focus === "function") {
+      try {
+        prevActive.focus();
+      } catch {
+        /* ignore */
+      }
+    }
+    return ok;
   }
 
-  document.querySelectorAll("[data-copy]").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      const text = (btn.getAttribute("data-copy") || "").replace(/\\n/g, "\n");
-      await copyText(text);
-      const prev = btn.textContent;
-      btn.textContent = "Copied";
-      window.setTimeout(() => {
-        btn.textContent = prev;
-      }, 1600);
-    });
+  function flashCopyBtn(btn, ok) {
+    const prev = btn.textContent;
+    btn.textContent = ok ? "Copied" : "Failed";
+    btn.setAttribute("aria-live", "polite");
+    window.setTimeout(() => {
+      btn.textContent = prev;
+    }, 1600);
+  }
+
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-copy]");
+    if (!btn) return;
+    e.preventDefault();
+    const text = (btn.getAttribute("data-copy") || "").replace(/\\n/g, "\n");
+    if (!text) {
+      flashCopyBtn(btn, false);
+      return;
+    }
+    // Sync path first so the click gesture stays alive on mobile WebViews.
+    if (copyViaExecCommand(text)) {
+      flashCopyBtn(btn, true);
+      return;
+    }
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+      navigator.clipboard.writeText(text).then(
+        () => flashCopyBtn(btn, true),
+        () => flashCopyBtn(btn, false)
+      );
+      return;
+    }
+    flashCopyBtn(btn, false);
   });
 
   // Active nav highlight on scroll
