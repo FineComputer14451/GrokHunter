@@ -59,6 +59,7 @@
           <a href="#stack">Stack</a>
           <a href="#agents">Agents</a>
           <a href="#install">Install</a>
+          <a href="#plugins">Plugins</a>
           <a href="#cli">CLI</a>
           <a href="#upgrade">Upgrade</a>
           <a href="#faq">FAQ</a>
@@ -444,7 +445,7 @@
           <p class="section-label">Stack</p>
           <h2>Four layers under ~/.grok</h2>
           <p class="section-lead">
-            Install once with <code>grokhunter skills install</code> — skills, agents, personas, and
+            Install once with <code>grokhunter skills install</code> or Grok Build plugins from this marketplace — skills, agents, personas, and
             roles land where Grok Build 1.0.5 discovers them.
           </p>
           <div class="stack-grid">
@@ -785,6 +786,96 @@ bash install.sh --full --de xfce --with-grok --with-x11</code></pre>
         </div>
       </section>
 
+
+      <!-- Plugins / marketplace / Termux Connect -->
+      <section class="section alt" id="plugins">
+        <div class="wrap">
+          <p class="section-label">Plugins</p>
+          <h2>Grok Build marketplace + Termux Connect</h2>
+          <p class="section-lead">
+            This repo is a <strong>Grok Build marketplace</strong>. Install only the packs you need on
+            the phone, or bridge Grok Bot to the lab over an authenticated HTTP MCP tunnel.
+          </p>
+
+          <div class="install-grid">
+            <div>
+              <div class="install-block">
+                <div class="code-head">
+                  <div>
+                    <span class="step">01</span>
+                    <span class="title">Add marketplace</span>
+                  </div>
+                  <button
+                    type="button"
+                    class="copy-btn"
+                    data-copy="grok plugin marketplace add FineComputer14451/GrokHunter"
+                  >
+                    Copy
+                  </button>
+                </div>
+                <pre><code>grok plugin marketplace add FineComputer14451/GrokHunter
+grok plugin install grokhunter --trust
+grok plugin install grokhunter-coding-team --trust
+# or everything: grok plugin install grokhunter-full --trust</code></pre>
+                <p class="fineprint">
+                  Catalog lives in <code>.grok-plugin/marketplace.json</code> · see
+                  <a href="https://github.com/FineComputer14451/GrokHunter/blob/main/docs/MARKETPLACE.md">docs/MARKETPLACE.md</a>.
+                  Use <code>--trust</code> only for a source you named.
+                </p>
+              </div>
+
+              <div class="install-block">
+                <div class="code-head">
+                  <div>
+                    <span class="step">02</span>
+                    <span class="title">Termux Connect (Grok Bot bridge)</span>
+                  </div>
+                  <button
+                    type="button"
+                    class="copy-btn"
+                    data-copy="curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/skills/termux-connect/scripts/bootstrap.sh | bash -s -- --tunnel"
+                  >
+                    Copy
+                  </button>
+                </div>
+                <pre><code>curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/skills/termux-connect/scripts/bootstrap.sh | bash -s -- --tunnel</code></pre>
+                <p class="fineprint">
+                  Or from a checkout:
+                  <code>bash skills/termux-connect/scripts/bootstrap.sh --tunnel</code>.
+                  Starts MCP in tmux session <code>tc</code>, installs <code>cloudflared</code>, opens
+                  a quick tunnel in <code>tun</code>. Path-jailed tools + allowlisted shell. Bearer
+                  token at <code>~/.grokhunter-termux-connect/token</code> (mode 600) — never paste
+                  into chat.
+                </p>
+              </div>
+            </div>
+
+            <div class="install-panel">
+              <h3>Wire Grok Bot</h3>
+              <ul class="flag-list">
+                <li><span>Native Local Computer is Mac/Windows only — Android uses MCP + tunnel</span></li>
+                <li><code>https://&lt;trycloudflare-host&gt;/mcp</code><span>Connector URL</span></li>
+                <li><code>Authorization: Bearer …</code><span>Token from the file above</span></li>
+              </ul>
+              <div class="after-box">
+                <p>Where to add the connector</p>
+                <ul>
+                  <li><strong>Desktop Grok Bot</strong> — tell the bot to add the MCP URL (chat-managed)</li>
+                  <li><strong>Browser</strong> —
+                    <a href="https://grok.com/connectors" target="_blank" rel="noopener noreferrer">grok.com/connectors</a>
+                    → New → Custom</li>
+                  <li><strong>Android app</strong> — no custom-MCP settings screen today; use browser or desktop</li>
+                </ul>
+              </div>
+              <p class="fineprint" style="margin-top: 1rem">
+                Quick tunnels change hostname when Termux is force-closed — update the connector URL.
+                Prefer a named Cloudflare tunnel for a stable host.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- CLI -->
       <section class="section alt" id="cli">
         <div class="wrap">
@@ -940,6 +1031,25 @@ grokhunter credits             # upstream attribution</code></pre>
           <p class="section-label">FAQ</p>
           <h2>Common questions</h2>
           <div class="faq" id="faqList">
+            <details class="faq-item">
+              <summary>How do Grok Build plugins work?</summary>
+              <p>
+                Add this repo as a marketplace:
+                <code>grok plugin marketplace add FineComputer14451/GrokHunter</code>, then
+                <code>grok plugin install grokhunter --trust</code> (or <code>grokhunter-full</code>).
+                Details: docs/MARKETPLACE.md.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>Can Grok Bot use my phone as a local computer?</summary>
+              <p>
+                Not via native Local Computer (Mac/Windows only). Use
+                <strong>Termux Connect</strong>: bootstrap MCP + Cloudflare tunnel, then add
+                <code>https://&lt;host&gt;/mcp</code> with Bearer auth at
+                <a href="https://grok.com/connectors">grok.com/connectors</a> or desktop Grok Bot.
+                Android Grok Bot currently has no custom-MCP settings screen.
+              </p>
+            </details>
             <details class="faq-item">
               <summary>Do I need root?</summary>
               <p>No. GrokHunter is rootless Termux + proot only. Use Termux from F-Droid or GitHub — not the Play Store.</p>

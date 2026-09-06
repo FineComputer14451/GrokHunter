@@ -1,5 +1,9 @@
 ## Unreleased
 
+- Website: Plugins section — Grok Build marketplace + Termux Connect / Grok Bot bridge docs.
+
+## Unreleased
+
 - Termux Connect bootstrap: auto-install cloudflared, start MCP in tmux, health-check; `--tunnel` option.
 
 ## Unreleased
