@@ -1,5 +1,9 @@
 ## Unreleased
 
+- Add `grokhunter-termux-connect` MVP: HTTP MCP + install/tunnel scripts to bridge Grok Bot to Termux GrokHunter (not native Local Computer).
+
+## Unreleased
+
 - Grok Build plugin marketplace: `.grok-plugin/marketplace.json` + `plugins/*` (23 packs including `grokhunter-full`). See `docs/MARKETPLACE.md`.
 
 # Changelog

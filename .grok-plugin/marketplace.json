@@ -448,6 +448,23 @@
       "domains": [
         "finecomputer14451.github.io"
       ]
+    },
+    {
+      "name": "grokhunter-termux-connect",
+      "description": "Bridge Grok Bot to GrokHunter on Termux via authenticated HTTP MCP + Cloudflare/ngrok tunnel. Not native Local Computer (Android unsupported). Scoped shell/files/doctor.",
+      "category": "development",
+      "version": "1.0.0",
+      "author": {
+        "name": "FineComputer14451",
+        "url": "https://github.com/FineComputer14451/GrokHunter"
+      },
+      "source": {
+        "type": "local",
+        "path": "./plugins/grokhunter-termux-connect"
+      },
+      "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+      "keywords": ["grokhunter termux connect", "grokhunter termux mcp", "termux connect grokhunter"],
+      "domains": ["finecomputer14451.github.io"]
     }
   ]
 }

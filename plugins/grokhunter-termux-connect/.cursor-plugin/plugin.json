@@ -1,0 +1,22 @@
+{
+  "name": "grokhunter-termux-connect",
+  "version": "1.0.0",
+  "description": "Bridge Grok Bot to GrokHunter on Termux via authenticated HTTP MCP + tunnel. Not a native Local Computer (Android unsupported); exposes scoped shell/files/doctor. Not affiliated with xAI / OffSec / Termux / jorexdeveloper.",
+  "author": {
+    "name": "FineComputer14451",
+    "url": "https://github.com/FineComputer14451/GrokHunter"
+  },
+  "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+  "repository": "https://github.com/FineComputer14451/GrokHunter",
+  "license": "MIT",
+  "keywords": [
+    "grokhunter termux connect",
+    "grokhunter termux mcp",
+    "termux connect grokhunter"
+  ],
+  "logo": "assets/logo.png",
+  "displayName": "GrokHunter Termux Connect",
+  "category": "developer-tools",
+  "skills": "./skills/",
+  "commands": "./commands/"
+}
