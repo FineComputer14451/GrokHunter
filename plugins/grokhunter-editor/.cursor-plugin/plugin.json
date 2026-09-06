@@ -1,0 +1,20 @@
+{
+  "name": "grokhunter-editor",
+  "version": "1.0.11",
+  "description": "GrokHunter lab: Editor / TUI editing workflows in the GrokHunter lab.",
+  "author": {
+    "name": "FineComputer14451",
+    "url": "https://github.com/FineComputer14451/GrokHunter"
+  },
+  "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+  "repository": "https://github.com/FineComputer14451/GrokHunter",
+  "license": "MIT",
+  "keywords": [
+    "grokhunter editor"
+  ],
+  "logo": "assets/logo.png",
+  "displayName": "GrokHunter Editor",
+  "category": "developer-tools",
+  "skills": "./skills/",
+  "agents": "./agents/"
+}

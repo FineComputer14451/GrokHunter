@@ -1,0 +1,23 @@
+{
+  "name": "grokhunter-full",
+  "version": "1.0.11",
+  "description": "Complete GrokHunter Grok Build pack \u2014 core, Coding Team, all lab specialists, desktop, overlay, scoped tookie. Omits offensive recon.",
+  "author": {
+    "name": "FineComputer14451",
+    "url": "https://github.com/FineComputer14451/GrokHunter"
+  },
+  "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+  "repository": "https://github.com/FineComputer14451/GrokHunter",
+  "license": "MIT",
+  "keywords": [
+    "grokhunter full",
+    "grokhunter plugin pack"
+  ],
+  "logo": "assets/logo.png",
+  "displayName": "GrokHunter Full",
+  "category": "developer-tools",
+  "skills": "./skills/",
+  "agents": "./agents/",
+  "commands": "./commands/",
+  "rules": "./rules/"
+}

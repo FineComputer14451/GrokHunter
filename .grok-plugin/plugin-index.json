@@ -1,0 +1,729 @@
+{
+  "plugins": [
+    {
+      "agents": [],
+      "commands": [
+        {
+          "description": "Run or explain grokhunter doctor / status repair for the phone lab",
+          "name": "grokhunter-doctor"
+        },
+        {
+          "description": "Paste-ready Termux install / overlay-only for GrokHunter Rootless",
+          "name": "grokhunter-install"
+        }
+      ],
+      "hooks": [],
+      "lspServers": [],
+      "mcpServers": [],
+      "name": "grokhunter",
+      "skills": [
+        {
+          "description": "Use for GrokHunter Rootless lab ops: install, overlay-only, doctor, PATH/config, models/skills, binds, ai-smoke, and rou",
+          "name": "grokhunter"
+        },
+        {
+          "description": "Use when pair-programming, writing, reviewing, or debugging code on GrokHunter Rootless with Grok 4.6 (and optional Aide",
+          "name": "pair-programming"
+        }
+      ],
+      "version": "1.0.11"
+    },
+    {
+      "agents": [
+        {
+          "description": "Aider \u2014 aider-grok install and repair on GrokHunter. uv + Python 3.12, scripts/install_aider.sh, XAI_API_KEY, grok-4.6. ",
+          "name": "aider"
+        },
+        {
+          "description": "Benjamin \u2014 Senior Coding Architect for GrokHunter. Plan/read-only Design cards for mobile Termux/NetHunter constraints; ",
+          "name": "benjamin"
+        },
+        {
+          "description": "Coding Team orchestrator for GrokHunter \u2014 Design\u2192Build\u2192Harden plus full lab specialist routing (overlay, desktop, ship, ",
+          "name": "coding-team"
+        },
+        {
+          "description": "Docs \u2014 GrokHunter documentation specialist. README, FAQ, TROUBLESHOOTING, website copy, CREDITS. Use for \"update the FAQ",
+          "name": "docs"
+        },
+        {
+          "description": "Fix \u2014 surgical patch agent for GrokHunter. One clear bug or failure at a time. Minimal diffs, exact smoke steps. Use ins",
+          "name": "fix"
+        },
+        {
+          "description": "Harper \u2014 Reliability Engineer for GrokHunter. Unhappy paths, focused tests, ranked risks for real phones; emit Harden ca",
+          "name": "harper"
+        },
+        {
+          "description": "Lucas \u2014 Rapid Builder for GrokHunter. Small shippable increments from a Design card; leave Harper-ready; emit Build card",
+          "name": "lucas"
+        },
+        {
+          "description": "Review \u2014 read-only code reviewer for GrokHunter. Reviews uncommitted diffs, branches, or described changes. Ranks findin",
+          "name": "review"
+        },
+        {
+          "description": "Scout \u2014 fast read-only explorer for GrokHunter. Map install flows and call graphs; emit Map cards before Design/Build.",
+          "name": "scout"
+        },
+        {
+          "description": "Ship \u2014 GrokHunter release specialist. VERSION, CHANGELOG, website, profile fallback, MODULES_VERSION, git tag, GitHub re",
+          "name": "ship"
+        }
+      ],
+      "commands": [
+        {
+          "description": "Start a Design\u2192Build\u2192Harden loop for a GrokHunter feature",
+          "name": "coding-team"
+        }
+      ],
+      "hooks": [],
+      "lspServers": [],
+      "mcpServers": [],
+      "name": "grokhunter-coding-team",
+      "skills": [
+        {
+          "description": "Use when the user wants Aider + Grok/xAI git-native pair programming on GrokHunter Rootless, or to repair aider-grok / t",
+          "name": "aider-grok"
+        },
+        {
+          "description": "Use when multi-agent Design\u2192Build\u2192Harden work on GrokHunter or related code: Benjamin (architect), Lucas (builder), Harp",
+          "name": "gh-coding-team"
+        }
+      ],
+      "version": "1.0.11"
+    },
+    {
+      "agents": [
+        {
+          "description": "CI \u2014 GrokHunter unit and Smoke specialist. scripts/ci-unit.sh, smoke.yml, deploy-website.yml. Use when tests fail, CI is",
+          "name": "ci"
+        }
+      ],
+      "commands": [],
+      "hooks": [],
+      "lspServers": [],
+      "mcpServers": [],
+      "name": "grokhunter-ci",
+      "skills": [
+        {
+          "description": "Use when GrokHunter ci-unit.sh fails, GitHub Actions Smoke is red, or before pushing overlay changes.",
+          "name": "ci-lab"
+        }
+      ],
+      "version": "1.0.11"
+    },
+    {
+      "agents": [
+        {
+          "description": "Models \u2014 Grok 4.6 catalog and V9 /model pickers for GrokHunter. Use for \"models=no\", chat-expert/multi/auto, grok-4.5 le",
+          "name": "models"
+        }
+      ],
+      "commands": [],
+      "hooks": [],
+      "lspServers": [],
+      "mcpServers": [],
+      "name": "grokhunter-models",
+      "skills": [
+        {
+          "description": "Use when GrokHunter V9 /model pickers are missing, models=no, wrong model selected, or grok-4.6 profile needs a refresh.",
+          "name": "grok-models"
+        }
+      ],
+      "version": "1.0.11"
+    },
+    {
+      "agents": [
+        {
+          "description": "MCP \u2014 Grok Build MCP specialist for GrokHunter. grok mcp list/add/doctor, HTTP vs npx, config.toml. Use when MCP tools a",
+          "name": "mcp"
+        }
+      ],
+      "commands": [],
+      "hooks": [],
+      "lspServers": [],
+      "mcpServers": [],
+      "name": "grokhunter-mcp",
+      "skills": [
+        {
+          "description": "Use when Grok Build MCP tools are missing on GrokHunter, grok mcp doctor fails, or the user wants GitHub/other MCP on Ne",
+          "name": "mcp-lab"
+        }
+      ],
+      "version": "1.0.11"
+    },
+    {
+      "agents": [
+        {
+          "description": "Net \u2014 HTTPS reachability specialist for GrokHunter. x.ai probe, http_code 000 vs Cloudflare 403 / API 401, guest DNS. Us",
+          "name": "net"
+        }
+      ],
+      "commands": [],
+      "hooks": [],
+      "lspServers": [],
+      "mcpServers": [],
+      "name": "grokhunter-net",
+      "skills": [
+        {
+          "description": "Use when GrokHunter doctor says offline/no route to x.ai, curl returns http_code 000, or guest DNS/resolv.conf is broken",
+          "name": "net-lab"
+        }
+      ],
+      "version": "1.0.11"
+    },
+    {
+      "agents": [
+        {
+          "description": "Plugin \u2014 Grok Build plugin specialist for GrokHunter. grok plugin list/install/marketplace, --trust. Use when plugins ar",
+          "name": "plugin"
+        }
+      ],
+      "commands": [],
+      "hooks": [],
+      "lspServers": [],
+      "mcpServers": [],
+      "name": "grokhunter-plugin-lab",
+      "skills": [
+        {
+          "description": "Use when a Grok Build plugin skill is missing on GrokHunter, marketplace is empty, or the user wants plugins inside NetH",
+          "name": "plugin-lab"
+        }
+      ],
+      "version": "1.0.11"
+    },
+    {
+      "agents": [
+        {
+          "description": "Secrets \u2014 GrokHunter secrets.env specialist. Mode 600, XAI_API_KEY, grok login vs API key, never print tokens. Use when ",
+          "name": "secrets"
+        }
+      ],
+      "commands": [],
+      "hooks": [],
+      "lspServers": [],
+      "mcpServers": [],
+      "name": "grokhunter-secrets",
+      "skills": [
+        {
+          "description": "Use when GrokHunter secrets.env / XAI_API_KEY auth is wrong, doctor warns about secrets, or ai-smoke says missing-key \u2014 ",
+          "name": "secrets-lab"
+        }
+      ],
+      "version": "1.0.11"
+    },
+    {
+      "agents": [
+        {
+          "description": "Session \u2014 tmux and Grok resume specialist for GrokHunter. Use when the TUI vanished, Termux backgrounded the app, or the",
+          "name": "session"
+        }
+      ],
+      "commands": [],
+      "hooks": [],
+      "lspServers": [],
+      "mcpServers": [],
+      "name": "grokhunter-session",
+      "skills": [
+        {
+          "description": "Use when GrokHunter TUI vanished after app switch, Termux backgrounded the process, or the user needs tmux / grok --resu",
+          "name": "session-lab"
+        }
+      ],
+      "version": "1.0.11"
+    },
+    {
+      "agents": [
+        {
+          "description": "Storage \u2014 disk and cache specialist for GrokHunter on Android. df, --mini, overlay cache, sessions. Use when the lab is ",
+          "name": "storage"
+        }
+      ],
+      "commands": [],
+      "hooks": [],
+      "lspServers": [],
+      "mcpServers": [],
+      "name": "grokhunter-storage",
+      "skills": [
+        {
+          "description": "Use when GrokHunter install fails on disk space, df is tight, or the user asks what cache/sessions to delete on the phon",
+          "name": "storage-lab"
+        }
+      ],
+      "version": "1.0.11"
+    },
+    {
+      "agents": [
+        {
+          "description": "Shell \u2014 profile.sh, completions, and aliases for GrokHunter. Use when TAB complete is dead, ghd is missing, or a new she",
+          "name": "shell"
+        }
+      ],
+      "commands": [],
+      "hooks": [],
+      "lspServers": [],
+      "mcpServers": [],
+      "name": "grokhunter-shell",
+      "skills": [
+        {
+          "description": "Use when GrokHunter tab-complete is missing, ghd/ghsu aliases unknown, or PATH dies after a new shell.",
+          "name": "shell-lab"
+        }
+      ],
+      "version": "1.0.11"
+    },
+    {
+      "agents": [
+        {
+          "description": "TLS \u2014 Kali CA / SSL_CERT_FILE specialist for GrokHunter. Injected /etc/tls/cert.pem, doctor TLS probe, clock-skew as a c",
+          "name": "tls"
+        }
+      ],
+      "commands": [],
+      "hooks": [],
+      "lspServers": [],
+      "mcpServers": [],
+      "name": "grokhunter-tls",
+      "skills": [
+        {
+          "description": "Use when GrokHunter curl/gh SSL fails, SSL_CERT_FILE/CA is missing, or doctor warns about TLS / clock-skew certs.",
+          "name": "tls-lab"
+        }
+      ],
+      "version": "1.0.11"
+    },
+    {
+      "agents": [
+        {
+          "description": "Toolchain \u2014 apt/compiler specialist for GrokHunter. gcc, python3, node, uv vs Kali 3.13, /tmp under proot. Use when comp",
+          "name": "toolchain"
+        }
+      ],
+      "commands": [],
+      "hooks": [],
+      "lspServers": [],
+      "mcpServers": [],
+      "name": "grokhunter-toolchain",
+      "skills": [
+        {
+          "description": "Use when GrokHunter compilers/python/node are missing, Aider fails on Python 3.13, or the phone lab needs apt toolchain ",
+          "name": "toolchain"
+        }
+      ],
+      "version": "1.0.11"
+    },
+    {
+      "agents": [],
+      "commands": [],
+      "hooks": [],
+      "lspServers": [],
+      "mcpServers": [],
+      "name": "grokhunter-specialist",
+      "skills": [
+        {
+          "description": "Use when adding a new GrokHunter lab specialist \u2014 skill-only or agent+skill (Wave 6), CLI, completions, ci-unit, Coding ",
+          "name": "specialist-lab"
+        }
+      ],
+      "version": "1.0.11"
+    },
+    {
+      "agents": [
+        {
+          "description": "Host \u2014 Termux vs Kali NetHunter specialist. PREFIX, pkg vs apt, which shell, PATH. Use when grokhunter is missing on one",
+          "name": "host"
+        }
+      ],
+      "commands": [],
+      "hooks": [],
+      "lspServers": [],
+      "mcpServers": [],
+      "name": "grokhunter-host",
+      "skills": [
+        {
+          "description": "Use when the user is lost between Termux host and Kali NetHunter guest \u2014 PREFIX, pkg vs apt, PATH, or install.sh Termux-",
+          "name": "host-lab"
+        }
+      ],
+      "version": "1.0.11"
+    },
+    {
+      "agents": [
+        {
+          "description": "Editor \u2014 nvim/micro/Acode specialist for GrokHunter. Use when a human editor is missing or the user wants vim beside gro",
+          "name": "editor"
+        }
+      ],
+      "commands": [],
+      "hooks": [],
+      "lspServers": [],
+      "mcpServers": [],
+      "name": "grokhunter-editor",
+      "skills": [
+        {
+          "description": "Use when the user wants nvim, micro, or Acode on GrokHunter, or an editor besides Grok/Aider is missing inside Kali.",
+          "name": "editor-lab"
+        }
+      ],
+      "version": "1.0.11"
+    },
+    {
+      "agents": [
+        {
+          "description": "Flow \u2014 Grok Build workflow specialist for GrokHunter. .rhai workflows, /workflow, small agent_budget on a phone. Use whe",
+          "name": "flow"
+        }
+      ],
+      "commands": [],
+      "hooks": [],
+      "lspServers": [],
+      "mcpServers": [],
+      "name": "grokhunter-flow",
+      "skills": [
+        {
+          "description": "Use when the user wants Grok Build .rhai workflows on GrokHunter, /create-workflow, /workflows, or a saved workflow will",
+          "name": "flow-lab"
+        }
+      ],
+      "version": "1.0.11"
+    },
+    {
+      "agents": [
+        {
+          "description": "Hook \u2014 Grok Build hooks specialist for GrokHunter. ~/.grok/hooks, /hooks, SessionStart / PreToolUse. Use when a hook did",
+          "name": "hook"
+        }
+      ],
+      "commands": [],
+      "hooks": [],
+      "lspServers": [],
+      "mcpServers": [],
+      "name": "grokhunter-hooks",
+      "skills": [
+        {
+          "description": "Use when a Grok Build hook on GrokHunter did not fire, the user wants SessionStart/PreToolUse hooks, or /hooks-trust is ",
+          "name": "hooks-lab"
+        }
+      ],
+      "version": "1.0.11"
+    },
+    {
+      "agents": [
+        {
+          "description": "GitHub \u2014 git-identity specialist for GrokHunter. invalid-email-address, noreply addresses, optional gh CLI. Use when com",
+          "name": "github"
+        }
+      ],
+      "commands": [],
+      "hooks": [],
+      "lspServers": [],
+      "mcpServers": [],
+      "name": "grokhunter-github",
+      "skills": [
+        {
+          "description": "Use when GrokHunter git commits show as root/kali@localhost, invalid-email-address, or GitHub cannot map the author \u2014 gi",
+          "name": "github-lab"
+        }
+      ],
+      "version": "1.0.11"
+    },
+    {
+      "agents": [
+        {
+          "description": "Desktop \u2014 Termux:X11 / nh-x11 / proot binds specialist for GrokHunter. Black screens, lag, compositor issues, session se",
+          "name": "desktop"
+        }
+      ],
+      "commands": [],
+      "hooks": [],
+      "lspServers": [],
+      "mcpServers": [],
+      "name": "grokhunter-desktop",
+      "skills": [
+        {
+          "description": "Use for GrokHunter Termux:X11 black screen, lag, nh-x11 recovery, grokhunter binds, bwrap/glycin, or Android desktop per",
+          "name": "x11-desktop"
+        }
+      ],
+      "version": "1.0.11"
+    },
+    {
+      "agents": [
+        {
+          "description": "Overlay \u2014 GrokHunter installer/overlay specialist. One-liner extract, MODULES_VERSION cache, --overlay-only, PATH wrappe",
+          "name": "overlay"
+        }
+      ],
+      "commands": [],
+      "hooks": [],
+      "lspServers": [],
+      "mcpServers": [],
+      "name": "grokhunter-overlay",
+      "skills": [
+        {
+          "description": "GrokHunter installer and overlay cache: install.sh, MODULES_VERSION, --overlay-only, PATH wrappers, command-not-found af",
+          "name": "overlay-lab"
+        }
+      ],
+      "version": "1.0.11"
+    },
+    {
+      "agents": [
+        {
+          "description": "Tookie Investigator \u2014 authorized public username / social-account discovery with Tookie-OSINT. Use for footprinting a ha",
+          "name": "tookie"
+        }
+      ],
+      "commands": [],
+      "hooks": [],
+      "lspServers": [],
+      "mcpServers": [],
+      "name": "grokhunter-tookie",
+      "skills": [
+        {
+          "description": "Authorized public username discovery with Tookie-OSINT (Sherlock-class). Scoped lab module \u2014 not the product default. In",
+          "name": "tookie-osint"
+        }
+      ],
+      "version": "1.0.11"
+    },
+    {
+      "agents": [
+        {
+          "description": "Aider \u2014 aider-grok install and repair on GrokHunter. uv + Python 3.12, scripts/install_aider.sh, XAI_API_KEY, grok-4.6. ",
+          "name": "aider"
+        },
+        {
+          "description": "Benjamin \u2014 Senior Coding Architect for GrokHunter. Plan/read-only Design cards for mobile Termux/NetHunter constraints; ",
+          "name": "benjamin"
+        },
+        {
+          "description": "CI \u2014 GrokHunter unit and Smoke specialist. scripts/ci-unit.sh, smoke.yml, deploy-website.yml. Use when tests fail, CI is",
+          "name": "ci"
+        },
+        {
+          "description": "Coding Team orchestrator for GrokHunter \u2014 Design\u2192Build\u2192Harden plus full lab specialist routing (overlay, desktop, ship, ",
+          "name": "coding-team"
+        },
+        {
+          "description": "Desktop \u2014 Termux:X11 / nh-x11 / proot binds specialist for GrokHunter. Black screens, lag, compositor issues, session se",
+          "name": "desktop"
+        },
+        {
+          "description": "Docs \u2014 GrokHunter documentation specialist. README, FAQ, TROUBLESHOOTING, website copy, CREDITS. Use for \"update the FAQ",
+          "name": "docs"
+        },
+        {
+          "description": "Editor \u2014 nvim/micro/Acode specialist for GrokHunter. Use when a human editor is missing or the user wants vim beside gro",
+          "name": "editor"
+        },
+        {
+          "description": "Fix \u2014 surgical patch agent for GrokHunter. One clear bug or failure at a time. Minimal diffs, exact smoke steps. Use ins",
+          "name": "fix"
+        },
+        {
+          "description": "Flow \u2014 Grok Build workflow specialist for GrokHunter. .rhai workflows, /workflow, small agent_budget on a phone. Use whe",
+          "name": "flow"
+        },
+        {
+          "description": "GitHub \u2014 git-identity specialist for GrokHunter. invalid-email-address, noreply addresses, optional gh CLI. Use when com",
+          "name": "github"
+        },
+        {
+          "description": "Harper \u2014 Reliability Engineer for GrokHunter. Unhappy paths, focused tests, ranked risks for real phones; emit Harden ca",
+          "name": "harper"
+        },
+        {
+          "description": "Hook \u2014 Grok Build hooks specialist for GrokHunter. ~/.grok/hooks, /hooks, SessionStart / PreToolUse. Use when a hook did",
+          "name": "hook"
+        },
+        {
+          "description": "Host \u2014 Termux vs Kali NetHunter specialist. PREFIX, pkg vs apt, which shell, PATH. Use when grokhunter is missing on one",
+          "name": "host"
+        },
+        {
+          "description": "Lucas \u2014 Rapid Builder for GrokHunter. Small shippable increments from a Design card; leave Harper-ready; emit Build card",
+          "name": "lucas"
+        },
+        {
+          "description": "MCP \u2014 Grok Build MCP specialist for GrokHunter. grok mcp list/add/doctor, HTTP vs npx, config.toml. Use when MCP tools a",
+          "name": "mcp"
+        },
+        {
+          "description": "Models \u2014 Grok 4.6 catalog and V9 /model pickers for GrokHunter. Use for \"models=no\", chat-expert/multi/auto, grok-4.5 le",
+          "name": "models"
+        },
+        {
+          "description": "Net \u2014 HTTPS reachability specialist for GrokHunter. x.ai probe, http_code 000 vs Cloudflare 403 / API 401, guest DNS. Us",
+          "name": "net"
+        },
+        {
+          "description": "Overlay \u2014 GrokHunter installer/overlay specialist. One-liner extract, MODULES_VERSION cache, --overlay-only, PATH wrappe",
+          "name": "overlay"
+        },
+        {
+          "description": "Plugin \u2014 Grok Build plugin specialist for GrokHunter. grok plugin list/install/marketplace, --trust. Use when plugins ar",
+          "name": "plugin"
+        },
+        {
+          "description": "Review \u2014 read-only code reviewer for GrokHunter. Reviews uncommitted diffs, branches, or described changes. Ranks findin",
+          "name": "review"
+        },
+        {
+          "description": "Scout \u2014 fast read-only explorer for GrokHunter. Map install flows and call graphs; emit Map cards before Design/Build.",
+          "name": "scout"
+        },
+        {
+          "description": "Secrets \u2014 GrokHunter secrets.env specialist. Mode 600, XAI_API_KEY, grok login vs API key, never print tokens. Use when ",
+          "name": "secrets"
+        },
+        {
+          "description": "Session \u2014 tmux and Grok resume specialist for GrokHunter. Use when the TUI vanished, Termux backgrounded the app, or the",
+          "name": "session"
+        },
+        {
+          "description": "Shell \u2014 profile.sh, completions, and aliases for GrokHunter. Use when TAB complete is dead, ghd is missing, or a new she",
+          "name": "shell"
+        },
+        {
+          "description": "Ship \u2014 GrokHunter release specialist. VERSION, CHANGELOG, website, profile fallback, MODULES_VERSION, git tag, GitHub re",
+          "name": "ship"
+        },
+        {
+          "description": "Storage \u2014 disk and cache specialist for GrokHunter on Android. df, --mini, overlay cache, sessions. Use when the lab is ",
+          "name": "storage"
+        },
+        {
+          "description": "TLS \u2014 Kali CA / SSL_CERT_FILE specialist for GrokHunter. Injected /etc/tls/cert.pem, doctor TLS probe, clock-skew as a c",
+          "name": "tls"
+        },
+        {
+          "description": "Tookie Investigator \u2014 authorized public username / social-account discovery with Tookie-OSINT. Use for footprinting a ha",
+          "name": "tookie"
+        },
+        {
+          "description": "Toolchain \u2014 apt/compiler specialist for GrokHunter. gcc, python3, node, uv vs Kali 3.13, /tmp under proot. Use when comp",
+          "name": "toolchain"
+        }
+      ],
+      "commands": [
+        {
+          "description": "Start a Design\u2192Build\u2192Harden loop for a GrokHunter feature",
+          "name": "coding-team"
+        },
+        {
+          "description": "Run or explain grokhunter doctor / status repair for the phone lab",
+          "name": "grokhunter-doctor"
+        },
+        {
+          "description": "Paste-ready Termux install / overlay-only for GrokHunter Rootless",
+          "name": "grokhunter-install"
+        }
+      ],
+      "hooks": [],
+      "lspServers": [],
+      "mcpServers": [],
+      "name": "grokhunter-full",
+      "skills": [
+        {
+          "description": "Use when the user wants Aider + Grok/xAI git-native pair programming on GrokHunter Rootless, or to repair aider-grok / t",
+          "name": "aider-grok"
+        },
+        {
+          "description": "Use when GrokHunter ci-unit.sh fails, GitHub Actions Smoke is red, or before pushing overlay changes.",
+          "name": "ci-lab"
+        },
+        {
+          "description": "Use when the user wants nvim, micro, or Acode on GrokHunter, or an editor besides Grok/Aider is missing inside Kali.",
+          "name": "editor-lab"
+        },
+        {
+          "description": "Use when the user wants Grok Build .rhai workflows on GrokHunter, /create-workflow, /workflows, or a saved workflow will",
+          "name": "flow-lab"
+        },
+        {
+          "description": "Use when multi-agent Design\u2192Build\u2192Harden work on GrokHunter or related code: Benjamin (architect), Lucas (builder), Harp",
+          "name": "gh-coding-team"
+        },
+        {
+          "description": "Use when GrokHunter git commits show as root/kali@localhost, invalid-email-address, or GitHub cannot map the author \u2014 gi",
+          "name": "github-lab"
+        },
+        {
+          "description": "Use when GrokHunter V9 /model pickers are missing, models=no, wrong model selected, or grok-4.6 profile needs a refresh.",
+          "name": "grok-models"
+        },
+        {
+          "description": "Use for GrokHunter Rootless lab ops: install, overlay-only, doctor, PATH/config, models/skills, binds, ai-smoke, and rou",
+          "name": "grokhunter"
+        },
+        {
+          "description": "Use when a Grok Build hook on GrokHunter did not fire, the user wants SessionStart/PreToolUse hooks, or /hooks-trust is ",
+          "name": "hooks-lab"
+        },
+        {
+          "description": "Use when the user is lost between Termux host and Kali NetHunter guest \u2014 PREFIX, pkg vs apt, PATH, or install.sh Termux-",
+          "name": "host-lab"
+        },
+        {
+          "description": "Use when Grok Build MCP tools are missing on GrokHunter, grok mcp doctor fails, or the user wants GitHub/other MCP on Ne",
+          "name": "mcp-lab"
+        },
+        {
+          "description": "Use when GrokHunter doctor says offline/no route to x.ai, curl returns http_code 000, or guest DNS/resolv.conf is broken",
+          "name": "net-lab"
+        },
+        {
+          "description": "GrokHunter installer and overlay cache: install.sh, MODULES_VERSION, --overlay-only, PATH wrappers, command-not-found af",
+          "name": "overlay-lab"
+        },
+        {
+          "description": "Use when pair-programming, writing, reviewing, or debugging code on GrokHunter Rootless with Grok 4.6 (and optional Aide",
+          "name": "pair-programming"
+        },
+        {
+          "description": "Use when a Grok Build plugin skill is missing on GrokHunter, marketplace is empty, or the user wants plugins inside NetH",
+          "name": "plugin-lab"
+        },
+        {
+          "description": "Use when GrokHunter secrets.env / XAI_API_KEY auth is wrong, doctor warns about secrets, or ai-smoke says missing-key \u2014 ",
+          "name": "secrets-lab"
+        },
+        {
+          "description": "Use when GrokHunter TUI vanished after app switch, Termux backgrounded the process, or the user needs tmux / grok --resu",
+          "name": "session-lab"
+        },
+        {
+          "description": "Use when GrokHunter tab-complete is missing, ghd/ghsu aliases unknown, or PATH dies after a new shell.",
+          "name": "shell-lab"
+        },
+        {
+          "description": "Use when adding a new GrokHunter lab specialist \u2014 skill-only or agent+skill (Wave 6), CLI, completions, ci-unit, Coding ",
+          "name": "specialist-lab"
+        },
+        {
+          "description": "Use when GrokHunter install fails on disk space, df is tight, or the user asks what cache/sessions to delete on the phon",
+          "name": "storage-lab"
+        },
+        {
+          "description": "Use when GrokHunter curl/gh SSL fails, SSL_CERT_FILE/CA is missing, or doctor warns about TLS / clock-skew certs.",
+          "name": "tls-lab"
+        },
+        {
+          "description": "Authorized public username discovery with Tookie-OSINT (Sherlock-class). Scoped lab module \u2014 not the product default. In",
+          "name": "tookie-osint"
+        },
+        {
+          "description": "Use when GrokHunter compilers/python/node are missing, Aider fails on Python 3.13, or the phone lab needs apt toolchain ",
+          "name": "toolchain"
+        },
+        {
+          "description": "Use for GrokHunter Termux:X11 black screen, lag, nh-x11 recovery, grokhunter binds, bwrap/glycin, or Android desktop per",
+          "name": "x11-desktop"
+        }
+      ],
+      "version": "1.0.11"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "grokhunter",
+  "version": "1.0.11",
+  "description": "GrokHunter Rootless core \u2014 Termux \u00d7 Kali NetHunter rootless install/doctor, pair-programming with Grok Build. Coding lab only.",
+  "author": {
+    "name": "FineComputer14451",
+    "url": "https://github.com/FineComputer14451/GrokHunter"
+  },
+  "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+  "repository": "https://github.com/FineComputer14451/GrokHunter",
+  "license": "MIT",
+  "keywords": [
+    "grokhunter",
+    "grokhunter install",
+    "grokhunter doctor",
+    "nethunter rootless"
+  ],
+  "logo": "assets/logo.png"
+}

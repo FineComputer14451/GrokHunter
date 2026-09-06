@@ -1,3 +1,7 @@
+## Unreleased
+
+- Grok Build plugin marketplace: `.grok-plugin/marketplace.json` + `plugins/*` (23 packs including `grokhunter-full`). See `docs/MARKETPLACE.md`.
+
 # Changelog
 
 ## Unreleased
