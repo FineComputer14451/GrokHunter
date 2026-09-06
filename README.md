@@ -78,6 +78,20 @@ GROKHUNTER_REFRESH=1 bash install.sh --help
 
 ---
 
+
+## Grok Build plugin marketplace
+
+This repo is a **Grok Build marketplace** (`.grok-plugin/marketplace.json`).
+
+```bash
+grok plugin marketplace add FineComputer14451/GrokHunter
+grok plugin install grokhunter --trust
+grok plugin install grokhunter-coding-team --trust
+# or: grok plugin install grokhunter-full --trust
+```
+
+Full catalog and layout: [docs/MARKETPLACE.md](docs/MARKETPLACE.md).
+
 ## Install flags
 
 ```

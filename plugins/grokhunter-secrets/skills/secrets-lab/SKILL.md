@@ -1,0 +1,45 @@
+---
+name: secrets-lab
+description: >-
+  Use when GrokHunter secrets.env / XAI_API_KEY auth is wrong, doctor warns
+  about secrets, or ai-smoke says missing-key — never print tokens.
+---
+# Source
+Ported from FineComputer14451/GrokHunter `skills/secrets-lab` (v1.0.10).
+Hard rules: never print secrets; coding lab mission; credit jorexdeveloper, Termux, Kali/OffSec, xAI.
+
+# Secrets lab (optional)
+
+You keep API keys **off the terminal and out of git**. Canonical file: `~/.grok/secrets.env` mode **600**.
+
+## When to activate
+
+- Doctor: secrets missing or mode not 600
+- `grokhunter ai-smoke` says key not set
+- User asks how to auth Grok on the phone
+
+## Write (never echo the value)
+
+```bash
+printf 'export XAI_API_KEY=%q\n' "xai-YOUR_KEY" > ~/.grok/secrets.env
+chmod 600 ~/.grok/secrets.env
+source ~/.grok/secrets.env
+grokhunter ai-smoke
+```
+
+Auth can also be SuperGrok / X Premium+ via `grok` (`~/.grok/auth.json`). Do not print `auth.json`.
+
+## Common failures
+
+| Symptom | First step |
+|---------|------------|
+| secrets missing / mode not 600 | `chmod 600 ~/.grok/secrets.env` (create with `printf`, never echo the key) |
+| `ai-smoke` missing-key | `source ~/.grok/secrets.env` then `grokhunter ai-smoke` |
+| Pasted token in chat | Stop; rewrite the file; do not print it |
+
+## Hard rules
+
+- Never log, paste, or commit keys (`XAI_API_KEY`, `GH_TOKEN`, private keys)
+- No `SPACEXAI_*` hostnames — API is `https://api.x.ai/v1`
+- Profile sources secrets when present (`~/.grok/profile.sh`)
+- Verify with `stat` mode 600 — do not `cat` the file

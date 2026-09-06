@@ -29,6 +29,7 @@ Paired index: [agents/REFERENCES.md](../agents/REFERENCES.md).
 | Skill | Primary agent(s) | Key docs / CLI |
 |-------|------------------|----------------|
 | `grokhunter` | overlay (partial) | INSTALL, TROUBLESHOOTING, `grokhunter doctor` |
+| `overlay-lab` | overlay | INSTALL, TROUBLESHOOTING, `--overlay-only`, PATH wrappers |
 | `pair-programming` | coding-team, lucas | CODING-TEAM, GROK-46 |
 | `aider-grok` | aider | EDITORS, `scripts/install_aider.sh` |
 | `x11-desktop` | desktop | X11-PERFORMANCE, PROOT, `grokhunter binds` |

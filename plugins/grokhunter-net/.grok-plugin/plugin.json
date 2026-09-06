@@ -1,0 +1,17 @@
+{
+  "name": "grokhunter-net",
+  "version": "1.0.11",
+  "description": "GrokHunter lab: HTTPS reachability and x.ai probe triage for GrokHunter.",
+  "author": {
+    "name": "FineComputer14451",
+    "url": "https://github.com/FineComputer14451/GrokHunter"
+  },
+  "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+  "repository": "https://github.com/FineComputer14451/GrokHunter",
+  "license": "MIT",
+  "keywords": [
+    "grokhunter net",
+    "grokhunter x.ai"
+  ],
+  "logo": "assets/logo.png"
+}

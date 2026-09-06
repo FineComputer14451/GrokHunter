@@ -1,0 +1,20 @@
+{
+  "name": "grokhunter-mcp",
+  "version": "1.0.11",
+  "description": "GrokHunter lab: Grok MCP list/add/doctor on NetHunter rootless.",
+  "author": {
+    "name": "FineComputer14451",
+    "url": "https://github.com/FineComputer14451/GrokHunter"
+  },
+  "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+  "repository": "https://github.com/FineComputer14451/GrokHunter",
+  "license": "MIT",
+  "keywords": [
+    "grokhunter mcp"
+  ],
+  "logo": "assets/logo.png",
+  "displayName": "GrokHunter Mcp",
+  "category": "developer-tools",
+  "skills": "./skills/",
+  "agents": "./agents/"
+}

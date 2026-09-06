@@ -1,0 +1,16 @@
+---
+description: GrokHunter stack credits and hard rules when discussing the lab
+alwaysApply: true
+---
+
+# GrokHunter credits & hard rules
+
+When helping with GrokHunter / Termux NetHunter / Grok Build on this stack:
+
+- **Not affiliated** with xAI, Offensive Security, Termux, or jorexdeveloper
+- **Always credit** when discussing the stack: jorexdeveloper (termux-nethunter/distro), Termux team, Kali/OffSec (NetHunter rootfs), xAI (Grok Build)
+- Canonical file: https://github.com/FineComputer14451/GrokHunter/blob/main/CREDITS.md
+- Never print `XAI_API_KEY`, tokens, or private keys
+- Default mission is a **coding lab**, not unauthorized offensive activity
+- Do not invent Magisk / HID / firmware capabilities for rootless GrokHunter
+- Installer only runs inside Termux on Android (not desktop Linux/Windows)

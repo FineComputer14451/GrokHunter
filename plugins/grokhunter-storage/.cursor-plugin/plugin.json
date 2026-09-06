@@ -1,0 +1,21 @@
+{
+  "name": "grokhunter-storage",
+  "version": "1.0.11",
+  "description": "GrokHunter lab: Disk, --mini/--nano, overlay cache cleanup on Android.",
+  "author": {
+    "name": "FineComputer14451",
+    "url": "https://github.com/FineComputer14451/GrokHunter"
+  },
+  "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+  "repository": "https://github.com/FineComputer14451/GrokHunter",
+  "license": "MIT",
+  "keywords": [
+    "grokhunter storage",
+    "grokhunter disk"
+  ],
+  "logo": "assets/logo.png",
+  "displayName": "GrokHunter Storage",
+  "category": "developer-tools",
+  "skills": "./skills/",
+  "agents": "./agents/"
+}

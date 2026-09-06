@@ -1,0 +1,18 @@
+{
+  "name": "grokhunter-desktop",
+  "version": "1.0.11",
+  "description": "GrokHunter X11 desktop \u2014 grokhunter binds, nh-x11, bwrap black-screen triage (rootless).",
+  "author": {
+    "name": "FineComputer14451",
+    "url": "https://github.com/FineComputer14451/GrokHunter"
+  },
+  "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+  "repository": "https://github.com/FineComputer14451/GrokHunter",
+  "license": "MIT",
+  "keywords": [
+    "grokhunter desktop",
+    "grokhunter x11",
+    "grokhunter binds"
+  ],
+  "logo": "assets/logo.png"
+}

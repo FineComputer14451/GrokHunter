@@ -37,6 +37,7 @@ Canonical cross-links for every GrokHunter agent. Keep agent files lean; put sha
 | Skill | Paired agent(s) | Notes |
 |-------|-----------------|-------|
 | `grokhunter` | overlay (partial) | Install, doctor, PATH, models, skills CLI |
+| `overlay-lab` | overlay | install.sh / cache / PATH wrappers |
 | `pair-programming` | coding-team, lucas | Session style for Grok 4.6 |
 | `aider-grok` | aider | uv + Python 3.12 helper |
 | `x11-desktop` | desktop | Black screen / lag triage |
@@ -74,7 +75,7 @@ Full skill roster + decision tree: [skills/README.md](../skills/README.md) · [s
 | review | — | CODING-TEAM |
 | fix | — | CODING-TEAM |
 | desktop | x11-desktop | X11-PERFORMANCE, PROOT, `grokhunter binds` |
-| overlay | grokhunter | INSTALL, TROUBLESHOOTING (TLS install symlink; runtime → `tls`) |
+| overlay | overlay-lab | INSTALL, TROUBLESHOOTING (TLS install symlink; runtime → `tls`) |
 | ship | github-lab (release notes only) | CHANGELOG, VERSION, FAQ |
 | github | github-lab | FAQ, `grokhunter git-identity` |
 | secrets | secrets-lab | secrets.env mode 600 |

@@ -49,6 +49,7 @@ Skills are **playbooks** (how to do a thing). Agents are **runtime specialists**
 | [`grok-models`](grok-models/SKILL.md) | V9 pickers / profile / models=no |
 | [`ci-lab`](ci-lab/SKILL.md) | ci-unit.sh / Smoke red |
 | [`secrets-lab`](secrets-lab/SKILL.md) | secrets.env / XAI_API_KEY |
+| [`overlay-lab`](overlay-lab/SKILL.md) | install.sh / overlay cache / PATH wrappers |
 | [`session-lab`](session-lab/SKILL.md) | tmux / grok --resume |
 | [`host-lab`](host-lab/SKILL.md) | Termux host vs Kali guest |
 | [`mcp-lab`](mcp-lab/SKILL.md) | grok mcp list / doctor |
@@ -90,6 +91,7 @@ Quick path:
 
 ```text
 Lab broken / install / PATH     → grokhunter
+Overlay / wrappers / cache        → overlay-lab (agent `overlay`)
 Writing code                    → pair-programming (+ coding-team agents)
 Aider missing / Python 3.13     → aider-grok
 X11 black / lag / binds / bwrap → x11-desktop (`grokhunter binds`)

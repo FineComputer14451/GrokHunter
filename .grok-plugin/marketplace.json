@@ -1,0 +1,453 @@
+{
+  "name": "grokhunter",
+  "description": "GrokHunter Rootless coding lab marketplace for Grok Build \u2014 Termux \u00d7 Kali NetHunter rootless \u00d7 Grok. Not affiliated with xAI / OffSec / Termux / jorexdeveloper.",
+  "owner": {
+    "name": "FineComputer14451",
+    "url": "https://github.com/FineComputer14451/GrokHunter"
+  },
+  "plugins": [
+    {
+      "name": "grokhunter",
+      "description": "GrokHunter Rootless core \u2014 Termux \u00d7 Kali NetHunter rootless install/doctor, pair-programming with Grok Build. Coding lab only.",
+      "category": "development",
+      "version": "1.0.11",
+      "author": {
+        "name": "FineComputer14451",
+        "url": "https://github.com/FineComputer14451/GrokHunter"
+      },
+      "source": {
+        "type": "local",
+        "path": "./plugins/grokhunter"
+      },
+      "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+      "keywords": [
+        "grokhunter",
+        "grokhunter install",
+        "grokhunter doctor",
+        "nethunter rootless"
+      ],
+      "domains": [
+        "finecomputer14451.github.io",
+        "github.com/FineComputer14451/GrokHunter"
+      ]
+    },
+    {
+      "name": "grokhunter-coding-team",
+      "description": "GrokHunter Coding Team \u2014 Scout explore, Benjamin Design, Lucas Build, Harper Harden, plus gh-coding-team and aider-grok workflows.",
+      "category": "development",
+      "version": "1.0.11",
+      "author": {
+        "name": "FineComputer14451",
+        "url": "https://github.com/FineComputer14451/GrokHunter"
+      },
+      "source": {
+        "type": "local",
+        "path": "./plugins/grokhunter-coding-team"
+      },
+      "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+      "keywords": [
+        "grokhunter coding team",
+        "grokhunter benjamin",
+        "grokhunter lucas",
+        "grokhunter harper"
+      ]
+    },
+    {
+      "name": "grokhunter-ci",
+      "description": "GrokHunter lab: CI scripts, smoke.yml, unit smoke for GrokHunter.",
+      "category": "development",
+      "version": "1.0.11",
+      "author": {
+        "name": "FineComputer14451",
+        "url": "https://github.com/FineComputer14451/GrokHunter"
+      },
+      "source": {
+        "type": "local",
+        "path": "./plugins/grokhunter-ci"
+      },
+      "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+      "keywords": [
+        "grokhunter ci",
+        "grokhunter smoke"
+      ]
+    },
+    {
+      "name": "grokhunter-models",
+      "description": "GrokHunter lab: Grok model catalog and /model pickers for the phone lab.",
+      "category": "development",
+      "version": "1.0.11",
+      "author": {
+        "name": "FineComputer14451",
+        "url": "https://github.com/FineComputer14451/GrokHunter"
+      },
+      "source": {
+        "type": "local",
+        "path": "./plugins/grokhunter-models"
+      },
+      "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+      "keywords": [
+        "grokhunter models",
+        "grok-4.6"
+      ]
+    },
+    {
+      "name": "grokhunter-mcp",
+      "description": "GrokHunter lab: Grok MCP list/add/doctor on NetHunter rootless.",
+      "category": "development",
+      "version": "1.0.11",
+      "author": {
+        "name": "FineComputer14451",
+        "url": "https://github.com/FineComputer14451/GrokHunter"
+      },
+      "source": {
+        "type": "local",
+        "path": "./plugins/grokhunter-mcp"
+      },
+      "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+      "keywords": [
+        "grokhunter mcp"
+      ]
+    },
+    {
+      "name": "grokhunter-net",
+      "description": "GrokHunter lab: HTTPS reachability and x.ai probe triage for GrokHunter.",
+      "category": "development",
+      "version": "1.0.11",
+      "author": {
+        "name": "FineComputer14451",
+        "url": "https://github.com/FineComputer14451/GrokHunter"
+      },
+      "source": {
+        "type": "local",
+        "path": "./plugins/grokhunter-net"
+      },
+      "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+      "keywords": [
+        "grokhunter net",
+        "grokhunter x.ai"
+      ]
+    },
+    {
+      "name": "grokhunter-plugin-lab",
+      "description": "GrokHunter lab: Grok Build plugin install and marketplace add on the phone lab.",
+      "category": "development",
+      "version": "1.0.11",
+      "author": {
+        "name": "FineComputer14451",
+        "url": "https://github.com/FineComputer14451/GrokHunter"
+      },
+      "source": {
+        "type": "local",
+        "path": "./plugins/grokhunter-plugin-lab"
+      },
+      "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+      "keywords": [
+        "grokhunter plugin",
+        "grok plugin"
+      ]
+    },
+    {
+      "name": "grokhunter-secrets",
+      "description": "GrokHunter lab: secrets.env mode 600, XAI_API_KEY, grok login vs API key.",
+      "category": "development",
+      "version": "1.0.11",
+      "author": {
+        "name": "FineComputer14451",
+        "url": "https://github.com/FineComputer14451/GrokHunter"
+      },
+      "source": {
+        "type": "local",
+        "path": "./plugins/grokhunter-secrets"
+      },
+      "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+      "keywords": [
+        "grokhunter secrets"
+      ]
+    },
+    {
+      "name": "grokhunter-session",
+      "description": "GrokHunter lab: tmux detach/attach and grok --resume for GrokHunter.",
+      "category": "development",
+      "version": "1.0.11",
+      "author": {
+        "name": "FineComputer14451",
+        "url": "https://github.com/FineComputer14451/GrokHunter"
+      },
+      "source": {
+        "type": "local",
+        "path": "./plugins/grokhunter-session"
+      },
+      "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+      "keywords": [
+        "grokhunter session",
+        "grokhunter tmux"
+      ]
+    },
+    {
+      "name": "grokhunter-storage",
+      "description": "GrokHunter lab: Disk, --mini/--nano, overlay cache cleanup on Android.",
+      "category": "development",
+      "version": "1.0.11",
+      "author": {
+        "name": "FineComputer14451",
+        "url": "https://github.com/FineComputer14451/GrokHunter"
+      },
+      "source": {
+        "type": "local",
+        "path": "./plugins/grokhunter-storage"
+      },
+      "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+      "keywords": [
+        "grokhunter storage",
+        "grokhunter disk"
+      ]
+    },
+    {
+      "name": "grokhunter-shell",
+      "description": "GrokHunter lab: ~/.grok/profile.sh, completions, aliases for GrokHunter.",
+      "category": "development",
+      "version": "1.0.11",
+      "author": {
+        "name": "FineComputer14451",
+        "url": "https://github.com/FineComputer14451/GrokHunter"
+      },
+      "source": {
+        "type": "local",
+        "path": "./plugins/grokhunter-shell"
+      },
+      "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+      "keywords": [
+        "grokhunter shell",
+        "grokhunter profile"
+      ]
+    },
+    {
+      "name": "grokhunter-tls",
+      "description": "GrokHunter lab: Kali CA / SSL_CERT_FILE / doctor TLS probe for GrokHunter.",
+      "category": "development",
+      "version": "1.0.11",
+      "author": {
+        "name": "FineComputer14451",
+        "url": "https://github.com/FineComputer14451/GrokHunter"
+      },
+      "source": {
+        "type": "local",
+        "path": "./plugins/grokhunter-tls"
+      },
+      "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+      "keywords": [
+        "grokhunter tls",
+        "grokhunter ssl"
+      ]
+    },
+    {
+      "name": "grokhunter-toolchain",
+      "description": "GrokHunter lab: apt compilers, uv vs Kali Python, /tmp for GrokHunter builds.",
+      "category": "development",
+      "version": "1.0.11",
+      "author": {
+        "name": "FineComputer14451",
+        "url": "https://github.com/FineComputer14451/GrokHunter"
+      },
+      "source": {
+        "type": "local",
+        "path": "./plugins/grokhunter-toolchain"
+      },
+      "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+      "keywords": [
+        "grokhunter toolchain"
+      ]
+    },
+    {
+      "name": "grokhunter-specialist",
+      "description": "GrokHunter lab: Mint new GrokHunter lab playbooks (skill-only or agent+skill).",
+      "category": "development",
+      "version": "1.0.11",
+      "author": {
+        "name": "FineComputer14451",
+        "url": "https://github.com/FineComputer14451/GrokHunter"
+      },
+      "source": {
+        "type": "local",
+        "path": "./plugins/grokhunter-specialist"
+      },
+      "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+      "keywords": [
+        "grokhunter specialist lab"
+      ]
+    },
+    {
+      "name": "grokhunter-host",
+      "description": "GrokHunter lab: Termux host vs Kali guest PATH and environment.",
+      "category": "development",
+      "version": "1.0.11",
+      "author": {
+        "name": "FineComputer14451",
+        "url": "https://github.com/FineComputer14451/GrokHunter"
+      },
+      "source": {
+        "type": "local",
+        "path": "./plugins/grokhunter-host"
+      },
+      "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+      "keywords": [
+        "grokhunter host",
+        "termux host"
+      ]
+    },
+    {
+      "name": "grokhunter-editor",
+      "description": "GrokHunter lab: Editor / TUI editing workflows in the GrokHunter lab.",
+      "category": "development",
+      "version": "1.0.11",
+      "author": {
+        "name": "FineComputer14451",
+        "url": "https://github.com/FineComputer14451/GrokHunter"
+      },
+      "source": {
+        "type": "local",
+        "path": "./plugins/grokhunter-editor"
+      },
+      "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+      "keywords": [
+        "grokhunter editor"
+      ]
+    },
+    {
+      "name": "grokhunter-flow",
+      "description": "GrokHunter lab: Flow / orchestration playbooks for GrokHunter agents.",
+      "category": "development",
+      "version": "1.0.11",
+      "author": {
+        "name": "FineComputer14451",
+        "url": "https://github.com/FineComputer14451/GrokHunter"
+      },
+      "source": {
+        "type": "local",
+        "path": "./plugins/grokhunter-flow"
+      },
+      "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+      "keywords": [
+        "grokhunter flow"
+      ]
+    },
+    {
+      "name": "grokhunter-hooks",
+      "description": "GrokHunter lab: User hooks JSON and /hooks for Grok Build on GrokHunter.",
+      "category": "development",
+      "version": "1.0.11",
+      "author": {
+        "name": "FineComputer14451",
+        "url": "https://github.com/FineComputer14451/GrokHunter"
+      },
+      "source": {
+        "type": "local",
+        "path": "./plugins/grokhunter-hooks"
+      },
+      "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+      "keywords": [
+        "grokhunter hooks"
+      ]
+    },
+    {
+      "name": "grokhunter-github",
+      "description": "GrokHunter lab: GitHub workflows for the GrokHunter coding lab.",
+      "category": "development",
+      "version": "1.0.11",
+      "author": {
+        "name": "FineComputer14451",
+        "url": "https://github.com/FineComputer14451/GrokHunter"
+      },
+      "source": {
+        "type": "local",
+        "path": "./plugins/grokhunter-github"
+      },
+      "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+      "keywords": [
+        "grokhunter github"
+      ]
+    },
+    {
+      "name": "grokhunter-desktop",
+      "description": "GrokHunter X11 desktop \u2014 grokhunter binds, nh-x11, bwrap black-screen triage (rootless).",
+      "category": "development",
+      "version": "1.0.11",
+      "author": {
+        "name": "FineComputer14451",
+        "url": "https://github.com/FineComputer14451/GrokHunter"
+      },
+      "source": {
+        "type": "local",
+        "path": "./plugins/grokhunter-desktop"
+      },
+      "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+      "keywords": [
+        "grokhunter desktop",
+        "grokhunter x11",
+        "grokhunter binds"
+      ]
+    },
+    {
+      "name": "grokhunter-overlay",
+      "description": "GrokHunter overlay cache \u2014 install.sh --overlay-only, MODULES_VERSION, PATH wrappers.",
+      "category": "development",
+      "version": "1.0.11",
+      "author": {
+        "name": "FineComputer14451",
+        "url": "https://github.com/FineComputer14451/GrokHunter"
+      },
+      "source": {
+        "type": "local",
+        "path": "./plugins/grokhunter-overlay"
+      },
+      "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+      "keywords": [
+        "grokhunter overlay",
+        "grokhunter install.sh",
+        "MODULES_VERSION"
+      ]
+    },
+    {
+      "name": "grokhunter-tookie",
+      "description": "Authorized public username OSINT with Tookie-OSINT (Sherlock-class). Scoped GrokHunter module \u2014 not product default. Refuse stalking/doxxing.",
+      "category": "development",
+      "version": "1.0.11",
+      "author": {
+        "name": "FineComputer14451",
+        "url": "https://github.com/FineComputer14451/GrokHunter"
+      },
+      "source": {
+        "type": "local",
+        "path": "./plugins/grokhunter-tookie"
+      },
+      "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+      "keywords": [
+        "grokhunter tookie",
+        "tookie-osint",
+        "tookie scan"
+      ]
+    },
+    {
+      "name": "grokhunter-full",
+      "description": "Complete GrokHunter Grok Build pack \u2014 core, Coding Team, all lab specialists, desktop, overlay, scoped tookie. Omits offensive recon.",
+      "category": "development",
+      "version": "1.0.11",
+      "author": {
+        "name": "FineComputer14451",
+        "url": "https://github.com/FineComputer14451/GrokHunter"
+      },
+      "source": {
+        "type": "local",
+        "path": "./plugins/grokhunter-full"
+      },
+      "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+      "keywords": [
+        "grokhunter full",
+        "grokhunter plugin pack"
+      ],
+      "domains": [
+        "finecomputer14451.github.io"
+      ]
+    }
+  ]
+}

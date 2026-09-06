@@ -1,3 +1,7 @@
+## Unreleased
+
+- Grok Build plugin marketplace: `.grok-plugin/marketplace.json` + `plugins/*` (23 packs including `grokhunter-full`). See `docs/MARKETPLACE.md`.
+
 # Changelog
 
 ## Unreleased
@@ -13,6 +17,7 @@
 
 ### Lab specialists
 
+- Skill-only: **`overlay-lab`** playbook for install.sh / overlay cache / PATH wrappers (pairs agent `overlay`). Optional — not N/3.
 - Wave 7: agent **`tls`** + skill **`tls-lab`**. Runtime TLS (`lib/tls.sh`, `SSL_CERT_FILE`, Kali CA, doctor probe, clock-skew). Overlay still writes the install-time `/etc/tls` symlink. `grokhunter tls` launches the agent. Never print certs.
 - Wave 8: agent **`net`** + skill **`net-lab`**. HTTPS reachability (`lib/https-probe.sh`, `http_code` 000 vs 403/401, guest DNS). CA stays `tls`. `grokhunter net` launches the agent. Offline lab is still OK for local coding.
 - Wave 9: scoped specialist **`tookie`** + skill **`tookie-osint`**. Authorized public username lookup via Tookie-OSINT (`brib.py -sC`). `grokhunter tookie` launches the agent. Not a product default. Hits are leads, not identity. CLI stays upstream (do not vendor `brib.py`).

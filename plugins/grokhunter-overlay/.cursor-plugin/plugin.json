@@ -1,0 +1,22 @@
+{
+  "name": "grokhunter-overlay",
+  "version": "1.0.11",
+  "description": "GrokHunter overlay cache \u2014 install.sh --overlay-only, MODULES_VERSION, PATH wrappers.",
+  "author": {
+    "name": "FineComputer14451",
+    "url": "https://github.com/FineComputer14451/GrokHunter"
+  },
+  "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+  "repository": "https://github.com/FineComputer14451/GrokHunter",
+  "license": "MIT",
+  "keywords": [
+    "grokhunter overlay",
+    "grokhunter install.sh",
+    "MODULES_VERSION"
+  ],
+  "logo": "assets/logo.png",
+  "displayName": "GrokHunter Overlay",
+  "category": "developer-tools",
+  "skills": "./skills/",
+  "agents": "./agents/"
+}

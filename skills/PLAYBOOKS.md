@@ -9,8 +9,9 @@ Symptom → skill routing for the GrokHunter phone lab. Prefer the **narrowest**
 | Symptom | Skill | Notes |
 |---------|-------|-------|
 | Fresh Termux bootstrap | `grokhunter` | `install.sh --full` / one-liner |
-| Already have Kali; need wrappers only | `grokhunter` | `--overlay-only --with-*` |
-| `grokhunter: command not found` | `grokhunter` + `host-lab` | PATH / host vs guest |
+| Already have Kali; need wrappers only | `overlay-lab` | `--overlay-only --with-*` (agent `overlay`) |
+| `grokhunter: command not found` | `overlay-lab` + `host-lab` | wrappers / PATH; host vs guest |
+| Overlay cache stuck / stale modules | `overlay-lab` | `GROKHUNTER_REFRESH=1` / `MODULES_VERSION` |
 | Doctor red / status incomplete | `grokhunter` | `grokhunter doctor` |
 | Grok binary missing / &lt; 1.0.5 | `grokhunter` | `grokhunter ensure` |
 | models=no / pickers missing | `grok-models` | `grokhunter models install` |
@@ -86,6 +87,7 @@ Skills are playbooks for the current session. For long multi-step work or spawna
 
 ```text
 skills/x11-desktop  →  agent desktop
+skills/overlay-lab  →  agent overlay
 skills/mcp-lab      →  agent mcp
 skills/session-lab  →  agent session
 skills/github-lab   →  agent github

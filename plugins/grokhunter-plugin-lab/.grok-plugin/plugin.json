@@ -1,0 +1,17 @@
+{
+  "name": "grokhunter-plugin-lab",
+  "version": "1.0.11",
+  "description": "GrokHunter lab: Grok Build plugin install and marketplace add on the phone lab.",
+  "author": {
+    "name": "FineComputer14451",
+    "url": "https://github.com/FineComputer14451/GrokHunter"
+  },
+  "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+  "repository": "https://github.com/FineComputer14451/GrokHunter",
+  "license": "MIT",
+  "keywords": [
+    "grokhunter plugin",
+    "grok plugin"
+  ],
+  "logo": "assets/logo.png"
+}
