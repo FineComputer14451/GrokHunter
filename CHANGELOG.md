@@ -1,5 +1,9 @@
 ## Unreleased
 
+- Termux Connect: add `skills/termux-connect/scripts/bootstrap.sh` one-shot install (clone/update + MCP).
+
+## Unreleased
+
 - Add `grokhunter-termux-connect` MVP: HTTP MCP + install/tunnel scripts to bridge Grok Bot to Termux GrokHunter (not native Local Computer).
 
 ## Unreleased
