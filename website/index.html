@@ -6,12 +6,12 @@
     <title>GrokHunter 1.0.10 — AI coding lab on unrooted Android</title>
     <meta
       name="description"
-      content="Kali NetHunter Rootless × Grok Build 1.0.5 — AI coding lab for unrooted Android. Grok 4.6, agents, personas, roles, Aider, XFCE desktop. No root required."
+      content="Kali NetHunter Rootless × Grok Build — AI coding lab on unrooted Android. Grok 4.6, Coding Team, marketplace plugins, Termux Connect + Grok Build Connect, Aider, XFCE. No root."
     />
     <meta property="og:title" content="GrokHunter 1.0.10" />
     <meta
       property="og:description"
-      content="Kali NetHunter Rootless × Grok Build 1.0.5 — AI coding lab for unrooted Android. Grok 4.6."
+      content="Rootless AI coding lab on Android. Grok 4.6 · Coding Team · Connect bridges · marketplace plugins."
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://finecomputer14451.github.io/GrokHunter/" />
@@ -21,7 +21,7 @@
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="GrokHunter 1.0.10" />
-    <meta name="twitter:description" content="Rootless AI coding lab on unrooted Android. Ship code from your pocket." />
+    <meta name="twitter:description" content="Rootless AI coding lab on Android — Grok 4.6, agents, Connect bridges. Ship code from your pocket." />
     <meta name="twitter:image" content="https://finecomputer14451.github.io/GrokHunter/assets/og.jpg" />
     <meta name="twitter:image:alt" content="GrokHunter — Ship code from your pocket." />
     <meta name="theme-color" content="#0D1117" />
@@ -34,7 +34,7 @@
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=20260907-connect" />
+    <link rel="stylesheet" href="styles.css?v=20260907-full" />
   </head>
   <body>
     <header class="header">
@@ -56,6 +56,7 @@
         </a>
         <nav class="nav" aria-label="Primary">
           <a href="#features">Features</a>
+          <a href="#whats-new">What's new</a>
           <a href="#stack">Stack</a>
           <a href="#agents">Agents</a>
           <a href="#install">Install</a>
@@ -106,6 +107,7 @@
       </div>
       <nav class="mobile-nav wrap" id="mobileNav" aria-label="Mobile" hidden>
         <a href="#features">Features</a>
+        <a href="#whats-new">What's new</a>
         <a href="#stack">Stack</a>
         <a href="#agents">Agents</a>
         <a href="#install">Install</a>
@@ -151,9 +153,10 @@
               </span>
               <a class="chip chip-kali" href="https://www.kali.org/" target="_blank" rel="noopener noreferrer">Kali Linux</a>
               <a class="chip chip-nethunter" href="https://www.kali.org/docs/nethunter/" target="_blank" rel="noopener noreferrer">NetHunter</a>
-              <span class="chip chip-purple">Cyan · Purple</span>
+              <span class="chip chip-purple">Grok 4.6</span>
               <span class="chip">No root required</span>
-              <span class="chip">Grok Build 1.0.5</span>
+              <span class="chip">Grok Build 1.0.5+</span>
+              <span class="chip">Marketplace + Connect</span>
               <span class="chip">Agents · personas · roles</span>
             </div>
             <h1>
@@ -161,9 +164,9 @@
               <span class="accent">powered by Grok Build</span>
             </h1>
             <p class="lead">
-              Turn unrooted Android into a full AI coding lab. Real Linux toolchains, Grok Build 1.0.5
-              (TUI + headless), Coding Team multi-agents, Aider, and a low-latency desktop — one
-              installer, no root.
+              Turn unrooted Android into a full AI coding lab. Real Linux toolchains, Grok Build 1.0.5+
+              (TUI + headless) on <strong>grok-4.6</strong>, Coding Team multi-agents, marketplace plugins,
+              Termux / Grok Build Connect bridges for Grok Bot, Aider, and XFCE — one installer, no root.
             </p>
             <div class="code-block">
               <div class="code-head">
@@ -181,6 +184,7 @@
             </div>
             <div class="cta-row">
               <a class="btn btn-primary" href="#install">Full install guide</a>
+              <a class="btn btn-ghost btn-lg" href="#plugins">Plugins &amp; Connect</a>
               <a
                 class="btn btn-ghost btn-lg"
                 href="https://github.com/FineComputer14451/GrokHunter/releases/tag/v1.0.10"
@@ -241,15 +245,15 @@
             <span>Grok Build min</span>
           </div>
           <div class="stat">
-            <strong>26</strong>
+            <strong>32</strong>
             <span>Runtime agents</span>
           </div>
           <div class="stat">
-            <strong>24</strong>
+            <strong>28</strong>
             <span>Personas</span>
           </div>
           <div class="stat">
-            <strong>25</strong>
+            <strong>29</strong>
             <span>Roles</span>
           </div>
           <div class="stat">
@@ -286,7 +290,7 @@
                 </tr>
                 <tr>
                   <td>AI pair-programmer</td>
-                  <td>Grok Build 1.0.5 TUI + headless, agents, skills</td>
+                  <td>Grok Build 1.0.5+ TUI + headless, agents, skills, grok-4.6</td>
                 </tr>
                 <tr>
                   <td>Multi-agent coding</td>
@@ -299,6 +303,18 @@
                 <tr>
                   <td>Desktop IDE feel</td>
                   <td>XFCE + Termux:X11 (<code>nh-x11</code>)</td>
+                </tr>
+                <tr>
+                  <td>Grok Bot bridge</td>
+                  <td>Termux Connect (:8765) + Grok Build Connect (:8766) over Cloudflare tunnel</td>
+                </tr>
+                <tr>
+                  <td>Marketplace plugins</td>
+                  <td><code>grok plugin marketplace add FineComputer14451/GrokHunter</code></td>
+                </tr>
+                <tr>
+                  <td>Default model</td>
+                  <td><strong>grok-4.6</strong> (legacy V9 pickers retired — <code>models clean</code>)</td>
                 </tr>
                 <tr>
                   <td>Portability</td>
@@ -316,7 +332,8 @@
           <p class="section-label">Features</p>
           <h2>Everything for an on-device coding agent</h2>
           <p class="section-lead">
-            Overlay on official NetHunter — modular, idempotent, built for mobile pair sessions.
+            Overlay on official NetHunter — modular, idempotent, marketplace-ready, and wired for
+            Grok Bot Connect bridges when you want the phone as a remote tool host.
           </p>
           <div class="feature-grid">
             <article class="card">
@@ -338,10 +355,10 @@
                   <path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z" />
                 </svg>
               </div>
-              <h3>Grok Build 1.0.5</h3>
+              <h3>Grok Build 1.0.5+</h3>
               <p>
                 Official CLI with fullscreen TUI, headless <code>-p</code>, plan agent, skills, and
-                stable channel defaults via NetHunter profile.
+                stable channel defaults on <strong>grok-4.6</strong> via the NetHunter profile.
               </p>
             </article>
             <article class="card">
@@ -357,7 +374,7 @@
               <h3>Coding Team agents</h3>
               <p>
                 Benjamin · Lucas · Harper plus lab specialists (desktop, overlay, github, secrets,
-                toolchain, tls, net, tookie, …) for Design → Build → Harden. Twenty-nine runtime agents.
+                toolchain, tls, net, tookie, …) for Design → Build → Harden. Thirty-two runtime agents (Coding Team + lab specialists).
               </p>
             </article>
             <article class="card">
@@ -370,7 +387,7 @@
               <h3>Personas & roles</h3>
               <p>
                 Tone overlays (mobile, design-card, …) and capability roles (architect, builder, …)
-                for Grok Build 1.0.5 subagent resolution.
+                for Grok Build 1.0.5+ subagent resolution.
               </p>
             </article>
             <article class="card">
@@ -422,6 +439,40 @@
                 roles, PATH, secrets, and lab readiness.
               </p>
             </article>
+
+            <article class="card">
+              <div class="card-icon">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2v4" />
+                  <path d="M12 18v4" />
+                  <path d="M4.93 4.93l2.83 2.83" />
+                  <path d="M16.24 16.24l2.83 2.83" />
+                  <path d="M2 12h4" />
+                  <path d="M18 12h4" />
+                  <path d="M4.93 19.07l2.83-2.83" />
+                  <path d="M16.24 7.76l2.83-2.83" />
+                </svg>
+              </div>
+              <h3>Marketplace plugins</h3>
+              <p>
+                Install only what you need: <code>grokhunter</code>, <code>grokhunter-full</code>,
+                Coding Team, lab specialists, Termux Connect, and Grok Build Connect packs.
+              </p>
+            </article>
+            <article class="card">
+              <div class="card-icon">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                </svg>
+              </div>
+              <h3>Connect bridges</h3>
+              <p>
+                <strong>Termux Connect</strong> (:8765) exposes jailed lab tools; <strong>Grok Build Connect</strong>
+                (:8766) proxies local <code>grok</code>. Bootstrap with <code>--tunnel</code>, add Bearer MCP at
+                grok.com/connectors.
+              </p>
+            </article>
             <article class="card">
               <div class="card-icon">
                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -440,39 +491,98 @@
         </div>
       </section>
 
+
+      <!-- WHAT'S NEW -->
+      <section class="section alt" id="whats-new">
+        <div class="wrap">
+          <p class="section-label">What's new</p>
+          <h2>Lab updates on main</h2>
+          <p class="section-lead">
+            Beyond the <a href="https://github.com/FineComputer14451/GrokHunter/releases/tag/v1.0.10" target="_blank" rel="noopener noreferrer">v1.0.10</a>
+            release tag — pull <code>main</code> and run the upgrade paste to pick these up.
+          </p>
+          <div class="feature-grid">
+            <article class="card">
+              <h3>Grok 4.6 default</h3>
+              <p>
+                Catalog stays on <strong>grok-4.6</strong>. Legacy V9 <code>/model</code> pickers are retired —
+                <code>grokhunter models clean</code> strips them from <code>~/.grok/config.toml</code>.
+              </p>
+            </article>
+            <article class="card">
+              <h3>Termux Connect</h3>
+              <p>
+                HTTP MCP on port <strong>8765</strong> with Cloudflare tunnel bootstrap so Grok Bot can reach
+                jailed lab tools on your phone (not native Local Computer).
+              </p>
+            </article>
+            <article class="card">
+              <h3>Grok Build Connect</h3>
+              <p>
+                Second bridge on port <strong>8766</strong> for local <code>grok</code> CLI (version, plugins,
+                MCP doctor, ask, read). Same tunnel + Bearer pattern.
+              </p>
+            </article>
+            <article class="card">
+              <h3>Chat ↔ Build workflow</h3>
+              <p>
+                <a href="https://github.com/FineComputer14451/GrokHunter/blob/main/docs/GROK-46-WORKFLOW.md" target="_blank" rel="noopener noreferrer">docs/GROK-46-WORKFLOW.md</a>
+                — how Grok 4.6 chat pairs with on-device Grok Build, plus the
+                <a href="https://github.com/FineComputer14451/Grok-Imagine-Cinematic-Studio/blob/main/docs/guides/IMAGINE_MODELS_MAP.md" target="_blank" rel="noopener noreferrer">Imagine models map</a>
+                (incl. Agent Mode).
+              </p>
+            </article>
+            <article class="card">
+              <h3>Marketplace packs</h3>
+              <p>
+                Modular Grok Build plugins: core, full, Coding Team, lab specialists, and both Connect
+                packs — install only what you need with <code>--trust</code> for sources you chose.
+              </p>
+            </article>
+            <article class="card">
+              <h3>Mobile-friendly copy</h3>
+              <p>
+                Site Copy buttons use a sync clipboard path first so mobile browsers keep the user
+                gesture — fewer silent paste failures on Android.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
       <!-- STACK -->
-      <section class="section alt" id="stack">
+      <section class="section" id="stack">
         <div class="wrap">
           <p class="section-label">Stack</p>
           <h2>Four layers under ~/.grok</h2>
           <p class="section-lead">
             Install once with <code>grokhunter skills install</code> or Grok Build plugins from this marketplace — skills, agents, personas, and
-            roles land where Grok Build 1.0.5 discovers them.
+            roles land where Grok Build 1.0.5+ discovers them — or install packs from this marketplace.
           </p>
           <div class="stack-grid">
             <article class="stack-card">
               <span class="stack-kicker">Skills</span>
               <h3>~/.grok/skills</h3>
-              <p>Twenty-two lab playbooks (core N/3 plus *-lab specialists, including specialist-lab, tls-lab, and net-lab).</p>
+              <p>Twenty-nine lab playbooks (core N/3 plus *-lab specialists, Connect, overlay, and more).</p>
               <code>skills-core=3/3</code>
             </article>
             <article class="stack-card">
               <span class="stack-kicker">Agents</span>
               <h3>~/.grok/agents</h3>
               <p>Session types for /config-agents and spawn — Coding Team + specialists.</p>
-              <code>26 user agents</code>
+              <code>32 user agents</code>
             </article>
             <article class="stack-card">
               <span class="stack-kicker stack-kicker-purple">Personas</span>
               <h3>~/.grok/personas</h3>
               <p>Tone and card contracts: mobile, concise, design-card, build-card, harden-card, …</p>
-              <code>24 personas</code>
+              <code>28 personas</code>
             </article>
             <article class="stack-card">
               <span class="stack-kicker">Roles</span>
               <h3>~/.grok/roles</h3>
               <p>Capability defaults: architect, builder, reliability, mapper, surgical, …</p>
-              <code>25 roles</code>
+              <code>29 roles</code>
             </article>
           </div>
           <div class="callout">
@@ -485,7 +595,7 @@ persona = tone / cards  (mobile, design-card, concise, …)</pre>
       </section>
 
       <!-- AGENTS -->
-      <section class="section" id="agents">
+      <section class="section alt" id="agents">
         <div class="wrap">
           <p class="section-label">Agents</p>
           <h2>Coding Team + lab specialists</h2>
@@ -624,14 +734,14 @@ grokhunter plan "Design overlay-only repair"</code></pre>
       </section>
 
       <!-- PERSONAS / ROLES -->
-      <section class="section alt" id="personas">
+      <section class="section" id="personas">
         <div class="wrap">
           <p class="section-label">Personas & roles</p>
           <h2>Overlays for tone and capability</h2>
           <p class="section-lead">
             Personas inject behavioral reminders; roles set capability mode and reasoning effort.
             Manage in TUI via <code>/personas</code> and <code>/config-agents</code>.
-            Full set: 24 personas and 25 roles after <code>grokhunter skills install</code>.
+            Full set: 28 personas and 29 roles after <code>grokhunter skills install</code> (counts track <code>main</code>).
           </p>
           <div class="two-col">
             <div class="table-wrap table-tight">
@@ -949,9 +1059,10 @@ grok plugin install grokhunter-grok-build-connect --trust
       <section class="section" id="upgrade">
         <div class="wrap">
           <p class="section-label">Upgrade to 1.0.10</p>
-          <h2>From an existing lab</h2>
+          <h2>Stay current on main</h2>
           <p class="section-lead">
-            Already installed? Pull, ensure Grok Build 1.0.5+, refresh skills/agents, install the Kali menu, then doctor.
+            Already installed? Pull <code>main</code>, overlay-refresh, ensure Grok Build 1.0.5+, strip legacy V9 pickers,
+            refresh skills/agents, Kali menu, then doctor.
           </p>
           <div class="code-block">
             <div class="code-head">
@@ -1145,6 +1256,34 @@ grokhunter credits             # upstream attribution</code></pre>
                 <code>nethunter-recon</code> skill is scoped for authorized lab/CTF only — not default.
               </p>
             </details>
+
+            <details class="faq-item">
+              <summary>How do chat and on-device Build work together?</summary>
+              <p>
+                Use Grok 4.6 chat for planning and review; run Grok Build in Termux for agents, skills, and
+                edits. See
+                <a href="https://github.com/FineComputer14451/GrokHunter/blob/main/docs/GROK-46-WORKFLOW.md" target="_blank" rel="noopener noreferrer">docs/GROK-46-WORKFLOW.md</a>.
+                For Imagine / Agent Mode model IDs, use the
+                <a href="https://github.com/FineComputer14451/Grok-Imagine-Cinematic-Studio/blob/main/docs/guides/IMAGINE_MODELS_MAP.md" target="_blank" rel="noopener noreferrer">Imagine models map</a>.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>Tunnel shows Error 1033 / 530?</summary>
+              <p>
+                The Cloudflare quick tunnel died or the MCP process stopped. Re-attach
+                <code>tmux a -t tun</code> / <code>gbc-tun</code> (or re-run bootstrap <code>--tunnel</code>),
+                confirm local <code>/healthz</code> is 200, then update the connector URL if the host changed.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>How many skills / agents ship?</summary>
+              <p>
+                On current <code>main</code>: about <strong>29</strong> skills, <strong>32</strong> agents,
+                <strong>28</strong> personas, and <strong>29</strong> roles (counts move as Wave packs land).
+                Prefer marketplace plugins if you only want a subset.
+              </p>
+            </details>
+
           </div>
         </div>
       </section>
@@ -1249,8 +1388,9 @@ grokhunter credits             # upstream attribution</code></pre>
               <div>
                 <h2>Ship code from your pocket</h2>
                 <p>
-                  Clone the repo, run the installer, open Grok. Coding Team, Aider, and a full Linux
-                  toolchain — ready on unrooted Android.
+                  Clone the repo, run the installer, open Grok on <strong>grok-4.6</strong>. Coding Team,
+                  marketplace plugins, Connect bridges, Aider, and a full Linux toolchain — ready on
+                  unrooted Android.
                 </p>
               </div>
               <div class="cta-row" style="margin: 0">
@@ -1298,9 +1438,12 @@ grokhunter credits             # upstream attribution</code></pre>
           </div>
         </div>
         <div class="footer-links">
+          <a href="#whats-new">What's new</a>
+          <a href="#plugins">Plugins</a>
           <a href="https://github.com/FineComputer14451/GrokHunter/blob/main/docs/INSTALL.md" target="_blank" rel="noopener noreferrer">Install docs</a>
-          <a href="#credits">Credits</a>
+          <a href="https://github.com/FineComputer14451/GrokHunter/blob/main/docs/GROK-46-WORKFLOW.md" target="_blank" rel="noopener noreferrer">4.6 workflow</a>
           <a href="https://github.com/FineComputer14451/GrokHunter/blob/main/docs/CODING-TEAM.md" target="_blank" rel="noopener noreferrer">Coding Team</a>
+          <a href="#credits">Credits</a>
           <a href="https://github.com/FineComputer14451/GrokHunter/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">Changelog</a>
           <a href="https://github.com/FineComputer14451/GrokHunter/releases/tag/v1.0.10" target="_blank" rel="noopener noreferrer">Release</a>
           <a href="https://github.com/FineComputer14451/GrokHunter" target="_blank" rel="noopener noreferrer">GitHub</a>
@@ -1308,6 +1451,6 @@ grokhunter credits             # upstream attribution</code></pre>
       </div>
     </footer>
 
-    <script src="app.js?v=20260907-connect"></script>
+    <script src="app.js?v=20260907-full"></script>
   </body>
 </html>

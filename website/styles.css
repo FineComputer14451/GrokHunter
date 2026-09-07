@@ -1739,3 +1739,9 @@ td code {
     padding: 0.2rem 0.5rem;
   }
 }
+
+
+/* whats-new compact cards */
+#whats-new .card h3 {
+  margin-top: 0;
+}
