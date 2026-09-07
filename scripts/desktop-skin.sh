@@ -73,27 +73,35 @@ Does not edit /usr. Does not print or request API keys.
 EOF
 }
 
+# First pass: =form flags and switches. Bare --plate/--dpi/--panel-size
+# are filled in the second pass (--plate og).
+_need_plate=0
+_need_dpi=0
+_need_panel_size=0
 for arg in "$@"; do
   case "${arg}" in
     --plate)
-      die "--plate requires a value (use --plate=og or pass after parse)"
+      _need_plate=1
       ;;
     --plate=*)
       PLATE="${arg#--plate=}"
+      _need_plate=0
       ;;
     --dpi)
-      die "--dpi requires a value (use --dpi=120)"
+      _need_dpi=1
       ;;
     --dpi=*)
       DPI="${arg#--dpi=}"
+      _need_dpi=0
       ;;
     --terminal) DO_TERMINAL=1 ;;
     --panel-slim) DO_PANEL_SLIM=1 ;;
     --panel-size)
-      die "--panel-size requires a value (use --panel-size=32)"
+      _need_panel_size=1
       ;;
     --panel-size=*)
       PANEL_SIZE="${arg#--panel-size=}"
+      _need_panel_size=0
       ;;
     --dry-run)  DRY=1 ;;
     --help|-h)
@@ -101,24 +109,33 @@ for arg in "$@"; do
       exit 0
       ;;
     *)
-      # allow: --plate og   --dpi 120
       :
       ;;
   esac
 done
 
-# Positional-style flags: --plate og --dpi 120
+# Second pass: space-separated values (--plate og). Reject another flag as value.
 _prev=""
 for arg in "$@"; do
   if [[ "${_prev}" == "--plate" ]]; then
+    [[ "${arg}" != -* ]] || die "--plate requires a value (use --plate=og or --plate og)"
     PLATE="${arg}"
+    _need_plate=0
   elif [[ "${_prev}" == "--dpi" ]]; then
+    [[ "${arg}" != -* ]] || die "--dpi requires a value (use --dpi=120 or --dpi 120)"
     DPI="${arg}"
+    _need_dpi=0
   elif [[ "${_prev}" == "--panel-size" ]]; then
+    [[ "${arg}" != -* ]] || die "--panel-size requires a value (use --panel-size=32 or --panel-size 32)"
     PANEL_SIZE="${arg}"
+    _need_panel_size=0
   fi
   _prev="${arg}"
 done
+
+[[ "${_need_plate}" -eq 0 ]] || die "--plate requires a value (use --plate=og or --plate og)"
+[[ "${_need_dpi}" -eq 0 ]] || die "--dpi requires a value (use --dpi=120 or --dpi 120)"
+[[ "${_need_panel_size}" -eq 0 ]] || die "--panel-size requires a value (use --panel-size=32 or --panel-size 32)"
 
 run() {
   if [[ "${DRY}" -eq 1 ]]; then
@@ -603,6 +620,10 @@ cmd_self_test() {
   info "tokens OK"
   [[ "${PANEL_SIZE}" == "32" ]] || die "default panel size drift"
   case "og" in og|banner|minimal) ;; *) die "plate case broken" ;; esac
+  # space-form parse must not die early (regression: bare --plate died in first pass)
+  # CI has no X; require_session only checks DISPLAY is non-empty
+  out="$(DISPLAY=:0 bash "${BASH_SOURCE[0]}" apply --plate og --dpi 120 --dry-run 2>&1)" || true
+  printf '%s\n' "${out}" | grep -q 'Theme Kali-Dark' || die "space-form --plate og parse failed"
   info "self-test OK"
 }
 
