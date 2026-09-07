@@ -352,7 +352,7 @@ ensure_overlay_tree() {
   fi
 
   [[ "${REFRESH}" == "1" ]] && info "Refreshing overlay from GitHub tarball..."
-  if [[ "${GROKHUNTER_HOST}" == "desktop" ]]; then
+  if [[ "${GROKHUNTER_HOST:-termux}" == "desktop" ]]; then
     info "Desktop bootstrap (full overlay)…"
   else
     info "Termux one-liner bootstrap (full overlay)…"
