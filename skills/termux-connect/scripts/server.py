@@ -140,6 +140,33 @@ def main() -> None:
         )
         sys.exit(1)
 
+    # FastMCP defaults DNS-rebinding Host allowlist to 127.0.0.1/localhost only.
+    # Cloudflare quick tunnels send Host: *.trycloudflare.com → 421 Invalid Host.
+    # Bind stays loopback; Bearer auth remains the access gate.
+    from mcp.server.transport_security import TransportSecuritySettings
+
+    transport_security = TransportSecuritySettings(
+        enable_dns_rebinding_protection=False,
+    )
+    extra_hosts = [
+        h.strip()
+        for h in os.environ.get("TERMUX_CONNECT_ALLOWED_HOSTS", "").split(",")
+        if h.strip()
+    ]
+    if extra_hosts:
+        transport_security = TransportSecuritySettings(
+            enable_dns_rebinding_protection=True,
+            allowed_hosts=[
+                f"{HOST}:{PORT}",
+                HOST,
+                "localhost",
+                f"localhost:{PORT}",
+                "127.0.0.1:*",
+                "localhost:*",
+                *extra_hosts,
+            ],
+        )
+
     mcp = FastMCP(
         "grokhunter-termux-connect",
         instructions=(
@@ -150,6 +177,7 @@ def main() -> None:
         port=PORT,
         streamable_http_path="/mcp",
         stateless_http=True,
+        transport_security=transport_security,
     )
 
     @mcp.tool()
