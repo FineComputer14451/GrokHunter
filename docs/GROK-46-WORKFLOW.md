@@ -21,7 +21,7 @@ Use the catalog default **`grok-4.6`** (no V9 `/model` pickers). Former aliases
 (`chat-expert`, `multi`, `auto`, `grok-v9`, …) are retired — clean with
 `grokhunter models clean` if they linger in `~/.grok/config.toml`.
 
-**Imagine** stills/video stay on `grok-imagine-*` — do not use those for coding sessions.
+**Imagine** stills/video stay on `grok-imagine-*` — do not use those for coding sessions. Full map (incl. Agent Mode): [Studio IMAGINE_MODELS_MAP](https://github.com/FineComputer14451/Grok-Imagine-Cinematic-Studio/blob/main/docs/guides/IMAGINE_MODELS_MAP.md).
 
 ## Day-to-day routing
 
