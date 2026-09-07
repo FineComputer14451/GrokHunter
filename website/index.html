@@ -34,7 +34,7 @@
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=20260907-full" />
+    <link rel="stylesheet" href="styles.css?v=20260907-buildmode" />
   </head>
   <body>
     <header class="header">
@@ -527,9 +527,10 @@
               <h3>Chat ↔ Build workflow</h3>
               <p>
                 <a href="https://github.com/FineComputer14451/GrokHunter/blob/main/docs/GROK-46-WORKFLOW.md" target="_blank" rel="noopener noreferrer">docs/GROK-46-WORKFLOW.md</a>
-                — how Grok 4.6 chat pairs with on-device Grok Build, plus the
-                <a href="https://github.com/FineComputer14451/Grok-Imagine-Cinematic-Studio/blob/main/docs/guides/IMAGINE_MODELS_MAP.md" target="_blank" rel="noopener noreferrer">Imagine models map</a>
-                (incl. Agent Mode).
+                — Grok 4.6 chat vs on-device Grok Build. Chat picker <strong>Build</strong> is
+                <strong>Build Mode</strong> (shareable <code>grok.me</code> apps), not the Termux CLI.
+                Imagine map:
+                <a href="https://github.com/FineComputer14451/Grok-Imagine-Cinematic-Studio/blob/main/docs/guides/IMAGINE_MODELS_MAP.md" target="_blank" rel="noopener noreferrer">incl. Agent Mode</a>.
               </p>
             </article>
             <article class="card">
@@ -1205,6 +1206,19 @@ grokhunter credits             # upstream attribution</code></pre>
                 Android Grok Bot currently has no custom-MCP settings screen.
               </p>
             </details>
+
+            <details class="faq-item">
+              <summary>Is Chat Build the same as Grok Build on Termux?</summary>
+              <p>
+                <strong>No.</strong> Chat picker <strong>Build</strong> is <strong>Build Mode</strong>
+                (in-chat sites/apps/games → <code>*.grok.me</code>). Terminal
+                <strong>Grok Build</strong> (<code>grok</code> / <code>grokhunter</code>) edits your lab repo.
+                See
+                <a href="https://github.com/FineComputer14451/GrokHunter/blob/main/docs/GROK-46-WORKFLOW.md" target="_blank" rel="noopener noreferrer">GROK-46-WORKFLOW.md</a>
+                and
+                <a href="https://x.ai/news/grok-build-mode" target="_blank" rel="noopener noreferrer">xAI Build Mode</a>.
+              </p>
+            </details>
             <details class="faq-item">
               <summary>What about V9 /model pickers?</summary>
               <p>
@@ -1451,6 +1465,6 @@ grokhunter credits             # upstream attribution</code></pre>
       </div>
     </footer>
 
-    <script src="app.js?v=20260907-full"></script>
+    <script src="app.js?v=20260907-buildmode"></script>
   </body>
 </html>

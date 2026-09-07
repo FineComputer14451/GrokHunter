@@ -141,7 +141,12 @@ bash ~/GrokHunter/scripts/install_grok_statusline.sh
 
 ## How should I split Grok chat vs Grok Build?
 
-See [GROK-46-WORKFLOW.md](GROK-46-WORKFLOW.md) — chat for think, Build for code, Bot for glue; catalog default **`grok-4.6`**.
+See [GROK-46-WORKFLOW.md](GROK-46-WORKFLOW.md) — chat for think, Chat **Build Mode** for shareable prototypes, terminal **Grok Build** for repo/lab code, Bot for glue; catalog default **`grok-4.6`**.
+
+
+## Is Chat "Build" the same as Grok Build on Termux?
+
+**No.** Chat picker **Build** opens **Build Mode** (in-chat sites/apps/games → `*.grok.me`). Terminal **Grok Build** (`grok` / `grokhunter`) edits your lab repo. Details: [GROK-46-WORKFLOW.md](GROK-46-WORKFLOW.md#chat-build-mode-vs-grok-build-cli) · [xAI Build Mode](https://x.ai/news/grok-build-mode).
 
 ## How do I check the models profile / API key?
 
