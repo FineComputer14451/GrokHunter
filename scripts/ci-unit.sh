@@ -101,8 +101,10 @@ bash -c '
   [[ "$(install_tui_argv)" == "--nano --no-de --no-grok --no-completions" ]]
 
   install_tui_defaults
-  INSTALL_TUI_AIDER=yes INSTALL_TUI_V9=yes
-  [[ "$(install_tui_argv)" == "--nano --no-de --with-grok --with-completions --with-aider --with-v9-models" ]]
+  INSTALL_TUI_AIDER=yes
+  [[ "$(install_tui_argv)" == "--nano --no-de --with-grok --with-completions --with-aider" ]]
+  # V9 TUI toggle removed; argv must never emit --with-v9-models
+  [[ "$(install_tui_argv)" != *"--with-v9-models"* ]]
 
   install_tui_defaults
   install_tui_set_preset desktop
@@ -540,7 +542,7 @@ echo "${st}" | grep -q 'roles=' || die "status missing roles="
 echo "${st}" | grep -q 'wrappers=' || die "status missing wrappers="
 info "status line OK"
 
-# ---------- status models= follows current + legacy V9 markers ----------
+# ---------- status models= follows grok-4.6 default / [models], not V9 markers ----------
 _status_models() {
   local cfg st
   cfg="$(mktemp)"
@@ -549,15 +551,15 @@ _status_models() {
   rm -f "${cfg}"
   printf '%s\n' "${st}"
 }
+echo "$(_status_models $'[models]\ndefault = \"grok-4.6\"')" \
+  | grep -q 'models=yes' || die "status should treat grok-4.6 default as models=yes"
 echo "$(_status_models '# --- GrokHunter: v9 specialist models (test) ---')" \
-  | grep -q 'models=yes' || die "status should treat current V9 marker as models=yes"
-echo "$(_status_models '# --- Grok Imagine Cinematic Studio: v9-4p5 specialist models')" \
-  | grep -q 'models=yes' || die "status should treat legacy V9 marker as models=yes"
+  | grep -q 'models=no' || die "status must not treat V9 marker alone as models=yes"
 echo "$(_status_models '# no pickers')" \
-  | grep -q 'models=no' || die "status should report models=no without a V9 marker"
+  | grep -q 'models=no' || die "status should report models=no without models default"
 info "status models marker OK"
 
-# ---------- profile merge must keep V9 picker marker ----------
+# ---------- profile merge does not re-add V9 pickers; cleanup removes them ----------
 _prof_tmp="$(mktemp -d)"
 cat > "${_prof_tmp}/config.toml" <<'EOF'
 [models]
@@ -570,8 +572,17 @@ model = "grok-4.6"
 temperature = 0.7
 EOF
 GROK_CONFIG="${_prof_tmp}/config.toml" bash scripts/install_grok_profile.sh >/dev/null
-grep -qF '# --- GrokHunter: v9 specialist models' "${_prof_tmp}/config.toml" \
-  || die "install_grok_profile.sh ate V9 picker marker"
+# Profile merge may leave existing user content; must not inject a fresh V9 install block
+# from the retired template. Cleanup must remove legacy pickers.
+GROK_CONFIG="${_prof_tmp}/config.toml" bash scripts/install_v9_grok_models.sh >/dev/null
+if grep -qF '# --- GrokHunter: v9 specialist models' "${_prof_tmp}/config.toml"; then
+  die "cleanup left V9 picker marker"
+fi
+if grep -qE '^\[model\.chat-expert\]' "${_prof_tmp}/config.toml"; then
+  die "cleanup left [model.chat-expert]"
+fi
+grep -qE 'default\s*=\s*"grok-4\.6"' "${_prof_tmp}/config.toml" \
+  || die "cleanup/profile lost grok-4.6 default"
 grep -qE 'channel\s*=\s*"stable"' "${_prof_tmp}/config.toml" \
   || die "install_grok_profile.sh did not set channel=stable"
 grep -qE 'theme\s*=\s*"groknight"' "${_prof_tmp}/config.toml" \
@@ -582,8 +593,16 @@ fi
 if grep -q '"NetHunter profile" not in' scripts/install_grok_profile.sh; then
   die "profile stripper should key off marker, not NetHunter profile substring"
 fi
+# Re-run profile: must not re-introduce V9 pickers
+GROK_CONFIG="${_prof_tmp}/config.toml" bash scripts/install_grok_profile.sh >/dev/null || true
+if grep -qF '# --- GrokHunter: v9 specialist models' "${_prof_tmp}/config.toml"; then
+  die "profile merge re-added V9 picker marker"
+fi
+if grep -qE '^\[model\.(chat-expert|multi|auto)\]' "${_prof_tmp}/config.toml"; then
+  die "profile merge re-added V9 model pickers"
+fi
 rm -rf "${_prof_tmp}"
-info "profile merge keeps V9 marker OK"
+info "profile merge + V9 cleanup OK"
 
 # ---------- profile merge upgrades stale theme=auto without --force ----------
 _stale_tmp="$(mktemp -d)"
@@ -603,8 +622,12 @@ model = "grok-4.6"
 temperature = 0.7
 EOF
 GROK_CONFIG="${_stale_tmp}/config.toml" bash scripts/install_grok_profile.sh >/dev/null
-grep -qF '# --- GrokHunter: v9 specialist models' "${_stale_tmp}/config.toml" \
-  || die "stale-auto upgrade ate V9 picker marker"
+grep -qE 'default\s*=\s*"grok-4\.6"' "${_stale_tmp}/config.toml" \
+  || die "stale-auto upgrade lost grok-4.6 default"
+# Profile merge must not install V9 from the retired template
+if grep -qF 'GrokHunter: v9 specialist models (Model Layer' "${_stale_tmp}/config.toml"; then
+  die "stale-auto upgrade injected full V9 install marker"
+fi
 grep -qE 'theme\s*=\s*"groknight"' "${_stale_tmp}/config.toml" \
   || die "stale theme=auto was not upgraded to groknight without --force"
 if grep -qE 'theme\s*=\s*"auto"' "${_stale_tmp}/config.toml"; then

@@ -1,5 +1,7 @@
 # Design: Termux first-run installer TUI
 
+> **Note (historical):** V9 pickers removed; coding/desktop presets no longer emit `--with-v9-models`.
+
 **Date:** 2026-08-27  
 **Status:** Approved  
 **Product:** GrokHunter Rootless (coding lab)  

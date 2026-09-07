@@ -15,7 +15,7 @@ _grokhunter() {
     'sync:Alias for setup'
     'boot:Alias for setup'
     'ensure:Install or upgrade Grok Build binary'
-    'models:V9 / 4.5 model pickers'
+    'models:grok-4.6 profile / clean legacy V9 pickers'
     'skills:Install/status lab skills (~/.grok/skills)'
     'agents:List Coding Team agents'
     'team:Launch coding-team agent'
@@ -26,7 +26,7 @@ _grokhunter() {
     'overlay:Launch overlay/install agent'
     'ship:Launch release/ship agent'
     'docs:Launch docs agent'
-    'modeler:Launch models/V9 agent'
+    'modeler:Launch models agent (grok-4.6 profile)'
     'ci:Launch CI agent'
     'aider:Launch aider-grok agent'
     'session:Launch tmux / grok-resume agent'
@@ -60,9 +60,10 @@ _grokhunter() {
 
   local -a model_cmds
   model_cmds=(
-    'install:Write V9 pickers into ~/.grok/config.toml'
-    'status:Show whether V9 pickers are installed'
-    'force:Force refresh of V9 pickers'
+    'status:Show grok-4.6 default / legacy V9 leftovers'
+    'clean:Remove legacy V9 /model pickers'
+    'install:Alias for clean (pickers retired)'
+    'force:Alias for clean'
     'help:Models help'
   )
 
@@ -99,7 +100,7 @@ _grokhunter() {
   local -a setup_opts
   setup_opts=(
     '--force-grok[Reinstall Grok]'
-    '--with-models[Install V9 pickers]'
+    '--with-models[Clean legacy V9 pickers]'
     '--with-aider[Install Aider]'
     '--no-doctor[Skip doctor]'
     '--yes[Non-interactive]'
@@ -120,8 +121,8 @@ _grokhunter() {
     '--no-x11[Skip Termux:X11]'
     '--with-aider[Install Aider]'
     '--no-aider[Skip Aider]'
-    '--with-v9-models[Install V9 model pickers]'
-    '--no-v9-models[Skip V9 pickers]'
+    '--with-v9-models[Deprecated no-op (V9 pickers removed)]'
+    '--no-v9-models[Deprecated no-op (V9 pickers removed)]'
     '--with-completions[Install shell completions]'
     '--no-completions[Skip shell completions]'
     '--overlay-only[Optional overlays only; no rootfs download]'

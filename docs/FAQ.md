@@ -120,7 +120,7 @@ Yes — **overlay-only** (no rootfs / termux-distro):
 
 ```bash
 bash install.sh --overlay-only --with-x11 --with-aider
-bash install.sh --overlay-only --with-grok --with-v9-models --with-completions
+bash install.sh --overlay-only --with-grok --with-completions
 # refreshes CLI wrappers + skills under ~/.local/bin and ~/.grok/skills
 ```
 
@@ -141,13 +141,13 @@ bash ~/GrokHunter/scripts/install_grok_statusline.sh
 
 ## How should I split Grok chat vs Grok Build?
 
-See [GROK-46-WORKFLOW.md](GROK-46-WORKFLOW.md) — chat for think, Build for code, Bot for glue; V9 `/model` aliases all wrap `grok-4.6`.
+See [GROK-46-WORKFLOW.md](GROK-46-WORKFLOW.md) — chat for think, Build for code, Bot for glue; catalog default **`grok-4.6`**.
 
-## How do I check V9 model pickers / API key?
+## How do I check the models profile / API key?
 
 ```bash
-grokhunter models status
-grokhunter models install
+grokhunter models status     # grok-4.6 default; warns if legacy V9 pickers remain
+grokhunter models clean      # remove retired V9 /model pickers
 grokhunter ai-smoke          # SpaceXAI Responses smoke (needs XAI_API_KEY)
 bash scripts/ci-unit.sh      # local unit checks (no network)
 ```

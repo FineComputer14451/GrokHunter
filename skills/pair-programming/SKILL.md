@@ -26,7 +26,7 @@ Target intelligence: **Grok 4.6** (strong multi-step coding, tool use, concise m
 | Desktop | DE via Termux:X11 (`nh-x11`) when configured |
 | Agent | `grok` / `grokhunter` (Grok Build) |
 | Model tier | **Grok 4.6** (default) |
-| V9 pickers | `/model chat-expert` · `multi` · `auto` · `grok-v9` after `grokhunter models install` |
+| Model default | Catalog **`grok-4.6`** (`grokhunter ensure` / profile) |
 | Secrets | `~/.grok/secrets.env` (never print) |
 | Wrappers | `~/.local/bin` (`grokhunter`, `aider-grok`, …) |
 | Lab skills | `~/.grok/skills` via `grokhunter skills install` |
@@ -69,12 +69,12 @@ grokhunter plan "Refactor the CLI to use subcommands"
 # alias: ghp "…"
 ```
 
-### Model pickers (optional)
+### Model default
 
 ```bash
 grokhunter models status
-grokhunter models install
-# inside grok: /model chat-expert | multi | auto | grok-v9
+grokhunter models clean   # if legacy V9 pickers remain
+# coding default: grok-4.6
 ```
 
 ### Lab skills / PATH

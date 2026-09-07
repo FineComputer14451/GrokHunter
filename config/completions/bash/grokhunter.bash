@@ -8,7 +8,7 @@ _grokhunter_completions() {
   prev="${COMP_WORDS[COMP_CWORD-1]}"
 
   local cmds="status doctor binds proot-binds setup sync boot ensure models skills agents team coding-team scout benjamin lucas harper review fix desktop overlay ship docs modeler ci aider session host mcp plugin flow storage editor hook shell github secrets toolchain tls net tookie menu git-identity credits ai-smoke smoke install plan help version"
-  local model_sub="install status force --force help"
+  local model_sub="status clean install force --force --clean help"
   local skills_sub="install status help"
   local agents_sub="status list help"
   local identity_sub="show set help --name --email --local --global"

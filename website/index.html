@@ -219,7 +219,7 @@
               <button
                 type="button"
                 class="copy-btn"
-                data-copy="bash &lt;(curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/install.sh) --full --de xfce --browser chromium --with-grok --with-x11 --with-aider --with-v9-models"
+                data-copy="bash &lt;(curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/install.sh) --full --de xfce --browser chromium --with-grok --with-x11 --with-aider --with-completions"
               >
                 Copy install
               </button>
@@ -564,7 +564,7 @@ persona = tone / cards  (mobile, design-card, concise, …)</pre>
                 <tr>
                   <td><code>models</code> · <code>ci</code> · <code>aider</code></td>
                   <td>full</td>
-                  <td>V9 pickers · ci-unit/Smoke · aider-grok</td>
+                  <td>grok-4.6 profile · ci-unit/Smoke · aider-grok</td>
                 </tr>
                 <tr>
                   <td><code>session</code> · <code>host</code> · <code>mcp</code></td>
@@ -712,13 +712,13 @@ grokhunter plan "Design overlay-only repair"</code></pre>
                   <button
                     type="button"
                     class="copy-btn"
-                    data-copy="bash install.sh --full --de xfce --browser chromium --with-grok --with-x11 --with-aider --with-v9-models --with-completions"
+                    data-copy="bash install.sh --full --de xfce --browser chromium --with-grok --with-x11 --with-aider --with-completions"
                   >
                     Copy
                   </button>
                 </div>
                 <pre><code>bash install.sh --full --de xfce --browser chromium \
-  --with-grok --with-x11 --with-aider --with-v9-models</code></pre>
+  --with-grok --with-x11 --with-aider --with-completions</code></pre>
               </div>
               <div class="install-block">
                 <div class="code-head">
@@ -747,7 +747,7 @@ bash install.sh --full --de xfce --with-grok --with-x11</code></pre>
                   <button
                     type="button"
                     class="copy-btn"
-                    data-copy="bash install.sh --overlay-only --with-grok --with-x11 --with-aider --with-v9-models"
+                    data-copy="bash install.sh --overlay-only --with-grok --with-x11 --with-aider --with-completions"
                   >
                     Copy
                   </button>
@@ -766,7 +766,7 @@ bash install.sh --full --de xfce --with-grok --with-x11</code></pre>
                 <li><code>--with-grok</code><span>Grok Build ≥ 1.0.5 + profile</span></li>
                 <li><code>--with-x11</code><span>Termux:X11 + nh-x11 helper</span></li>
                 <li><code>--with-aider</code><span>Aider (uv + Python 3.12)</span></li>
-                <li><code>--with-v9-models</code><span>/model chat-expert · multi · auto</span></li>
+                <li><code>--with-v9-models</code><span>Deprecated no-op (V9 pickers removed)</span></li>
                 <li><code>--with-completions</code><span>Shell completions + profile</span></li>
                 <li><code>--overlay-only</code><span>Overlays only (no rootfs download)</span></li>
                 <li><code>--no-de / --no-grok / --no-x11</code><span>Skip those stages</span></li>
@@ -899,13 +899,13 @@ grok plugin install grokhunter-coding-team --trust
             <div class="cli-row"><code>grokhunter team</code><span>Launch Coding Team agent</span></div>
             <div class="cli-row"><code>grokhunter scout|review|fix|desktop</code><span>Specialist agent launchers</span></div>
             <div class="cli-row"><code>grokhunter overlay|ship|docs</code><span>Lab specialists (install / release / docs)</span></div>
-            <div class="cli-row"><code>grokhunter modeler|ci|aider</code><span>Models/V9 agent, CI, Aider (`modeler` ≠ `models` CLI)</span></div>
+            <div class="cli-row"><code>grokhunter modeler|ci|aider</code><span>Models agent (grok-4.6), CI, Aider (`modeler` ≠ `models` CLI)</span></div>
             <div class="cli-row"><code>grokhunter session|host|mcp</code><span>tmux/resume, Termux vs Kali, MCP (`mcp` ≠ `grok mcp`)</span></div>
             <div class="cli-row"><code>grokhunter plugin|flow|storage</code><span>plugins (`plugin` ≠ `grok plugin`), workflows, disk</span></div>
             <div class="cli-row"><code>grokhunter editor|hook|shell</code><span>nvim/micro, Grok hooks, profile/completions</span></div>
             <div class="cli-row"><code>grokhunter github|secrets|toolchain|tls|net|tookie</code><span>git-identity agent (≠ git-identity CLI), secrets.env, apt/compilers, CA, HTTPS, scoped OSINT</span></div>
             <div class="cli-row"><code>grokhunter agents status</code><span>Installed Coding Team agents</span></div>
-            <div class="cli-row"><code>grokhunter models install</code><span>V9 / 4.6 model pickers</span></div>
+            <div class="cli-row"><code>grokhunter models clean</code><span>Remove legacy V9 pickers (default: grok-4.6)</span></div>
             <div class="cli-row"><code>grokhunter ai-smoke</code><span>SpaceXAI API smoke test</span></div>
             <div class="cli-row"><code>grokhunter install [args]</code><span>Installer (supports --overlay-only)</span></div>
             <div class="cli-row"><code>grokhunter plan "…"</code><span>Built-in plan agent (1.0.5)</span></div>

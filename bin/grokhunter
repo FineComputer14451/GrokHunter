@@ -161,7 +161,7 @@ Usage:
   grokhunter setup [opts]     One-shot lab sync (ensure + skills + optional models)
   grokhunter menu [install|remove]  Kali/XFCE Applications → GrokHunter submenu
   grokhunter ensure           Install/upgrade Grok Build binary
-  grokhunter models [cmd]     V9 / 4.6 model pickers (install|status|force)
+  grokhunter models [cmd]     Model profile status / clean legacy pickers (status|clean|install|force)
   grokhunter skills [cmd]     Install/status lab skills under ~/.grok/skills
   grokhunter agents [cmd]     List/status Coding Team agents
   grokhunter team [prompt]    Launch coding-team agent (TUI or -p headless)
@@ -172,7 +172,7 @@ Usage:
   grokhunter overlay [prompt] Launch overlay/install agent
   grokhunter ship [prompt]    Launch release/ship agent
   grokhunter docs [prompt]    Launch docs agent
-  grokhunter modeler [prompt] Launch models/V9 agent (grok --agent models)
+  grokhunter modeler [prompt] Launch models agent (grok --agent models · grok-4.6 profile)
   grokhunter ci [prompt]      Launch CI agent
   grokhunter aider [prompt]   Launch aider-grok agent
   grokhunter session [prompt] Launch tmux / grok-resume agent
@@ -262,9 +262,7 @@ cmd_status() {
   fi
   local models="no"
   local cfg="${GROK_CONFIG:-${HOME}/.grok/config.toml}"
-  local marker="# --- GrokHunter: v9 specialist models"
-  local marker_legacy="# --- Grok Imagine Cinematic Studio: v9-4p5 specialist models"
-  if [[ -f "${cfg}" ]] && { grep -qF "${marker}" "${cfg}" 2>/dev/null || grep -qF "${marker_legacy}" "${cfg}" 2>/dev/null; }; then
+  if [[ -f "${cfg}" ]] && grep -qE 'default\s*=\s*"grok-4\.6"|^\[models\]' "${cfg}" 2>/dev/null; then
     models="yes"
   fi
   local skills core_n
@@ -301,13 +299,13 @@ Usage: grokhunter setup [options]
   One-shot lab sync for an existing clone / overlay:
     1. grokhunter ensure   (Grok Build ≥ 1.0.5 + NetHunter profile)
     2. grokhunter skills install
-    3. optional: models install / Aider install
+    3. optional: models clean (legacy V9 pickers) / Aider install
     4. git-identity set    (if still placeholder)
     5. grokhunter doctor   (unless --no-doctor)
 
 Options:
   --force-grok     Reinstall Grok even if present
-  --with-models    Install V9 /model pickers
+  --with-models    Clean legacy V9 /model pickers (no-op if already clean)
   --with-aider     Run scripts/install_aider.sh
   --no-doctor      Skip doctor summary
   --yes            Non-interactive (default)
@@ -350,16 +348,16 @@ EOF
   echo
 
   if [[ "${with_models}" -eq 1 ]]; then
-    echo "→ [3/4] V9 model pickers…"
+    echo "→ [3/4] clean legacy V9 /model pickers…"
     local script
     if script="$(_v9_script)"; then
-      bash "${script}" || echo "  WARN: models install reported issues" >&2
+      bash "${script}" || echo "  WARN: models clean reported issues" >&2
     else
       echo "  WARN: install_v9_grok_models.sh missing" >&2
     fi
     echo
   else
-    echo "→ [3/4] models skipped (pass --with-models)"
+    echo "→ [3/4] models skipped (pass --with-models to clean legacy pickers)"
     echo
   fi
 
@@ -715,17 +713,31 @@ cmd_models_status() {
   local marker_legacy="# --- Grok Imagine Cinematic Studio: v9-4p5 specialist models"
   echo "config: ${cfg}"
   if [[ ! -f "${cfg}" ]]; then
-    echo "status: missing (no config.toml — run grok once, then: grokhunter models install)"
+    echo "status: missing (no config.toml — run: grokhunter ensure)"
     return 1
   fi
-  if { grep -qF "${marker}" "${cfg}" 2>/dev/null || grep -qF "${marker_legacy}" "${cfg}" 2>/dev/null; } \
-    && grep -qE '^\[model\.(chat-expert|multi|auto|"chat-expert")' "${cfg}" 2>/dev/null; then
-    echo "status: installed (V9 / 4.6 picker surface present)"
-    echo "  switch: /model chat-expert · multi · auto · grok-v9"
+  local has_default=0 has_legacy=0
+  if grep -qE 'default\s*=\s*"grok-4\.6"' "${cfg}" 2>/dev/null \
+    || grep -qE '^\[models\]' "${cfg}" 2>/dev/null; then
+    has_default=1
+  fi
+  if grep -qF "${marker}" "${cfg}" 2>/dev/null \
+    || grep -qF "${marker_legacy}" "${cfg}" 2>/dev/null \
+    || grep -qE '^\[model\.(chat-expert|multi|auto|grok-v9)' "${cfg}" 2>/dev/null; then
+    has_legacy=1
+  fi
+  if [[ "${has_legacy}" -eq 1 ]]; then
+    echo "status: legacy V9 pickers present — run: grokhunter models clean"
+    echo "  (or: grokhunter models install — now cleans)"
+    [[ "${has_default}" -eq 1 ]] && echo "  default: grok-4.6 (or [models] section) present"
+    return 1
+  fi
+  if [[ "${has_default}" -eq 1 ]]; then
+    echo "status: ok (default grok-4.6 / [models] present; V9 pickers retired)"
     return 0
   fi
-  echo "status: incomplete or missing V9 pickers"
-  echo "  fix: grokhunter models install"
+  echo "status: no grok-4.6 default yet"
+  echo "  fix: grokhunter ensure   # or: bash scripts/install_grok_profile.sh"
   return 1
 }
 
@@ -736,13 +748,15 @@ cmd_models() {
   case "${sub}" in
     help|-h|--help)
       cat <<'EOF'
-Usage: grokhunter models [install|status|force]
+Usage: grokhunter models [status|clean|install|force]
 
-  install   Write V9 / 4.6 model pickers into ~/.grok/config.toml
-  status    Report whether pickers are present (default)
-  force     Re-install pickers even if already complete
+  status    Report grok-4.6 default / legacy V9 picker leftovers (default)
+  clean     Remove legacy V9 /model pickers from ~/.grok/config.toml
+  install   Alias for clean (pickers are retired; no longer installs them)
+  force     Alias for clean
 
-Script: scripts/install_v9_grok_models.sh
+Default catalog model remains grok-4.6 (grokhunter ensure / profile).
+Script: scripts/install_v9_grok_models.sh  (cleanup only)
 EOF
       return 0
       ;;
@@ -750,27 +764,21 @@ EOF
       cmd_models_status
       return $?
       ;;
-    install)
+    clean|install|force|--force|--clean)
       if ! script="$(_v9_script)"; then
         echo "scripts/install_v9_grok_models.sh not found under ${GROKHUNTER_HOME}" >&2
         exit 1
       fi
-      exec bash "${script}" "$@"
-      ;;
-    force|--force)
-      if ! script="$(_v9_script)"; then
-        echo "scripts/install_v9_grok_models.sh not found under ${GROKHUNTER_HOME}" >&2
-        exit 1
-      fi
-      exec bash "${script}" --force "$@"
+      exec bash "${script}" --clean "$@"
       ;;
     *)
       echo "Unknown models subcommand: ${sub}" >&2
-      echo "Usage: grokhunter models [install|status|force]" >&2
+      echo "Usage: grokhunter models [status|clean|install|force]" >&2
       exit 2
       ;;
   esac
 }
+
 
 
 cmd_git_identity() {

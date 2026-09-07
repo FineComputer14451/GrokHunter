@@ -1,5 +1,7 @@
 # GrokHunter first-run installer TUI
 
+> **Note (historical):** V9 pickers removed; coding/desktop presets no longer emit `--with-v9-models`.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** On Termux, bare `install.sh` (TTY, no size/feature flags) opens a numbered checklist wizard, then `exec`s the existing installer with explicit flags. Default is a coding-only nano lab.

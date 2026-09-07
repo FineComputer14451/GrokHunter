@@ -45,7 +45,7 @@ GrokHunter does **not** require Magisk, custom recovery, HID, or firmware module
 6. Optional: Grok Build via `scripts/ensure_grok.sh`  
 7. Optional: Termux:X11 + `nh-x11` + `/tmp` bind  
 8. Optional: Aider (`--with-aider` → uv + Python 3.12, `aider-grok`)  
-9. Optional: V9 / 4.6 model pickers + shell completions (`~/.grok/profile.sh`; does not edit rc files)  
+9. Optional: shell completions (`~/.grok/profile.sh`; does not edit rc files). Default model: grok-4.6  
 
 ## Upstream foundation (required credit)
 
