@@ -4,16 +4,29 @@ AI coding & building lab for **unrooted Android** (Termux + proot + Grok Build).
 
 ## Requirements
 
+### Termux (full lab)
+
 - Termux from **F-Droid or GitHub** (not Play Store)
 - Android 8+ (aarch64 recommended)
 - **No root required**
 - Stable internet
 - SuperGrok / X Premium+ **or** `XAI_API_KEY` for Grok Build
 
+### Desktop (overlay-only)
+
+- Linux, macOS, or WSL with `bash`, `curl`, and `tar`
+- Same Grok auth as above for `--with-grok`
+- No NetHunter rootfs / Magisk / Termux:X11 on desktop — coding tools only
+
 ## One-liner
 
 ```bash
+# Termux — full lab
 bash <(curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/install.sh)
+
+# Desktop (Linux/macOS/WSL) — overlay-only coding tools
+bash <(curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/install.sh) \
+  --overlay-only --with-grok --with-completions
 ```
 
 On a Termux **TTY** with **no flags**, that opens a numbered installer wizard. Default recipe is coding-only:

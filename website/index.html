@@ -792,8 +792,9 @@ grokhunter plan "Design overlay-only repair"</code></pre>
           <p class="section-label">Install</p>
           <h2>One command, modular stack</h2>
           <p class="section-lead">
-            Requires Termux from F-Droid or GitHub (not Play Store), Android 8+, aarch64 recommended,
-            and SuperGrok / X Premium+ or an <code>XAI_API_KEY</code> for Grok Build.
+            <strong>Termux</strong> = full lab (rootfs + overlays). <strong>Desktop</strong> (Linux/macOS/WSL) =
+            overlay-only GrokHunter coding tools. Termux from F-Droid or GitHub (not Play Store), Android 8+,
+            aarch64 recommended; SuperGrok / X Premium+ or an <code>XAI_API_KEY</code> for Grok Build.
           </p>
           <div class="install-grid">
             <div>
@@ -812,12 +813,30 @@ grokhunter plan "Design overlay-only repair"</code></pre>
                   </button>
                 </div>
                 <pre><code>bash <(curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/install.sh)</code></pre>
-                <p class="fineprint">TTY wizard if you pass no flags. Default is nano coding-only, not the full desktop stack.</p>
+                <p class="fineprint">TTY wizard if you pass no flags. Default is nano coding-only, not the full desktop stack. On Linux/macOS/WSL use the desktop overlay one-liner below.</p>
               </div>
               <div class="install-block">
                 <div class="code-head">
                   <div>
                     <span class="step">02</span>
+                    <span class="title">Desktop overlay (Linux / macOS / WSL)</span>
+                  </div>
+                  <button
+                    type="button"
+                    class="copy-btn"
+                    data-copy="bash &lt;(curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/install.sh) --overlay-only --with-grok --with-completions"
+                  >
+                    Copy
+                  </button>
+                </div>
+                <pre><code>bash <(curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/install.sh) \
+  --overlay-only --with-grok --with-completions</code></pre>
+                <p class="fineprint">No NetHunter rootfs on desktop — coding tools, Grok, completions only.</p>
+              </div>
+              <div class="install-block">
+                <div class="code-head">
+                  <div>
+                    <span class="step">03</span>
                     <span class="title">Recommended full stack</span>
                   </div>
                   <button
@@ -834,7 +853,7 @@ grokhunter plan "Design overlay-only repair"</code></pre>
               <div class="install-block">
                 <div class="code-head">
                   <div>
-                    <span class="step">03</span>
+                    <span class="step">04</span>
                     <span class="title">Clone (audit-friendly)</span>
                   </div>
                   <button
@@ -852,7 +871,7 @@ bash install.sh --full --de xfce --with-grok --with-x11</code></pre>
               <div class="install-block">
                 <div class="code-head">
                   <div>
-                    <span class="step">04</span>
+                    <span class="step">05</span>
                     <span class="title">Overlay-only (no rootfs re-download)</span>
                   </div>
                   <button

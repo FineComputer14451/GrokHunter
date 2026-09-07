@@ -25,6 +25,18 @@ We are **not affiliated** with those projects; we depend on them and give credit
 
 The current focus is **coding and building**. The stack is general-purpose Linux on Android; treat it as a portable development lab.
 
+## Can I install on Linux / macOS / WSL (desktop)?
+
+**Yes — overlay-only.** The full NetHunter rootfs path is Termux/Android-specific. On a desktop host the installer sets `GROKHUNTER_HOST=desktop`, skips `pkg` / wake-lock / Magisk-style bits, and runs the coding-lab overlay (`--overlay-only`).
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/install.sh) \
+  --overlay-only --with-grok --with-completions
+# or: git clone … && cd GrokHunter && bash install.sh --overlay-only --with-grok --with-completions
+```
+
+Termux = full lab (rootfs + overlays). Desktop = GrokHunter coding tools / completions / profile only.
+
 ## Am I in Termux or Kali?
 
 Termux is the **Android host**. `nethunter` / `nh` enters **Kali** (proot guest). `pkg` is host; `apt` is guest. `install.sh` (rootfs) runs on Termux; overlay-only from a Kali clone is OK for wrappers.
