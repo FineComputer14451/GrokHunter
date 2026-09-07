@@ -1,5 +1,3 @@
-## Unreleased
-
 - Website: Plugins section — Grok Build marketplace + Termux Connect / Grok Bot bridge docs.
 
 ## Unreleased
@@ -21,6 +19,10 @@
 # Changelog
 
 ## Unreleased
+
+### Installer
+- **Desktop (Linux/macOS/WSL) install**: non-Termux hosts no longer die at the Termux gate. Sets `GROKHUNTER_HOST=desktop`, defaults to overlay-only coding tools; skips `pkg` / wake-lock / NetHunter rootfs. Termux full-lab path unchanged.
+
 
 ### CLI
 - `grokhunter tookie` — Wave 9 case arm. Overlay copies `bin/tookie`. Scoped; hits are leads.

@@ -32,14 +32,20 @@ Source: [`website/`](website/) · deploy: push `website/**` or `branding/**`, or
 ## Quick install
 
 ```bash
-# One-liner (Termux from F-Droid / GitHub — not Play Store)
+# Termux (F-Droid / GitHub — not Play Store): full lab (rootfs + overlays)
 # No flags: TTY wizard (default coding-only nano). --yes skips the wizard.
 bash <(curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/install.sh)
 
+# Desktop (Linux / macOS / WSL): overlay-only GrokHunter coding tools
+bash <(curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/install.sh) \
+  --overlay-only --with-grok --with-completions
+
 # Or clone
 git clone https://github.com/FineComputer14451/GrokHunter.git
-cd GrokHunter && bash install.sh
+cd GrokHunter && bash install.sh   # Termux: full path; desktop: auto overlay-only
 ```
+
+**Termux** = full Kali NetHunter lab (proot rootfs + overlays). **Desktop** = overlay-only coding tools (no Magisk/rootfs; skip Termux:X11 / `pkg`).
 
 ### Recommended full stack
 

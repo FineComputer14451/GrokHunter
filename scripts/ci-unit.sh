@@ -983,6 +983,37 @@ grep -qE '_source_termux_distro[[:space:]]+"\$\{DISTRO_ENGINE\}"' install.sh \
   || die "install.sh missing _source_termux_distro DISTRO_ENGINE call"
 info "engine argv isolation OK"
 
+# ---------- desktop host: no Termux-only die; detect + force overlay ----------
+grep -q '_gh_detect_host' install.sh || die "install.sh missing _gh_detect_host"
+grep -q 'GROKHUNTER_HOST=desktop' install.sh || die "install.sh missing desktop host mode"
+grep -q 'forcing --overlay-only' install.sh || die "install.sh must force overlay-only on desktop"
+if grep -nE 'This installer only works inside Termux' install.sh; then
+  die "install.sh must not hard-die with Termux-only message (desktop overlay support)"
+fi
+bash -c '
+  set -euo pipefail
+  die()  { echo "[GrokHunter] ERROR: $*" >&2; exit 1; }
+  warn() { echo "[GrokHunter] WARN: $*" >&2; }
+  info() { echo "[GrokHunter] $*" >&2; }
+  unset PREFIX
+  unset GROKHUNTER_HOST
+  eval "$(sed -n "/^_gh_detect_host()/,/^}/p" install.sh)"
+  _gh_detect_host
+  [[ "${GROKHUNTER_HOST}" == "desktop" ]]
+  GROKHUNTER_HOST=termux
+  _gh_detect_host
+  [[ "${GROKHUNTER_HOST}" == "termux" ]]
+  GROKHUNTER_HOST=desktop
+  _gh_detect_host
+  [[ "${GROKHUNTER_HOST}" == "desktop" ]]
+  unset GROKHUNTER_HOST
+  PREFIX="/data/data/com.termux/files/usr"
+  _gh_detect_host
+  [[ "${GROKHUNTER_HOST}" == "termux" ]]
+'
+info "desktop host detect OK"
+
+
 # ---------- ephemeral /dev/fd is not an overlay root ----------
 bash -c '
   set -euo pipefail

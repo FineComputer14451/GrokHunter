@@ -42,7 +42,7 @@ _warn_v9_deprecated() {
 show_help() {
   local ec="${1:-0}"
   cat <<'HELP'
-GrokHunter Rootless (coding lab) for Termux
+GrokHunter Rootless (coding lab) — Termux full lab; desktop overlay-only
 
 Usage: install.sh [OPTIONS]
 
@@ -75,8 +75,10 @@ Examples:
   install.sh -m
   install.sh --nano --no-de --with-grok
   install.sh --overlay-only --with-x11 --with-aider --with-completions
+  install.sh --overlay-only --with-grok --with-completions   # Linux/macOS/WSL
 
 Env:
+  GROKHUNTER_HOST=desktop|termux   Force host mode (auto-detected by default)
   GROKHUNTER_REFRESH=1              Bypass module + engine cache
   GROKHUNTER_DISTRO_ENGINE_URL=…    Pin/fork of termux-distro.sh
   GROKHUNTER_INSTALL_TUI=0          Skip wizard; use termux-distro choose/ask

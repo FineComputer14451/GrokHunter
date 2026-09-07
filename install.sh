@@ -1,7 +1,7 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/usr/bin/env bash
 ################################################################################
-# GrokHunter Rootless — Termux one-line installer
-# Coding lab: Kali NetHunter (proot) + Grok Build + optional Termux:X11 / Aider
+# GrokHunter Rootless — Termux full lab + desktop overlay-only installer
+# Coding lab: Kali NetHunter (proot) on Termux; overlay coding tools on desktop
 #
 # https://github.com/FineComputer14451/GrokHunter
 #
@@ -66,49 +66,103 @@ cleanup() {
 }
 trap cleanup EXIT
 
-if [[ -z "${PREFIX:-}" || "${PREFIX}" != *com.termux* ]]; then
-  if [[ ! -d /data/data/com.termux/files/usr ]]; then
-    die_with_help "This installer only works inside Termux on Android." \
-      "Install Termux from F-Droid: https://f-droid.org/packages/com.termux/" \
-      "Or from GitHub releases: https://github.com/termux/termux-app/releases" \
-      "Do NOT use the Play Store version of Termux."
+# Host: termux (Android full lab) vs desktop (Linux/macOS/WSL overlay-only).
+# Override for tests: GROKHUNTER_HOST=termux|desktop
+_gh_detect_host() {
+  local forced="${GROKHUNTER_HOST:-}"
+  if [[ -n "${forced}" ]]; then
+    case "${forced}" in
+      termux|desktop) return 0 ;;
+      *) warn "Unknown GROKHUNTER_HOST=${forced}; auto-detecting" ;;
+    esac
   fi
-  export PREFIX="${PREFIX:-/data/data/com.termux/files/usr}"
-fi
+  if [[ -n "${PREFIX:-}" && "${PREFIX}" == *com.termux* ]]; then
+    GROKHUNTER_HOST=termux
+    return 0
+  fi
+  if [[ -d /data/data/com.termux/files/usr ]]; then
+    GROKHUNTER_HOST=termux
+    return 0
+  fi
+  GROKHUNTER_HOST=desktop
+}
 
-export PATH="${PREFIX}/bin:${PATH:-}"
-export HOME="${HOME:-/data/data/com.termux/files/home}"
-export TMPDIR="${TMPDIR:-${PREFIX}/tmp}"
+_gh_detect_host
+export GROKHUNTER_HOST
+
+if [[ "${GROKHUNTER_HOST}" == "termux" ]]; then
+  if [[ -z "${PREFIX:-}" || "${PREFIX}" != *com.termux* ]]; then
+    export PREFIX="${PREFIX:-/data/data/com.termux/files/usr}"
+  fi
+  export PATH="${PREFIX}/bin:${PATH:-}"
+  export HOME="${HOME:-/data/data/com.termux/files/home}"
+  export TMPDIR="${TMPDIR:-${PREFIX}/tmp}"
+else
+  # Desktop: keep real HOME / TMPDIR / PATH. Do not force Android PREFIX.
+  if [[ -n "${PREFIX:-}" && "${PREFIX}" == *com.termux* ]]; then
+    unset PREFIX
+  fi
+  : "${HOME:=${HOME:-}}"
+  if [[ -z "${HOME}" ]]; then
+    HOME="$(getent passwd "$(id -un)" 2>/dev/null | cut -d: -f6 || true)"
+  fi
+  : "${HOME:=${PWD:-/tmp}}"
+  export HOME
+  if [[ -z "${TMPDIR:-}" || ! -d "${TMPDIR}" ]]; then
+    export TMPDIR="${TMPDIR:-/tmp}"
+  fi
+  info "Desktop host detected (GROKHUNTER_HOST=desktop) — overlay-only coding tools (no NetHunter rootfs)"
+fi
 
 if ! mkdir -p "${TMPDIR}" 2>/dev/null; then
+  if [[ "${GROKHUNTER_HOST}" == "termux" ]]; then
+    die_with_help "Cannot create TMPDIR=${TMPDIR}." \
+      "Check that Termux has storage permission (run: termux-setup-storage)" \
+      "Restart Termux and try again."
+  fi
   die_with_help "Cannot create TMPDIR=${TMPDIR}." \
-    "Check that Termux has storage permission (run: termux-setup-storage)" \
-    "Restart Termux and try again."
+    "Set TMPDIR to a writable directory (e.g. export TMPDIR=/tmp)" \
+    "Then re-run the installer."
 fi
-[[ -w "${HOME}" ]] || die_with_help "HOME is not writable: ${HOME}" \
-  "Run: termux-setup-storage" \
-  "Then restart Termux and re-run the installer."
+if [[ ! -w "${HOME}" ]]; then
+  if [[ "${GROKHUNTER_HOST}" == "termux" ]]; then
+    die_with_help "HOME is not writable: ${HOME}" \
+      "Run: termux-setup-storage" \
+      "Then restart Termux and re-run the installer."
+  fi
+  die_with_help "HOME is not writable: ${HOME}" \
+    "Export HOME to a writable directory and re-run."
+fi
 
-need_pkg=0
-for c in curl tar bash; do command -v "$c" >/dev/null 2>&1 || need_pkg=1; done
-if [[ "${need_pkg}" -eq 1 ]]; then
-  info "Installing Termux prerequisites (curl tar)..."
-  command -v pkg >/dev/null 2>&1 || die_with_help "pkg command not found." \
-    "You must be running inside a working Termux environment." \
-    "Reinstall Termux from F-Droid or GitHub if needed."
-  pkg update -y >/dev/null 2>&1 || warn "pkg update failed (continuing)"
-  pkg install -y curl tar >/dev/null 2>&1 || die_with_help "Failed to install curl and tar." \
-    "Run manually:  pkg update && pkg install -y curl tar" \
-    "Then re-run this installer."
+_missing=()
+for c in curl tar bash; do command -v "$c" >/dev/null 2>&1 || _missing+=("$c"); done
+if [[ "${#_missing[@]}" -gt 0 ]]; then
+  if [[ "${GROKHUNTER_HOST}" == "termux" ]]; then
+    info "Installing Termux prerequisites (curl tar)..."
+    command -v pkg >/dev/null 2>&1 || die_with_help "pkg command not found." \
+      "You must be running inside a working Termux environment." \
+      "Reinstall Termux from F-Droid or GitHub if needed."
+    pkg update -y >/dev/null 2>&1 || warn "pkg update failed (continuing)"
+    pkg install -y curl tar >/dev/null 2>&1 || die_with_help "Failed to install curl and tar." \
+      "Run manually:  pkg update && pkg install -y curl tar" \
+      "Then re-run this installer."
+  else
+    die_with_help "Missing required tools on desktop: ${_missing[*]}" \
+      "Debian/Ubuntu/WSL:  sudo apt update && sudo apt install -y curl tar bash" \
+      "Fedora/RHEL:       sudo dnf install -y curl tar bash" \
+      "macOS (Homebrew):  brew install curl" \
+      "Then re-run this installer."
+  fi
 fi
 command -v curl >/dev/null 2>&1 || die_with_help "curl is still missing after install attempt." \
-  "Run:  pkg install -y curl" \
-  "Then re-run the installer."
+  "Termux:  pkg install -y curl" \
+  "Desktop: install curl via apt/dnf/brew, then re-run."
 command -v tar >/dev/null 2>&1 || die_with_help "tar is still missing after install attempt." \
-  "Run:  pkg install -y tar" \
-  "Then re-run the installer."
+  "Termux:  pkg install -y tar" \
+  "Desktop: install tar via apt/dnf (usually preinstalled), then re-run."
 
-if command -v termux-wake-lock >/dev/null 2>&1; then
+# Termux-only wake lock (no-op on desktop).
+if [[ "${GROKHUNTER_HOST}" == "termux" ]] && command -v termux-wake-lock >/dev/null 2>&1; then
   if termux-wake-lock 2>/dev/null; then WAKE_HELD=1; else warn "termux-wake-lock failed"; fi
 fi
 
@@ -298,7 +352,11 @@ ensure_overlay_tree() {
   fi
 
   [[ "${REFRESH}" == "1" ]] && info "Refreshing overlay from GitHub tarball..."
-  info "Termux one-liner bootstrap (full overlay)…"
+  if [[ "${GROKHUNTER_HOST}" == "desktop" ]]; then
+    info "Desktop bootstrap (full overlay)…"
+  else
+    info "Termux one-liner bootstrap (full overlay)…"
+  fi
   _gh_fetch_repo_tarball
   _gh_install_overlay_from_tmp "${dest}"
   _gh_overlay_complete "${dest}" || die_with_help "Extracted overlay looks incomplete: ${dest}" \
@@ -363,16 +421,29 @@ DISTRO_LAUNCHER=${TERMUX_FILES_DIR}/usr/bin/nethunter
 DEFAULT_ROOTFS_DIR=${TERMUX_FILES_DIR}/kali
 DEFAULT_LOGIN=kali
 
-parse_cli "$@" || die_with_help "Invalid command-line options." \
-  "Run with --help to see available flags" \
-  "Example:  bash install.sh --full --de xfce --with-grok --with-x11"
+parse_cli "$@" || die_with_help "Invalid command-line options."   "Run with --help to see available flags"   "Example:  bash install.sh --full --de xfce --with-grok --with-x11"   "Desktop:  bash install.sh --overlay-only --with-grok --with-completions"
+
+# Desktop (Linux/macOS/WSL): always overlay-only. Full NetHunter rootfs is Termux-specific.
+if [[ "${GROKHUNTER_HOST}" == "desktop" ]]; then
+  if [[ "${OVERLAY_ONLY}" -ne 1 ]]; then
+    info "Desktop host: forcing --overlay-only (Kali NetHunter rootfs is Termux/Android-only)"
+    OVERLAY_ONLY=1
+    NON_INTERACTIVE=1
+  fi
+  if [[ "${FEATURE_X11}" == "yes" ]]; then
+    warn "Termux:X11 is Android/Termux-only — skipping --with-x11 on desktop"
+    FEATURE_X11=no
+    INSTALL_X11=0
+    SKIP_X11=1
+  fi
+fi
 
 if [[ ${NON_INTERACTIVE} -eq 0 ]]; then
   if [[ ! -t 0 || ! -t 1 ]]; then
-    die_with_help "Not a TTY. Pass flags or run in a Termux terminal." \
-      "Coding-only:  bash install.sh --nano --no-de --with-grok --with-completions" \
-      "Desktop:      bash install.sh --full --de xfce --browser chromium --with-grok --with-x11 --with-completions" \
-      "Default:      bash install.sh --yes"
+    if [[ "${GROKHUNTER_HOST}" == "desktop" ]]; then
+      die_with_help "Not a TTY. On desktop pass overlay flags."         "bash install.sh --overlay-only --with-grok --with-completions"         "Or:  bash <(curl -fsSL ${REPO_RAW}/install.sh) --overlay-only --with-grok --with-completions"
+    fi
+    die_with_help "Not a TTY. Pass flags or run in a Termux terminal."       "Coding-only:  bash install.sh --nano --no-de --with-grok --with-completions"       "Full lab:     bash install.sh --full --de xfce --browser chromium --with-grok --with-x11 --with-completions"       "Default:      bash install.sh --yes"
   fi
   if install_tui_should_run; then
     install_tui_main
@@ -407,12 +478,11 @@ if [[ "${OVERLAY_ONLY:-0}" -eq 1 ]]; then
   fi
   # Default: if user passed only --overlay-only with no --with-*, nothing runs.
   # Require at least one explicit yes feature, or warn.
-  if [[ "${FEATURE_GROK}" == "auto" && "${FEATURE_X11}" == "auto" \
-     && "${FEATURE_AIDER}" == "auto" && "${FEATURE_V9}" == "auto" \
-     && "${FEATURE_COMPLETIONS}" == "auto" ]]; then
-    die_with_help "Overlay-only needs at least one --with-* flag." \
-      "Example:  bash install.sh --overlay-only --with-x11 --with-aider" \
-      "Example:  bash install.sh --overlay-only --with-grok --with-completions"
+  if [[ "${FEATURE_GROK}" == "auto" && "${FEATURE_X11}" == "auto"      && "${FEATURE_AIDER}" == "auto" && "${FEATURE_V9}" == "auto"      && "${FEATURE_COMPLETIONS}" == "auto" ]]; then
+    if [[ "${GROKHUNTER_HOST}" == "desktop" ]]; then
+      die_with_help "Desktop overlay-only needs at least one --with-* flag."         "Suggested:  bash install.sh --overlay-only --with-grok --with-completions"         "One-liner:  bash <(curl -fsSL ${REPO_RAW}/install.sh) --overlay-only --with-grok --with-completions"
+    fi
+    die_with_help "Overlay-only needs at least one --with-* flag."       "Example:  bash install.sh --overlay-only --with-x11 --with-aider"       "Example:  bash install.sh --overlay-only --with-grok --with-completions"
   fi
   run_optional_features
   echo
@@ -515,10 +585,11 @@ resolve_distro_engine() {
   printf '%s\n' "${cache_file}"
 }
 
-DISTRO_ENGINE="$(resolve_distro_engine)" \
-  || die_with_help "Could not resolve termux-distro engine." \
-    "GROKHUNTER_REFRESH=1 bash install.sh" \
-    "Or vendor termux-distro.sh next to install.sh"
+if [[ "${GROKHUNTER_HOST}" == "desktop" ]]; then
+  die_with_help "Full NetHunter rootfs install requires Termux on Android."     "On Linux/macOS/WSL use overlay-only GrokHunter coding tools:"     "  bash install.sh --overlay-only --with-grok --with-completions"     "Install Termux from F-Droid for the full lab: https://f-droid.org/packages/com.termux/"
+fi
+
+DISTRO_ENGINE="$(resolve_distro_engine)"   || die_with_help "Could not resolve termux-distro engine."     "GROKHUNTER_REFRESH=1 bash install.sh"     "Or vendor termux-distro.sh next to install.sh"
 
 # parse_cli already applied GrokHunter flags into SELECTED_* / FEATURE_* / etc.
 # Do NOT forward "$@" into termux-distro — it only accepts its own options
