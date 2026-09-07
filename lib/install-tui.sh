@@ -7,7 +7,6 @@ install_tui_defaults() {
   INSTALL_TUI_GROK=yes
   INSTALL_TUI_COMPLETIONS=yes
   INSTALL_TUI_AIDER=no
-  INSTALL_TUI_V9=no
 }
 
 install_tui_set_preset() {
@@ -23,7 +22,6 @@ install_tui_toggle() {
     grok) var=INSTALL_TUI_GROK ;;
     completions) var=INSTALL_TUI_COMPLETIONS ;;
     aider) var=INSTALL_TUI_AIDER ;;
-    v9) var=INSTALL_TUI_V9 ;;
     *) return 1 ;;
   esac
   if [[ "${!var}" == yes ]]; then
@@ -52,7 +50,6 @@ install_tui_argv() {
     args=(--nano --no-de "$g" "$c")
   fi
   [[ "${INSTALL_TUI_AIDER:-no}" == yes ]] && args+=(--with-aider)
-  [[ "${INSTALL_TUI_V9:-no}" == yes ]] && args+=(--with-v9-models)
   printf '%s\n' "${args[*]}"
 }
 
@@ -105,16 +102,14 @@ GrokHunter install
   Grok:         ${INSTALL_TUI_GROK}
   Completions:  ${INSTALL_TUI_COMPLETIONS}
   Aider:        ${INSTALL_TUI_AIDER}
-  V9 pickers:   ${INSTALL_TUI_V9}
 
   1) Install
   2) ${item2}
   3) Toggle Grok
   4) Toggle completions
   5) Toggle Aider
-  6) Toggle V9 pickers
-  7) Show command
-  8) Quit
+  6) Show command
+  7) Quit
 EOF
 }
 
@@ -190,9 +185,8 @@ install_tui_main() {
       3) install_tui_toggle grok ;;
       4) install_tui_toggle completions ;;
       5) install_tui_toggle aider ;;
-      6) install_tui_toggle v9 ;;
-      7) install_tui_show_cmd ;;
-      8|q|Q) exit 0 ;;
+      6) install_tui_show_cmd ;;
+      7|q|Q) exit 0 ;;
     esac
   done
 }

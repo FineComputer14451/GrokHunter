@@ -464,13 +464,19 @@ if [[ -f "${HOME}/.grok/config.toml" ]]; then
   else
     warn "compact_mode not true (optional UX)"
   fi
+  if grep -qE 'default\s*=\s*"grok-4\.6"' "${HOME}/.grok/config.toml" 2>/dev/null \
+     || grep -qE '^\[models\]' "${HOME}/.grok/config.toml" 2>/dev/null; then
+    ok "models default grok-4.6 / [models] present (grokhunter models status)"
+  else
+    warn "No grok-4.6 models default yet — grokhunter ensure"
+    WARN=1
+  fi
   v9_marker="# --- GrokHunter: v9 specialist models"
   v9_legacy="# --- Grok Imagine Cinematic Studio: v9-4p5 specialist models"
   if grep -qF "${v9_marker}" "${HOME}/.grok/config.toml" 2>/dev/null \
-     || grep -qF "${v9_legacy}" "${HOME}/.grok/config.toml" 2>/dev/null; then
-    ok "V9 / 4.6 model pickers present (grokhunter models status)"
-  else
-    warn "V9 pickers not installed — grokhunter models install"
+     || grep -qF "${v9_legacy}" "${HOME}/.grok/config.toml" 2>/dev/null \
+     || grep -qE '^\[model\.(chat-expert|multi|auto|grok-v9)' "${HOME}/.grok/config.toml" 2>/dev/null; then
+    warn "legacy V9 pickers present — grokhunter models clean"
     WARN=1
   fi
 else

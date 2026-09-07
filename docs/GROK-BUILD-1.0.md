@@ -34,10 +34,8 @@ bash ~/GrokHunter/scripts/install_grok_profile.sh --force
 # 3) Lab skills + Coding Team agents
 grokhunter skills install
 
-# 4) Optional V9 /model aliases (map to grok-4.6)
-grokhunter models install
-# or force refresh from 4.5 pickers:
-grokhunter models force
+# 4) Clean legacy V9 pickers if present (optional; default is already grok-4.6)
+grokhunter models clean
 
 # 5) Health
 grokhunter doctor
@@ -72,5 +70,5 @@ cat ~/.grok/config.toml | head -40
 ## Notes
 
 - Session auth (SuperGrok / X Premium+) and `XAI_API_KEY` both work; prefer secrets in `~/.grok/secrets.env`.
-- V9 picker aliases are **local** `[model.*]` names that still call **grok-4.6**. Former 4.5 picker IDs remain as compat aliases.
+- Former V9 `/model` pickers are **removed**. Default remains **grok-4.6**; clean leftovers with `grokhunter models clean`.
 - `grok-build` as a **model id** is not the lab default — use `grok-4.6` (agent type `plan` is separate from model id).

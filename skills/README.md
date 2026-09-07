@@ -46,7 +46,7 @@ Skills are **playbooks** (how to do a thing). Agents are **runtime specialists**
 |-------|----------------|
 | [`github-lab`](github-lab/SKILL.md) | Git identity / invalid-email-address |
 | [`toolchain`](toolchain/SKILL.md) | apt, compilers, Aider Python, space |
-| [`grok-models`](grok-models/SKILL.md) | V9 pickers / profile / models=no |
+| [`grok-models`](grok-models/SKILL.md) | grok-4.6 profile / models=no / V9 cleanup |
 | [`ci-lab`](ci-lab/SKILL.md) | ci-unit.sh / Smoke red |
 | [`secrets-lab`](secrets-lab/SKILL.md) | secrets.env / XAI_API_KEY |
 | [`overlay-lab`](overlay-lab/SKILL.md) | install.sh / overlay cache / PATH wrappers |
@@ -96,7 +96,7 @@ Writing code                    → pair-programming (+ coding-team agents)
 Aider missing / Python 3.13     → aider-grok
 X11 black / lag / binds / bwrap → x11-desktop (`grokhunter binds`)
 GitHub invalid-email            → github-lab (agent `github`)
-models=no / pickers             → grok-models
+models=no / profile / V9 clean  → grok-models
 Termux vs Kali confusion        → host-lab
 Disk full                       → storage-lab
 TAB / ghd missing               → shell-lab

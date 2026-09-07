@@ -1,60 +1,50 @@
 ---
 name: grok-models
 description: >-
-  Grok Build models on GrokHunter: grok-4.6 default, V9 /model pickers
-  (chat-expert, multi, auto, grok-v9), grokhunter models install/status/force,
-  and the NetHunter config.toml profile. Use when pickers are missing, the
-  wrong model is selected, or ensure/profile needs a refresh. Optional skill.
+  Grok Build models on GrokHunter: grok-4.6 catalog default, NetHunter
+  config.toml profile, grokhunter models status/clean, and cleanup of
+  retired V9 /model pickers. Use when models=no, wrong default, or legacy
+  pickers remain.
 ---
 
-# Grok models (optional)
-
-You keep **Grok 4.6** as the catalog default and V9 pickers working. Binary install is `grokhunter ensure` (skill `grokhunter`) — this skill is **pickers + profile**.
+You keep **Grok 4.6** as the catalog default. Binary install is `grokhunter ensure`
+(skill `grokhunter`) — this skill is **profile + legacy picker cleanup**.
 
 ## When to activate
 
-- `/model` aliases missing
 - `status` shows `models=no`
-- User asks for chat-expert / multi / auto / grok-v9
 - Profile still on grok-4.5 or channel=alpha
+- Legacy V9 pickers (`chat-expert` / `multi` / `auto` / `grok-v9`) linger in config.toml
 
 ## Commands
 
 ```bash
 grokhunter models status
-grokhunter models install
-grokhunter models force          # refresh ~/.grok/config.toml pickers
-grokhunter ensure                # binary ≥ 1.0.5 + NetHunter profile
+grokhunter models clean          # remove retired V9 pickers (install/force are aliases)
+grokhunter ensure
 bash scripts/install_grok_profile.sh --force
 ```
 
-In-session: `/model chat-expert` · `/model multi` · `/model auto` · `/model grok-v9`
+Default coding model: **`grok-4.6`**. Imagine stills/video stay on `grok-imagine-*`.
 
-Canonical installer: `scripts/install_v9_grok_models.sh`. Docs: `docs/GROK-46.md`, `docs/GROK-BUILD-1.0.md`. Do not copy those files here.
+Cleanup script (filename kept for back-compat): `scripts/install_v9_grok_models.sh`.
+Docs: `docs/GROK-46.md`, `docs/GROK-BUILD-1.0.md`. Do not copy those files here.
 
 ## Facts
 
-- Min Grok Build **1.0.5** (`GROKHUNTER_MIN_GROK`)
+- Min Grok Build **1.0.5**
 - Default catalog **`grok-4.6`**
-- Former 4.5 picker IDs wrap 4.6
-- Config: `~/.grok/config.toml` (never print secrets)
+- V9 `/model` pickers are **retired** (do not re-install them)
 
-## Common failures
+## Quick fixes
 
-| Symptom | First step |
-|---------|------------|
-| `models=no` / pickers missing | `grokhunter models install` |
-| Still grok-4.5 / channel=alpha | `bash scripts/install_grok_profile.sh --force` |
-| Binary too old | `grokhunter ensure` (skill `grokhunter`) |
+| Symptom | Fix |
+|---------|-----|
+| `models=no` / no default | `grokhunter ensure` or profile `--force` |
+| legacy V9 pickers present | `grokhunter models clean` |
+| channel=alpha / 4.5 leftovers | `bash scripts/install_grok_profile.sh --force` |
 
-## Verify
+## Related
 
-```bash
-grokhunter models status
-```
-
-## Cross-links
-
-- Lab orchestrator: skill `grokhunter`
-- App LLM keys: `grokhunter ai-smoke` (SpaceXAI / `XAI_API_KEY`)
-- Agent `models` for picker/profile work
+- Agent `models` for profile / cleanup work
+- Skill `grokhunter` for binary / overlay

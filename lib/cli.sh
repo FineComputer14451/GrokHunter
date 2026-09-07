@@ -31,6 +31,14 @@ SKIP_V9=0
 INSTALL_COMPLETIONS=0
 SKIP_COMPLETIONS=0
 
+# Warn once when deprecated --with/--no-v9-models is seen
+_V9_FLAG_WARNED=0
+_warn_v9_deprecated() {
+  [[ "${_V9_FLAG_WARNED}" -eq 1 ]] && return 0
+  _V9_FLAG_WARNED=1
+  echo "[GrokHunter] WARN: --with-v9-models / --no-v9-models are deprecated no-ops (V9 pickers retired; default remains grok-4.6)." >&2
+}
+
 show_help() {
   local ec="${1:-0}"
   cat <<'HELP'
@@ -51,8 +59,8 @@ Options:
   --no-x11                Skip Termux:X11 setup
   --with-aider            Install Aider pair-programmer (venv + xAI-ready)
   --no-aider              Skip Aider installation
-  --with-v9-models        Install Grok V9 / 4.6 model pickers into config.toml
-  --no-v9-models          Skip V9 model pickers
+  --with-v9-models        Deprecated no-op (V9 pickers removed; kept for old scripts)
+  --no-v9-models          Deprecated no-op (V9 pickers removed; kept for old scripts)
   --with-completions      Copy completions + ~/.grok/profile.sh (does not edit .zshrc/.bashrc)
   --no-completions        Skip shell completions
   --overlay-only          Skip rootfs / termux-distro; only run optional overlays
@@ -66,7 +74,7 @@ Examples:
   install.sh --full --de xfce --with-grok --with-x11 --with-aider --with-completions
   install.sh -m
   install.sh --nano --no-de --with-grok
-  install.sh --overlay-only --with-x11 --with-aider --with-v9-models
+  install.sh --overlay-only --with-x11 --with-aider --with-completions
 
 Env:
   GROKHUNTER_REFRESH=1              Bypass module + engine cache
@@ -138,8 +146,8 @@ parse_cli() {
       --no-x11)      _feature_no x11; NON_INTERACTIVE=1; shift ;;
       --with-aider)  _feature_yes aider; NON_INTERACTIVE=1; shift ;;
       --no-aider)    _feature_no aider; NON_INTERACTIVE=1; shift ;;
-      --with-v9-models) _feature_yes v9; NON_INTERACTIVE=1; shift ;;
-      --no-v9-models)   _feature_no v9; NON_INTERACTIVE=1; shift ;;
+      --with-v9-models) _warn_v9_deprecated; _feature_yes v9; NON_INTERACTIVE=1; shift ;;
+      --no-v9-models)   _warn_v9_deprecated; _feature_no v9; NON_INTERACTIVE=1; shift ;;
       --with-completions) _feature_yes completions; NON_INTERACTIVE=1; shift ;;
       --no-completions)   _feature_no completions; NON_INTERACTIVE=1; shift ;;
       --overlay-only) OVERLAY_ONLY=1; NON_INTERACTIVE=1; shift ;;

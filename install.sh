@@ -412,7 +412,7 @@ if [[ "${OVERLAY_ONLY:-0}" -eq 1 ]]; then
      && "${FEATURE_COMPLETIONS}" == "auto" ]]; then
     die_with_help "Overlay-only needs at least one --with-* flag." \
       "Example:  bash install.sh --overlay-only --with-x11 --with-aider" \
-      "Example:  bash install.sh --overlay-only --with-grok --with-v9-models --with-completions"
+      "Example:  bash install.sh --overlay-only --with-grok --with-completions"
   fi
   run_optional_features
   echo

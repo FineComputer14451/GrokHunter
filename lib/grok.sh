@@ -574,22 +574,22 @@ install_aider() {
 }
 
 # ---------------------------------------------------------------------------
-# V9 / 4.6 model pickers
+# Legacy V9 /model picker cleanup (pickers retired; default remains grok-4.6)
 # ---------------------------------------------------------------------------
 install_v9_models() {
-  msg -t "Installing Grok V9 / 4.6 model pickers"
+  msg -t "Cleaning legacy V9 /model pickers (retired)"
 
   local script=""
   script="$(_gh_resolve "scripts/install_v9_grok_models.sh" || true)"
 
   if [[ -n "${script}" && -f "${script}" ]]; then
-    msg -tn "Running install_v9_grok_models.sh…"
+    msg -tn "Running install_v9_grok_models.sh (cleanup)…"
     if bash "${script}"; then
       cursor -u1
-      msg -ts "V9 / 4.6 model pickers installed"
+      msg -ts "V9 pickers cleaned / already absent (default: grok-4.6)"
     else
       cursor -u1
-      msg -tw "V9 picker install reported issues — try: bash scripts/install_v9_grok_models.sh --force"
+      msg -tw "V9 cleanup reported issues — try: bash scripts/install_v9_grok_models.sh"
     fi
   else
     msg -tw "scripts/install_v9_grok_models.sh not found — skip or clone the repo"

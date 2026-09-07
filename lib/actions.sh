@@ -96,7 +96,7 @@ post_config_actions() {
 }
 
 # Resolve FEATURE_*=yes|no|auto into a concrete install decision.
-# Completions: non-interactive auto follows sibling --with-grok|v9|aider.
+# Completions: non-interactive auto follows sibling --with-grok|aider (v9 deprecated).
 maybe_install() {
   local want="${1:-auto}"
   local prompt="$2"
@@ -154,8 +154,9 @@ run_optional_features() {
   maybe_install "${FEATURE_AIDER:-auto}" \
     "Also install Aider (git-native pair-programmer)?" \
     install_aider
+  # V9 pickers retired: --with-v9-models only runs cleanup (or skips when auto/no).
   maybe_install "${FEATURE_V9:-auto}" \
-    "Also install Grok V9 / 4.6 model pickers (/model chat-expert, multi, auto)?" \
+    "Clean legacy V9 /model pickers from config.toml? (pickers retired)" \
     install_v9_models
   maybe_install "$(_completions_want)" \
     "Install zsh/bash completions for grokhunter (recommended)?" \

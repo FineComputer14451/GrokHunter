@@ -107,7 +107,7 @@ Need Kali rootfs?     → install.sh (TTY wizard, default nano) or --yes / flags
 Already have Kali?    → --overlay-only --with-*   # no wizard
 Only Grok binary?     → grokhunter ensure   # requires Grok Build 1.0.5+
 Profile only?         → bash scripts/install_grok_profile.sh
-Only V9 pickers?      → grokhunter models install
+Legacy V9 pickers?    → grokhunter models clean
 Only skills/PATH?     → grokhunter skills install
 Desktop?              → --with-x11 + Termux:X11 APK + nh-x11
 X11 black/lag/tune?   → skill x11-desktop (docs/X11-PERFORMANCE.md)
@@ -140,7 +140,7 @@ Broken PATH?          → export PATH + skills install / doctor; source ~/.grok/
 
 ```bash
 cd ~/GrokHunter && bash install.sh --full --de xfce \
-  --with-grok --with-x11 --with-aider --with-v9-models --with-completions
+  --with-grok --with-x11 --with-aider --with-completions
 source ~/.grok/profile.sh 2>/dev/null || true
 grokhunter doctor
 printf 'export XAI_API_KEY=%q\n' "xai-..." > ~/.grok/secrets.env && chmod 600 ~/.grok/secrets.env
@@ -154,9 +154,9 @@ Skip NetHunter re-download; install optional pieces only:
 
 ```bash
 bash ~/GrokHunter/install.sh --overlay-only --with-x11 --with-aider
-bash ~/GrokHunter/install.sh --overlay-only --with-grok --with-v9-models --with-completions
+bash ~/GrokHunter/install.sh --overlay-only --with-grok --with-completions
 # or:
-grokhunter install --overlay-only --with-v9-models
+grokhunter install --overlay-only --with-grok --with-completions
 grokhunter skills install    # wrappers + ~/.grok/skills
 ```
 
@@ -184,13 +184,12 @@ grokhunter doctor
 grokhunter status
 ```
 
-### V9 / 4.6 model pickers
+### Models profile (grok-4.6)
 
 ```bash
 grokhunter models status
-grokhunter models install
-grokhunter models force    # refresh config.toml pickers
-# in-session: /model chat-expert · multi · auto · grok-v9
+grokhunter models clean    # remove retired V9 /model pickers
+# install/force are aliases for clean
 ```
 
 ### Grok binary only
@@ -271,7 +270,7 @@ bash ~/GrokHunter/uninstall.sh --purge-grok
 | `--with-grok` / `--no-grok` | Grok Build |
 | `--with-x11` / `--no-x11` | Termux:X11 + `nh-x11` |
 | `--with-aider` / `--no-aider` | Aider venv + helper |
-| `--with-v9-models` / `--no-v9-models` | Model pickers |
+| `--with-v9-models` / `--no-v9-models` | Deprecated no-ops (V9 pickers removed) |
 | `--with-completions` / `--no-completions` | Completions + `~/.grok/profile.sh` (does not edit rc files) |
 | `--overlay-only` | No rootfs/engine; overlays only |
 | `--yes` | Coding-only default; skip wizard |
@@ -288,7 +287,7 @@ Canonical helpers: repo `bin/` (`nh-x11`, `aider-grok`, `grokhunter`, …) → `
 | nethunter not on PATH | Termux host; re-run install (skill `host-lab`) |
 | nh-x11 missing | `--overlay-only --with-x11` + X11 APK |
 | skill (repo only) | `grokhunter skills install` |
-| V9 pickers missing | `grokhunter models install` |
+| Legacy V9 pickers | `grokhunter models clean` |
 | wrapper not on PATH | overlay-only installs to `~/.local/bin`; `source ~/.grok/profile.sh` or new shell; skill `host-lab` if Termux vs Kali |
 | git identity placeholder | `grokhunter git-identity set` |
 | no secrets / key | write `~/.grok/secrets.env` mode 600 |

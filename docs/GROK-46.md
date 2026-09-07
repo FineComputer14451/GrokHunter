@@ -69,20 +69,18 @@ grokhunter doctor
 
 Confirms Grok binary, auth, and lab readiness before long sessions.
 
-## V9 / specialist model pickers (optional)
+## Model default (grok-4.6)
 
-Register `/model chat-expert`, `/model multi`, `/model auto`, etc. in Grok Build:
+Catalog default remains **`grok-4.6`** via the NetHunter profile (`grokhunter ensure` /
+`bash scripts/install_grok_profile.sh`). Former V9 `/model` pickers (`chat-expert`,
+`multi`, `auto`, `grok-v9`, …) are **retired** — clean leftovers with:
 
 ```bash
-git clone https://github.com/FineComputer14451/GrokHunter.git
-cd GrokHunter
-bash scripts/install_v9_grok_models.sh
-# force refresh:
-bash scripts/install_v9_grok_models.sh --force
+grokhunter models clean
+# or: bash scripts/install_v9_grok_models.sh
 ```
 
-Template: `config/grok-build-v9-models.example.toml`  
-All aliases wrap **grok-4.6**. Imagine stills/video stay on `grok-imagine-*`.
+Imagine stills/video stay on `grok-imagine-*` (unchanged).
 
 ## Related
 

@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
-# Install / refresh full Grok V9 + Auto specialist picker surface into ~/.grok/config.toml
+# Remove legacy GrokHunter V9 /model pickers from ~/.grok/config.toml
+#
+# Filename kept for back-compat. install / force / clean all mean: strip pickers.
+# Default catalog model remains grok-4.6 (via NetHunter profile / ensure).
 #
 # Usage:
 #   bash scripts/install_v9_grok_models.sh
 #   bash scripts/install_v9_grok_models.sh --force
+#   bash scripts/install_v9_grok_models.sh --clean
 #   GROK_CONFIG=/path/to/config.toml bash scripts/install_v9_grok_models.sh
 #
 # Part of GrokHunter Rootless.
@@ -14,19 +18,16 @@ die()  { echo "[install_v9_grok_models] ERROR: $*" >&2; exit 1; }
 warn() { echo "[install_v9_grok_models] WARN: $*" >&2; }
 info() { echo "[install_v9_grok_models] $*"; }
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")/.." && pwd)" || die "cannot resolve repo root"
-SRC="$ROOT/config/grok-build-v9-models.example.toml"
 CFG="${GROK_CONFIG:-${HOME:?HOME not set}/.grok/config.toml}"
 MARKER_BEGIN="# --- GrokHunter: v9 specialist models"
 MARKER_BEGIN_LEGACY="# --- Grok Imagine Cinematic Studio: v9-4p5 specialist models"
-FORCE=0
 BACKUP=""
 TMP_OUT=""
 
-cleanup() {
-  [[ -n "${TMP_OUT:-}" && -f "${TMP_OUT}" ]] && rm -f "${TMP_OUT}" "${TMP_OUT}.new" 2>/dev/null || true
+cleanup_tmp() {
+  [[ -n "${TMP_OUT:-}" && -f "${TMP_OUT}" ]] && rm -f "${TMP_OUT}" 2>/dev/null || true
 }
-trap cleanup EXIT
+trap cleanup_tmp EXIT
 
 OWNED_MODELS=(
   grok-v9-4p6-chat-expert grok-v9 grok-v9-4p6 v9 v9-4p6
@@ -40,145 +41,146 @@ OWNED_MODELS=(
 
 for arg in "$@"; do
   case "$arg" in
-    --force|-f) FORCE=1 ;;
-    --help|-h) sed -n '2,12p' "$0" || true; exit 0 ;;
+    --force|-f|--clean|-c) ;; # cleanup is the only behavior
+    --help|-h)
+      cat <<'EOF'
+Remove legacy V9 /model pickers from ~/.grok/config.toml.
+
+  bash scripts/install_v9_grok_models.sh
+  bash scripts/install_v9_grok_models.sh --force   # alias (same cleanup)
+  bash scripts/install_v9_grok_models.sh --clean   # alias (same cleanup)
+
+V9 pickers are retired. Default catalog model remains grok-4.6.
+Use: grokhunter ensure / bash scripts/install_grok_profile.sh
+EOF
+      exit 0
+      ;;
     *) die "Unknown option: $arg (try --help)" ;;
   esac
 done
 
 command -v python3 >/dev/null 2>&1 || die "python3 is required (Termux: pkg install python)"
-command -v sed >/dev/null 2>&1 || die "sed is required"
-command -v grep >/dev/null 2>&1 || die "grep is required"
-command -v mktemp >/dev/null 2>&1 || die "mktemp is required"
-
-[[ -f "$SRC" ]] || die "Missing template: $SRC — run from a GrokHunter clone"
-[[ -s "$SRC" ]] || die "Template is empty: $SRC"
-grep -q '^\[model\.' "$SRC" || die "Template has no [model.*] sections: $SRC"
 
 CFG_DIR="$(dirname "$CFG")"
 mkdir -p "$CFG_DIR" || die "cannot create config dir: $CFG_DIR"
 [[ -w "$CFG_DIR" ]] || die "config dir not writable: $CFG_DIR"
 
-if [[ -e "$CFG" ]]; then
-  [[ -f "$CFG" ]] || die "GROK_CONFIG is not a regular file: $CFG"
-  [[ -r "$CFG" && -w "$CFG" ]] || die "config not readable/writable: $CFG"
-else
-  touch "$CFG" || die "cannot create $CFG"
+if [[ ! -e "$CFG" ]]; then
+  info "No config at $CFG — nothing to remove"
+  info "V9 /model pickers are retired. Default remains grok-4.6."
+  exit 0
 fi
+[[ -f "$CFG" ]] || die "GROK_CONFIG is not a regular file: $CFG"
+[[ -r "$CFG" && -w "$CFG" ]] || die "config not readable/writable: $CFG"
 
-_v9_model_blocks() {
-  local out
-  out="$(sed -n '/^\[model\./,$p' "$SRC")" || die "failed to extract [model.*] from $SRC"
-  [[ -n "$out" ]] || die "extracted model blocks are empty"
-  printf '%s\n' "$out"
-}
-
-_needs_upgrade() {
-  if ! python3 - "$CFG" "${OWNED_MODELS[@]}" <<'PY'
+_has_legacy() {
+  python3 - "$CFG" "$MARKER_BEGIN" "$MARKER_BEGIN_LEGACY" "${OWNED_MODELS[@]}" <<'PY'
 from pathlib import Path
 import re
 import sys
 
 path = Path(sys.argv[1])
-owned = sys.argv[2:]
+marker, legacy = sys.argv[2], sys.argv[3]
+owned = sys.argv[4:]
 try:
     text = path.read_text(encoding="utf-8")
 except OSError:
-    print("missing")
+    print("no")
     raise SystemExit(0)
-
+if marker in text or legacy in text:
+    print("yes")
+    raise SystemExit(0)
 for name in owned:
-    m = re.search(
-        rf"(?ms)^\[model\.(?:\"{re.escape(name)}\"|{re.escape(name)})\]\n(.*?)(?=^\[|\Z)",
+    if re.search(
+        rf'(?m)^\[model\.(?:"{re.escape(name)}"|{re.escape(name)})\]\s*$',
         text,
-    )
-    if not m:
-        print("missing")
+    ):
+        print("yes")
         raise SystemExit(0)
-    body = m.group(1)
-    if "temperature" not in body or "not on this team" in body:
-        print("stub")
-        raise SystemExit(0)
-print("ok")
+print("no")
 PY
-  then
-    warn "upgrade check failed — treating as needs install"
-    echo "missing"
-  fi
 }
 
-_backup_cfg() {
-  BACKUP="${CFG}.bak.$(date +%Y%m%d%H%M%S 2>/dev/null || echo unknown)"
-  cp -a "$CFG" "$BACKUP" || die "failed to backup $CFG"
-  info "Backup: $BACKUP"
-}
+if [[ "$(_has_legacy)" != "yes" ]]; then
+  info "No legacy V9 /model pickers in $CFG — nothing to remove"
+  info "V9 pickers are retired. Default catalog model remains grok-4.6."
+  exit 0
+fi
 
-_verify_install() {
-  local st
-  st="$(_needs_upgrade)"
-  if [[ "$st" != "ok" ]]; then
-    die "post-install verification failed (status=${st}). Restore: cp -a ${BACKUP:-<backup>} $CFG"
-  fi
-}
+BACKUP="${CFG}.bak.$(date +%Y%m%d%H%M%S 2>/dev/null || echo unknown)"
+cp -a "$CFG" "$BACKUP" || die "failed to backup $CFG"
+info "Backup: $BACKUP"
 
-status="$(_needs_upgrade)"
-if [[ "$status" == "ok" && "$FORCE" -eq 0 ]]; then
-  info "Grok V9 specialist models already complete in $CFG (use --force to refresh)"
-else
-  _backup_cfg
-  blocks="$(_v9_model_blocks)"
-  TMP_OUT="$(mktemp "${CFG_DIR}/.grok-v9.XXXXXX")" || die "mktemp failed in $CFG_DIR"
-  if ! python3 - "$CFG" "$TMP_OUT" "$MARKER_BEGIN" "$MARKER_BEGIN_LEGACY" "${OWNED_MODELS[@]}" <<'PY'
+TMP_OUT="$(mktemp "${CFG_DIR}/.grok-v9-clean.XXXXXX")" || die "mktemp failed in $CFG_DIR"
+if ! python3 - "$CFG" "$TMP_OUT" "$MARKER_BEGIN" "$MARKER_BEGIN_LEGACY" "${OWNED_MODELS[@]}" <<'PY'
 from pathlib import Path
 import re
 import sys
 
 cfg_path = Path(sys.argv[1])
 out_path = Path(sys.argv[2])
-marker = sys.argv[3]
-legacy = sys.argv[4]
+markers = (sys.argv[3], sys.argv[4])
 owned = sys.argv[5:]
+
 try:
     text = cfg_path.read_text(encoding="utf-8")
 except OSError as e:
     print(f"read failed: {e}", file=sys.stderr)
     sys.exit(1)
 
-for m in (marker, legacy):
-    idx = text.find(m)
-    if idx != -1:
-        text = text[:idx].rstrip() + "\n"
+def strip_marker_block(src: str, m: str) -> str:
+    """Strip from marker through following [model.*] tables until a non-model section or EOF."""
+    idx = src.find(m)
+    if idx == -1:
+        return src
+    # Expand start backward over blank lines immediately before the marker
+    start = idx
+    while start > 0 and src[start - 1] in "\n\r":
+        prev_nl = src.rfind("\n", 0, start - 1)
+        line_start = 0 if prev_nl < 0 else prev_nl + 1
+        if src[line_start:start].strip() == "":
+            start = line_start
+        else:
+            break
+
+    # Walk sections after the marker; consume [model.*], stop at other [section]
+    rest = src[idx:]
+    end = len(src)  # default: to EOF
+    # Skip past the marker line itself
+    first_nl = rest.find("\n")
+    scan_from = 0 if first_nl < 0 else first_nl + 1
+    for match in re.finditer(r"(?m)^\[([^\]]+)\]\s*$", rest[scan_from:]):
+        header = match.group(1)
+        abs_start = idx + scan_from + match.start()
+        if header.startswith("model."):
+            continue
+        # Non-model section ends the picker block (keep this section)
+        end = abs_start
+        break
+    return src[:start].rstrip() + "\n" + src[end:]
+
+for m in markers:
+    text = strip_marker_block(text, m)
+
 for name in owned:
     pat = re.compile(
-        rf"(?ms)^\[model\.(?:\"{re.escape(name)}\"|{re.escape(name)})\]\n.*?(?=^\[|\Z)"
+        rf'(?ms)^\[model\.(?:"{re.escape(name)}"|{re.escape(name)})\]\n.*?(?=^\[|\Z)'
     )
     text = pat.sub("", text)
-out_path.write_text(text.rstrip() + "\n", encoding="utf-8")
+
+text = re.sub(r"\n{3,}", "\n\n", text).rstrip() + "\n"
+out_path.write_text(text, encoding="utf-8")
 PY
-  then
-    die "failed preparing stripped config in temp"
-  fi
-  {
-    cat "$TMP_OUT" || die "cannot read temp base"
-    echo ""
-    echo "${MARKER_BEGIN} (Model Layer v4.6 · full alias surface) ---"
-    echo "# Session-auth via cli-chat-proxy (SuperGrok). Base model: grok-4.6."
-    echo "# Native API IDs grok-v9-4p6-* / grok-4-auto are picker names, not public product slugs."
-    echo "# Family shorts + chat-expert / multi / auto aliases all registered as pickers."
-    echo "# GrokHunter: coding lab default remains grok-4.6 ([models] default)."
-    printf '%s\n' "$blocks"
-  } > "${TMP_OUT}.new" || die "failed writing merged temp"
-  grep -q "$MARKER_BEGIN" "${TMP_OUT}.new" || die "temp config missing marker"
-  grep -q '^\[model\.' "${TMP_OUT}.new" || die "temp config missing [model.*]"
-  mv -f "${TMP_OUT}.new" "$CFG" || die "failed to install new config at $CFG"
-  rm -f "$TMP_OUT"
-  TMP_OUT=""
-  chmod 600 "$CFG" 2>/dev/null || warn "could not chmod 600 $CFG"
-  _verify_install
-  info "Installed full Grok V9 [model.*] picker surface → $CFG"
+then
+  die "failed stripping V9 pickers"
 fi
 
+mv -f "$TMP_OUT" "$CFG" || die "failed to write cleaned config at $CFG"
+TMP_OUT=""
+chmod 600 "$CFG" 2>/dev/null || warn "could not chmod 600 $CFG"
+
+info "Removed legacy V9 /model pickers from $CFG"
 echo ""
-echo "Verify with:  grok models"
-echo "Switch with:  /model grok-v9 · /model chat-expert · /model multi · /model auto"
-echo "Default coding model remains grok-4.6. Imagine uses grok-imagine-* separately."
+echo "V9 /model pickers are retired. Default catalog model remains grok-4.6."
+echo "Profile:  bash scripts/install_grok_profile.sh   # or: grokhunter ensure"
+echo "Status:   grokhunter models status"

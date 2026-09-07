@@ -71,7 +71,7 @@ Clarify goal + constraints
 | Termux host vs Kali guest | `host` |
 | VERSION / changelog / tag | `ship` |
 | README / FAQ / site copy | `docs` |
-| V9 pickers / grok-4.6 profile | `models` |
+| grok-4.6 profile / legacy V9 cleanup | `models` |
 | ci-unit / Smoke | `ci` |
 | Aider install / uv 3.12 | `aider` |
 | tmux / `grok --resume` | `session` |
