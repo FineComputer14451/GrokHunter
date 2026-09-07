@@ -748,6 +748,30 @@
         }
       ],
       "version": "1.0.0"
+    },
+    {
+      "agents": [],
+      "commands": [
+        {
+          "description": "Install Grok Build Connect MCP on Termux or desktop",
+          "name": "grok-build-connect-install"
+        },
+        {
+          "description": "Tunnel Grok Build Connect MCP with Cloudflare",
+          "name": "grok-build-connect-tunnel"
+        }
+      ],
+      "hooks": [],
+      "lspServers": [],
+      "mcpServers": [],
+      "name": "grokhunter-grok-build-connect",
+      "skills": [
+        {
+          "description": "Bridge Grok Bot to the local Grok Build (grok) CLI via authenticated HTTP MCP + Cloudflare/ngrok tunnel on Termux or desktop.",
+          "name": "grok-build-connect"
+        }
+      ],
+      "version": "1.0.0"
     }
   ]
 }

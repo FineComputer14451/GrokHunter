@@ -56,6 +56,7 @@ grok plugin install grokhunter-ci --trust
 | `grokhunter-desktop` | GrokHunter X11 desktop — grokhunter binds, nh-x11, bwrap black-screen triage (rootless). |
 | `grokhunter-overlay` | GrokHunter overlay cache — install.sh --overlay-only, MODULES_VERSION, PATH wrappers. |
 | `grokhunter-tookie` | Authorized public username OSINT with Tookie-OSINT (Sherlock-class). Scoped GrokHunter mod… |
+| `grokhunter-grok-build-connect` | Bridge Grok Bot ↔ local `grok` CLI via HTTP MCP + tunnel (Termux + desktop). |
 | `grokhunter-termux-connect` | Bridge Grok Bot ↔ Termux via HTTP MCP + tunnel (not native Local Computer). |
 | `grokhunter-full` | Complete GrokHunter Grok Build pack — core, Coding Team, all lab specialists, desktop, ove… |
 
@@ -88,6 +89,7 @@ Native Grok Bot Local Computer is Mac/Windows only. To drive GrokHunter on Termu
 
 ```bash
 grok plugin install grokhunter-termux-connect --trust
+grok plugin install grokhunter-grok-build-connect --trust
 bash ~/.…  # see plugin README / skill termux-connect
 ```
 
