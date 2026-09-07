@@ -1,0 +1,18 @@
+{
+  "name": "grokhunter-grok-build-connect",
+  "version": "1.0.0",
+  "description": "Bridge Grok Bot to local Grok Build (grok CLI) via authenticated HTTP MCP + tunnel. Termux and desktop. Not affiliated with xAI / OffSec / Termux / jorexdeveloper.",
+  "author": {
+    "name": "FineComputer14451",
+    "url": "https://github.com/FineComputer14451/GrokHunter"
+  },
+  "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+  "repository": "https://github.com/FineComputer14451/GrokHunter",
+  "license": "MIT",
+  "keywords": [
+    "grokhunter grok build connect",
+    "grok build mcp",
+    "grok connect"
+  ],
+  "logo": "assets/logo.png"
+}

@@ -463,8 +463,37 @@
         "path": "./plugins/grokhunter-termux-connect"
       },
       "homepage": "https://finecomputer14451.github.io/GrokHunter/",
-      "keywords": ["grokhunter termux connect", "grokhunter termux mcp", "termux connect grokhunter"],
-      "domains": ["finecomputer14451.github.io"]
+      "keywords": [
+        "grokhunter termux connect",
+        "grokhunter termux mcp",
+        "termux connect grokhunter"
+      ],
+      "domains": [
+        "finecomputer14451.github.io"
+      ]
+    },
+    {
+      "name": "grokhunter-grok-build-connect",
+      "description": "Bridge Grok Bot to local Grok Build (grok CLI) via HTTP MCP + tunnel. Termux and desktop.",
+      "category": "development",
+      "version": "1.0.0",
+      "author": {
+        "name": "FineComputer14451",
+        "url": "https://github.com/FineComputer14451/GrokHunter"
+      },
+      "source": {
+        "type": "local",
+        "path": "./plugins/grokhunter-grok-build-connect"
+      },
+      "homepage": "https://finecomputer14451.github.io/GrokHunter/",
+      "keywords": [
+        "grokhunter grok build connect",
+        "grok build mcp",
+        "grok connect"
+      ],
+      "domains": [
+        "finecomputer14451.github.io"
+      ]
     }
   ]
 }
