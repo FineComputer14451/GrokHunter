@@ -139,6 +139,10 @@ bash ~/GrokHunter/scripts/install_grok_statusline.sh
 # then restart grok
 ```
 
+## How should I split Grok chat vs Grok Build?
+
+See [GROK-46-WORKFLOW.md](GROK-46-WORKFLOW.md) — chat for think, Build for code, Bot for glue; V9 `/model` aliases all wrap `grok-4.6`.
+
 ## How do I check V9 model pickers / API key?
 
 ```bash
