@@ -94,6 +94,10 @@ nh-x11
 
 Related: [PROOT.md](PROOT.md), [INSTALL.md](INSTALL.md).
 
+## GrokHunter XFCE skin
+
+Brand-matched reversible skin (user xfconf only): `DISPLAY=:0 bash scripts/desktop-skin.sh apply --plate og --dpi 120 --panel-slim` — see `scripts/desktop-skin.sh`. Revert with `bash scripts/desktop-skin.sh revert`.
+
 ## Kali application menu
 
 After desktop install (or anytime inside Kali):
