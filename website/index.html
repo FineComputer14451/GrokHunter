@@ -34,7 +34,7 @@
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=20260907-connect" />
   </head>
   <body>
     <header class="header">
@@ -792,10 +792,12 @@ bash install.sh --full --de xfce --with-grok --with-x11</code></pre>
       <section class="section alt" id="plugins">
         <div class="wrap">
           <p class="section-label">Plugins</p>
-          <h2>Grok Build marketplace + Termux Connect</h2>
+          <h2>Grok Build marketplace + Connect bridges</h2>
           <p class="section-lead">
-            This repo is a <strong>Grok Build marketplace</strong>. Install only the packs you need on
-            the phone, or bridge Grok Bot to the lab over an authenticated HTTP MCP tunnel.
+            This repo is a <strong>Grok Build marketplace</strong>. Install only the packs you need,
+            or bridge Grok Bot over authenticated HTTP MCP:
+            <strong>Termux Connect</strong> (lab tools, port 8765) and
+            <strong>Grok Build Connect</strong> (local <code>grok</code> CLI, port 8766).
           </p>
 
           <div class="install-grid">
@@ -817,6 +819,8 @@ bash install.sh --full --de xfce --with-grok --with-x11</code></pre>
                 <pre><code>grok plugin marketplace add FineComputer14451/GrokHunter
 grok plugin install grokhunter --trust
 grok plugin install grokhunter-coding-team --trust
+grok plugin install grokhunter-termux-connect --trust
+grok plugin install grokhunter-grok-build-connect --trust
 # or everything: grok plugin install grokhunter-full --trust</code></pre>
                 <p class="fineprint">
                   Catalog lives in <code>.grok-plugin/marketplace.json</code> · see
@@ -849,14 +853,39 @@ grok plugin install grokhunter-coding-team --trust
                   into chat.
                 </p>
               </div>
+
+              <div class="install-block">
+                <div class="code-head">
+                  <div>
+                    <span class="step">03</span>
+                    <span class="title">Grok Build Connect (grok CLI bridge)</span>
+                  </div>
+                  <button
+                    type="button"
+                    class="copy-btn"
+                    data-copy="curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/skills/grok-build-connect/scripts/bootstrap.sh | bash -s -- --tunnel"
+                  >
+                    Copy
+                  </button>
+                </div>
+                <pre><code>curl -fsSL https://raw.githubusercontent.com/FineComputer14451/GrokHunter/main/skills/grok-build-connect/scripts/bootstrap.sh | bash -s -- --tunnel</code></pre>
+                <p class="fineprint">
+                  Termux or desktop. MCP on <code>8766</code> (tmux <code>gbc</code> /
+                  <code>gbc-tun</code>). Tools: version, plugin/mcp list, doctor,
+                  <code>grok_ask</code>, jailed files. Token:
+                  <code>~/.grokhunter-grok-build-connect/token</code> — never paste into chat.
+                  Also: <code>grok plugin install grokhunter-grok-build-connect --trust</code>.
+                </p>
+              </div>
             </div>
 
             <div class="install-panel">
               <h3>Wire Grok Bot</h3>
               <ul class="flag-list">
                 <li><span>Native Local Computer is Mac/Windows only — Android uses MCP + tunnel</span></li>
-                <li><code>https://&lt;trycloudflare-host&gt;/mcp</code><span>Connector URL</span></li>
-                <li><code>Authorization: Bearer …</code><span>Token from the file above</span></li>
+                <li><code>https://&lt;trycloudflare-host&gt;/mcp</code><span>Connector URL (each Connect has its own host)</span></li>
+                <li><code>Authorization: Bearer …</code><span>Matching token file (8765 vs 8766)</span></li>
+                <li><span>Keep tmux sessions up — force-close kills quick tunnels</span></li>
               </ul>
               <div class="after-box">
                 <p>Where to add the connector</p>
@@ -930,7 +959,7 @@ grok plugin install grokhunter-coding-team --trust
               <button
                 type="button"
                 class="copy-btn"
-                data-copy="cd ~/GrokHunter && git pull\nbash install.sh --overlay-only --with-completions\ngrokhunter ensure\ngrokhunter skills install\ngrokhunter git-identity set\ngrokhunter menu install\ngrokhunter models install\ngrokhunter doctor\ngrokhunter credits"
+                data-copy="cd ~/GrokHunter && git pull\nbash install.sh --overlay-only --with-completions\ngrokhunter ensure\ngrokhunter skills install\ngrokhunter git-identity set\ngrokhunter menu install\ngrokhunter models clean\ngrokhunter doctor\ngrokhunter credits"
               >
                 Copy
               </button>
@@ -941,7 +970,7 @@ grokhunter ensure              # binary ≥ 1.0.5 + profile
 grokhunter skills install      # skills · agents · personas · roles
 grokhunter git-identity set    # GitHub noreply (no gh CLI required)
 grokhunter menu install        # Applications → GrokHunter (XFCE)
-grokhunter models install      # optional /model aliases
+grokhunter models clean        # strip legacy V9 pickers (default grok-4.6)
 grokhunter doctor
 grokhunter credits             # upstream attribution</code></pre>
           </div>
@@ -962,6 +991,18 @@ grokhunter credits             # upstream attribution</code></pre>
               <strong>Coding Team</strong>
               <p>
                 <a href="https://github.com/FineComputer14451/GrokHunter/blob/main/docs/CODING-TEAM.md" target="_blank" rel="noopener noreferrer">CODING-TEAM.md</a>
+              </p>
+            </div>
+            <div class="mini-card">
+              <strong>4.6 workflow</strong>
+              <p>
+                <a href="https://github.com/FineComputer14451/GrokHunter/blob/main/docs/GROK-46-WORKFLOW.md" target="_blank" rel="noopener noreferrer">Chat ↔ Build map</a>
+              </p>
+            </div>
+            <div class="mini-card">
+              <strong>Imagine models</strong>
+              <p>
+                <a href="https://github.com/FineComputer14451/Grok-Imagine-Cinematic-Studio/blob/main/docs/guides/IMAGINE_MODELS_MAP.md" target="_blank" rel="noopener noreferrer">Incl. Agent Mode</a>
               </p>
             </div>
           </div>
@@ -1045,10 +1086,20 @@ grokhunter credits             # upstream attribution</code></pre>
               <summary>Can Grok Bot use my phone as a local computer?</summary>
               <p>
                 Not via native Local Computer (Mac/Windows only). Use
-                <strong>Termux Connect</strong>: bootstrap MCP + Cloudflare tunnel, then add
+                <strong>Termux Connect</strong> (lab tools, :8765) or
+                <strong>Grok Build Connect</strong> (local <code>grok</code> CLI, :8766):
+                bootstrap with <code>--tunnel</code>, then add
                 <code>https://&lt;host&gt;/mcp</code> with Bearer auth at
                 <a href="https://grok.com/connectors">grok.com/connectors</a> or desktop Grok Bot.
                 Android Grok Bot currently has no custom-MCP settings screen.
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>What about V9 /model pickers?</summary>
+              <p>
+                Retired. Default catalog is <strong>grok-4.6</strong>. Run
+                <code>grokhunter models clean</code> to strip legacy pickers from
+                <code>~/.grok/config.toml</code>. <code>--with-v9-models</code> is a deprecated no-op.
               </p>
             </details>
             <details class="faq-item">
@@ -1257,6 +1308,6 @@ grokhunter credits             # upstream attribution</code></pre>
       </div>
     </footer>
 
-    <script src="app.js?v=20260907-copy"></script>
+    <script src="app.js?v=20260907-connect"></script>
   </body>
 </html>
