@@ -603,3 +603,22 @@ EOF
       ;;
   esac
 }
+
+
+# ---------- GrokHunter XFCE desktop skin (issue #26) ----------
+# Thin wrapper around scripts/desktop-skin.sh — user xfconf only.
+run_desktop_skin() {
+  local root="${GROKHUNTER_HOME:-}"
+  local script=""
+  if [[ -n "${root}" && -f "${root}/scripts/desktop-skin.sh" ]]; then
+    script="${root}/scripts/desktop-skin.sh"
+  elif [[ -f "${BASH_SOURCE[0]%/*}/../scripts/desktop-skin.sh" ]]; then
+    script="$(cd "${BASH_SOURCE[0]%/*}/.." && pwd)/scripts/desktop-skin.sh"
+  else
+    echo "scripts/desktop-skin.sh not found (set GROKHUNTER_HOME)" >&2
+    return 1
+  fi
+  # shellcheck disable=SC2086
+  bash "${script}" "$@"
+}
+

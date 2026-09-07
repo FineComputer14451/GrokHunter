@@ -34,6 +34,7 @@ jobs:
             lib/grok.sh
             lib/x11.sh
             scripts/install_v9_grok_models.sh
+            scripts/desktop-skin.sh
             bin/grokhunter
             bin/grokhunter-doctor
           )

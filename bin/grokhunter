@@ -168,7 +168,7 @@ Usage:
   grokhunter scout [prompt]   Launch scout agent
   grokhunter review [prompt]  Launch review agent
   grokhunter fix [prompt]     Launch fix agent
-  grokhunter desktop [prompt] Launch desktop (X11) agent
+  grokhunter desktop [prompt|apply|status|revert|self-test]  X11 agent or XFCE skin
   grokhunter overlay [prompt] Launch overlay/install agent
   grokhunter ship [prompt]    Launch release/ship agent
   grokhunter docs [prompt]    Launch docs agent
@@ -927,6 +927,15 @@ main() {
       shift || true
       cmd_setup "$@"
       ;;
+    desktop)
+      case "${2:-}" in
+        apply|status|revert|self-test)
+          [[ -f "${GROKHUNTER_HOME}/lib/x11.sh" ]] || { echo "lib/x11.sh missing" >&2; exit 1; }
+          # shellcheck source=lib/x11.sh
+          source "${GROKHUNTER_HOME}/lib/x11.sh"
+          shift; run_desktop_skin "$@"; exit $? ;;
+      esac
+      shift || true; cmd_agent_launch desktop "$@"; ;;
     menu|kali-menu|desktop-menu)
       shift || true
       cmd_menu "${1:-install}"
@@ -951,7 +960,7 @@ main() {
       shift || true
       cmd_agent_launch coding-team "$@"
       ;;
-    scout|benjamin|lucas|harper|review|fix|desktop|overlay|ship|docs|ci|aider|session|host|mcp|plugin|flow|storage|editor|hook|shell|github|secrets|toolchain|tls|net|tookie)
+    scout|benjamin|lucas|harper|review|fix|overlay|ship|docs|ci|aider|session|host|mcp|plugin|flow|storage|editor|hook|shell|github|secrets|toolchain|tls|net|tookie)
       shift || true
       cmd_agent_launch "${sub}" "$@"
       ;;

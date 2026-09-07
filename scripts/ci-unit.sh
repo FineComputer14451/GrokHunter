@@ -24,6 +24,7 @@ mapfile -t files < <(
 extra=(
   install.sh
   uninstall.sh
+  scripts/desktop-skin.sh
   lib/cli.sh
   lib/actions.sh
   lib/grok.sh
@@ -1390,5 +1391,10 @@ EOF
   rm -rf "$HOME"
 '
 info "install_grok_statusline OK"
+
+# ---------- desktop-skin self-test (no DISPLAY) ----------
+[[ -f scripts/desktop-skin.sh ]] || die "missing scripts/desktop-skin.sh"
+bash scripts/desktop-skin.sh self-test || die "desktop-skin self-test failed"
+info "desktop-skin self-test OK"
 
 info "ALL OK"
