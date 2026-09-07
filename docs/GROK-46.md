@@ -86,6 +86,7 @@ All aliases wrap **grok-4.6**. Imagine stills/video stay on `grok-imagine-*`.
 
 ## Related
 
+- [Workflow map: chat ↔ Build](GROK-46-WORKFLOW.md)
 - [pair-programming skill](../skills/pair-programming/SKILL.md)
 - [EDITORS.md](EDITORS.md)
 - [X11-PERFORMANCE.md](X11-PERFORMANCE.md)
