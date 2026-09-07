@@ -621,7 +621,8 @@ cmd_self_test() {
   [[ "${PANEL_SIZE}" == "32" ]] || die "default panel size drift"
   case "og" in og|banner|minimal) ;; *) die "plate case broken" ;; esac
   # space-form parse must not die early (regression: bare --plate died in first pass)
-  out="$(bash "${BASH_SOURCE[0]}" apply --plate og --dpi 120 --dry-run 2>&1)" || true
+  # CI has no X; require_session only checks DISPLAY is non-empty
+  out="$(DISPLAY=:0 bash "${BASH_SOURCE[0]}" apply --plate og --dpi 120 --dry-run 2>&1)" || true
   printf '%s\n' "${out}" | grep -q 'Theme Kali-Dark' || die "space-form --plate og parse failed"
   info "self-test OK"
 }
